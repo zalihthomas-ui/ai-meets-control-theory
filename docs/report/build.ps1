@@ -20,6 +20,7 @@ Copy-Fig "03_pid_stabilizes_unstable" "figure.png" "exp03_pid_unstable.png"
 Copy-Fig "04_lqr_vs_pole_placement_cartpole" "figure.png" "exp04_cartpole.png"
 Copy-Fig "05_cartpole_basin_of_attraction" "basin_map.png" "exp05_basin_map.png"
 Copy-Fig "05_cartpole_basin_of_attraction" "robustness_sweep.png" "exp05_robustness_sweep.png"
+Copy-Fig "06_lqg_vs_lqr_measurement_noise" "figure.png" "exp06_lqg.png"
 
 Write-Host "compiling main.tex..."
 Push-Location $here
