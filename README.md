@@ -59,7 +59,7 @@ Every experiment is self-contained with its own configuration, runner, Markdown/
 | **18** | [`18_rl_zoo_vs_lqr`](experiments/18_rl_zoo_vs_lqr/) | Cart-Pole (Balance) | RL Zoo (DQN, PPO) vs LQR | Scratch continuous PPO matches LQR return $-0.3$ and $200/200$ hold, paying $240\text{k}$ sample cost. |
 | **19** | [`19_icc_leaderboard`](experiments/19_icc_leaderboard/) | Multi-Plant Challenge | Blind Black-Box Leaderboard | MPC dominates precision (DC Motor $41.3$); Energy+LQR hybrid sweeps agility (Pendulum $23.8$, Track 3 $29.9$). |
 | **20** | [`20_quadrotor_obstacle_nmpc`](experiments/20_quadrotor_obstacle_nmpc/) | Crazyflie 2.0 (Keep-Out) | Sampling NMPC vs Flatness LQR | NMPC bends trajectory around keep-out ($+11\,\text{mm}$ clearance); flatness LQR crashes straight through. |
-| **21** | [`21_grand_capstone_bakeoff`](experiments/21_grand_capstone_bakeoff/) | Crazyflie 2.0 (Grand Course) | Five-Way Grand Bake-Off | Pareto evaluation across tracking, constraint safety, control effort, robustness, and compute latency. |
+| **21** | [`21_grand_capstone_bakeoff`](experiments/21_grand_capstone_bakeoff/) | Crazyflie 2.0 (Grand Course) | Five-Way Grand Bake-Off | Sampling NMPC scores 8.0 (0 violations); imitation tracks 41.4 mm but cuts keep-out 46 times; hybrid scores 7.9. |
 
 ---
 

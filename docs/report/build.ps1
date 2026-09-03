@@ -36,6 +36,7 @@ Copy-Fig "17_adaptive_vs_fixed_changing_plant" "figure.png" "exp17_adaptive.png"
 Copy-Fig "18_rl_zoo_vs_lqr" "figure.png" "exp18_rl_zoo.png"
 Copy-Fig "19_icc_leaderboard" "figure.png" "exp19_icc_leaderboard.png"
 Copy-Fig "20_quadrotor_obstacle_nmpc" "figure.png" "exp20_obstacle_nmpc.png"
+Copy-Fig "21_grand_capstone_bakeoff" "figure.png" "exp21_grand_bakeoff.png"
 
 Write-Host "compiling main.tex..."
 Push-Location $here

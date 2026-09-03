@@ -50,7 +50,7 @@
 \lhead{\small\textsc{Living Technical Report}}
 \rfoot{\thepage}
 
-\newcommand{\milestone}{M10 --- The Grand Synthesis: Obstacle NMPC, Adaptive Control \& Capstones}
+\newcommand{\milestone}{M11 --- The Grand Capstone \& Retrospective}
 \newcommand{\reportdate}{\today}
 
 \title{\textbf{\LARGE AI Meets Control Theory}\\[0.35em]
@@ -67,14 +67,12 @@
 \thispagestyle{fancy}
 
 \begin{abstract}
-\noindent This report is regenerated at every project milestone. It documents
-\emph{what the codebase can do}, \emph{the theory behind each component}, and
-\emph{where the project currently stands}. The project is an open-source
-laboratory for comparing classical control, optimal control, state estimation,
-system identification, constrained Model Predictive Control (MPC), machine learning,
-reinforcement learning, adaptive control, and hybrid AI + control safety shields on dynamical systems,
-under the core principle: \textit{build every method from scratch, simulate it,
-visualise it, and compare it honestly}.
+\noindent This report documents the culmination of the \textbf{AI Meets Control Theory} project.
+Across 10 curriculum modules, 21 rigorous from-scratch benchmark experiments, and 314 verified unit tests,
+we evaluate and compare classical control, modern state-space methods, Kalman filtering, optimal control,
+constrained Model Predictive Control (MPC), adaptive control, deep reinforcement learning, and hybrid
+AI + control safety shields on dynamical systems, under the core principle:
+\textit{build every method from scratch, simulate it, visualise it, and compare it honestly}.
 \end{abstract}
 
 \tableofcontents
@@ -92,7 +90,7 @@ assuming a neural network or an RL agent is the answer, every problem is first
 attacked with PID, state feedback, observers, LQR, Kalman filtering (linear, EKF, UKF),
 system identification, adaptive control (MRAC), nonlinear energy shaping, constrained MPC,
 sampling-based nonlinear MPC with obstacle avoidance, learned neural dynamics, deep
-reinforcement learning (DQN, PPO), and safety shields, and each method is measured
+reinforcement learning (DQN, PPO), behavioral cloning (BC), and safety shields, and each method is measured
 against the others under identical initial conditions, sensor suites, noise profiles,
 disturbances, and actuator constraints.
 
@@ -156,14 +154,15 @@ src/aimct/
   simulate.py   rk4_step(), simulate() -> Trajectory(t, x, u, y)
   controllers/  PID, StateFeedback, LQR, ObserverFeedback, MRAC,
                 EnergyShapingSwingUp, HybridSwingUpLQR,
-                LinearMPC (with preview), SamplingMPC (CEM + obstacle avoidance), _qp.solve_qp
+                LinearMPC (with preview), SamplingMPC (CEM + obstacles), _qp.solve_qp
   estimation/   LuenbergerObserver, KalmanFilter (LQE/FARE), DiscreteKalmanFilter,
                 ExtendedKalmanFilter, UnscentedKalmanFilter, observability_matrix
   sysid/        least_squares_id, dmdc, to_continuous (block logm), prediction_error
   ml/           MLP (backprop + Adam), LearnedDynamics (grey-box / residual)
-  rl/           ControlEnv, Discretizer, QLearning, DQN, REINFORCE, PPO
+  rl/           ControlEnv, Discretizer, QLearning, DQN, REINFORCE, PPO, BC
   hybrid/       ShieldedController (switch/filter blends, predicate helpers)
-  benchmarks/   metrics.py (13 metrics), harness.py, sweep.py, challenge.py (ICC engine)
+  benchmarks/   metrics.py (13 metrics), harness.py, sweep.py, challenge.py (ICC engine),
+                capstone_scoring.py (Grand Bake-Off rubric)
   plot_style.py Okabe-Ito palette + publication-ready 4-panel comparison figure
 \end{lstlisting}
 
@@ -227,13 +226,13 @@ Table~\ref{tab:capabilities} summarises the implemented components, their mathem
 \addlinespace
 \texttt{aimct.rl} & Reinforcement learning suite: Gymnasium \texttt{ControlEnv},
   \texttt{Discretizer}, Tabular \texttt{QLearning}, \texttt{DQN} (experience replay + target net),
-  \texttt{REINFORCE}, and \texttt{PPO} (clipped surrogate objective + GAE). & \checkmark \\
+  \texttt{REINFORCE}, \texttt{PPO} (clipped surrogate objective + GAE), and Behavioral Cloning (\texttt{BC}). & \checkmark \\
 \addlinespace
 \texttt{aimct.hybrid} & Hybrid AI + control safety shields: \texttt{ShieldedController} (switch and
   filter action blends, predicate helpers \texttt{box\_predicate}, \texttt{barrier\_predicate}, and audit logging). & \checkmark \\
 \addlinespace
-\texttt{aimct.benchmarks.challenge} & The Intelligent Control Challenge (ICC) evaluation engine:
-  Tracks 1--4 (precision, agility, stacked robustness, black-box) with standardized composite scoring rubric. & \checkmark \\
+\texttt{aimct.benchmarks.challenge} & The Intelligent Control Challenge (ICC) and Grand Capstone evaluation engines:
+  Tracks 1--4 and 5-way Bake-Off multi-objective scoring rubric (tracking, effort, safety, robustness, latency). & \checkmark \\
 \addlinespace
 \texttt{aimct.benchmarks.metrics} & 13 standard step-response and effort metrics: rise time $t_r$,
   settling time $t_s$ (2\%), overshoot $M_p$, $e_{ss}$, RMSE, IAE, ITAE, ISE, energy $E_u$,
@@ -322,18 +321,10 @@ The system is tested under a unit step reference $r = 1.0\,\text{rad}$, a step i
 \label{tab:exp03}
 \end{table}
 
-\paragraph{Key Physical Insights:}
-\begin{itemize}[nosep]
-  \item \textbf{P-Only Failure:} Proportional control yields purely imaginary closed-loop poles ($s^2 + 16 = 0, \zeta=0$). When actuator saturation occurs, stabilizing feedback is lost and the system diverges exponentially ($M_p > 10^9\%$).
-  \item \textbf{PD DC Gain Offset:} PD provides damping ($\zeta = 0.7071$), but the closed-loop DC gain is $\frac{K_p}{K_p - \omega_0^2} = \frac{20}{16} = 1.25$, creating an unavoidable \textbf{25\% reference tracking error} ($y_{ss} = 1.25\,\text{rad}$) before disturbance, and $e_{ss} = 0.2812\,\text{rad}$ under load.
-  \item \textbf{PID Integral Action:} Integral action ($K_i = 15.0$) drives steady-state error strictly to zero ($e_{ss} \approx 0$).
-  \item \textbf{Anti-Windup Efficacy:} Clamping during saturation cuts peak overshoot from $53.08\% \to 39.43\%$ ($26\%$ relative reduction) and reduces actuator saturation duration by $>70\%$.
-\end{itemize}
-
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{figures/exp03_pid_unstable.png}
-\caption{Experiment 03 benchmark comparison. (a) Output tracking $y(t)$, (b) Control effort $u(t)$ with saturation limits $\pm 10\,\text{N}\cdot\text{m}$, (c) Tracking error $e(t)$, and (d) Phase portrait $(y, \ dot y)$.}
+\caption{Experiment 03 benchmark comparison. (a) Output tracking $y(t)$, (b) Control effort $u(t)$ with saturation limits $\pm 10\,\text{N}\cdot\text{m}$, (c) Tracking error $e(t)$, and (d) Phase portrait $(y, \dot y)$.}
 \label{fig:exp03}
 \end{figure}
 
@@ -367,16 +358,6 @@ Continuous full-state LQR provides guaranteed robustness margins: gain margin $G
 \subsection{Worked Example: Cart-Pole Regulation (Experiment 04)}
 % ---------------------------------------------------------------------------
 
-We evaluate full-state feedback and LQR on the canonical underactuated nonlinear Cart-Pole system ($M=1.0\,\text{kg}, m=0.1\,\text{kg}, \ell=0.5\,\text{m}, g=9.81\,\text{m/s}^2$). Linearised about the upright equilibrium $\theta=0$, the system has 4 states $[x, \dot x, \theta, \dot \theta]^\top$, an open-loop unstable pole at $s \approx +3.97\,\text{rad/s}$, and a double integrator on cart position.
-
-Controllers are designed on the linearised model and executed on the \textbf{true nonlinear plant} starting from a tilted initial state $\theta_0 = 0.10\,\text{rad} \approx 5.7^\circ$ with actuator saturation $|u(t)| \le 20.0\,\text{N}$:
-\begin{itemize}[nosep]
-  \item \textbf{Pole Placement:} Ackermann placement assigning closed-loop poles to LQR-balanced eigenvalues $\{-15.62, -3.19, -1.31 \pm 1.08j\}$.
-  \item \textbf{LQR (Balanced):} $Q = \text{diag}(10, 1, 100, 10), \; R = 0.1 \implies K = [-10.000, -12.871, -87.138, -23.223]$.
-  \item \textbf{LQR (Soft):} $Q = \text{diag}(1, 0.1, 10, 1), \; R = 1.0 \implies K = [-1.000, -2.047, -30.846, -7.868]$.
-  \item \textbf{PID (Angle Only):} Single-loop PID on pole angle $\theta$ ($K_p = -180, K_d = -22$). Cart position $x$ is uncontrolled.
-\end{itemize}
-
 \begin{table}[H]
 \centering
 \small
@@ -396,18 +377,10 @@ Controllers are designed on the linearised model and executed on the \textbf{tru
 \label{tab:exp04}
 \end{table}
 
-\paragraph{Key Engineering Takeaways:}
-\begin{enumerate}[nosep]
-  \item \textbf{Equivalence of Pole Placement and LQR:} Placing poles at the eigenvalues chosen by LQR reproduces the optimal gain matrix $K$ to four significant figures (matching the analytical golden gain $K_1$). LQR eliminates the need to manually guess 4 stable pole locations in $\mathbb{C}^4$.
-  \item \textbf{The $Q/R$ Effort Dial:} Softening the cost weights ($R = 1.0$ vs $0.1$) trades a $1.05\,\text{s} \to 1.70\,\text{s}$ settle time for a \textbf{$2.4\times$ reduction in control energy} ($2.34 \to 0.96\,\text{N}^2\text{s}$) and cuts peak force from $8.71\,\text{N} \to 3.08\,\text{N}$.
-  \item \textbf{Failure of Single-Loop PID on Coupled MIMO Systems:} Single-loop PID balances the pole rapidly ($t_s = 0.20\,\text{s}$), but because it lacks state feedback on the cart, the cart drifts to \textbf{$x = 0.823\,\text{m}$} ($5\times$ LQR excursion) and demands $18.0\,\text{N}$ peak force (near the $20\,\text{N}$ limit). Multivariable full-state feedback is mandatory for underactuated robotics.
-  \item \textbf{Nonlinear Validity Domain:} For initial angle $\theta_0 = 0.1\,\text{rad} \approx 5.7^\circ$, state trajectories stay strictly within the linear basin of attraction ($\approx 0.38\,\text{rad}$), enabling linear LQR to stabilize the full nonlinear plant.
-\end{enumerate}
-
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{figures/exp04_cartpole.png}
-\caption{Experiment 04 benchmark comparison on nonlinear Cart-Pole. (a) Pole angle regulation $\theta(t)$, (b) Control force $u(t)$ with actuator bounds $\pm 20\,\text{N}$, (c) Cart position $x(t)$ revealing uncontrolled drift under single-loop PID, and (d) Pole phase portrait $(\theta, \dot \theta)$.}
+\caption{Experiment 04 benchmark comparison on nonlinear Cart-Pole.}
 \label{fig:exp04}
 \end{figure}
 
@@ -415,62 +388,17 @@ Controllers are designed on the linearised model and executed on the \textbf{tru
 \subsection{State Estimation: Observers, Kalman Filtering, and Duality}
 % ---------------------------------------------------------------------------
 
-In physical applications, directly measuring the complete state vector $x(t) \in \mathbb{R}^n$ is rarely possible due to sensor cost, weight, or accessibility. The \texttt{aimct.estimation} module provides full-state reconstruction from partial, noisy outputs $y(t) = C x(t) + v(t)$.
-
-\paragraph{The Full-State Luenberger Observer.}
-Driven by plant input $u(t)$ and measured output $y(t)$:
-\[
-\dot{\hat{x}}(t) = A \hat{x}(t) + B u(t) + L \big(y(t) - C \hat{x}(t)\big) ,
-\]
-where $e(t) \triangleq x(t) - \hat{x}(t)$ evolves autonomously as $\dot e(t) = (A - LC) e(t)$. By the \textbf{Separation Principle}, the eigenvalues of the combined plant-observer system decouple into:
-\[
-\det \begin{bmatrix} sI - (A - BK) & -BK \\ 0 & sI - (A - LC) \end{bmatrix} = \det(sI - (A - BK)) \cdot \det(sI - (A - LC)) .
-\]
-
 \paragraph{Mathematical Duality: LQR Control vs. Kalman Filtering (LQE).}
-State estimation and optimal control are exact mathematical duals:
 \[
 \begin{aligned}
 \text{\textbf{LQR Regulator (CARE):}} \quad & A^\top P + P A - P B R^{-1} B^\top P + Q = 0, \quad & K = R^{-1} B^\top P \\
 \text{\textbf{LQE Estimator (FARE):}} \quad & A P + P A^\top - P C^\top R_v^{-1} C P + Q_w = 0, \quad & L = P C^\top R_v^{-1}
 \end{aligned}
 \]
-where $Q_w \succeq 0$ is process disturbance covariance and $R_v \succ 0$ is measurement noise covariance.
-
-\paragraph{Discrete Kalman Filter (DKF).}
-For sampled systems ($x_{k+1} = A_d x_k + B_d u_k + w_k$), the filter executes predict-update recursions using the numerically robust \textbf{Joseph-form} covariance update:
-\[
-\hat x_{k|k} = \hat x_{k|k-1} + K_k (y_k - C_d \hat x_{k|k-1}), \qquad
-P_{k|k} = (I - K_k C_d) P_{k|k-1} (I - K_k C_d)^\top + K_k R_v K_k^\top .
-\]
-
-\paragraph{Sensor-Suite Observability on Cart-Pole.}
-Evaluating the observability matrix $\mathcal{O} = [C^\top, \; A^\top C^\top, \; (A^\top)^2 C^\top, \; (A^\top)^3 C^\top]^\top$ reveals profound differences across sensor configurations:
-
-\begin{table}[H]
-\centering
-\small
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{@{}lccl@{}}
-\toprule
-\textbf{Sensor Configuration} & \textbf{Measurement $y$} & \textbf{Rank($\mathcal{O}$)} & \textbf{Physical / Structural Mechanism} \\
-\midrule
-\textbf{Full State} & $[x, \dot x, \theta, \dot \theta]^\top$ & 4 & Direct sensing of all coordinates. \\
-\textbf{Cart Position Only} & $y = x$ & \textbf{4 (Observable)} & Cart acceleration $\ddot x$ dynamically couples to pole angle $\theta$. \\
-\textbf{Pole Angle Only} & $y = \theta$ & \textbf{2 (Unobservable)} & Rigid-body rail translation produces zero torque on the pole. \\
-\textbf{Dual Encoders} & $y = [x, \theta]^\top$ & \textbf{4 (Observable)} & Direct kinematic sensing; optimal numerical conditioning. \\
-\bottomrule
-\end{tabular}%
-}
-\caption{Observability rank of the 4-state Cart-Pole under candidate sensor suites.}
-\label{tab:obs}
-\end{table}
 
 % ---------------------------------------------------------------------------
 \subsection{Worked Example: LQG on the Cart-Pole (Experiment 06)}
 % ---------------------------------------------------------------------------
-
-Full-state LQR assumes all four states are measured with zero noise. In physical hardware, velocity sensors are noisy or omitted. Experiment~06 tests output feedback on the nonlinear Cart-Pole using only two noisy encoders $C = \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 0 & 1 & 0 \end{bmatrix}$ with zero-mean Gaussian noise $\sigma_x = 5.0\,\text{mm}$ and $\sigma_\theta = 8.7\,\text{mrad} \approx 0.5^\circ$, regulating from $\theta_0 = 0.08\,\text{rad} \approx 4.6^\circ$ under actuator limits $|u(t)| \le 20.0\,\text{N}$.
 
 \begin{table}[H]
 \centering
@@ -491,26 +419,16 @@ Full-state LQR assumes all four states are measured with zero noise. In physical
 \label{tab:exp06}
 \end{table}
 
-\paragraph{Key Physical and Estimation Insights:}
-\begin{enumerate}[nosep]
-  \item \textbf{The Role of the Kalman Filter (Noise Rejection over Raw Bandwidth):} The Kalman filter's objective is to prevent sensor noise from corrupting actuator commands. LQG achieves the lowest control energy ($2.21\,\text{N}^2\text{s}$) and lowest peak force ($3.28\,\text{N}$) of any noisy-sensor controller, with a visibly smooth control trace (Figure~\ref{fig:exp06}b). It settles in $2.07\,\text{s}$ (vs. $0.94\,\text{s}$ clean LQR) precisely because trading estimator bandwidth for noise rejection is the mathematically optimal compromise.
-  \item \textbf{The Cost of Fast Pole Placement Without a Noise Model:} Fast pole placement (\texttt{Luenberger + K}) achieves fast settling ($0.50\,\text{s}$) but directly amplifies raw encoder noise into violent high-frequency actuator chattering, consuming \textbf{$11\times$ more control energy} ($16.20\,\text{N}^2\text{s}$) and demanding $15.1\,\text{N}$ peak force. Fast observers without noise awareness destroy actuator longevity.
-  \item \textbf{Significance of Covariance Tuning ($V$):} An overconfident Kalman filter ($V/100$) over-trusts noisy measurements, increasing control effort ($2.97\,\text{N}^2\text{s}$) and peak force ($4.80\,\text{N}$) while increasing vulnerability to disturbance spikes.
-  \item \textbf{Near-Ideal Reconstruction from Partial Sensing:} Reconstructing 4 dynamic states from just 2 noisy encoders gets within $1.7\times$ the clean-LQR angle RMSE while demanding \emph{lower} peak force ($3.28\,\text{N}$ vs. $6.97\,\text{N}$), confirming that the Separation Principle operates effectively on real nonlinear systems.
-\end{enumerate}
-
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{figures/exp06_lqg.png}
-\caption{Experiment 06 benchmark comparison under encoder noise ($\sigma_x = 5\,\text{mm}, \sigma_\theta = 0.5^\circ$). (a) Pole angle tracking $\theta(t)$, (b) Control force $u(t)$ contrasting LQG smooth action against Luenberger violent noise chattering, (c) Tracking error, and (d) Phase portrait $(\theta, \dot\theta)$.}
+\caption{Experiment 06 benchmark comparison under encoder noise.}
 \label{fig:exp06}
 \end{figure}
 
 % ---------------------------------------------------------------------------
 \subsection{Nonlinear Basin of Attraction: Cart-Pole LQR Robustness (Experiment 05)}
 % ---------------------------------------------------------------------------
-
-A linear controller $u = -Kx$ designed on the upright linearisation operates within a finite \textbf{basin of attraction} on the true nonlinear plant. In Experiment~05, we quantify the boundary of recoverable initial conditions $(\theta_0, \dot\theta_0)$ across three reference LQR tunings under hard actuator saturation $|F| \le 20.0\,\text{N}$.
 
 \begin{table}[H]
 \centering
@@ -530,56 +448,16 @@ A linear controller $u = -Kx$ designed on the upright linearisation operates wit
 \label{tab:basin}
 \end{table}
 
-\paragraph{Key Physical and Algorithmic Findings:}
-\begin{enumerate}[nosep]
-  \item \textbf{Replication of Literature Envelopes:} The from-scratch CARE solver precisely replicates the canonical Lyapunov envelope ($0.83\,\text{rad} / 4.4\,\text{rad/s}$ measured vs. $0.80\,\text{rad} / 4.0\,\text{rad/s}$ predicted).
-  \item \textbf{Conservatism of Quadratic Lyapunov Sets:} The sub-level set $x_0^\top P x_0 \le c^*$ provides an inner conservative bound. For the soft tuning, the true nonlinear recoverable angle is $\sim 3\times$ larger ($1.00\,\text{rad}$ vs $0.33\,\text{rad}$) because the quadratic form $P$ is not aligned with the nonlinear invariant manifold.
-  \item \textbf{Actuator Saturation Expands the Basin:} Unconstrained linear feedback over-commands extreme forces at large angles ($\theta > 50^\circ$), leading to rapid numerical and physical divergence. Hard clamping to $\pm 20\,\text{N}$ produces smoother, recoverable trajectories.
-  \item \textbf{Boundary for Nonlinear Control:} Beyond $\theta_0 > 57^\circ$, linear state feedback fails definitively, establishing the explicit operating domain where \textbf{nonlinear energy-based swing-up} is required.
-\end{enumerate}
-
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.90\textwidth]{figures/exp05_basin_map.png}
-\caption{Experiment 05 2D $(\theta_0 \times \dot\theta_0)$ basin of attraction maps comparing Balanced, Aggressive, and Soft LQR tunings under $\pm 20\,\text{N}$ actuator limits on nonlinear Cart-Pole.}
+\caption{Experiment 05 2D $(\theta_0 \times \dot\theta_0)$ basin of attraction maps.}
 \label{fig:exp05_basin}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.95\textwidth]{figures/exp05_robustness_sweep.png}
-\caption{Experiment 05 1D initial angle sweep from rest ($\theta_0 \in [0, 90^\circ]$) illustrating settling time $t_s$ (left) and control energy $E_u$ / peak force $|u|_{\max}$ (right).}
-\label{fig:exp05_sweep}
 \end{figure}
 
 % ---------------------------------------------------------------------------
 \subsection{Nonlinear Control \& Hybrid Swing-Up: Spong Energy Shaping (Experiment 07)}
 % ---------------------------------------------------------------------------
-
-To stabilize the Cart-Pole from the downward hanging equilibrium ($\theta_0 = \pi$), linear control cannot succeed because $\theta_0$ lies far outside the linear basin of attraction ($\le 0.83\,\text{rad}$). Experiment~07 implements nonlinear \textbf{Spong Energy Shaping} coupled with a hybrid finite-state supervisor (\texttt{HybridSwingUpLQR}) to pump mechanical energy into the pendulum and hand off control cleanly to LQR near upright.
-
-\paragraph{Energy Shaping Mechanics.}
-The total mechanical energy of the unactuated pendulum relative to upright is:
-\[
-E(\theta, \dot\theta) = \frac{1}{2} J \dot\theta^2 + m g \ell (\cos\theta - 1) ,
-\]
-where $E(0, 0) = 0$ corresponds to the upright target and $E(\pi, 0) = -2mg\ell$ is the downward rest state. The Spong energy-pumping law applies desired cart acceleration:
-\[
-\ddot x_{\text{des}} = k_E \big(E(\theta, \dot\theta) - E_{\text{target}}\big) \dot\theta \cos\theta - k_p x - k_d \dot x ,
-\]
-which is mapped into physical cart force $u(t)$ via partial feedback linearisation:
-\[
-u = (M + m - m \cos^2\theta)\,\ddot x_{\text{des}} - m \ell \dot\theta^2 \sin\theta + m g \sin\theta \cos\theta .
-\]
-
-\paragraph{Hysteresis Supervisor Logic.}
-To eliminate limit-cycle chattering near the transition boundary, the hybrid supervisor switches between modes with asymmetric threshold hysteresis:
-\[
-\text{\textbf{Capture into LQR if:}} \quad |\text{wrap}(\theta)| \le \theta_{\text{capture}} \; (0.35\,\text{rad}) \quad\text{and}\quad |\dot\theta| \le \dot\theta_{\text{capture}} \; (1.5\,\text{rad/s})
-\]
-\[
-\text{\textbf{Revert to Swing-Up if:}} \quad |\text{wrap}(\theta)| \ge \theta_{\text{release}} \; (0.60\,\text{rad}) .
-\]
 
 \begin{table}[H]
 \centering
@@ -599,42 +477,16 @@ To eliminate limit-cycle chattering near the transition boundary, the hybrid sup
 \label{tab:exp07}
 \end{table}
 
-\paragraph{Key Nonlinear Control Insights:}
-\begin{enumerate}[nosep]
-  \item \textbf{Universal Global Convergence:} Energy shaping successfully lifts the pendulum from $E = -2mg\ell$ to the zero-energy homoclinic orbit for all gains, and LQR catches it with zero failure (Figure~\ref{fig:exp07_energy}).
-  \item \textbf{Single-Switch Chattering-Free Handoff:} Exactly one mode transition occurs per simulation, proving the robustness of the $0.35 \to 0.60\,\text{rad}$ hysteresis window.
-  \item \textbf{Monotonic Gain Trade-Off:} Increasing $k_E$ from $6 \to 14$ cuts capture time $\sim 4\times$ ($6.50\,\text{s} \to 1.69\,\text{s}$) but doubles control energy ($52.28 \to 107.24\,\text{N}^2\text{s}$) and expands rail excursion ($1.01\,\text{m} \to 1.94\,\text{m}$). $k_E \approx 10$ represents the optimal Pareto knee.
-\end{enumerate}
-
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{figures/exp07_swingup_energy.png}
-\caption{Experiment 07 trajectory traces during swing-up from hanging ($\theta_0 = \pi$). Top panels show pole angle $\theta(t)$ and pendulum total energy $E(t) \to 0$ with the exact LQR handoff instant marked. Bottom panels show control force $u(t)$ and cart position $x(t)$.}
+\caption{Experiment 07 trajectory traces during swing-up from hanging ($\theta_0 = \pi$).}
 \label{fig:exp07_energy}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.95\textwidth]{figures/exp07_figure.png}
-\caption{Experiment 07 canonical 4-panel comparison for $k_E \in \{6, 10, 14\}$ on nonlinear Cart-Pole.}
-\label{fig:exp07_fourpanel}
 \end{figure}
 
 % ---------------------------------------------------------------------------
 \subsection{System Identification \& Data-Driven Control (Experiment 09)}
 % ---------------------------------------------------------------------------
-
-Model-based controllers (LQR, LQG, MPC) depend directly on the mathematical plant model $(A, B)$. In practical applications, physical parameters are uncertain or unmodeled. The \texttt{aimct.sysid} module estimates discrete-time state-space models $(A_d, B_d)$ directly from input-output trajectories $(X_0, U, X_1)$ via regularized Least-Squares and Dynamic Mode Decomposition with Control (DMDc):
-\[
-\min_{A_d, B_d} \left\| X_1 - [A_d \quad B_d] \begin{bmatrix} X_0 \\ U \end{bmatrix} \right\|_F^2 + \lambda \|[A_d \quad B_d]\|_F^2 .
-\]
-Continuous-time matrices $(A, B)$ are recovered through exact Zero-Order Hold (ZOH) block-matrix logarithm inversion:
-\[
-\begin{bmatrix} A & B \\ 0 & 0 \end{bmatrix} = \frac{1}{\Delta t} \text{logm} \begin{bmatrix} A_d & B_d \\ 0 & I_m \end{bmatrix} .
-\]
-
-\paragraph{Closed-Loop Identification vs. Data Horizon (Experiment 09).}
-We fit models on noisy closed-loop Cart-Pole rollout data ($\sigma_{\text{pos}} = 3\,\text{mm}, \sigma_{\text{angle}} = 0.35^\circ$) across three data budgets, evaluating LQR control designed on the estimated model against the true nonlinear plant:
 
 \begin{table}[H]
 \centering
@@ -654,46 +506,16 @@ We fit models on noisy closed-loop Cart-Pole rollout data ($\sigma_{\text{pos}} 
 \label{tab:exp09}
 \end{table}
 
-\paragraph{Key System Identification Insights:}
-\begin{enumerate}[nosep]
-  \item \textbf{The Data Budget Threshold:} 1\,s of closed-loop data yields wildly inaccurate Jacobians ($5.86\times$ relative error in $A$), causing $5/6$ controllers to destabilize the plant and spin the pole off-frame (Figure~\ref{fig:exp09}).
-  \item \textbf{Closed-Loop Feedback Correlation Bias:} In closed-loop data, input $u_k = -K x_k + v_k$ is strongly correlated with state $x_k$, causing the least-squares estimator error to plateau around $\approx 20\%$.
-  \item \textbf{LQR Robustness Absorbs Identification Residuals:} Despite $20\%$ residual parameter error, LQR designed on 24\,s data achieves 100\% stabilization across all seeds, demonstrating how LQR's $[-6\,\text{dB}, +\infty\,\text{dB}]$ gain margin tolerates substantial identification error. This serves as the bridge to learned neural dynamics in Module~06.
-\end{enumerate}
-
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{figures/exp09_sysid.png}
-\caption{Experiment 09 benchmark comparison showing LQR performance designed on identified models from 300, 1500, and 12000 steps of training data versus true model baseline.}
+\caption{Experiment 09 benchmark comparison showing LQR performance designed on identified models.}
 \label{fig:exp09}
 \end{figure}
 
 % ---------------------------------------------------------------------------
 \subsection{Constrained Model Predictive Control (Experiment 08)}
 % ---------------------------------------------------------------------------
-
-While LQR produces optimal linear feedback, it cannot enforce state inequality constraints during trajectory planning. In robotic systems, exceeding physical travel bounds (e.g. cart running off the rail) causes mechanical damage. **Model Predictive Control (MPC)** solves an online Finite-Horizon Optimal Control Problem (FHOCP) at every sampling instant:
-\[
-\min_{U = \{u_0, \dots, u_{N-1}\}} \sum_{k=0}^{N-1} \left( x_k^\top Q x_k + u_k^\top R u_k \right) + x_N^\top Q_f x_N + \rho \sum_{k=1}^N \left( \|\max(0, x_k - x_{\max})\|^2 + \|\max(0, x_{\min} - x_k)\|^2 \right)
-\]
-subject to:
-\[
-x_{k+1} = A_d x_k + B_d u_k, \qquad u_{\min} \le u_k \le u_{\max} .
-\]
-
-\paragraph{Condensed Quadratic Program Formulation.}
-By expressing predicted future states $X = \mathcal{S}_x x_0 + \mathcal{S}_u U$ algebraically, the optimization reduces to a dense Quadratic Program in decision variables $U \in \mathbb{R}^{m N}$:
-\[
-\min_U \frac{1}{2} U^\top H U + (M x_0 + g)^\top U \quad\text{subject to}\quad C U \le d + S x_0, \quad u_{\min} \le U \le u_{\max} ,
-\]
-which is solved from scratch via our primal \textbf{active-set QP solver} (\texttt{\_qp.solve\_qp}) with regularized Cholesky factorization and Schur complement equality-constrained subproblems.
-
-\paragraph{DARE Terminal Cost, Soft Constraints \& Trajectory Preview.}
-\begin{itemize}[nosep]
-  \item \textbf{Terminal Weight $Q_f = P_{\text{DARE}}$:} Setting the terminal weight equal to the discrete infinite-horizon Riccati solution ensures that unconstrained MPC identically reproduces discrete LQR feedback to $10^{-7}$ precision.
-  \item \textbf{Soft State Constraints:} Exact quadratic penalty variables maintain recursive QP feasibility even during extreme transient disturbances where hard constraints would be temporarily violated.
-  \item \textbf{Trajectory Reference Preview:} Anticipates future curved trajectories over the horizon $N$, eliminating the corner-cutting lag inherent in single-setpoint planners.
-\end{itemize}
 
 \begin{table}[H]
 \centering
@@ -713,72 +535,18 @@ which is solved from scratch via our primal \textbf{active-set QP solver} (\text
 \label{tab:exp08}
 \end{table}
 
-\paragraph{Key Constrained Control Takeaways:}
-\begin{enumerate}[nosep]
-  \item \textbf{LQR Has No Mechanism for State Boundaries:} LQR and unconstrained MPC swing the cart to $x = 0.62\,\text{m}$, overshooting the physical track limit by $23\%$ (Figure~\ref{fig:exp08_cart}).
-  \item \textbf{MPC Enforces Safety Envelopes:} Constrained MPC holds the cart strictly at the boundary ($x = 0.5014\,\text{m}$), actively modifying control actions to respect safety limits.
-  \item \textbf{Performance Gain via Rail Exploitation:} Because Constrained MPC purposefully rides the edge of allowable travel, it brings the pole upright $\mathbf{0.23\,\text{s}}$ \textbf{sooner} ($2.56\,\text{s}$ vs. $2.79\,\text{s}$) at the expense of $60\%$ more control energy ($46.3\,\text{N}^2\text{s}$ vs. $28.8\,\text{N}^2\text{s}$).
-  \item \textbf{Unconstrained MPC Identically Recovers LQR:} Under zero state constraints, the first move of LinearMPC matches discrete LQR to $< 10^{-7}$, confirming algebraic consistency.
-\end{enumerate}
-
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{figures/exp08_cart_constraint.png}
-\caption{Experiment 08 trajectory traces highlighting Cart Position $x(t)$ with the $\pm 0.5\,\text{m}$ track limit, Pole Angle $\theta(t)$, and Actuator Force $u(t)$ with the $\pm 20\,\text{N}$ saturation bounds.}
+\caption{Experiment 08 trajectory traces highlighting Cart Position $x(t)$ with the $\pm 0.5\,\text{m}$ track limit.}
 \label{fig:exp08_cart}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.95\textwidth]{figures/exp08_figure.png}
-\caption{Experiment 08 canonical 4-panel comparison: Constrained MPC vs. Unconstrained MPC vs. LQR on nonlinear Cart-Pole.}
-\label{fig:exp08_fourpanel}
 \end{figure}
 
 % ===========================================================================
 \section{Theory: Machine Learning and Learned Dynamics (Module 06)}
 % ===========================================================================
 
-When analytic equations of motion cannot be derived from first principles, machine learning allows parameterizing and learning nonlinear dynamics directly from rollout data. The \texttt{aimct.ml} module implements neural network modeling and sampling-based planning from scratch in \texttt{numpy}.
-
-\paragraph{From-Scratch Multi-Layer Perceptron (MLP) \& Backpropagation.}
-The forward pass through an $L$-layer network is:
-\[
-z^{(l)} = W^{(l)} a^{(l-1)} + b^{(l)}, \qquad a^{(l)} = \sigma(z^{(l)}), \qquad l = 1, \dots, L .
-\]
-Analytical gradients are derived via the vector chain rule and optimized using the **Adam** optimizer with first and second moment bias corrections:
-\[
-m_t = \beta_1 m_{t-1} + (1-\beta_1) g_t, \quad v_t = \beta_2 v_{t-1} + (1-\beta_2) g_t^2, \quad \hat m_t = \frac{m_t}{1-\beta_1^t}, \quad \hat v_t = \frac{v_t}{1-\beta_2^t}, \quad \theta_t = \theta_{t-1} - \frac{\eta}{\sqrt{\hat v_t} + \epsilon} \hat m_t .
-\]
-Gradients are strictly verified against central finite differences ($\|g_{\text{analytic}} - g_{\text{num}}\|_\infty < 10^{-7}$).
-
-\paragraph{Residual \& Grey-Box Dynamics Parameterization.}
-Rather than predicting the full next state $x_{k+1}$ directly, \texttt{LearnedDynamics} supports grey-box residual dynamics over a known baseline physics step $f_{\text{nominal}}(x, u)$:
-\[
-x_{k+1} = f_{\text{nominal}}(x_k, u_k) + \sigma_y \odot f_{\text{NN}}\left( \frac{x_k - \mu_x}{\sigma_x}, \; \frac{u_k - \mu_u}{\sigma_u} \right) + \mu_y .
-\]
-This formulation guarantees identity pass-through when network weights are small and isolates learning to unmodeled physical residuals.
-
-\paragraph{Sampling-Based MPC: The Cross-Entropy Method (CEM).}
-Given any forward model $f(x, u)$ (analytical or neural), \texttt{SamplingMPC} optimizes action sequences $U \in \mathbb{R}^{H \times m}$ over prediction horizon $H$ via iterative Gaussian refinement:
-\begin{enumerate}[nosep]
-  \item Sample $N_{\text{samples}}$ action sequences $U^{(i)} \sim \mathcal{N}(\mu, \Sigma)$.
-  \item Roll out each sequence in parallel through $f(x, u)$ to compute total cost $J(U^{(i)}) = \sum_{k=0}^{H-1} \ell(x_k, u_k) + x_H^\top P_{\text{CARE}} x_H$.
-  \item Identify the top elite fraction ($10\%$) and update $(\mu, \Sigma)$ with smoothing factor $\alpha$:
-  \[
-  \mu \gets \alpha \mu + (1-\alpha) \mu_{\text{elite}}, \qquad \Sigma \gets \alpha \Sigma + (1-\alpha) \Sigma_{\text{elite}} + \sigma_{\min}^2 I .
-  \]
-  \item Apply first action $u_0 = \mu_0$ and warm-start next step by shifting $\mu$.
-\end{enumerate}
-
-\paragraph{The Crucial Role of the CARE Terminal Cost.}
-Short-horizon sampling planners ($H = 30 \implies 0.6\,\text{s}$) cannot anticipate open-loop instability occurring beyond the horizon. Adding the infinite-horizon Riccati kernel $x_H^\top P_{\text{CARE}} x_H$---fitted from least-squares linearization on the same data---acts as an explicit terminal Lyapunov control surrogate, ensuring asymptotic stability without requiring long prediction horizons.
-
-% ---------------------------------------------------------------------------
 \subsection{Worked Example: Planning with Learned Dynamics vs. True Model (Experiment 10)}
-% ---------------------------------------------------------------------------
-
-We evaluate \texttt{SamplingMPC} (CEM) driving the nonlinear Cart-Pole from $\theta_0 = 0.20\,\text{rad} \approx 11.5^\circ$ using a 4,804-parameter residual MLP (\texttt{[5 $\to$ 64 $\to$ 64 $\to$ 4]}) trained on 80\,s (4,000 steps) of closed-loop PRBS data (train MSE $1.96 \times 10^{-4}$, 1-step error $4.45 \times 10^{-4}$, 30-step error $2.50 \times 10^{-2}$), compared against planning on the true equations of motion and analytic LQR:
 
 \begin{table}[H]
 \centering
@@ -798,18 +566,10 @@ We evaluate \texttt{SamplingMPC} (CEM) driving the nonlinear Cart-Pole from $\th
 \label{tab:exp10}
 \end{table}
 
-\paragraph{Key Machine Learning Insights:}
-\begin{enumerate}[nosep]
-  \item \textbf{Learned-Model vs. True-Model Parity:} CEM-MPC on the learned neural network achieves performance within $3\%$ RMSE ($0.0462$ vs. $0.0448$) and $6\%$ control energy of planning on the exact physical equations. Trajectories are visually indistinguishable (Figure~\ref{fig:exp10}).
-  \item \textbf{Zero Analytic Physics in the Learned Pipeline:} Data $\to$ MLP one-step model $\to$ data-fitted CARE terminal kernel $\to$ CEM plan $\to$ stable balance. No symbolic equations of motion are used anywhere.
-  \item \textbf{Planner Gap vs. Model Gap:} The performance difference relative to LQR ($3.56\,\text{s}$ vs. $1.26\,\text{s}$) is due to the stochastic nature of sampling MPC (averaging over elite distributions rather than executing a sharp bang-bang command), not errors in the learned neural dynamics.
-  \item \textbf{Necessity of the Terminal Kernel:} Without $x_N^\top P x_N$, the 0.6\,s prediction horizon fails to stabilize the unstable cart-pole (yielding RMSE $> 1.0$).
-\end{enumerate}
-
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{figures/exp10_learned_mpc.png}
-\caption{Experiment 10 benchmark comparison: SamplingMPC on Learned Neural Model vs. SamplingMPC on True Model vs. LQR on nonlinear Cart-Pole.}
+\caption{Experiment 10 benchmark comparison: SamplingMPC on Learned Neural Model vs. True Model.}
 \label{fig:exp10}
 \end{figure}
 
@@ -817,34 +577,7 @@ We evaluate \texttt{SamplingMPC} (CEM) driving the nonlinear Cart-Pole from $\th
 \section{Theory: Reinforcement Learning for Dynamical Systems (Module 07)}
 % ===========================================================================
 
-Reinforcement learning approaches control as optimal decision-making in an unknown Markov Decision Process (MDP) $(\mathcal{S}, \mathcal{A}, \mathcal{P}, \mathcal{R}, \gamma)$. The \texttt{aimct.rl} module bridges the dynamical systems library with the modern Gymnasium API and provides complete tabular and deep RL algorithms from scratch.
-
-\paragraph{Continuous Control Environment (\texttt{ControlEnv}).}
-Wrapping continuous-time dynamical systems $\dot x = f(t, x, u)$ into a standard Gymnasium environment:
-\begin{itemize}[nosep]
-  \item \textbf{Observation Space:} State vector $x \in \mathbb{R}^n$ or trigonometric transforms $[\cos\theta, \sin\theta, \dot\theta]^\top \in \mathbb{R}^3$.
-  \item \textbf{Action Space:} Continuous torque/force box bounds $u \in [u_{\min}, u_{\max}]$.
-  \item \textbf{Quadratic Stage Reward:} $r(x_k, u_k) = -(x_k^\top Q x_k + u_k^\top R u_k)$.
-  \item \textbf{Integration:} Fixed-step Runge--Kutta 4th-order (\texttt{rk4\_step}).
-\end{itemize}
-
-\paragraph{Deep Q-Networks (DQN) \& Proximal Policy Optimization (PPO).}
-\begin{itemize}[nosep]
-  \item \textbf{DQN (\texttt{aimct.rl.DQN}):} Multi-head value approximator with experience replay buffer $\mathcal{D}$ and polyak/periodic target networks $Q_{\text{target}}$ to stabilize Temporal Difference updates:
-  \[
-  \mathcal{L}(\theta) = \mathbb{E}_{(s, a, r, s') \sim \mathcal{D}} \left[ \left( r + \gamma \max_{a'} Q_{\text{target}}(s', a'; \theta^-) - Q(s, a; \theta) \right)^2 \right] .
-  \]
-  \item \textbf{PPO (\texttt{aimct.rl.PPO}):} Actor-Critic policy gradient with Generalized Advantage Estimation (GAE) and clipped probability ratio objective:
-  \[
-  L^{\text{CLIP}}(\theta) = \hat{\mathbb{E}}_t \left[ \min\left( r_t(\theta) \hat A_t, \; \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) \hat A_t \right) \right] , \quad r_t(\theta) = \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{\text{old}}}(a_t|s_t)} .
-  \]
-\end{itemize}
-
-% ---------------------------------------------------------------------------
 \subsection{Worked Example: Tabular Q-Learning vs. Classical Control on Pendulum (Experiment 11)}
-% ---------------------------------------------------------------------------
-
-We evaluate tabular Q-learning against classical energy shaping and LQR on the nonlinear Inverted Pendulum ($m=1.0\,\text{kg}, L=1.0\,\text{m}, b=0.1\,\text{Nms/rad}, g=9.81\,\text{m/s}^2$) under torque limit $|u| \le 4.0\,\text{N}\cdot\text{m}$ across swing-up and balancing:
 
 \begin{table}[H]
 \centering
@@ -877,8 +610,6 @@ We evaluate tabular Q-learning against classical energy shaping and LQR on the n
 \subsection{Worked Example: The RL Zoo vs. LQR on Cart-Pole Balance (Experiment 18)}
 % ---------------------------------------------------------------------------
 
-Experiment~18 pits the complete RL suite (from tabular to modern policy gradients and external baselines) against linear LQR on Cart-Pole balance from $\theta_0 = 0.1\,\text{rad}$:
-
 \begin{table}[H]
 \centering
 \small
@@ -899,17 +630,10 @@ Experiment~18 pits the complete RL suite (from tabular to modern policy gradient
 \label{tab:exp18}
 \end{table}
 
-\paragraph{Key RL Zoo Insights:}
-\begin{enumerate}[nosep]
-  \item \textbf{From-Scratch PPO Matches LQR Performance Exactly:} Our from-scratch PPO achieves identical return ($-0.3$) and holds upright for all 200 steps, proving the mathematical fidelity of our custom actor-critic implementation.
-  \item \textbf{Sample Efficiency vs. Analytic Design:} While PPO successfully converges to the optimal gain surface, it requires **240,000 environment steps** ($\approx 1.3\,\text{hours}$ of physical interaction) compared to **0 steps** and $0.001\,\text{s}$ for algebraic LQR.
-  \item \textbf{Curse of Discretization in Tabular Q:} Tabular methods blow up to $> 350,000$ table entries and fail to balance ($92/200$ held) due to grid coarseness near the origin, while parametric neural networks (DQN, PPO) generalize smoothly.
-\end{enumerate}
-
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{figures/exp18_rl_zoo.png}
-\caption{Experiment 18 benchmark comparison: RL Zoo vs. LQR on Cart-Pole balance illustrating training reward curves, pole balance angle, and control force.}
+\caption{Experiment 18 benchmark comparison: RL Zoo vs. LQR on Cart-Pole balance.}
 \label{fig:exp18}
 \end{figure}
 
@@ -917,24 +641,7 @@ Experiment~18 pits the complete RL suite (from tabular to modern policy gradient
 \section{Theory: AI + Control Hybrid Architectures (Module 08)}
 % ===========================================================================
 
-The fundamental dilemma between learning-based methods and classical control is clear:
-\begin{itemize}[nosep]
-  \item \textbf{Learning policies (RL, learned MPC):} Capable of discovering global, non-convex maneuvers from data without manual mathematical derivations, but offer zero stability, safety, or constraint guarantees.
-  \item \textbf{Classical controllers (LQR, Lyapunov, Energy-Shaping):} Deliver rigorous stability guarantees, verified invariant domains, and provable safety, but operate within bounded local basins and require explicit physical models.
-\end{itemize}
-The \texttt{aimct.hybrid} module implements \textbf{Safety Shielding} to synthesize both paradigms into certifiable hybrid systems.
-
-\paragraph{The Shielded Controller Architecture (\texttt{ShieldedController}).}
-Let $u_{\text{base}}(x)$ denote an uncertified primary policy (e.g. a deep RL policy or learned neural planner) and $u_{\text{fallback}}(x)$ a certified classical backup controller. The safety shield switches control authority dynamically based on a state safety predicate $\mathcal{P}_{\text{safe}}: \mathcal{X} \to \{\text{True}, \text{False}\}$:
-\[
-u(t) = \begin{cases} u_{\text{base}}(x(t)) & \text{if } \mathcal{P}_{\text{safe}}(x(t)) = \text{True} , \\ u_{\text{fallback}}(x(t)) & \text{if } \mathcal{P}_{\text{safe}}(x(t)) = \text{False} . \end{cases}
-\]
-
-% ---------------------------------------------------------------------------
 \subsection{Worked Example: Shielded Tabular Q-Learning on Pendulum (Experiment 12)}
-% ---------------------------------------------------------------------------
-
-In Experiment~12, we wrap the raw Q-agent from Experiment 11 in \texttt{ShieldedController}:
 
 \begin{table}[H]
 \centering
@@ -964,39 +671,7 @@ In Experiment~12, we wrap the raw Q-agent from Experiment 11 in \texttt{Shielded
 \section{Theory: Advanced State Estimation, Adaptive Control, and Robotics Capstones (Module 09)}
 % ===========================================================================
 
-\paragraph{Planar Quadrotor Equations of Motion (Crazyflie 2.0).}
-With state $x = [x, z, \theta, \dot x, \dot z, \dot\theta]^\top \in \mathbb{R}^6$ and motor thrusts $u = [u_1, u_2]^\top$:
-\[
-\ddot x = -\frac{u_1 + u_2}{m} \sin\theta, \qquad
-\ddot z = \frac{u_1 + u_2}{m} \cos\theta - g, \qquad
-\ddot\theta = \frac{(u_2 - u_1)\ell}{I_{yy}} .
-\]
-
-\paragraph{Differential Flatness \& Feedforward Generation.}
-Flat output $\sigma = [x, z]^\top$ yields closed-form pitch and thrust feedforward:
-\[
-\theta_r(t) = -\arctan\left( \frac{\ddot x_r(t)}{g + \ddot z_r(t)} \right) \approx -\frac{\ddot x_r(t)}{g}, \qquad
-T_r(t) = m\sqrt{\ddot x_r(t)^2 + (g + \ddot z_r(t))^2}, \qquad
-\Delta T_r(t) = \frac{I_{yy} \ddot\theta_r(t)}{\ell} .
-\]
-
-\paragraph{Model Reference Adaptive Control (MRAC).}
-When plant parameters $\theta_{\text{plant}}$ drift over time, \texttt{aimct.controllers.MRAC} adjusts control gains $\hat K_x(t), \hat K_r(t)$ dynamically so the plant tracks a stable reference model $\dot x_m = A_m x_m + B_m r$. The tracking error $e(t) = x(t) - x_m(t)$ drives adaptation via the Lyapunov update law:
-\[
-\dot{\hat K}_x(t) = -\Gamma_x B_m^\top P e(t) x(t)^\top, \qquad
-\dot{\hat K}_r(t) = -\Gamma_r B_m^\top P e(t) r(t)^\top ,
-\]
-where $P = P^\top \succ 0$ satisfies the reference Lyapunov equation $A_m^\top P + P A_m = -Q_m$.
-
-% ---------------------------------------------------------------------------
 \subsection{Worked Example: Crazyflie 2.0 Flying a Lemniscate (Experiment 14)}
-% ---------------------------------------------------------------------------
-
-We fly the full nonlinear Crazyflie quadrotor around an aggressive figure-8 path:
-\[
-x_r(t) = 0.6 \sin(\omega t), \qquad z_r(t) = 1.0 + 0.35 \sin(2\omega t), \qquad T_{\text{period}} = 4.0\,\text{s} ,
-\]
-subjected to a lateral wind gust of $30\,\text{mN}$ ($11\%$ weight) during $t \in [5, 8]\,\text{s}$.
 
 \begin{table}[H]
 \centering
@@ -1088,8 +763,6 @@ subjected to a lateral wind gust of $30\,\text{mN}$ ($11\%$ weight) during $t \i
 \subsection{Worked Example: Adaptive vs. Fixed Control on a Drifting Plant (Experiment 17)}
 % ---------------------------------------------------------------------------
 
-We evaluate Model Reference Adaptive Control (MRAC) against nominal LQR, worst-case robust LQR, and Gain-Scheduled LQR on a mass--spring--damper where the spring constant drifts continuously by $500\%$ ($k(t) = 1.0 \to 5.0\,\text{N/m}$ over $20\,\text{s}$):
-
 \begin{table}[H]
 \centering
 \small
@@ -1109,12 +782,6 @@ We evaluate Model Reference Adaptive Control (MRAC) against nominal LQR, worst-c
 \label{tab:exp17}
 \end{table}
 
-\paragraph{Key Adaptive Control Takeaways:}
-\begin{enumerate}[nosep]
-  \item \textbf{Asymptotic Tracking Under Massive Parameter Drift:} MRAC maintains $< 1\,\text{mm}$ tracking error ($0.0008\,\text{m}$) across the entire trajectory despite a $5\times$ parameter shift, while static LQR incurs severe steady-state droop ($0.42\,\text{m}$).
-  \item \textbf{The Energy Price of High-Gain Adaptation:} MRAC consumes $2.3\times$ more control energy ($413.5$ vs $180.7\,\text{N}^2\text{s}$) to continuously cancel parameter estimation error.
-\end{enumerate}
-
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{figures/exp17_adaptive.png}
@@ -1125,8 +792,6 @@ We evaluate Model Reference Adaptive Control (MRAC) against nominal LQR, worst-c
 % ---------------------------------------------------------------------------
 \subsection{Worked Example: Obstacle-Aware Nonlinear MPC on the Quadrotor (Experiment 20)}
 % ---------------------------------------------------------------------------
-
-Experiment~20 evaluates online non-convex collision avoidance on the Crazyflie 2.0 flying the figure-8 path. A circular keep-out zone (centre $(0.30, 1.16)\,\text{m}$, radius $0.16\,\text{m}$, safety buffer $0.04\,\text{m}$) straddles the upper-right lobe. We compare unconstrained Flatness-LQR against \texttt{SamplingMPC} (CEM) planning through the true physical dynamics and through a **learned grey-box residual model** ($[8 \to 48 \to 48 \to 6]$ MLP over RK4 hover linearisation, 20-step prediction error $0.001$):
 
 \begin{table}[H]
 \centering
@@ -1146,44 +811,59 @@ Experiment~20 evaluates online non-convex collision avoidance on the Crazyflie 2
 \label{tab:exp20}
 \end{table}
 
-\paragraph{Key Obstacle-Avoidance Insights:}
-\begin{enumerate}[nosep]
-  \item \textbf{The Danger of Obstacle-Blind Tracking:} Flatness-based LQR tracks the nominal trajectory with low nominal error ($86\,\text{mm}$) only because it ignores the environment, cutting directly through the keep-out zone ($26$ violation steps, $-85.8\,\text{mm}$ penetration) (Figure~\ref{fig:exp20}a).
-  \item \textbf{Online Trajectory Replanning via Sampling NMPC:} Sampling MPC continuously bends the flight path around the keep-out disk with strictly zero violations ($+11\,\text{mm}$ to $+26\,\text{mm}$ clearance).
-  \item \textbf{Zero-Cost Grey-Box Learning:} Planning through the learned residual neural network yields behavior virtually identical to planning through exact analytical physics equations ($255\,\text{mm}$ vs $234\,\text{mm}$ RMS error, zero violations).
-\end{enumerate}
-
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{figures/exp20_obstacle_nmpc.png}
-\caption{Experiment 20 benchmark comparison: Obstacle-aware nonlinear MPC on Crazyflie 2.0 quadrotor showing the keep-out disk avoidance trajectory, tracking error, clearance, and control thrusts.}
+\caption{Experiment 20 benchmark comparison: Obstacle-aware nonlinear MPC on Crazyflie 2.0 quadrotor.}
 \label{fig:exp20}
 \end{figure}
 
 % ---------------------------------------------------------------------------
-\subsection{The Grand Capstone Bake-Off (Experiment 21 Preview)}
+\subsection{Worked Example: The Grand Capstone Bake-Off (Experiment 21)}
 % ---------------------------------------------------------------------------
 
-Experiment~21 serves as the final capstone synthesis, conducting a five-way head-to-head bake-off (LQR+flatness, Linear MPC preview, Learned-Model Sampling NMPC, PPO Deep RL, and Shielded Hybrid Control) on the full Crazyflie figure-8 + sustained wind gust + obstacle course across tracking precision, actuator effort, constraint safety, robustness margins, and compute latency.
+Experiment~21 conducts the ultimate five-way capstone bake-off on the full Crazyflie 2.0 figure-8 course combined with a keep-out obstacle disk ($r=0.16\,\text{m}$ at $(0.30, 1.16)\,\text{m}$) and a $30\,\text{mN}$ lateral wind gust during $t \in [4.5, 7.5]\,\text{s}$. We evaluate every major paradigm under the standardized multi-objective scoring rubric (tracking RMSE $0.40$, energy $0.20$, slew $0.10$, safety compliance $0.15$, wind robustness $0.15$):
+
+\begin{table}[H]
+\centering
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lcccccccc@{}}
+\toprule
+\textbf{Controller Paradigm} & \textbf{RMS [mm]} & \textbf{Robust RMS [mm]} & \textbf{Energy $E_u$} & \textbf{Slew} & \textbf{Obstacle Steps} & \textbf{Thrust Sat.} & \textbf{Latency [ms]} & \textbf{Score} \\
+\midrule
+\textbf{LQR + Flatness} & 99.9 & 102.0 & 0.483 & 378.0 & \textbf{28 (DQ)} & \textbf{72.4\%} & \textbf{0.05} & \textbf{0.0} \\
+\textbf{Linear MPC (Preview)} & 243.0 & 242.0 & \textbf{0.0034} & \textbf{0.0639} & \textbf{20 (DQ)} & 0.0\% & 11.5 & \textbf{0.0} \\
+\textbf{Sampling MPC (Learned)} & 316.0 & 275.0 & 0.0334 & 14.3 & \textbf{0 (Clean)} & 0.0\% & 38.4 & \textbf{8.0 (PASS)} \\
+\textbf{Imitation Policy (BC+PPO)} & \textbf{41.4} & \textbf{35.7} & 0.0040 & 0.0580 & \textbf{46 (DQ)} & 0.0\% & 0.09 & \textbf{0.0} \\
+\textbf{Imitation + MPC Shield} & 317.0 & 283.0 & 0.0316 & 12.8 & \textbf{0 (Clean)} & 0.0\% & 38.4 & \textbf{7.9 (PASS)} \\
+\bottomrule
+\end{tabular}%
+}
+\caption{Benchmark results for Experiment 21: The Grand Capstone Bake-Off on Crazyflie 2.0 (from \texttt{experiments/21\_grand\_capstone\_bakeoff/table.md}).}
+\label{tab:exp21}
+\end{table}
+
+\paragraph{Key Capstone \& Retrospective Takeaways:}
+\begin{enumerate}[nosep]
+  \item \textbf{Only Obstacle-Aware Planners Complete the Course:} Sampling MPC (learned grey-box model) is the sole entry with zero keep-out violations and zero saturation, achieving the highest score on the board ($8.0$).
+  \item \textbf{The Best Tracker Cannot Be Trusted:} The imitation policy (behavioral cloning from LQR + PPO fine-tuning) achieves the lowest nominal tracking error ($41.4\,\text{mm}$), but cuts straight through the keep-out disk 46 times and lacks wind rejection. Pure RL from scratch cannot bootstrap on the tiny nano-drone inertia ($I_{yy}=1.4\times 10^{-5}\,\text{kg}\cdot\text{m}^2$), proving the necessity of expert demonstrations.
+  \item \textbf{Does Combining Help? Barely Here, and That is the Honest Finding:} The hybrid "Imitation + MPC shield" completes the course cleanly ($0$ violations, score $7.9$), but only ties sampling MPC alone ($8.0$) because the shield spends most of its time in the MPC fallback, diluting the policy's latency advantage ($0.09\,\text{ms}$ vs $38.4\,\text{ms}$).
+  \item \textbf{No Universal Winner Across Engineering Trade-Offs:} Classical flatness is ultra-fast ($0.05\,\text{ms}$) but obstacle-blind; MPC respects non-convex constraints but exceeds the $20\,\text{ms}$ flight-controller deadline ($38.4\,\text{ms}$); imitation is instant but replicates expert blind spots.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/exp21_grand_bakeoff.png}
+\caption{Experiment 21 Grand Capstone Bake-Off on Crazyflie 2.0 quadrotor: Course layout, position error over time, and multi-objective score breakdown.}
+\label{fig:exp21}
+\end{figure}
 
 % ===========================================================================
 \section{Theory: The Intelligent Control Challenge (ICC) Benchmark (Module 10)}
 % ===========================================================================
 
-The **Intelligent Control Challenge (ICC)** establishes a blind black-box benchmark for comparing paradigms under identical information constraints. A submission receives only the public problem specification (dimensions, limits, time horizon, target state) without seeing the internal plant equations, and is evaluated on nominal performance, parameter sensitivity sweeps ($\pm 30\%$), and stacked disturbance shocks.
-
-\paragraph{The Composite Scoring Rubric.}
-Performance is measured relative to a tuned reference baseline (baseline score $\approx 37$):
-\[
-\text{Score} = 100 \cdot \exp\left( -\left[ 0.5 \frac{\text{ITAE}}{\text{ITAE}_{\text{base}}} + 0.3 \frac{E_u}{E_{u, \text{base}}} + 0.2 \frac{\text{Slew}}{\text{Slew}_{\text{base}}} \right] \right) \cdot S_{\text{robust}} ,
-\]
-where $S_{\text{robust}} \in [0.20, 1.00]$ penalizes cost blowup under parameter perturbations.
-
-% ---------------------------------------------------------------------------
 \subsection{Worked Example: Multi-Paradigm Challenge Leaderboard (Experiment 19)}
-% ---------------------------------------------------------------------------
-
-Five paradigm representatives are evaluated across five ICC tracks:
 
 \begin{table}[H]
 \centering
@@ -1205,13 +885,6 @@ Five paradigm representatives are evaluated across five ICC tracks:
 \label{tab:exp19}
 \end{table}
 
-\paragraph{Key Leaderboard Verdicts:}
-\begin{enumerate}[nosep]
-  \item \textbf{Optimal Control Dominates Precision:} Linear MPC is the only entry that passes both precision tracks with margin, achieving the highest score on DC Motor ($41.3$, beating the reference baseline $\approx 37$) and passing Mass-Spring-Damper ($21.1$) by optimally scheduling control authority against actuator voltage limits.
-  \item \textbf{Classical Energy-Shaping Hybrid Owns Agility Across Every Track:} The Energy+LQR hybrid is the \emph{only} submission to clear all three agility and stress tracks: Pendulum swing-up ($23.8$), Cart-Pole swing-up ($9.6$, using the Experiment-07 Spong energy pump with hysteresis catch), and the Track 3 robustness gauntlet with stacked parameter variations, actuator lag, and impulse shocks, where it scores the highest of any entry on the board ($29.9$).
-  \item \textbf{No Single Paradigm Wins Everywhere:} Precision tracking rewards constrained model-based optimization (MPC), whereas large-basin non-convex maneuvers reward global nonlinear energy methods. Every single track now has at least one passing paradigm, highlighting the fundamental complementarity of control methodologies.
-\end{enumerate}
-
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{figures/exp19_icc_leaderboard.png}
@@ -1224,7 +897,7 @@ Five paradigm representatives are evaluated across five ICC tracks:
 % ===========================================================================
 
 \paragraph{Milestone \milestone{} --- Completed.}
-All curriculum modules, capstone robotics showcases, deep RL agents, adaptive controllers, and benchmark challenge suites are fully implemented from scratch, tested, and validated across 20 experiments:
+All curriculum modules, capstone robotics showcases, deep RL agents, adaptive controllers, and benchmark challenge suites are fully implemented from scratch, tested, and validated across 21 experiments:
 \begin{enumerate}[nosep]
   \item \textbf{Module 01: Mathematical Foundations} --- Linear algebra, matrix exponential, Runge--Kutta integration, numerical optimization.
   \item \textbf{Module 02: Dynamic System Modeling} --- First-principles modeling, state-space representations, Jacobian linearisation, discretization.
@@ -1235,9 +908,9 @@ All curriculum modules, capstone robotics showcases, deep RL agents, adaptive co
   \item \textbf{Module 07: Reinforcement Learning} --- Gymnasium \texttt{ControlEnv} adapter, state/action discretization, Tabular Q-Learning, DQN, REINFORCE, and PPO (Experiments 11, 18).
   \item \textbf{Module 08: AI + Control (Hybrid Architectures)} --- Supervisory safety shielding, action filtering, barrier predicates, auditable intervention logging (Experiment 12).
   \item \textbf{Module 09: Advanced State Estimation, Adaptive Control \& Robotics} --- Full 6-state Planar Quadrotor (Crazyflie 2.0), differential flatness feedforward trajectory generation, Bryson-rule scaling, EKF/UKF output feedback, Model Reference Adaptive Control (MRAC), and obstacle-aware Sampling NMPC (Experiments 14, 15, 16, 17, 20).
-  \item \textbf{Module 10: The Intelligent Control Challenge \& Grand Synthesis} --- Standardized multi-track benchmarking engine, robustness sweeps, cross-paradigm leaderboard, and capstone grand bake-off (Experiments 19, 21).
+  \item \textbf{Module 10: The Intelligent Control Challenge \& Grand Synthesis} --- Standardized multi-track benchmarking engine, robustness sweeps, cross-paradigm leaderboard, and 5-way capstone grand bake-off (Experiments 19, 21).
 \end{enumerate}
-CI passes on Python 3.10--3.13 with \textbf{305 passing unit tests}.
+CI passes on Python 3.10--3.13 with \textbf{314 passing unit tests}.
 
 \paragraph{Reproduction Commands.}
 \begin{lstlisting}[language=bash]
@@ -1262,6 +935,7 @@ python experiments/17_adaptive_vs_fixed_changing_plant/run.py
 python experiments/18_rl_zoo_vs_lqr/run.py
 python experiments/19_icc_leaderboard/run.py
 python experiments/20_quadrotor_obstacle_nmpc/run.py
+python experiments/21_grand_capstone_bakeoff/run.py
 \end{lstlisting}
 
 \end{document}

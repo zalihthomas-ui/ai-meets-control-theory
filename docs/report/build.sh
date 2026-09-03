@@ -39,6 +39,7 @@ copy_fig "17_adaptive_vs_fixed_changing_plant" "figure.png" "exp17_adaptive.png"
 copy_fig "18_rl_zoo_vs_lqr" "figure.png" "exp18_rl_zoo.png"
 copy_fig "19_icc_leaderboard" "figure.png" "exp19_icc_leaderboard.png"
 copy_fig "20_quadrotor_obstacle_nmpc" "figure.png" "exp20_obstacle_nmpc.png"
+copy_fig "21_grand_capstone_bakeoff" "figure.png" "exp21_grand_bakeoff.png"
 
 # --- 2. compile (latexmk drives pdflatex, 2-3 passes for the ToC)
 echo "compiling main.tex..."
