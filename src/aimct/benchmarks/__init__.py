@@ -3,6 +3,7 @@ Benchmark suites, metrics, and comparison harnesses.
 """
 
 from aimct.benchmarks.harness import ComparisonResult, compare
+from aimct.benchmarks.sweep import SweepResult, sweep
 from aimct.benchmarks.metrics import (
     compute_all_metrics,
     control_energy,
@@ -37,4 +38,6 @@ __all__ = [
     "compute_all_metrics",
     "compare",
     "ComparisonResult",
+    "sweep",
+    "SweepResult",
 ]
