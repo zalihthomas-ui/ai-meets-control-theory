@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aimct"
+version = "0.0.1"
+description = "AI Meets Control Theory — a laboratory for classical control, ML, and RL on dynamical systems"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = ["numpy>=1.26", "scipy>=1.11", "matplotlib>=3.8", "control>=0.10"]
+
+[project.optional-dependencies]
+ml = ["torch>=2.2", "gymnasium>=0.29"]
+dev = ["pytest>=8.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,14 @@
+# Core numerical / scientific stack
+numpy>=1.26
+scipy>=1.11
+matplotlib>=3.8
+
+# Control-specific
+control>=0.10          # python-control: transfer functions, LQR, place, etc.
+
+# ML / RL (optional-but-expected; heavy, install as needed)
+# torch>=2.2
+# gymnasium>=0.29
+
+# Dev tooling
+pytest>=8.0
