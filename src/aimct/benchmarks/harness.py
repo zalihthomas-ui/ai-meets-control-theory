@@ -62,14 +62,30 @@ def _as_reference_array(reference: ReferenceLike, t: np.ndarray) -> np.ndarray:
     return arr
 
 
+def _pad_nan(a: np.ndarray, n: int) -> np.ndarray:
+    """Right-pad ``a`` along axis 0 with NaN up to length ``n`` (no-op if already
+    that long)."""
+    if len(a) >= n:
+        return a[:n]
+    pad = np.full((n - len(a),) + a.shape[1:], np.nan)
+    return np.concatenate([a, pad], axis=0)
+
+
+def _finite_prefix_len(x: np.ndarray) -> int:
+    """Number of leading rows of ``x`` that are entirely finite (``simulate``
+    keeps one non-finite blow-up sample on a divergent run)."""
+    finite_row = np.all(np.isfinite(x), axis=tuple(range(1, x.ndim)))
+    bad = np.flatnonzero(~finite_row)
+    return int(bad[0]) if bad.size else len(x)
+
+
 def _classify_status(traj: Trajectory, m: Mapping[str, float], t_final: float,
-                     dt: float, ref_scale: float) -> str:
+                     dt: float, ref_scale: float, n_ok: int) -> str:
     """`Diverged` (blew up) / `Stable` (settled in-horizon) / `Marginal` (bounded,
     never settled)."""
-    x = traj.x
-    if not np.all(np.isfinite(x)):
+    if traj.diverged or n_ok < len(traj.x):
         return "Diverged"
-    if np.max(np.abs(x)) > 1e3 * ref_scale:
+    if np.max(np.abs(traj.x)) > 1e3 * ref_scale:
         return "Diverged"
     if np.isfinite(m["settling_time"]) and m["settling_time"] < t_final - dt:
         return "Stable"
@@ -150,17 +166,21 @@ class ComparisonResult:
 
     def _plot_trajectories(self) -> dict[str, dict[str, np.ndarray]]:
         di = self.deriv_index
+        n_full = len(self.t)
         data: dict[str, dict[str, np.ndarray]] = {}
         for name in self.names:
             traj = self.trajectories[name]
-            y = traj.y[:, self.output_index]
+            n_ok = _finite_prefix_len(traj.x)
+            y = traj.y[:n_ok, self.output_index]
             if di is not None and 0 <= di < traj.x.shape[1]:
-                ydot = traj.x[:, di]
+                ydot = traj.x[:n_ok, di]
             else:
-                ydot = np.gradient(y, traj.t)
+                ydot = np.gradient(y, traj.t[:n_ok]) if n_ok > 1 else np.zeros(n_ok)
+            u = traj.u[:n_ok]
+            # pad a truncated (divergent) run with NaN so its lines stop cleanly
             data[name] = {
-                "state": np.column_stack([y, ydot]),
-                "input": traj.u,
+                "state": np.column_stack([_pad_nan(y, n_full), _pad_nan(ydot, n_full)]),
+                "input": _pad_nan(u, n_full),
             }
         return data
 
@@ -327,10 +347,14 @@ def compare(
             input_disturbance=disturbance,
         )
 
-    # canonical time grid is the one simulate actually produced
-    t_grid = trajectories[names[0]].t
-    if callable(reference):  # re-evaluate on the true grid for fidelity
+    # Canonical grid: the longest trajectory produced (full length whenever at
+    # least one controller completes the horizon; a divergent run is truncated
+    # by simulate). target/ref follow that grid.
+    t_grid = max((tr.t for tr in trajectories.values()), key=len)
+    if callable(reference):
         ref = _as_reference_array(reference, t_grid)
+    elif len(ref) != len(t_grid):           # every run diverged early
+        ref = ref[: len(t_grid)]
     target = float(ref[-1])
     ref_scale = float(np.max(np.abs(x0)) + np.max(np.abs(ref)) + 1.0)
 
@@ -338,13 +362,16 @@ def compare(
     status: dict[str, str] = {}
     for name in names:
         traj = trajectories[name]
-        y = traj.y[:, output_index]
-        # metrics.compute_all_metrics expects a 1-D u for single-input systems
-        # (saturation_duty_cycle does not reduce a trailing channel axis).
-        u_scored = traj.u[:, 0] if traj.u.shape[1] == 1 else traj.u
-        m = compute_all_metrics(traj.t, y, u_scored, target=target, u_limit=u_limit)
+        # Score only the finite prefix - the behaviour up to blow-up. Divergence
+        # is reported through `status`, not by poisoning the metrics with inf.
+        n_ok = max(2, _finite_prefix_len(traj.x)) if len(traj.x) >= 2 else len(traj.x)
+        y = traj.y[:n_ok, output_index]
+        # compute_all_metrics wants a 1-D u for single-input systems.
+        u_scored = traj.u[:n_ok, 0] if traj.u.shape[1] == 1 else traj.u[:n_ok]
+        m = compute_all_metrics(traj.t[:n_ok], y, u_scored, target=target, u_limit=u_limit)
         metrics[name] = m
-        status[name] = _classify_status(traj, m, t_final, dt, ref_scale)
+        status[name] = _classify_status(traj, m, t_final, dt, ref_scale,
+                                        _finite_prefix_len(traj.x))
 
     return ComparisonResult(
         system_name=type(system).__name__,

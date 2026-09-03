@@ -109,6 +109,34 @@ def test_divergent_run_is_labelled_diverged():
     assert res.status["open loop"] == "Diverged"
 
 
+def test_mixed_stable_and_divergent_run_still_aligns_and_plots():
+    """A truncated (divergent) trajectory must not break the shared grid, the
+    metrics, or the figure when another controller completes the horizon."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    A = np.array([[0.0, 1.0], [4.0, 0.0]])          # unstable, poles +-2
+    B = np.array([[0.0], [1.0]])
+    sys = LinearSystem(A, B)                          # full-state output
+    good = StateFeedback.from_poles(A, B, [-3.0, -4.0])
+    res = compare(
+        sys, {"stable": good, "runaway": PID(kp=0.0)},
+        x0=np.array([0.3, 0.0]), dt=5e-3, t_final=12.0, reference=0.0,
+        measurement_fns={"runaway": lambda t, x, u: x[[0]]},
+    )
+    assert res.status == {"stable": "Stable", "runaway": "Diverged"}
+    # full-length grid, driven by the surviving controller
+    assert len(res.t) == int(round(12.0 / 5e-3)) + 1
+    # divergent controller's metrics are finite numbers, not inf/nan
+    m = res.metrics["runaway"]
+    for key in ("rmse", "iae", "control_energy", "peak_control"):
+        assert np.isfinite(m[key])
+    fig, axes = res.figure()
+    assert np.asarray(axes).size == 4
+    plt.close(fig)
+
+
 # ------------------------------------------------------------- actuator handling
 
 def test_u_bounds_enforced_and_reported(msd, msd_controllers):

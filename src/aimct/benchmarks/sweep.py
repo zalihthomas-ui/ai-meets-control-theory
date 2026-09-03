@@ -70,6 +70,10 @@ class SweepResult:
     def stable_mask(self, controller: str) -> np.ndarray:
         return np.array([s == "Stable" for s in self.status(controller)], dtype=bool)
 
+    def recovered_mask(self, controller: str) -> np.ndarray:
+        """True where the run did not diverge (``Stable`` or ``Marginal``)."""
+        return np.array([s != "Diverged" for s in self.status(controller)], dtype=bool)
+
     def max_stable(self, controller: str):
         """Largest swept value at which ``controller`` is ``Stable`` (assumes the
         grid is ordered and stability is lost monotonically - typical for a
@@ -83,6 +87,24 @@ class SweepResult:
             if not ok:
                 return v
         return None
+
+    def first_diverged(self, controller: str):
+        """First swept value at which ``controller`` diverges (pole falls / blows
+        up). ``None`` if it never does across the grid."""
+        for v, s in zip(self.param_values, self.status(controller)):
+            if s == "Diverged":
+                return v
+        return None
+
+    def max_recoverable(self, controller: str):
+        """Largest swept value strictly below the first divergence - the measured
+        basin-of-attraction edge. Prints nothing about non-monotonicity; check
+        :meth:`recovered_mask` if the grid may re-stabilise past a gap."""
+        first_bad = self.first_diverged(controller)
+        if first_bad is None:
+            return self.param_values[-1]
+        below = [v for v in self.param_values if v < first_bad]
+        return max(below) if below else None
 
     # ---------------------------------------------------------------- tables
 
@@ -207,7 +229,7 @@ class SweepResult:
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
 
-        fig, _, _ = self.plot(left=metric, **(plot_kwargs or {}))
+        fig, _, _ = self.plot(**{"left": metric, **(plot_kwargs or {})})
         for fmt in figure_formats:
             path = outdir / f"{stem}.{fmt}"
             fig.savefig(path, dpi=150)

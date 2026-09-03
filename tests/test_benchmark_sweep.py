@@ -117,6 +117,21 @@ def test_basin_edge_helpers_on_cartpole():
     assert res.stable_mask("LQR").tolist() == [True, True, False]
 
 
+@diverges
+def test_recovered_and_max_recoverable_treat_marginal_as_survived():
+    # 0.8 rad settles slowly here -> "Marginal", not "Diverged"; still recovered.
+    res = sweep([0.2, 0.8, 1.3, 1.4], _cartpole_theta0_case, param_name="theta0")
+    assert res.first_diverged("LQR") == 1.3
+    assert res.max_recoverable("LQR") == 0.8       # largest value below first divergence
+    assert res.recovered_mask("LQR").tolist() == [True, True, False, False]
+
+
+def test_max_recoverable_is_last_value_when_nothing_diverges():
+    res = sweep([0.2, 0.4, 0.8], _msd_damping_case, param_name="c")
+    assert res.first_diverged("LQR") is None
+    assert res.max_recoverable("LQR") == 0.8
+
+
 def test_result_at_finds_by_value():
     res = sweep([0.2, 0.4, 0.8], _msd_damping_case, param_name="c")
     assert res.result_at(0.4) is res.results[1]
