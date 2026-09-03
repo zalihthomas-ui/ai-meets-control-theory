@@ -432,14 +432,42 @@ class Challenge:
                     return self._u_ff - K @ (np.asarray(obs, float) - self._x_ref)
             return _T1
 
-        A, B = sys.linearize()                              # about upright
-        K = LQR(A, B, np.diag([10.0, 1.0] if sys.n_states == 2
-                              else [1.0, 1.0, 10.0, 1.0]),
-                np.array([[0.1]])).K
-        m = getattr(sys, "m", getattr(sys, "mp", 1.0))     # pendulum m / cart-pole pole mass
-        L = getattr(sys, "l", getattr(sys, "L", 1.0))
+        if sys.n_states == 4:
+            # Cart-pole swing-up baseline: Spong energy-shaping + LQR balance
+            from ..controllers.swingup import EnergyShapingSwingUp, HybridSwingUpLQR
+
+            A, B = sys.linearize()
+            lqr = LQR(A, B, Q=np.diag([10.0, 1.0, 100.0, 10.0]), R=np.array([[0.1]]))
+            swingup = EnergyShapingSwingUp(
+                sys,
+                k_energy=15.0,
+                k_cart=2.0,
+                k_cart_rate=1.5,
+                u_max=float(ts.action_limit[0]),
+            )
+            hybrid = HybridSwingUpLQR(
+                swingup,
+                lqr,
+                capture_angle=0.35,
+                capture_rate=1.5,
+                release_angle=0.60,
+            )
+
+            class _T2CartPole(ChallengeController):
+                def reset(self, target_state):
+                    hybrid.reset()
+
+                def compute_action(self, obs, t):
+                    return np.array([hybrid.update(obs, self.dt)])
+
+            return _T2CartPole
+
+        A, B = sys.linearize()                              # single-pendulum upright
+        K = LQR(A, B, np.diag([10.0, 1.0]), np.array([[0.1]])).K
+        m = getattr(sys, "m", 1.0)
+        L = getattr(sys, "l", 1.0)
         g = sys.g
-        J = m * L * L * (4.0 / 3.0 if sys.n_states == 4 else 1.0)
+        J = m * L * L
         oi = ts.output_index
         upright = float(ts.target[oi])
         k_e = 2.0
@@ -447,6 +475,7 @@ class Challenge:
         class _T2(ChallengeController):
             def reset(self, target_state):
                 pass
+
             def compute_action(self, obs, t):
                 x = np.asarray(obs, float)
                 th, om = x[oi], x[oi + 1]
@@ -457,6 +486,7 @@ class Challenge:
                     return -(K @ (xw - np.asarray(ts.target, float)))
                 E = 0.5 * J * om**2 + m * g * L * (np.cos(err) - 1.0)
                 return np.array([-k_e * (np.sign(om) or 1.0) * E])
+
         return _T2
 
     # -- full evaluation --------------------------------------------
