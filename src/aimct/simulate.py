@@ -56,6 +56,7 @@ def simulate(
     t_final: float,
     u_bounds: tuple[float, float] | None = None,
     measurement_fn: Callable[[float, np.ndarray, np.ndarray], np.ndarray] | None = None,
+    input_disturbance: Callable[[float], np.ndarray] | None = None,
 ) -> Trajectory:
     """Roll out ``system`` from ``x0`` for ``t_final`` seconds at step ``dt``.
 
@@ -68,6 +69,11 @@ def simulate(
     sees. Default: ``system.output`` (full state for the reference systems). Pass
     e.g. ``lambda t, x, u: x[[0]]`` to give an output-feedback controller a single
     channel while the recorded ``Trajectory.y`` still uses ``system.output``.
+
+    ``input_disturbance(t) -> d`` is an additive plant-input disturbance applied
+    to the dynamics as ``u_applied = clip(u) + d(t)``. It is **not** included in
+    the recorded ``Trajectory.u`` (that stays the controller command), so control
+    effort and saturation metrics reflect the actuator, not the disturbance.
     """
     if dt <= 0 or t_final <= 0:
         raise ValueError("dt and t_final must be positive")
@@ -100,11 +106,15 @@ def simulate(
             )
         if u_bounds is not None:
             u = np.clip(u, u_bounds[0], u_bounds[1])
-        x = rk4_step(system.dynamics, t, x, u, dt)
-        ts[k + 1] = t + dt
-        xs[k + 1] = x
         us[k] = u
         u_prev = u
+        u_applied = u
+        if input_disturbance is not None:
+            d = np.atleast_1d(np.asarray(input_disturbance(t), dtype=float))
+            u_applied = u + d
+        x = rk4_step(system.dynamics, t, x, u_applied, dt)
+        ts[k + 1] = t + dt
+        xs[k + 1] = x
 
     us[-1] = us[-2] if n_steps > 0 else us[-1]
     ys[-1] = np.atleast_1d(np.asarray(system.output(ts[-1], xs[-1], us[-1]), dtype=float))
