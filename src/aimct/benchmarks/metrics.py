@@ -231,7 +231,11 @@ def saturation_duty_cycle(
     """
     if u_limit <= 0.0:
         return 0.0
-    u_abs = np.abs(u)
+    u_arr = np.asarray(u)
+    if u_arr.ndim > 1:
+        u_abs = np.max(np.abs(u_arr), axis=1)
+    else:
+        u_abs = np.abs(u_arr)
     saturated = (u_abs >= threshold * u_limit).astype(float)
     total_time = float(t[-1] - t[0]) if len(t) > 1 else 1.0
     sat_time = _trapz(saturated, t)
