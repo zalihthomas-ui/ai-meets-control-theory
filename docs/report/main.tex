@@ -50,7 +50,7 @@
 \lhead{\small\textsc{Living Technical Report}}
 \rfoot{\thepage}
 
-\newcommand{\milestone}{M1 --- Phase~0 Foundation}
+\newcommand{\milestone}{M2 --- Classical + Modern Control}
 \newcommand{\reportdate}{\today}
 
 \title{\textbf{\LARGE AI Meets Control Theory}\\[0.35em]
@@ -309,28 +309,75 @@ We solve CARE from scratch via the stable invariant subspace of the Hamiltonian 
 \]
 Continuous full-state LQR provides guaranteed robustness margins: gain margin $G_m \in [1/2, \infty)$ ($-6\,\text{dB}$ to $+\infty\,\text{dB}$) and phase margin $\Phi_m \ge 60^\circ$ in all channels.
 
+% ---------------------------------------------------------------------------
+\subsection{Worked Example: Cart-Pole Regulation (Experiment 04)}
+% ---------------------------------------------------------------------------
+
+We evaluate full-state feedback and LQR on the canonical underactuated nonlinear Cart-Pole system ($M=1.0\,\text{kg}, m=0.1\,\text{kg}, \ell=0.5\,\text{m}, g=9.81\,\text{m/s}^2$). Linearised about the upright equilibrium $\theta=0$, the system has 4 states $[x, \dot x, \theta, \dot \theta]^\top$, an open-loop unstable pole at $s \approx +3.97\,\text{rad/s}$, and a double integrator on cart position.
+
+Controllers are designed on the linearised model and executed on the **true nonlinear plant** starting from a tilted initial state $\theta_0 = 0.10\,\text{rad} \approx 5.7^\circ$ with actuator saturation $|u(t)| \le 20.0\,\text{N}$:
+\begin{itemize}[nosep]
+  \item \textbf{Pole Placement:} Ackermann placement assigning closed-loop poles to LQR-balanced eigenvalues $\{-15.62, -3.19, -1.31 \pm 1.08j\}$.
+  \item \textbf{LQR (Balanced):} $Q = \text{diag}(10, 1, 100, 10), \; R = 0.1 \implies K = [-10.000, -12.871, -87.138, -23.223]$.
+  \item \textbf{LQR (Soft):} $Q = \text{diag}(1, 0.1, 10, 1), \; R = 1.0 \implies K = [-1.000, -2.047, -30.846, -7.868]$.
+  \item \textbf{PID (Angle Only):} Single-loop PID on pole angle $\theta$ ($K_p = -180, K_d = -22$). Cart position $x$ is uncontrolled.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Controller} & \textbf{Settle $\theta$ $t_s$ [s]} & \textbf{RMSE $\theta$ [rad]} & \textbf{Energy $E_u$ [N$^2$s]} & \textbf{Peak $|u|_{\max}$ [N]} & \textbf{Peak $|x|_{\max}$ [m]} & \textbf{Status} \\
+\midrule
+\textbf{Pole Placement} & 1.05 & 0.0171 & 2.34 & 8.71 & \textbf{0.162} & Stable \\
+\textbf{LQR (Balanced)} & 1.05 & 0.0171 & 2.34 & 8.71 & \textbf{0.162} & Stable \\
+\textbf{LQR (Soft)} & 1.70 & 0.0223 & \textbf{0.959} & \textbf{3.08} & 0.321 & Stable \\
+\textbf{PID (Angle Only)} & \textbf{0.20} & \textbf{0.0110} & 8.76 & 18.00 & \textbf{0.823} & Stable (Cart Drifts) \\
+\bottomrule
+\end{tabular}
+\caption{Benchmark results for Experiment 04 on nonlinear Cart-Pole (from \texttt{experiments/04\_lqr\_vs\_pole\_placement\_cartpole/table.md}).}
+\label{tab:exp04}
+\end{table}
+
+\paragraph{Key Engineering Takeaways:}
+\begin{enumerate}[nosep]
+  \item \textbf{Equivalence of Pole Placement and LQR:} Placing poles at the eigenvalues chosen by LQR reproduces the optimal gain matrix $K$ to four significant figures (matching the analytical golden gain $K_1$). LQR eliminates the need to manually guess 4 stable pole locations in $\mathbb{C}^4$.
+  \item \textbf{The $Q/R$ Effort Dial:} Softening the cost weights ($R = 1.0$ vs $0.1$) trades a $1.05\,\text{s} \to 1.70\,\text{s}$ settle time for a \textbf{$2.4\times$ reduction in control energy} ($2.34 \to 0.96\,\text{N}^2\text{s}$) and cuts peak force from $8.71\,\text{N} \to 3.08\,\text{N}$.
+  \item \textbf{Failure of Single-Loop PID on Coupled MIMO Systems:} Single-loop PID balances the pole rapidly ($t_s = 0.20\,\text{s}$), but because it lacks state feedback on the cart, the cart drifts to **$x = 0.823\,\text{m}$** ($5\times$ LQR excursion) and demands $18.0\,\text{N}$ peak force (near the $20\,\text{N}$ limit). Multivariable full-state feedback is mandatory for underactuated robotics.
+  \item \textbf{Nonlinear Validity Domain:} For initial angle $\theta_0 = 0.1\,\text{rad} \approx 5.7^\circ$, state trajectories stay strictly within the linear basin of attraction ($\approx 0.38\,\text{rad}$), enabling linear LQR to stabilize the full nonlinear plant.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/exp04_cartpole.png}
+\caption{Experiment 04 benchmark comparison on nonlinear Cart-Pole. (a) Pole angle regulation $\theta(t)$, (b) Control force $u(t)$ with actuator bounds $\pm 20\,\text{N}$, (c) Cart position $x(t)$ revealing uncontrolled drift under single-loop PID, and (d) Pole phase portrait $(\theta, \dot \theta)$.}
+\label{fig:exp04}
+\end{figure}
+
 % ===========================================================================
 \section{Project Status and Roadmap}
 % ===========================================================================
 
 \paragraph{Milestone \milestone{} --- Completed.}
-Library core, four reference dynamical systems, RK4 simulator, PID with anti-windup, StateFeedback (Ackermann), LQR (from-scratch CARE solver), 13 benchmark metrics, comparison harness, Experiment 03 reproduction suite, CI on Python 3.10--3.12 with 74 passing unit tests, and complete theory notes for Modules 01--05.
+Library core, four reference dynamical systems, RK4 simulator, PID with anti-windup, StateFeedback (Ackermann), LQR (from-scratch CARE solver), 13 benchmark metrics, multi-controller comparison harness, Experiment 03 (PID unstable stabilization), Experiment 04 (LQR vs. Pole Placement vs. PID on Cart-Pole), CI on Python 3.10--3.12 with 74 passing tests, and complete theory notes for Modules 01--05.
 
 \paragraph{Phase 1 Priorities (Next).}
 \begin{itemize}[nosep]
-  \item \textbf{Experiment 04:} Multi-controller benchmark on Cart-Pole (LQR vs. Pole Placement vs. Cascaded PID).
-  \item \textbf{State Estimation (\texttt{aimct.estimation}):} Luenberger observers and discrete Kalman filtering.
-  \item \textbf{System Identification:} Data-driven linear model fitting for L1 and L2 benchmark systems.
-  \item \textbf{Phase 2:} Constrained Model Predictive Control (linear MPC with QP solver from scratch).
+  \item \textbf{State Estimation (\texttt{aimct.estimation}):} Luenberger observers and continuous/discrete Kalman filtering.
+  \item \textbf{System Identification:} Data-driven linear state-space fitting for L1 and L2 benchmark systems.
+  \item \textbf{Nonlinear Control \& Swing-Up:} Energy-based swing-up controller for the Cart-Pole to push $\theta_0$ past the linear basin ($\theta_0 = \pi \to 0$).
+  \item \textbf{Phase 2 (Optimal Control):} Constrained Model Predictive Control (linear MPC with from-scratch QP solver).
 \end{itemize}
 
-\paragraph{Reproduction Command.}
+\paragraph{Reproduction Commands.}
 \begin{lstlisting}[language=bash]
 git clone https://github.com/zalihthomas-ui/ai-meets-control-theory.git
 cd ai-meets-control-theory
 pip install -e ".[dev,xcheck]"
 pytest -q
 python experiments/03_pid_stabilizes_unstable/run.py
+python experiments/04_lqr_vs_pole_placement_cartpole/run.py
 \end{lstlisting}
 
 \end{document}

@@ -17,6 +17,7 @@ function Copy-Fig($expDir, $target) {
 
 Write-Host "refreshing figures..."
 Copy-Fig "03_pid_stabilizes_unstable" "exp03_pid_unstable.png"
+Copy-Fig "04_lqr_vs_pole_placement_cartpole" "exp04_cartpole.png"
 
 Write-Host "compiling main.tex..."
 Push-Location $here
