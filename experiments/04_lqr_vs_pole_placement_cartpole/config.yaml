@@ -1,0 +1,44 @@
+# Experiment 04 - LQR vs pole placement vs PID on the nonlinear cart-pole
+# Reference data: docs/references/cartpole-lqr-reference.md
+
+question: >
+  On the nonlinear cart-pole, how do (a) hand-placed pole feedback,
+  (b) LQR with two weight choices, and (c) a single-loop PID on the pole
+  angle compare for balancing from a tilted start - in settle time,
+  cart excursion, control effort, and whether the cart is kept on the rail?
+
+plant:                 # aimct.systems.CartPole, canonical params
+  m_cart: 1.0
+  m_pole: 0.1
+  length: 0.5          # distance to pole CoM (uniform rod L = 1.0 m)
+  g: 9.81
+  x_max: 2.4           # rail limit [m] (not enforced in sim; reported)
+  f_max: 20.0          # actuator saturation [N]
+
+task:
+  x0: [0.0, 0.0, 0.10, 0.0]   # [x, xdot, theta, thetadot]; theta0 = 0.1 rad ~ 5.7 deg
+  target: 0.0                  # regulate the pole angle to upright
+  scored_channel: 2            # theta
+  deriv_channel: 3             # thetadot
+
+controllers:
+  pole_placement:
+    # place at LQR tuning-set-1 closed-loop eigenvalues (reference doc sec 3.1)
+    poles: [-15.6206, -3.1855, "-1.3114+1.0795j", "-1.3114-1.0795j"]
+  lqr_balanced:
+    Q_diag: [10.0, 1.0, 100.0, 10.0]
+    R: 0.1
+  lqr_soft:
+    Q_diag: [1.0, 0.1, 10.0, 1.0]
+    R: 1.0
+  pid_angle_only:
+    # sign is negated: cart force enters theta_ddot with B[3] < 0
+    kp: -180.0
+    kd: -22.0
+    tau_d: 0.02
+
+sim:
+  dt: 0.002
+  t_final: 6.0
+  integrator: rk4
+  seed: 0
