@@ -45,8 +45,11 @@ def test_hover_linearization_is_controllable_but_open_loop_unstable():
 def test_lqr_hover_hold_from_a_perturbation():
     q = PlanarQuadrotor()
     A, B = q.linearize()
-    Q = np.diag([10.0, 10.0, 1.0, 1.0, 1.0, 0.1])
-    R = np.diag([1.0, 1.0])
+    # Bryson-scaled cost: B is very badly scaled (pitch-torque gain ~3300 vs
+    # thrust ~36), so an unscaled R yields a nonsensical LQR that saturates and
+    # limit-cycles. Q_ii = 1/max(x_i)^2, R_jj = 1/max(du_j)^2.
+    Q = np.diag(1.0 / np.array([0.1, 0.1, 0.2, 0.5, 0.5, 3.0]) ** 2)
+    R = np.diag(1.0 / np.array([0.15, 0.15]) ** 2)
     K = LQR(A, B, Q, R).K
 
     class Hold:

@@ -29,7 +29,8 @@ from .base import ArrayLike, DynamicalSystem
 CF2_MASS = 0.028          # kg
 CF2_IYY = 1.4e-5          # kg m^2  (about the body y axis)
 CF2_ARM = 0.046           # m       (motor to centre)
-CF2_THRUST_MAX = 0.1573   # N per rotor group (4 * ~0.393 N max / 2 groups ~ 2:1 T/W)
+CF2_THRUST_MAX = 0.30     # N per rotor group; total ~0.60 N vs ~0.27 N weight
+                          # -> thrust-to-weight ~2.2 : 1 (matches a real CF2.0)
 
 
 class PlanarQuadrotor(DynamicalSystem):
