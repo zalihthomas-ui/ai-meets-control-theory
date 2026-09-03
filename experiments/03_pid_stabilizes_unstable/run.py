@@ -8,20 +8,20 @@ under a unit step reference and a step input disturbance at t = 5 s, with the
 actuator saturated at +/- u_max.
 
 Run:  python experiments/03_pid_stabilizes_unstable/run.py
-Outputs (written next to this file): table.md, table.csv, figure.png
+Outputs (written next to this file): table.md, table.csv, metrics_full.csv, figure.png
+
+Everything below the config block is delegated to
+``aimct.benchmarks.compare`` - the standard comparison harness.
 """
 
 from __future__ import annotations
 
-import csv
 from pathlib import Path
 
 import numpy as np
 
-from aimct.benchmarks.metrics import compute_all_metrics
+from aimct.benchmarks import compare
 from aimct.controllers import PID
-from aimct.plot_style import plot_benchmark_comparison
-from aimct.simulate import simulate
 from aimct.systems import LinearSystem
 
 HERE = Path(__file__).parent
@@ -63,68 +63,37 @@ def controllers() -> dict[str, PID]:
 
 
 def main() -> None:
-    plant = make_plant()
-    x0 = np.array([0.0, 0.0])
-    rows: list[dict] = []
-    trajectories: dict[str, dict[str, np.ndarray]] = {}
-
-    for name, ctrl in controllers().items():
-        traj = simulate(
-            plant, ctrl, x0=x0, dt=DT, t_final=T_FINAL,
-            u_bounds=(-U_MAX, U_MAX), input_disturbance=disturbance,
-        )
-        y, u = traj.x[:, 0], traj.u[:, 0]
-        m = compute_all_metrics(traj.t, y, u, target=SETPOINT, u_limit=U_MAX)
-        m["controller"] = name
-        rows.append(m)
-        trajectories[name] = {"state": traj.x, "input": u}
-
-    _write_tables(rows)
-    _write_figure(traj.t, trajectories)
-    print(f"wrote {HERE/'table.md'}, {HERE/'table.csv'}, {HERE/'figure.png'}")
-    print(open(HERE / "table.md").read())
-
-
-def _write_tables(rows: list[dict]) -> None:
-    cols = [
-        "controller", "rise_time", "settling_time", "peak_overshoot_pct",
-        "steady_state_error", "iae", "itae", "control_energy", "peak_control",
-        "saturation_pct",
-    ]
-    with open(HERE / "table.csv", "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=cols)
-        w.writeheader()
-        for r in rows:
-            w.writerow({c: r.get(c, "") for c in cols})
-
-    def fmt(v):
-        if isinstance(v, float):
-            return "inf" if not np.isfinite(v) else f"{v:.4g}"
-        return str(v)
-
-    header = "| " + " | ".join(cols) + " |"
-    sep = "| " + " | ".join("---" for _ in cols) + " |"
-    lines = [header, sep]
-    for r in rows:
-        lines.append("| " + " | ".join(fmt(r.get(c, "")) for c in cols) + " |")
-    (HERE / "table.md").write_text(
-        "# Experiment 03 - PID vs unstable second-order plant\n\n"
-        + "\n".join(lines) + "\n"
+    result = compare(
+        make_plant(),
+        controllers(),
+        x0=np.zeros(2),
+        dt=DT,
+        t_final=T_FINAL,
+        reference=SETPOINT,
+        disturbance=disturbance,
+        u_bounds=(-U_MAX, U_MAX),
+        title="Exp 03 - Stabilizing an unstable plant with PID (step + disturbance @ 5 s)",
     )
 
+    (HERE / "table.md").write_text(
+        "# Experiment 03 - PID vs unstable second-order plant\n\n"
+        + result.to_markdown()
+        + "\n"
+        + result.summary(),
+        encoding="utf-8", newline="\n",
+    )
+    (HERE / "table.csv").write_text(result.to_csv(), encoding="utf-8", newline="\n")
+    (HERE / "metrics_full.csv").write_text(
+        result.full_metrics_csv(), encoding="utf-8", newline="\n"
+    )
 
-def _write_figure(t: np.ndarray, trajectories: dict) -> None:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
-    ref = np.full_like(t, SETPOINT)
-    fig, axes = plot_benchmark_comparison(
-        t, ref, trajectories,
-        title="Exp 03 - Stabilizing an unstable plant with PID (step + disturbance @ 5 s)",
+    fig, axes = result.figure(
         state_label=r"Output $y(t)$ [rad]",
         control_label=r"Control torque $u(t)$ [N$\cdot$m]",
-        u_limits=(-U_MAX, U_MAX),
     )
     # P-only diverges under saturation on this RHP plant; clamp the shared axes
     # so the stabilising controllers stay legible (P-only leaves the frame).
@@ -135,6 +104,10 @@ def _write_figure(t: np.ndarray, trajectories: dict) -> None:
     axes[3].set_ylim(-8.0, 8.0)          # phase portrait: y_dot
     fig.savefig(HERE / "figure.png", dpi=150)
     plt.close(fig)
+
+    print(f"wrote {HERE/'table.md'}, {HERE/'table.csv'}, "
+          f"{HERE/'metrics_full.csv'}, {HERE/'figure.png'}")
+    print((HERE / "table.md").read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":
