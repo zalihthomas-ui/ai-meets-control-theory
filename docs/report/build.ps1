@@ -29,6 +29,8 @@ Copy-Fig "09_control_on_identified_model" "figure.png" "exp09_sysid.png"
 Copy-Fig "10_planning_learned_vs_true_model" "figure.png" "exp10_learned_mpc.png"
 Copy-Fig "11_qlearning_vs_classical" "figure.png" "exp11_rl_pendulum.png"
 Copy-Fig "12_shielded_qlearning" "figure.png" "exp12_shielded.png"
+Copy-Fig "14_quadrotor_figure8_tracking" "figure.png" "exp14_quadrotor.png"
+Copy-Fig "15_quadrotor_ekf_output_feedback" "figure.png" "exp15_quadrotor_ekf.png"
 
 Write-Host "compiling main.tex..."
 Push-Location $here
