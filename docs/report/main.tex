@@ -116,20 +116,22 @@ reinforcement learning environments, safety shields, and the simulator compose s
 
 \begin{figure}[H]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
   >=Latex,
   box/.style={draw=black!70, rounded corners=3pt, align=center, line width=0.8pt,
-              minimum height=11mm, minimum width=28mm, font=\small},
+              minimum height=12mm, text width=42mm, font=\small},
   sys/.style={box, fill=aimctgreen!15},
   ctl/.style={box, fill=aimctblue!15},
   sim/.style={box, fill=aimctrust!15},
-  bench/.style={box, fill=gray!10, minimum width=105mm, font=\small},
+  bench/.style={box, fill=gray!10, text width=140mm, font=\small, minimum height=10mm},
   sig/.style={draw=black!80, line width=1.0pt, ->},
+  node distance=10mm and 12mm
 ]
 % Nodes
 \node[ctl] (ctrl) {\textbf{Controller / Agent / Shield}\\ \footnotesize\texttt{update(meas, dt)}\\ \footnotesize\texttt{act(obs)}};
-\node[sim, right=18mm of ctrl] (sim) {\textbf{simulate() / ControlEnv}\\ \footnotesize RK4 + ZOH / Gym API\\ \footnotesize\texttt{step(u) -> obs, r, term, trunc}};
-\node[sys, right=18mm of sim] (sysm) {\textbf{DynamicalSystem / LearnedDynamics}\\ \footnotesize\texttt{dynamics(t, x, u)}\\ \footnotesize\texttt{predict(x, u)}};
+\node[sim, right=14mm of ctrl] (sim) {\textbf{simulate() / ControlEnv}\\ \footnotesize RK4 + ZOH / Gym API\\ \footnotesize\texttt{step(u) $\to$ obs, r, term, trunc}};
+\node[sys, right=14mm of sim] (sysm) {\textbf{DynamicalSystem / LearnedDynamics}\\ \footnotesize\texttt{dynamics(t, x, u)}\\ \footnotesize\texttt{predict(x, u)}};
 \node[bench, below=12mm of sim] (bench)
      {\textbf{benchmarks} --- \texttt{metrics.compute\_all\_metrics()} \;+\; \texttt{harness.compare()} $\longrightarrow$ Markdown/CSV Table + 4-Panel Figure};
 
@@ -139,7 +141,8 @@ reinforcement learning environments, safety shields, and the simulator compose s
 \draw[sig] ($(sysm.south west)!0.3!(sysm.south)$) -- ++(0,-0.4) -| node[below, pos=0.25, font=\footnotesize]{$\dot{x} = f(t, x, u)$} ($(sim.south east)!0.3!(sim.south)$);
 \draw[sig] ($(sim.south west)!0.3!(sim.south)$) -- ++(0,-0.4) -| node[below, pos=0.25, font=\footnotesize]{$y_k = g(t, x, u)$} ($(ctrl.south east)!0.3!(ctrl.south)$);
 \draw[sig] (sim.south) -- (bench.north);
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \caption{Core framework architecture. The numerical simulation engine drives a controller (\texttt{update()}) and continuous plant or learned neural surrogate (\texttt{dynamics()}) via fixed-step 4th-order Runge--Kutta with Zero-Order Hold (ZOH).}
 \label{fig:arch}
 \end{figure}
