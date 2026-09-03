@@ -1,0 +1,36 @@
+# Experiment 20 - obstacle-aware nonlinear MPC on the quadrotor
+# Capstone step C9.2: SamplingMPC + a learned grey-box model + a keep-out disk.
+
+question: >
+  A figure-8 with a keep-out disk sitting on the path. LQR + flatness
+  feedforward tracks the trajectory but is obstacle-blind. Can a sampling
+  (cross-entropy) MPC - planning through either the true dynamics or a
+  learned grey-box model - route the drone around the disk while staying
+  near the trajectory, and does the learned model cost anything?
+
+plant: aimct.systems.PlanarQuadrotor (Crazyflie 2.0)
+
+trajectory: lemniscate  x_r = 0.55 sin(w t),  z_r = 1.0 + 0.3 sin(2 w t),  period 6 s
+
+obstacle:
+  centre: [0.30, 1.16]        # m, on the upper-right lobe of the figure-8
+  radius: 0.16               # m keep-out
+  margin: 0.04               # m soft buffer
+
+learned_model:
+  base_step: RK4 of the hover linearisation (batched)
+  net: residual MLP [8, 48, 48, 6], tanh, trained on 3000 steps of LQR+ff
+       figure-8 flight (no obstacle)
+
+controllers:
+  - LQR + flatness feedforward   (obstacle-blind reference)
+  - SamplingMPC + true model     horizon 20, 400 samples, 3 iters, CARE terminal
+  - SamplingMPC + learned model  same, planning through LearnedDynamics.step
+
+score: RMS tracking error, min clearance to the disk, steps inside keep-out,
+       control energy.
+
+sim:
+  dt: 0.02
+  duration: 12.0
+  seed: 0
