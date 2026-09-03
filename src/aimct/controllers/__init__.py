@@ -13,6 +13,7 @@ Available
 
 from .base import Controller
 from .lqr import LQR, solve_care
+from .observer_feedback import ObserverFeedback
 from .pid import PID
 from .state_feedback import (
     StateFeedback,
@@ -26,6 +27,7 @@ __all__ = [
     "PID",
     "StateFeedback",
     "LQR",
+    "ObserverFeedback",
     "place_poles",
     "solve_care",
     "controllability_matrix",
