@@ -20,7 +20,8 @@ from pathlib import Path
 import numpy as np
 
 from aimct.benchmarks.challenge import Challenge, ChallengeController
-from aimct.controllers import LQR, LinearMPC, wrap_angle
+from aimct.controllers import (LQR, EnergyShapingSwingUp, HybridSwingUpLQR,
+                               LinearMPC, wrap_angle)
 from aimct.rl import Discretizer, QLearning, make, train
 from aimct.systems import CartPole, DCMotor, MassSpringDamper, Pendulum
 
@@ -126,32 +127,50 @@ class MPCSubmission(_ModelLQR):
 
 
 class EnergyHybridSubmission(ChallengeController):
-    """Energy-shaping swing-up + an LQR catch - a classical hybrid."""
+    """Energy-shaping swing-up + an LQR catch - the Experiment-07 classical
+    hybrid.  For the cart-pole it delegates to the library
+    :class:`EnergyShapingSwingUp` + :class:`HybridSwingUpLQR` (Spong pumping,
+    hysteresis switch to LQR); for the plain pendulum it runs a compact 1-D
+    energy law with an LQR catch; anything without an upright target falls
+    straight through to LQR regulation."""
 
     def __init__(self, spec):
         super().__init__(spec)
         self.sys = _plant_for(spec)
         A, B = self.sys.linearize()
         self.n4 = self.sys.n_states == 4
+        self.oi = 2 if self.n4 else 0
+        tgt0 = float(np.asarray(spec["target_state"], float)[self.oi])
+        self._swingup = self.n4 or abs(tgt0 - np.pi) < 0.1
+
         self.K = LQR(A, B, np.diag([1.0, 1.0, 10.0, 1.0] if self.n4 else [10.0, 1.0]),
                      [[0.1]]).K
         self._A, self._Bpinv = A, np.linalg.pinv(B)
-        m = getattr(self.sys, "m", getattr(self.sys, "mp", 1.0))
-        L = getattr(self.sys, "l", getattr(self.sys, "L", 1.0))
-        self.J = m * L * L * (4.0 / 3.0 if self.n4 else 1.0)
-        self.mgl = m * getattr(self.sys, "g", 9.81) * L
-        self.oi = 2 if self.n4 else 0
-        # only pump energy when there is actually something to swing up
-        tgt0 = float(np.asarray(spec["target_state"], float)[self.oi])
-        self._swingup = self.n4 or abs(tgt0 - np.pi) < 0.1
+
+        if self.n4:                       # real cart-pole classical hybrid
+            balance = LQR(A, B, np.diag([1.0, 1.0, 10.0, 1.0]), np.array([[0.1]]))
+            pump = EnergyShapingSwingUp(self.sys, k_energy=12.0,
+                                        u_max=float(self.action_limit[0]))
+            self._hybrid = HybridSwingUpLQR(pump, balance, capture_angle=0.35,
+                                            capture_rate=1.5, release_angle=0.60)
+        else:
+            m = getattr(self.sys, "m", getattr(self.sys, "mp", 1.0))
+            L = getattr(self.sys, "l", getattr(self.sys, "L", 1.0))
+            self.J = m * L * L
+            self.mgl = m * getattr(self.sys, "g", 9.81) * L
+            self._hybrid = None
 
     def reset(self, target):
         self._xr = np.asarray(target, float)
         self._up = float(self._xr[self.oi])
         self._uff = -(self._Bpinv @ (self._A @ self._xr))
+        if self._hybrid is not None:
+            self._hybrid.reset()
 
     def compute_action(self, obs, t):
         x = np.asarray(obs, float)
+        if self._hybrid is not None:                      # cart-pole
+            return np.atleast_1d(self._hybrid.update(x, self.dt))
         th, om = x[self.oi], x[self.oi + 1]
         err = wrap_angle(th - self._up)
         if not self._swingup or (abs(err) < 0.5 and abs(om) < 3.5):

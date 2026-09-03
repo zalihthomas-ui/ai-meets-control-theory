@@ -23,7 +23,7 @@ submissions:
   LQR:                "reconstructs the plant from the spec, discrete LQR + set-point feed-forward"
   Linear MPC:         "same reconstructed model, condensed QP, N = 20, Q = I / diag(1,1,10,1), R = 0.1"
   Tabular Q:          "Experiment-11 tabular Q-learning swing-up policy; recognises the pendulum task from the spec, abstains otherwise"
-  Energy+LQR hybrid:  "energy-shaping swing-up + LQR catch; falls back to LQR regulation when the target is not the upright"
+  Energy+LQR hybrid:  "Spong energy-shaping swing-up + LQR catch (Exp-07 EnergyShapingSwingUp / HybridSwingUpLQR on the cart-pole, a 1-D energy law on the pendulum); falls back to pure LQR regulation with no upright to reach"
 
 tracks:
   track1-msd:      "precision: mass-spring-damper, 8 s unit step, +/- actuator 25"

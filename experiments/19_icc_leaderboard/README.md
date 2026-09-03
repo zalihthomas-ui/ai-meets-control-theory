@@ -38,7 +38,7 @@ near 37; better-than-baseline pushes higher, worse decays fast.
 | **LQR** | model-based, linear | reconstructs the named plant from the spec, discrete LQR + set-point feed-forward |
 | **Linear MPC** | model-based, optimising | same reconstructed model, condensed QP, `N = 20` |
 | **Tabular Q** | RL, from scratch | the Experiment-11 tabular Q swing-up policy; recognises the pendulum task from the spec, abstains on the rest |
-| **Energy+LQR hybrid** | classical hybrid | energy-shaping swing-up + LQR catch; falls back to LQR regulation when the target is not the upright |
+| **Energy+LQR hybrid** | classical hybrid | Spong energy-shaping swing-up + LQR catch (the Experiment-07 `EnergyShapingSwingUp` / `HybridSwingUpLQR` on the cart-pole, a compact 1-D energy law on the pendulum); falls back to pure LQR regulation when there is no upright to reach |
 
 The plant guess is keyed only off the public spec: `state_dim == 4` → cart-pole;
 target ≈ π → pendulum swing-up; short horizon → DC motor; else mass-spring-damper.
@@ -66,7 +66,7 @@ Composite / 100 (status). Baseline ≈ 37. `AIMCT_EXP_FULL=1`, seed 0.
 | :-- | :-: | :-: | :-: | :-: | :-: |
 | **Linear MPC** | 21.1 PASS | **41.3 PASS** | 0.0 FAILED | 0.0 FAILED | 0.0 FAILED |
 | **LQR** | 7.4 PASS | 36.8 PASS | 0.0 FAILED | 0.0 FAILED | 0.0 FAILED |
-| **Energy+LQR hybrid** | 1.8 PASS | 0.0 FAILED | **23.8 PASS** | 0.0 DQ | **29.9 PASS** |
+| **Energy+LQR hybrid** | 1.8 PASS | 0.0 FAILED | **23.8 PASS** | **9.6 PASS** | **29.9 PASS** |
 | **PID** | 0.6 PASS | 0.0 FAILED | 0.0 FAILED | 0.0 FAILED | 0.0 FAILED |
 | **Tabular Q** | 0.0 FAILED | 0.0 FAILED | 0.0 FAILED | 0.0 FAILED | 0.0 FAILED |
 
@@ -76,21 +76,24 @@ Composite / 100 (status). Baseline ≈ 37. `AIMCT_EXP_FULL=1`, seed 0.
 
 1. **No controller wins every track — which is the point of the challenge.**
    The precision tracks and the agility tracks reward opposite designs, and the
-   blind spec is not enough to bridge them automatically.
+   blind spec is not enough to bridge them automatically. MPC clears every
+   precision track and no agility track; the energy hybrid does the exact
+   reverse (bar its LQR-fallback pass on the MSD).
 2. **Model-based optimal control owns precision.** Linear MPC is the only entry
-   that passes *both* precision tracks with margin, and it is the only one to
-   beat the baseline anywhere (DC motor, 41.3 vs 37). Given the reconstructed
-   model it schedules the actuator against the ±24 V limit better than the LQR's
+   that passes *both* precision tracks with margin, and the only one to beat the
+   baseline anywhere (DC motor, 41.3 vs 37). Given the reconstructed model it
+   schedules the actuator against the ±24 V limit better than the LQR's
    instantaneous feedback. Plain LQR passes too but scores lower — its ITAE
    blows up more under the ±30 % parameter sweep (`S_robust` near the floor on
    the MSD).
-3. **The classical energy-shaping hybrid owns agility.** It is the *only* entry
-   that swings the pendulum up and holds it (23.8), and it is the only entry
-   still passing under Track 3's stacked stress — params + actuator lag +
-   impulse shocks — where it actually scores *higher* (29.9) because the
-   baseline degrades alongside it. Its one failure mode is honest: on the
-   cart-pole its 1-D pendulum energy law ignores the cart coupling, drives the
-   cart off the rail, and is disqualified.
+3. **The classical energy-shaping hybrid owns agility — every track.** It is the
+   only entry that clears *all three* swing-up / stress tracks: pendulum
+   (23.8), cart-pole (9.6, delegating to the Experiment-07
+   `EnergyShapingSwingUp` + `HybridSwingUpLQR` Spong pump + hysteresis catch),
+   and the Track-3 gauntlet — params + actuator lag + impulse shocks — where it
+   scores *highest* of anything on the board (29.9), because the baseline
+   degrades alongside it. Its only miss is `track1-dcmotor`: an energy pump is
+   not a set-point regulator for a stiff, ill-scaled motor.
 4. **Model-free control is outclassed here.** PID knows nothing but the first
    output; it scrapes a pass on the MSD (0.6) and fails everything else — no
    feed-forward, no model, no swing-up.
@@ -99,10 +102,11 @@ Composite / 100 (status). Baseline ≈ 37. `AIMCT_EXP_FULL=1`, seed 0.
    to ±2.5 rad and stalls — the grid is too coarse and the action set too weak
    to get over the top and hold within tolerance. The hand-built energy law does
    the same job in three lines.
-6. **The cart-pole track is currently unsolved by everyone, including the
-   reference baseline** (final error ≈ 2.9 rad, no swing-up). That is an engine
-   calibration gap in `_cartpole_swingup_track` / `_baseline_factory`, not a
-   property of the submissions — flagged to the challenge owners.
+6. **Reconstructing the plant from the spec is load-bearing.** Every model-based
+   entry keys its Q/R and its model off the public spec alone (`state_dim`,
+   `target ≈ π`, `t_final`, actuator limit). Handing the MPC generic `Q = I`,
+   `R = 0.1` on the ill-scaled DC-motor `B` made it *fail* the track; the same
+   Bryson-scaled weights the LQR uses turned it into the board's best score.
 
 ## Notes
 
