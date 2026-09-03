@@ -55,6 +55,7 @@ def simulate(
     dt: float,
     t_final: float,
     u_bounds: tuple[float, float] | None = None,
+    measurement_fn: Callable[[float, np.ndarray, np.ndarray], np.ndarray] | None = None,
 ) -> Trajectory:
     """Roll out ``system`` from ``x0`` for ``t_final`` seconds at step ``dt``.
 
@@ -62,6 +63,11 @@ def simulate(
     bare callable with the same ``(measurement, dt) -> u`` signature. If it has a
     ``reset()`` method it is called once before the rollout. ``u_bounds`` is an
     optional ``(low, high)`` saturation applied to every input channel.
+
+    ``measurement_fn(t, x, u_prev) -> measurement`` selects what the controller
+    sees. Default: ``system.output`` (full state for the reference systems). Pass
+    e.g. ``lambda t, x, u: x[[0]]`` to give an output-feedback controller a single
+    channel while the recorded ``Trajectory.y`` still uses ``system.output``.
     """
     if dt <= 0 or t_final <= 0:
         raise ValueError("dt and t_final must be positive")
@@ -69,6 +75,7 @@ def simulate(
     if hasattr(controller, "reset"):
         controller.reset()
     step = controller.update if hasattr(controller, "update") else controller
+    measure = measurement_fn if measurement_fn is not None else system.output
 
     n_steps = int(round(t_final / dt))
     x = np.atleast_1d(np.asarray(x0, dtype=float)).copy()
@@ -84,9 +91,9 @@ def simulate(
 
     for k in range(n_steps):
         t = k * dt
-        y = np.atleast_1d(np.asarray(system.output(t, x, u_prev), dtype=float))
-        ys[k] = y
-        u = np.atleast_1d(np.asarray(step(y, dt), dtype=float))
+        ys[k] = np.atleast_1d(np.asarray(system.output(t, x, u_prev), dtype=float))
+        meas = np.asarray(measure(t, x, u_prev), dtype=float)
+        u = np.atleast_1d(np.asarray(step(meas, dt), dtype=float))
         if u.shape != (system.n_inputs,):
             raise ValueError(
                 f"controller returned shape {u.shape}, expected ({system.n_inputs},)"
