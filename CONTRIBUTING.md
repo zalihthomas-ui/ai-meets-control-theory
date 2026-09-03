@@ -23,6 +23,11 @@ Priority order for every contribution: **clarity → correctness → reproducibi
 
 ## Workflow
 
-1. Branch from `main`.
-2. `pytest` must pass.
-3. One logical change per PR; describe the question it answers or the capability it adds.
+1. `pytest` must pass (`pip install -e ".[dev,xcheck]"` for the full set, incl.
+   `python-control` cross-checks). CI runs the suite on 3.10–3.12 and smoke-runs
+   every `experiments/*/run.py`.
+2. `git pull --rebase` before you push. Small commits; one logical change each.
+3. `experiments/*/run.py` must be non-interactive — set `matplotlib.use("Agg")`
+   before importing `pyplot`, write outputs next to the script, commit the
+   generated `table.md` / `table.csv` / `figure.png`.
+4. Describe the question a change answers or the capability it adds.
