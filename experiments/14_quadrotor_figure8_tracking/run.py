@@ -2,7 +2,8 @@
 
 A real nano-drone model. Controllers are designed on the hover linearisation and
 flown on the true nonlinear dynamics, tracking a lemniscate with analytic
-feed-forward. LQR vs a receding-horizon linear MPC.
+feed-forward: LQR (+/- flatness feed-forward), a single-setpoint linear MPC, and
+a reference-preview linear MPC that takes the whole trajectory over its horizon.
 
 Run:  python experiments/14_quadrotor_figure8_tracking/run.py
 Outputs (next to this file): table.md, table.csv, figure.png
@@ -34,6 +35,8 @@ Q = np.diag(1.0 / _X_MAX**2)
 R = np.diag(1.0 / _U_MAX**2)
 N_MPC = 25
 MPC_LOOKAHEAD = 12          # steps ahead to point the (single) MPC setpoint
+N_PREVIEW = 40              # preview MPC horizon (40 * 4 ms = 160 ms of trajectory)
+MPC_HZ_DIV = 4             # preview MPC re-solves every 4th step (1 kHz -> 250 Hz)
 
 class WindyQuad(PlanarQuadrotor):
     """PlanarQuadrotor plus an external lateral wind force during ``[t_on, t_off]``."""
@@ -79,26 +82,58 @@ def reference(t: float):
 
 class TrajectoryTracker:
     """Wrap an LQR / LinearMPC: refresh its x_ref (and, unless ``feedback_only``,
-    its u_ref feed-forward) from the trajectory each step. MPC's flat single
-    setpoint is pointed ``lookahead`` steps ahead."""
+    its u_ref feed-forward) from the trajectory each step.
 
-    def __init__(self, inner, name, lookahead_steps=0, feedback_only=False):
+    ``mode``:
+      "point"   - a single set-point, pointed ``lookahead`` steps ahead (LQR, and
+                  the naive MPC baseline);
+      "preview" - the whole reference trajectory over the MPC horizon: x_ref is an
+                  (N, 6) array at prediction steps 1..N, u_ref an (N, 2) flatness
+                  feed-forward at steps 0..N-1."""
+
+    def __init__(self, inner, name, lookahead_steps=0, feedback_only=False,
+                 mode="point", resolve_every=1):
         self.inner, self.name = inner, name
         self.lead = lookahead_steps * DT
         self.feedback_only = feedback_only
+        self.mode = mode
+        self.resolve_every = int(resolve_every)   # re-solve the QP every k steps
         self._t = 0.0
+        self._k = 0
+        self._held = None
 
     def reset(self):
         if hasattr(self.inner, "reset"):
             self.inner.reset()
         self._t = 0.0
+        self._k = 0
+        self._held = None
 
     def update(self, x, dt):
-        xr, ur = reference(self._t + self.lead)
-        self.inner.x_ref = xr
-        self.inner.u_ref = quad.u_hover if self.feedback_only else ur
-        u = np.asarray(self.inner.update(x, dt)).reshape(2)
+        if self.mode == "preview":
+            # the MPC's model is the hover linearisation, so it works in
+            # deviation coordinates: feed the feed-forward as (u_flat - u_hover)
+            # and add u_hover back to its output.
+            if self._k % self.resolve_every == 0 or self._held is None:
+                N = self.inner.N
+                self.inner.x_ref = np.array(
+                    [reference(self._t + (j + 1) * DT)[0] for j in range(N)])
+                self.inner.u_ref = np.array(
+                    [reference(self._t + j * DT)[1] - quad.u_hover for j in range(N)])
+                du = np.asarray(self.inner.update(x, dt)).reshape(2)
+                self._plan = self.inner.horizon_plan          # (N, 2) thrust deviations
+                self._held = quad.u_hover + du
+            else:
+                self._held = quad.u_hover + self._plan[
+                    min(self._k % self.resolve_every, len(self._plan) - 1)]
+            u = self._held
+        else:
+            xr, ur = reference(self._t + self.lead)
+            self.inner.x_ref = xr
+            self.inner.u_ref = quad.u_hover if self.feedback_only else ur
+            u = np.asarray(self.inner.update(x, dt)).reshape(2)
         self._t += dt
+        self._k += 1
         return np.clip(u, 0.0, T_MAX)
 
 
@@ -114,6 +149,12 @@ def build_controllers():
             TrajectoryTracker(LinearMPC(Aq, Bq, Q=Q, R=R, N=N_MPC,
                                         u_bounds=(0.0, T_MAX)),
                               "Linear MPC (single setpoint)", MPC_LOOKAHEAD),
+        # preview MPC runs unconstrained (flatness feed-forward keeps thrust near
+        # hover, far inside [0, T_max]); thrust is clipped post-hoc like the LQR.
+        "Linear MPC (preview)":
+            TrajectoryTracker(LinearMPC(Aq, Bq, Q=Q, R=R, N=N_PREVIEW),
+                              "Linear MPC (preview)", mode="preview",
+                              resolve_every=MPC_HZ_DIV),
     }
 
 

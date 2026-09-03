@@ -23,9 +23,14 @@ trajectory:                  # lemniscate of Gerono in the x-z plane
   z0: 1.0                    # m  hover height
   feedforward: hover thrust + m * [xdd_r, zdd_r] mapped through the input
 
-controllers:
-  - LQR + trajectory feedforward   Q=diag(8,8,2,1,1,0.2), R=diag(1,1)
-  - LinearMPC (receding)           same Q,R diag, N=25, horizon setpoint = ref at t+N dt
+controllers:                       # Bryson-scaled Q = 1/x_max^2, R = 1/du_max^2
+  - LQR + flatness feedforward
+  - LQR feedback only
+  - LinearMPC single setpoint       N=25, one tiled target at t + N_LOOKAHEAD dt
+  - LinearMPC preview               N=40, whole reference trajectory over the
+                                    horizon, re-solved every 4th step (250 Hz),
+                                    hover-deviation coordinates
+wind_gust: 0.030 N lateral during t in [5, 8] s   (~11 % of weight)
 
 task:
   x0: [0.0, 1.0, 0.0, 0.0, 0.0, 0.0]   # start at hover height, on the trajectory

@@ -25,7 +25,9 @@ thrust-to-weight). 6 states `[x, z, θ, ẋ, ż, θ̇]`, 2 rotor-group thrusts i
   `Q = diag(1/[0.1,0.1,0.2,0.5,0.5,3.0]²)`, `R = diag(1/[0.15,0.15]²)`.
 - `dt = 4 ms`, `T = 12 s` (three laps), RK4.
 - Controllers: **LQR + flatness feed-forward**, **LQR feedback-only**,
-  **Linear MPC** (single tiled setpoint, `N = 25`, input box).
+  **Linear MPC (single setpoint)** (one tiled target, `N = 25`, input box), and
+  **Linear MPC (preview)** — the whole reference trajectory over the horizon
+  (`N = 40`), re-solved at 250 Hz in hover-deviation coordinates.
 
 Run: `python experiments/14_quadrotor_figure8_tracking/run.py`
 Outputs (committed): `table.md`, `table.csv`, `figure.png`.
@@ -37,6 +39,7 @@ Outputs (committed): `table.md`, `table.csv`, `figure.png`.
 | LQR + flatness feed-forward | **43.5 mm** | 112 mm | 4.3° | 0.033 | 0.7 % |
 | LQR feedback only           | 51.0 mm | 109 mm | 4.4° | 0.038 | 0.7 % |
 | Linear MPC (single setpoint)| 142 mm | 208 mm | 4.3° | 0.026 | 0.1 % |
+| **Linear MPC (preview)**    | 47.9 mm | 134 mm | 4.5° | 0.033 | 0.6 % |
 
 ![figure](figure.png)
 
@@ -51,12 +54,16 @@ Outputs (committed): `table.md`, `table.csv`, `figure.png`.
    51 mm) and lowers the error *floor* between gusts (panel b): pre-computing the
    pitch/thrust the trajectory demands means feedback only has to correct model
    error and disturbances, not reconstruct the whole manoeuvre from lag.
-3. **A single-setpoint linear MPC is the wrong tool here.** It optimises toward
-   one tiled target point, so on a fast curved path it perpetually cuts the
-   corner (~14 cm, panel a shows the shrunken loop). Its real strength — hard
-   constraint satisfaction — was demonstrated in Experiment 08; smooth tracking
-   needs a **reference-preview MPC** that takes the whole horizon of the
-   trajectory (a Phase-2 extension of `LinearMPC`).
+3. **Give the MPC the trajectory, not a point, and the gap closes.** A
+   single-setpoint linear MPC optimises toward one tiled target, so on a fast
+   curved path it perpetually cuts the corner (142 mm, panel a shows the
+   shrunken loop). The **reference-preview MPC** — same `LinearMPC`, but `x_ref`
+   / `u_ref` are now the whole reference *trajectory* sampled over the horizon —
+   tracks to **47.9 mm**, essentially matching the flatness LQR (43.5 mm). It
+   needs the flatness feed-forward supplied in **hover-deviation** coordinates
+   (the MPC's model is the hover linearisation, which omits the gravity offset);
+   with an absolute feed-forward it drifts. The remaining ~4 mm over the LQR is
+   the price of a finite 160 ms horizon.
 4. **Cost scaling is not optional on a real system.** The quadrotor's `B` spans
    two orders of magnitude between its channels; the Bryson rule
    (`Q_ii = 1/x_i,max²`, `R_jj = 1/u_j,max²`) turns a limit-cycling gain into a
@@ -66,4 +73,4 @@ Outputs (committed): `table.md`, `table.csv`, `figure.png`.
 
 - Experiment 15 (toku): output-feedback tracking with an **EKF** fusing noisy
   `[x, z, θ]` + gyro (no velocity measurement).
-- Reference-preview `LinearMPC`; nonlinear MPC via `SamplingMPC` on the quad.
+- Nonlinear MPC via `SamplingMPC` on the quad.
