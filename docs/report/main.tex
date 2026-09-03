@@ -172,7 +172,8 @@ Table~\ref{tab:capabilities} summarises the implemented components, their mathem
 \begin{table}[H]
 \centering
 \small
-\begin{tabular}{@{}p{0.25\textwidth}p{0.62\textwidth}c@{}}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}p{0.30\textwidth}p{0.62\textwidth}c@{}}
 \toprule
 \textbf{Component} & \textbf{What it provides} & \textbf{Tests} \\
 \midrule
@@ -232,7 +233,8 @@ Table~\ref{tab:capabilities} summarises the implemented components, their mathem
 \texttt{aimct.benchmarks.sweep} & Grid and 1D parameter sweeps for robustness, parameter sensitivity,
   and basin of attraction mapping. & \checkmark \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \caption{Implemented functionality and test coverage across the library as of \milestone.}
 \label{tab:capabilities}
 \end{table}
@@ -298,6 +300,7 @@ The system is tested under a unit step reference $r = 1.0\,\text{rad}$, a step i
 \begin{table}[H]
 \centering
 \small
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lcccccccc@{}}
 \toprule
 \textbf{Controller} & \textbf{Rise $t_r$ [s]} & \textbf{Settle $t_s$ [s]} & \textbf{Overshoot $M_p$} & \textbf{Steady $e_{ss}$} & \textbf{IAE} & \textbf{ITAE} & \textbf{Energy $E_u$} & \textbf{Sat. \%} \\
@@ -307,7 +310,8 @@ The system is tested under a unit step reference $r = 1.0\,\text{rad}$, a step i
 \textbf{PID (no AW)} & 0.334 & 6.162 & 53.08\% & $3.90\times 10^{-5}$ & 0.9274 & 1.043 & 262.2 & 5.55\% \\
 \textbf{PID + Anti-Windup} & 0.362 & 6.161 & \textbf{39.43\%} & $\mathbf{3.90\times 10^{-5}}$ & \textbf{0.7979} & \textbf{0.876} & \textbf{245.1} & \textbf{1.61\%} \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \caption{Benchmark results for Experiment 03 (regenerated from \texttt{experiments/03\_pid\_stabilizes\_unstable/table.md}).}
 \label{tab:exp03}
 \end{table}
@@ -370,6 +374,7 @@ Controllers are designed on the linearised model and executed on the \textbf{tru
 \begin{table}[H]
 \centering
 \small
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lcccccc@{}}
 \toprule
 \textbf{Controller} & \textbf{Settle $\theta$ $t_s$ [s]} & \textbf{RMSE $\theta$ [rad]} & \textbf{Energy $E_u$ [N$^2$s]} & \textbf{Peak $|u|_{\max}$ [N]} & \textbf{Peak $|x|_{\max}$ [m]} & \textbf{Status} \\
@@ -379,7 +384,8 @@ Controllers are designed on the linearised model and executed on the \textbf{tru
 \textbf{LQR (Soft)} & 1.70 & 0.0223 & \textbf{0.959} & \textbf{3.08} & 0.321 & Stable \\
 \textbf{PID (Angle Only)} & \textbf{0.20} & \textbf{0.0110} & 8.76 & 18.00 & \textbf{0.823} & Stable (Cart Drifts) \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \caption{Benchmark results for Experiment 04 on nonlinear Cart-Pole (from \texttt{experiments/04\_lqr\_vs\_pole\_placement\_cartpole/table.md}).}
 \label{tab:exp04}
 \end{table}
@@ -438,6 +444,7 @@ Evaluating the observability matrix $\mathcal{O} = [C^\top, \; A^\top C^\top, \;
 \begin{table}[H]
 \centering
 \small
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lccl@{}}
 \toprule
 \textbf{Sensor Configuration} & \textbf{Measurement $y$} & \textbf{Rank($\mathcal{O}$)} & \textbf{Physical / Structural Mechanism} \\
@@ -447,7 +454,8 @@ Evaluating the observability matrix $\mathcal{O} = [C^\top, \; A^\top C^\top, \;
 \textbf{Pole Angle Only} & $y = \theta$ & \textbf{2 (Unobservable)} & Rigid-body rail translation produces zero torque on the pole. \\
 \textbf{Dual Encoders} & $y = [x, \theta]^\top$ & \textbf{4 (Observable)} & Direct kinematic sensing; optimal numerical conditioning. \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \caption{Observability rank of the 4-state Cart-Pole under candidate sensor suites.}
 \label{tab:obs}
 \end{table}
@@ -461,6 +469,7 @@ Full-state LQR assumes all four states are measured with zero noise. In physical
 \begin{table}[H]
 \centering
 \small
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lccccc@{}}
 \toprule
 \textbf{Controller} & \textbf{Settle $\theta$ $t_s$ [s]} & \textbf{RMSE $\theta$ [rad]} & \textbf{Energy $E_u$ [N$^2$s]} & \textbf{Peak $|u|_{\max}$ [N]} & \textbf{Status} \\
@@ -470,7 +479,8 @@ Full-state LQR assumes all four states are measured with zero noise. In physical
 \textbf{Luenberger + K} & 0.496 & 0.0165 & \textbf{16.20} & \textbf{15.10} & Severe Noise Chattering \\
 \textbf{LQG (Overconfident $V/100$)} & 0.828 & 0.0215 & 2.97 & 4.80 & Noise Amplified \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \caption{Benchmark results for Experiment 06 comparing LQG, Luenberger observer, and clean LQR under measurement noise (from \texttt{experiments/06\_lqg\_vs\_lqr\_measurement\_noise/table.md}).}
 \label{tab:exp06}
 \end{table}
@@ -499,6 +509,7 @@ A linear controller $u = -Kx$ designed on the upright linearisation operates wit
 \begin{table}[H]
 \centering
 \small
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lccccc@{}}
 \toprule
 \textbf{Tuning} & \textbf{Effort $R$} & \textbf{Measured $\theta_0$ Edge} & \textbf{Lyapunov Est.} & \textbf{Measured $\dot\theta_0$ Edge} & \textbf{Lyapunov Est.} \\
@@ -507,7 +518,8 @@ A linear controller $u = -Kx$ designed on the upright linearisation operates wit
 \textbf{Aggressive} & 0.01 & \textbf{0.92 rad (53$^\circ$)} & 0.80 rad (46$^\circ$) & \textbf{5.3 rad/s} & 4.0 rad/s \\
 \textbf{Soft} & 1.00 & \textbf{1.00 rad (57$^\circ$)} & 0.33 rad (19$^\circ$) & \textbf{5.3 rad/s} & 1.3 rad/s \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \caption{Measured recoverable boundaries vs. theoretical Lyapunov sub-level sets on nonlinear Cart-Pole.}
 \label{tab:basin}
 \end{table}
@@ -566,6 +578,7 @@ To eliminate limit-cycle chattering near the transition boundary, the hybrid sup
 \begin{table}[H]
 \centering
 \small
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lccccccc@{}}
 \toprule
 \textbf{Energy Gain $k_E$} & \textbf{Capture $t_{\text{cap}}$ [s]} & \textbf{Settle $t_s$ [s]} & \textbf{Switches} & \textbf{Energy $E_u$ [N$^2$s]} & \textbf{Peak $|u|_{\max}$ [N]} & \textbf{Cart Excursion [m]} & \textbf{Status} \\
@@ -574,7 +587,8 @@ To eliminate limit-cycle chattering near the transition boundary, the hybrid sup
 \textbf{$k_E = 10$} & 2.852 & 4.058 & \textbf{1} & 87.28 & 20.00 & 1.536 & \textbf{Balanced} \\
 \textbf{$k_E = 14$} & \textbf{1.686} & \textbf{3.344} & \textbf{1} & 107.24 & 19.27 & 1.940 & \textbf{Balanced} \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \caption{Benchmark results for Experiment 07 swing-up from $\theta_0 = \pi$ across energy gains $k_E \in \{6, 10, 14\}$ under $|F| \le 20\,\text{N}$ (from \texttt{experiments/07\_cartpole\_swingup\_hybrid/table.md}).}
 \label{tab:exp07}
 \end{table}
@@ -619,6 +633,7 @@ We fit models on noisy closed-loop Cart-Pole rollout data ($\sigma_{\text{pos}} 
 \begin{table}[H]
 \centering
 \small
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lccccc@{}}
 \toprule
 \textbf{Data Length} & \textbf{Relative Error $A$} & \textbf{Relative Error $K_{\text{id}}$} & \textbf{RMSE $\theta$ [rad]} & \textbf{Stable Runs} & \textbf{Status} \\
@@ -627,7 +642,8 @@ We fit models on noisy closed-loop Cart-Pole rollout data ($\sigma_{\text{pos}} 
 \textbf{1500 steps (3 s)} & $4.19 \times 10^{-1}$ & 0.527 & 0.0336 & \textbf{4 / 6} & Marginal / Oscillatory \\
 \textbf{12000 steps (24 s)} & $\mathbf{2.17 \times 10^{-1}}$ & \textbf{0.493} & \textbf{0.0246} & \textbf{6 / 6 (100\%)} & \textbf{Consistently Stable} \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \caption{Experiment 09 Monte Carlo evaluation (6 seeds) of LQR designed on identified models (from \texttt{experiments/09\_control\_on\_identified\_model/table.md}).}
 \label{tab:exp09}
 \end{table}
@@ -675,6 +691,7 @@ which is solved from scratch via our primal \textbf{active-set QP solver} (\text
 \begin{table}[H]
 \centering
 \small
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lccccc@{}}
 \toprule
 \textbf{Controller} & \textbf{Cart Peak $|x|_{\max}$ [m]} & \textbf{Constraint Violation [m]} & \textbf{Settle $\theta$ $t_s$ [s]} & \textbf{Energy $E_u$ [N$^2$s]} & \textbf{Status} \\
@@ -683,7 +700,8 @@ which is solved from scratch via our primal \textbf{active-set QP solver} (\text
 \textbf{MPC (Unconstrained)} & 0.6232 & \textbf{0.1232 (24.6\%)} & 2.81 & \textbf{27.7} & Rail Violation \\
 \textbf{MPC ($|x_{\text{cart}}| \le 0.5$\,m)} & \textbf{0.5014} & \textbf{0.0014 (0.28\%)} & \textbf{2.56} & 46.3 & \textbf{Strictly Compliant} \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \caption{Benchmark results for Experiment 08 on nonlinear Cart-Pole with $|F| \le 20\,\text{N}$ and rail limit $|x| \le 0.5\,\text{m}$ from $\theta_0 = 0.35\,\text{rad}$ (from \texttt{experiments/08\_mpc\_vs\_lqr\_constrained\_cartpole/table.md}).}
 \label{tab:exp08}
 \end{table}
@@ -758,6 +776,7 @@ We evaluate \texttt{SamplingMPC} (CEM) driving the nonlinear Cart-Pole from $\th
 \begin{table}[H]
 \centering
 \small
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lccccc@{}}
 \toprule
 \textbf{Controller} & \textbf{Settle $\theta$ $t_s$ [s]} & \textbf{RMSE $\theta$ [rad]} & \textbf{Energy $E_u$ [N$^2$s]} & \textbf{Peak $|u|_{\max}$ [N]} & \textbf{Status} \\
@@ -766,7 +785,8 @@ We evaluate \texttt{SamplingMPC} (CEM) driving the nonlinear Cart-Pole from $\th
 \textbf{SamplingMPC (True Model)} & 4.44 & 0.0448 & 10.80 & 6.59 & Stable (CEM True) \\
 \textbf{SamplingMPC (Learned Model)} & \textbf{3.56} & \textbf{0.0462} & \textbf{10.20} & \textbf{6.00} & \textbf{Stable (CEM Learned)} \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \caption{Benchmark results for Experiment 10 comparing CEM-MPC on learned neural dynamics vs. true model and LQR (from \texttt{experiments/10\_planning\_learned\_vs\_true\_model/table.md}).}
 \label{tab:exp10}
 \end{table}
@@ -820,6 +840,7 @@ We evaluate tabular Q-learning against classical energy shaping and LQR on the n
 \begin{table}[H]
 \centering
 \small
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}llccccccc@{}}
 \toprule
 \textbf{Controller} & \textbf{Task} & \textbf{Min Err [rad]} & \textbf{Held Upright?} & \textbf{$t_{\text{upright}}$ [s]} & \textbf{Final Err [rad]} & \textbf{Energy $E_u$} & \textbf{Train Samples} & \textbf{Parameters} \\
@@ -830,7 +851,8 @@ We evaluate tabular Q-learning against classical energy shaping and LQR on the n
 \textbf{LQR} & Balance & \textbf{0.00} & \textbf{Yes} & \textbf{0.85} & \textbf{0.000} & \textbf{11.7} & \textbf{0} & \textbf{2} \\
 \textbf{Tabular Q-Learning} & Balance & 0.05 & No & 3.45 & 1.527 & 40.4 & 180,000 & 51,975 \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \caption{Benchmark results for Experiment 11 comparing Tabular Q-Learning against Classical Energy-Shaping and LQR on the Inverted Pendulum (from \texttt{experiments/11\_qlearning\_vs\_classical/table.md}).}
 \label{tab:exp11}
 \end{table}
@@ -890,6 +912,7 @@ In Experiment~11, the tabular Q-learning swing-up agent swung the pendulum to ve
 \begin{table}[H]
 \centering
 \small
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lcccccc@{}}
 \toprule
 \textbf{Controller} & \textbf{Min Err [rad]} & \textbf{Final Err [rad]} & \textbf{Held Upright?} & \textbf{$t_{\text{upright}}$ [s]} & \textbf{Energy $E_u$} & \textbf{Shield Active} \\
@@ -897,7 +920,8 @@ In Experiment~11, the tabular Q-learning swing-up agent swung the pendulum to ve
 \textbf{Tabular Q-Learning (Raw)} & 0.028 & 1.406 & No & 10.30 & 105.4 & 0.0\% \\
 \textbf{Shielded (RL + Classical Finisher)} & \textbf{0.000} & \textbf{0.000} & \textbf{Yes} & \textbf{9.30} & \textbf{68.0} & \textbf{43.7\%} \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \caption{Benchmark results for Experiment 12 comparing Raw Tabular Q-Learning vs. Shielded Hybrid Control on the Inverted Pendulum (from \texttt{experiments/12\_shielded\_qlearning/table.md}).}
 \label{tab:exp12}
 \end{table}
