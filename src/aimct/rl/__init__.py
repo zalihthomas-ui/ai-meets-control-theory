@@ -7,7 +7,7 @@ from-scratch tabular Q-learning.
 """
 
 from .env import TASKS, ControlEnv, make, wrap_to_pi
-from .tabular import Discretizer, QLearning, evaluate, train
+from .tabular import Discretizer, GreedyPolicy, QLearning, evaluate, train
 
 __all__ = [
     "ControlEnv",
@@ -16,6 +16,7 @@ __all__ = [
     "wrap_to_pi",
     "Discretizer",
     "QLearning",
+    "GreedyPolicy",
     "train",
     "evaluate",
 ]

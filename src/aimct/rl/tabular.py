@@ -20,7 +20,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-__all__ = ["Discretizer", "QLearning", "train", "evaluate"]
+__all__ = ["Discretizer", "QLearning", "train", "evaluate", "GreedyPolicy"]
 
 
 class Discretizer:
@@ -136,6 +136,27 @@ class QLearning:
     def greedy_policy(self) -> np.ndarray:
         """Best action index per state (shape ``(n_states,)``)."""
         return self.Q.argmax(axis=1)
+
+
+class GreedyPolicy:
+    """A trained :class:`QLearning` agent as a control law: ``update(x, dt) -> u``.
+
+    ``obs_fn`` maps the raw system state to the observation the agent was
+    trained on (e.g. the task's ``obs_fn``); it defaults to identity.
+    """
+
+    def __init__(self, agent: "QLearning", disc: "Discretizer", obs_fn=None) -> None:
+        self.agent = agent
+        self.disc = disc
+        self.obs_fn = obs_fn or (lambda x: np.asarray(x, dtype=float))
+
+    def update(self, measurement, dt=None):
+        obs = self.obs_fn(np.atleast_1d(np.asarray(measurement, dtype=float)))
+        s = self.disc.encode(obs)
+        return float(self.disc.actions[self.agent.act(s, greedy=True)])
+
+    def reset(self) -> None:
+        pass
 
 
 @dataclass
