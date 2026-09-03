@@ -1,0 +1,34 @@
+# Experiment 17 - adaptive vs fixed control on a plant that changes underneath you
+# aimct.controllers.MRAC / GainScheduledLQR vs a fixed LQR.
+
+question: >
+  A controller is tuned for a plant, then the plant changes - an actuator ages,
+  a robot picks up a payload, a spring hardens. How much does a fixed LQR
+  degrade, and does model-reference adaptive control hold performance without
+  ever identifying the new plant?
+
+plant:
+  base: MassSpringDamper (m=1, c=0.4)
+  drift: stiffness k ramps 1.0 -> 5.0 linearly over the 40 s episode
+         (closed-loop natural frequency would nearly double if nothing adapted)
+
+reference_model (MRAC target):
+  A_m: [[0, 1], [-4.0, -2.8]]      # wn=2, zeta=0.7
+  B_m: [[0], [4.0]]               # unity DC gain
+  command r: unit step at t=0
+
+controllers:
+  - LQR (nominal k=1)      designed once for the initial plant
+  - LQR (worst-case k=5)   designed for the final plant - conservative
+  - MRAC                   direct, matched-uncertainty, gamma=80, phi=[x;1]
+  - GainScheduled LQR      if k were measurable: gains over k in [1,5], blended
+
+score:
+  RMS tracking error to the reference-model steady state, split early (k~1-2)
+  vs late (k~4-5) to expose the fixed controllers' drift.
+
+sim:
+  dt: 0.002
+  t_final: 40.0
+  u_bounds: [-60, 60]
+  seed: 0
