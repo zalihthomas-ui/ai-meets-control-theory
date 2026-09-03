@@ -100,7 +100,13 @@ class LinearMPC(Controller):
     N:
         Prediction/control horizon (steps).
     x_ref, u_ref:
-        Reference state / feed-forward input (default zeros).
+        Reference state / feed-forward input. Each may be ``None`` (zeros), a
+        scalar or length-``n`` / ``m`` vector (held over the horizon, the
+        original behaviour), an ``(N, n)`` / ``(N, m)`` array (a preview of the
+        reference *trajectory* over the horizon), or a callable
+        ``f(t) -> (N, n)`` / ``(N, m)`` evaluated with the controller's elapsed
+        time.  They are also settable attributes, refreshed each step by a
+        trajectory tracker.
     u_bounds:
         ``(lo, hi)`` scalar or per-channel input box (hard).
     x_bounds:
@@ -140,10 +146,9 @@ class LinearMPC(Controller):
         self.N = int(N)
         if self.N < 1:
             raise ValueError("N must be >= 1")
-        self.x_ref = (np.zeros(self.n) if x_ref is None
-                      else np.asarray(x_ref, float).reshape(self.n))
-        self.u_ref = (np.zeros(self.m) if u_ref is None
-                      else np.asarray(u_ref, float).reshape(self.m))
+        # stored raw: None / scalar / vector / (N, .) array / callable(t)
+        self.x_ref = x_ref
+        self.u_ref = u_ref
         self._Qf_user = None if Qf is None else np.atleast_2d(np.asarray(Qf, float))
         self.soft_weight = float(soft_weight)
 
@@ -207,18 +212,38 @@ class LinearMPC(Controller):
         self._warm = None
         self._pen_hi = None
         self._pen_lo = None
+        self._t = 0.0
         self.horizon_plan: np.ndarray | None = None
         self.predicted_states: np.ndarray | None = None
         self.last_qp = None
         self.output: ArrayLike = 0.0
+
+    def _horizon_ref(self, ref, size: int) -> np.ndarray:
+        """Normalise a reference spec to an ``(N, size)`` array for this step."""
+        N = self.N
+        if ref is None:
+            return np.zeros((N, size))
+        if callable(ref):
+            ref = ref(self._t)
+        arr = np.asarray(ref, dtype=float)
+        if arr.ndim == 0:
+            return np.full((N, size), float(arr))
+        if arr.shape == (size,):
+            return np.tile(arr, (N, 1))
+        if arr.shape == (N, size):
+            return arr
+        raise ValueError(
+            f"reference must be scalar, ({size},), ({N}, {size}) or a callable "
+            f"returning one of those; got shape {arr.shape}"
+        )
 
     def update(self, measurement: ArrayLike, dt: float) -> ArrayLike:
         x0 = np.atleast_1d(np.asarray(measurement, dtype=float)).reshape(self.n)
         b = self._build(dt)
         n, m, N = self.n, self.m, self.N
 
-        Rref = np.tile(self.x_ref, N)
-        Uref = np.tile(self.u_ref, N)
+        Rref = self._horizon_ref(self.x_ref, n).ravel()      # stacked x_1..x_N target
+        Uref = self._horizon_ref(self.u_ref, m).ravel()       # stacked u_0..u_{N-1} ff
         e = b["Phi"] @ x0 - Rref
         g_U = b["Gamma"].T @ b["Qbar"] @ e - b["Rbar"] @ Uref
 
@@ -275,6 +300,7 @@ class LinearMPC(Controller):
         self.horizon_plan = U
         self.predicted_states = (b["Phi"] @ x0 + b["Gamma"] @ U.ravel()).reshape(N, n)
         self.output = float(u0[0]) if m == 1 else u0
+        self._t += dt                                    # elapsed time for callable refs
         return self.output
 
     # --------------------------------------------------------------- introspection

@@ -134,6 +134,85 @@ def test_horizon_plan_and_predicted_states_exposed(msd):
     assert mpc.predicted_states[0] == pytest.approx(x1, abs=1e-9)
 
 
+def _tracks(mpc, ref_pos, x0, dt, t_final):
+    traj = simulate(LinearSystem(A_DI, B_DI), mpc, x0=x0, dt=dt, t_final=t_final)
+    r = np.array([ref_pos(t) for t in traj.t])
+    return float(np.sqrt(np.mean((traj.x[:, 0] - r) ** 2)))
+
+
+def test_reference_preview_beats_a_held_setpoint_on_a_moving_target():
+    dt, N = 0.05, 20
+    Q, R = np.diag([50.0, 1.0]), np.array([[0.1]])
+    ref_pos = lambda t: np.sin(0.8 * t)                          # noqa: E731
+    ref_state = lambda t: np.array([ref_pos(t), 0.8 * np.cos(0.8 * t)])   # noqa: E731
+    x0 = np.array([0.0, 0.8])
+
+    preview = LinearMPC(A_DI, B_DI, Q=Q, R=R, N=N,
+                        x_ref=lambda t: np.array([ref_state(t + (k + 1) * dt)
+                                                  for k in range(N)]))
+
+    class _Hold:                                                 # current-point tracker
+        def __init__(self, m):
+            self.m, self._t = m, 0.0
+        def reset(self):
+            self.m.reset(); self._t = 0.0
+        def update(self, x, dt):
+            self.m.x_ref = ref_state(self._t)
+            u = self.m.update(x, dt); self._t += dt
+            return u
+
+    held = _Hold(LinearMPC(A_DI, B_DI, Q=Q, R=R, N=N))
+    e_preview = _tracks(preview, ref_pos, x0, dt, 10.0)
+    e_held = _tracks(held, ref_pos, x0, dt, 10.0)
+    assert e_preview < 0.05 * e_held                             # preview removes the lag
+
+
+def test_reference_preview_array_form_matches_callable():
+    dt, N = 0.05, 15
+    Q, R = np.diag([20.0, 1.0]), np.array([[0.2]])
+    ramp_state = lambda t: np.array([0.3 * t, 0.3])              # noqa: E731
+    horizon = lambda t: np.array([ramp_state(t + (k + 1) * dt) for k in range(N)])
+
+    a = LinearMPC(A_DI, B_DI, Q=Q, R=R, N=N, x_ref=horizon)          # callable
+    b = LinearMPC(A_DI, B_DI, Q=Q, R=R, N=N)                         # (N,n) array each step
+    x = np.array([0.0, 0.3])
+    for k in range(30):
+        ua = a.update(x, dt)
+        b.x_ref = horizon(k * dt)
+        ub = b.update(x, dt)
+        assert ua == pytest.approx(ub, abs=1e-9)
+
+
+def test_scalar_and_vector_references_are_still_held_over_the_horizon(msd):
+    _, A, B = msd
+    N = 10
+    mpc_vec = LinearMPC(A, B, Q=np.eye(2), R=np.array([[0.1]]), N=N,
+                        x_ref=np.array([1.0, 0.0]))
+    mpc_tiled = LinearMPC(A, B, Q=np.eye(2), R=np.array([[0.1]]), N=N,
+                          x_ref=np.tile(np.array([1.0, 0.0]), (N, 1)))
+    x = np.array([0.2, -0.1])
+    assert mpc_vec.update(x, 0.05) == pytest.approx(mpc_tiled.update(x, 0.05), abs=1e-12)
+
+
+def test_bad_reference_shape_raises():
+    mpc = LinearMPC(A_DI, B_DI, Q=np.eye(2), R=np.array([[0.1]]), N=8,
+                    x_ref=np.zeros((5, 2)))                      # N is 8, not 5
+    with pytest.raises(ValueError, match="reference must be"):
+        mpc.update(np.zeros(2), 0.05)
+
+
+def test_reset_zeros_the_elapsed_time_for_callable_refs():
+    seen = []
+    mpc = LinearMPC(A_DI, B_DI, Q=np.eye(2), R=np.array([[0.1]]), N=6,
+                    x_ref=lambda t: (seen.append(t), np.zeros((6, 2)))[1])
+    mpc.update(np.zeros(2), 0.1)
+    mpc.update(np.zeros(2), 0.1)
+    assert seen == [0.0, 0.1]
+    mpc.reset()
+    mpc.update(np.zeros(2), 0.1)
+    assert seen[-1] == 0.0
+
+
 def test_discretization_is_cached_per_dt(msd):
     _, A, B = msd
     mpc = LinearMPC(A, B, Q=np.eye(2), R=np.array([[0.1]]), N=8)
