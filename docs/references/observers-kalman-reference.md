@@ -129,10 +129,10 @@ $$Q_d \approx W \Delta t, \quad R_d \approx \frac{V}{\Delta t}$$
 ### Golden Reference Values
 1. **Steady-State Error Covariance $\Sigma$**:
    $$\Sigma = \begin{bmatrix} 
-   4.5852 \times 10^{-4} & 1.0019 \times 10^{-3} & -1.1831 \times 10^{-5} & -4.4642 \times 10^{-5} \\ 
-   1.0019 \times 10^{-3} & 4.5442 \times 10^{-2} & -1.0851 \times 10^{-4} & -1.0965 \times 10^{-3} \\ 
-   -1.1831 \times 10^{-5} & -1.0851 \times 10^{-4} & 8.3631 \times 10^{-4} & 3.4478 \times 10^{-3} \\ 
-   -4.4642 \times 10^{-5} & -1.0965 \times 10^{-3} & 3.4478 \times 10^{-3} & 3.6339 \times 10^{-1} 
+   4.5852 \times 10^{-4} & 1.0019 \times 10^{-3} & -1.1827 \times 10^{-5} & -4.4635 \times 10^{-5} \\ 
+   1.0019 \times 10^{-3} & 4.5983 \times 10^{-3} & -1.0851 \times 10^{-4} & -4.2567 \times 10^{-4} \\ 
+   -1.1827 \times 10^{-5} & -1.0851 \times 10^{-4} & 8.3631 \times 10^{-4} & 3.4478 \times 10^{-3} \\ 
+   -4.4635 \times 10^{-5} & -4.2567 \times 10^{-4} & 3.4478 \times 10^{-3} & 1.5633 \times 10^{-2} 
    \end{bmatrix}$$
 2. **Optimal Continuous Kalman Gain Matrix $L$**:
    $$L = \begin{bmatrix} 
