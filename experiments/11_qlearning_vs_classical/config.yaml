@@ -1,0 +1,44 @@
+# Experiment 11 - Tabular Q-learning vs classical control (pendulum)
+# Companion refs:
+#   docs/references/swingup-and-basin.md  section 1.1 (energy-shaping swing-up)
+#   modules/07-reinforcement-learning  (tabular Q-learning)
+
+question: >
+  On the same nonlinear pendulum (torque |u| <= 4), how does from-scratch tabular
+  Q-learning compare with classical control on (a) swing-up from hanging and
+  (b) balancing from a tilt - in final performance, control effort, the number of
+  environment samples needed to learn, and the interpretability of the result?
+
+system:
+  model: aimct.systems.Pendulum       # m=1, L=1, b=0.1, g=9.81; theta=0 hanging
+  torque_limit: 4.0
+  dt: 0.05
+
+classical:
+  swing_up:
+    law: "u = -k_E * sign(omega) * E(theta,omega), then LQR near upright"
+    k_energy: 1.5
+    catch_window: {angle_rad: 0.4, rate_rad_s: 3.0}
+  balance:
+    law: LQR about the upright linearisation
+    Q: [10, 1]
+    R: 0.5
+
+rl:
+  algorithm: tabular Q-learning (epsilon-greedy, eps 1.0 -> 0.05)
+  obs: [cos theta, sin theta, omega]
+  swing_up:
+    bins: [15, 15, 25]         # 5625 states
+    actions: 11                # linspace(-4, 4, 11)
+    episodes_full: 1500        # 300 steps each -> 450k env samples
+    episodes_quick: 250
+  balance:
+    x0: [pi, 0] + uniform(+-0.25 rad, +-0.4 rad/s)
+    bins: [15, 15, 21]
+    actions: 11
+    episodes_full: 900         # 200 steps each -> 180k env samples
+    episodes_quick: 200
+
+# Committed table/figure are the AIMCT_EXP_FULL=1 run (~90 s). The default is a
+# short training run so CI's per-experiment smoke stays quick (~17 s).
+sim: {integrator: rk4}
