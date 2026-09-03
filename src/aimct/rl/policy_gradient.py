@@ -53,6 +53,18 @@ class GaussianPolicy:
     def greedy(self, obs):
         return np.clip(self.mean(obs)[0], self.act_low, self.act_high)
 
+    def log_prob(self, O, A):
+        """Per-sample log pi(a|s) for batches ``O`` ``(B, obs)``, ``A`` ``(B, act)``."""
+        O = np.atleast_2d(np.asarray(O, dtype=float))
+        A = np.atleast_2d(np.asarray(A, dtype=float))
+        z = (A - self.net.forward(O)) / np.exp(self.log_std)
+        return (-0.5 * np.sum(z ** 2, axis=1) - np.sum(self.log_std)
+                - 0.5 * self.act_dim * _LOG2PI)
+
+    def entropy(self) -> float:
+        """Differential entropy of the diagonal Gaussian (state-independent)."""
+        return float(np.sum(self.log_std) + 0.5 * self.act_dim * (1.0 + _LOG2PI))
+
     # -- log prob + gradients ---------------------------------------------------
 
     def logp_and_grads(self, O, A, adv):

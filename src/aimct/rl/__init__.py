@@ -9,6 +9,7 @@
 from .dqn import DQN, QNetwork, ReplayBuffer, dqn
 from .env import TASKS, ControlEnv, make, wrap_to_pi
 from .policy_gradient import GaussianPolicy, evaluate_policy, reinforce
+from .ppo import PPO, ppo
 from .tabular import Discretizer, GreedyPolicy, QLearning, evaluate, train
 
 __all__ = [
@@ -28,4 +29,6 @@ __all__ = [
     "QNetwork",
     "ReplayBuffer",
     "dqn",
+    "PPO",
+    "ppo",
 ]
