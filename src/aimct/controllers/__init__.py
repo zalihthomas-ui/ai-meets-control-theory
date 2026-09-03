@@ -11,6 +11,7 @@ Available
                     eigenspace (:func:`solve_care`).
 """
 
+from .adaptive import MRAC, GainScheduledLQR, solve_lyapunov
 from .base import Controller
 from .lqr import LQR, solve_care
 from .mpc import LinearMPC, dare
@@ -36,6 +37,9 @@ __all__ = [
     "wrap_angle",
     "LinearMPC",
     "SamplingMPC",
+    "GainScheduledLQR",
+    "MRAC",
+    "solve_lyapunov",
     "dare",
     "place_poles",
     "solve_care",
