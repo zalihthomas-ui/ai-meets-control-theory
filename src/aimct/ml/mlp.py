@@ -60,22 +60,27 @@ class MLP:
 
     # ---------------------------------------------------------------- backward
 
+    def backprop(self, acts, delta):
+        """Backpropagate an arbitrary output-layer gradient ``delta`` (shape
+        ``(B, out)`` = dL/d(output)) through the cached forward ``acts``.
+        Returns ``(gW, gb)``. This is the generic hook the MSE head and the
+        policy-gradient head both use."""
+        gW = [None] * len(self.W)
+        gb = [None] * len(self.b)
+        for i in reversed(range(len(self.W))):
+            gW[i] = acts[i].T @ delta
+            gb[i] = delta.sum(axis=0)
+            if i > 0:
+                delta = (delta @ self.W[i].T) * self._df(acts[i])
+        return gW, gb
+
     def _loss_grad(self, X, Y):
         Y = np.atleast_2d(np.asarray(Y, dtype=float))
         yhat, acts = self.forward(X, cache=True)
         n = X.shape[0] if np.ndim(X) > 1 else 1
         resid = yhat - Y
         loss = float(np.mean(np.sum(resid**2, axis=1)))
-
-        gW = [None] * len(self.W)
-        gb = [None] * len(self.b)
-        delta = (2.0 / n) * resid                       # dL/dz at output (linear)
-        for i in reversed(range(len(self.W))):
-            a_prev = acts[i]
-            gW[i] = a_prev.T @ delta
-            gb[i] = delta.sum(axis=0)
-            if i > 0:
-                delta = (delta @ self.W[i].T) * self._df(acts[i])
+        gW, gb = self.backprop(acts, (2.0 / n) * resid)
         return loss, gW, gb
 
     # ---------------------------------------------------------------- fit

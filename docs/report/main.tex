@@ -50,7 +50,7 @@
 \lhead{\small\textsc{Living Technical Report}}
 \rfoot{\thepage}
 
-\newcommand{\milestone}{M5 --- Machine Learning for Dynamical Systems}
+\newcommand{\milestone}{M6 --- Reinforcement Learning}
 \newcommand{\reportdate}{\today}
 
 \title{\textbf{\LARGE AI Meets Control Theory}\\[0.35em]
@@ -101,8 +101,8 @@ $\longrightarrow$ \textbf{VISUALISATION} $\longrightarrow$ \textbf{VALIDATION} $
 \end{center}
 
 Fundamental algorithms are implemented from scratch in \texttt{numpy}; external
-libraries (\texttt{scipy.linalg}, \texttt{scipy.signal}, \texttt{control}) are
-used strictly for verification and cross-checking.
+libraries (\texttt{scipy.linalg}, \texttt{scipy.signal}, \texttt{control}, \texttt{gymnasium})
+are used strictly for verification and benchmarking compliance.
 
 % ===========================================================================
 \section{Framework Architecture}
@@ -111,7 +111,7 @@ used strictly for verification and cross-checking.
 The reusable library is the Python package \texttt{aimct} (\texttt{src/aimct/}).
 Its architecture separates distinct concerns behind minimal, strongly-typed
 interfaces so that dynamical systems, controllers, state estimators, neural network models,
-and the numerical simulator compose seamlessly without circular coupling.
+reinforcement learning environments, and the numerical simulator compose seamlessly.
 
 \begin{figure}[H]
 \centering
@@ -126,8 +126,8 @@ and the numerical simulator compose seamlessly without circular coupling.
   sig/.style={draw=black!80, line width=1.0pt, ->},
 ]
 % Nodes
-\node[ctl] (ctrl) {\textbf{Controller / Estimator / Planner}\\ \footnotesize\texttt{update(meas, dt)}\\ \footnotesize\texttt{reset()}};
-\node[sim, right=18mm of ctrl] (sim) {\textbf{simulate()}\\ \footnotesize RK4 + ZOH\\ \footnotesize\texttt{Trajectory(t, x, u, y)}};
+\node[ctl] (ctrl) {\textbf{Controller / Agent / Planner}\\ \footnotesize\texttt{update(meas, dt)}\\ \footnotesize\texttt{act(obs)}};
+\node[sim, right=18mm of ctrl] (sim) {\textbf{simulate() / ControlEnv}\\ \footnotesize RK4 + ZOH / Gym API\\ \footnotesize\texttt{step(u) -> obs, r, term, trunc}};
 \node[sys, right=18mm of sim] (sysm) {\textbf{DynamicalSystem / LearnedDynamics}\\ \footnotesize\texttt{dynamics(t, x, u)}\\ \footnotesize\texttt{predict(x, u)}};
 \node[bench, below=12mm of sim] (bench)
      {\textbf{benchmarks} --- \texttt{metrics.compute\_all\_metrics()} \;+\; \texttt{harness.compare()} $\longrightarrow$ Markdown/CSV Table + 4-Panel Figure};
@@ -156,9 +156,9 @@ src/aimct/
                 observability_matrix, is_observable, place_observer
   sysid/        least_squares_id, dmdc, to_continuous (block logm), prediction_error
   ml/           MLP (from-scratch backprop + Adam), LearnedDynamics (residual model)
+  rl/           ControlEnv (Gymnasium adapter), Discretizer, QLearning (tabular TD)
   benchmarks/   metrics.py (13 metrics), harness.py (compare() -> table + figure), sweep.py
   plot_style.py Okabe-Ito palette + publication-ready 4-panel comparison figure
-  rl/           (reserved for upcoming project phase)
 \end{lstlisting}
 
 % ===========================================================================
@@ -213,6 +213,9 @@ Table~\ref{tab:capabilities} summarises the implemented components, their mathem
 \addlinespace
 \texttt{aimct.ml} & Machine learning suite: multi-layer perceptron (\texttt{MLP}) with hand-written
   backpropagation + Adam, and residual forward dynamics predictor (\texttt{LearnedDynamics}). & \checkmark \\
+\addlinespace
+\texttt{aimct.rl} & Reinforcement learning suite: Gymnasium environment wrapper (\texttt{ControlEnv}),
+  observation/action \texttt{Discretizer}, and Tabular Q-Learning (\texttt{QLearning}) with $\epsilon$-greedy and decay. & \checkmark \\
 \addlinespace
 \texttt{aimct.benchmarks.metrics} & 13 standard step-response and effort metrics: rise time $t_r$,
   settling time $t_s$ (2\%), overshoot $M_p$, $e_{ss}$, RMSE, IAE, ITAE, ISE, energy $E_u$,
@@ -739,7 +742,7 @@ Given any forward model $f(x, u)$ (analytical or neural), \texttt{SamplingMPC} o
 \end{enumerate}
 
 \paragraph{The Crucial Role of the CARE Terminal Cost.}
-Short-horizon sampling planners ($H = 30 \implies 0.6\,\text{s}$) cannot anticipate open-loop instability occurring beyond the horizon. Adding the infinite-horizon Riccati kernel $x_H^\top P_{\text{CARE}} x_H$—fitted from least-squares linearization on the same data—acts as an explicit terminal Lyapunov control surrogate, ensuring asymptotic stability without requiring long prediction horizons.
+Short-horizon sampling planners ($H = 30 \implies 0.6\,\text{s}$) cannot anticipate open-loop instability occurring beyond the horizon. Adding the infinite-horizon Riccati kernel $x_H^\top P_{\text{CARE}} x_H$---fitted from least-squares linearization on the same data---acts as an explicit terminal Lyapunov control surrogate, ensuring asymptotic stability without requiring long prediction horizons.
 
 % ---------------------------------------------------------------------------
 \subsection{Worked Example: Planning with Learned Dynamics vs. True Model (Experiment 10)}
@@ -779,16 +782,80 @@ We evaluate \texttt{SamplingMPC} (CEM) driving the nonlinear Cart-Pole from $\th
 \end{figure}
 
 % ===========================================================================
+\section{Theory: Reinforcement Learning for Dynamical Systems (Module 07)}
+% ===========================================================================
+
+Reinforcement learning approaches control as optimal decision-making in an unknown Markov Decision Process (MDP) $(\mathcal{S}, \mathcal{A}, \mathcal{P}, \mathcal{R}, \gamma)$. The \texttt{aimct.rl} module bridges the dynamical systems library with the modern Gymnasium API and provides baseline tabular algorithms.
+
+\paragraph{Continuous Control Environment (\texttt{ControlEnv}).}
+Wrapping continuous-time dynamical systems $\dot x = f(t, x, u)$ into a standard Gymnasium environment:
+\begin{itemize}[nosep]
+  \item \textbf{Observation Space:} State vector $x \in \mathbb{R}^n$ or trigonometric transforms $[\cos\theta, \sin\theta, \dot\theta]^\top \in \mathbb{R}^3$.
+  \item \textbf{Action Space:} Continuous torque/force box bounds $u \in [u_{\min}, u_{\max}]$.
+  \item \textbf{Quadratic Stage Reward:} Matching classical optimal control cost:
+  \[
+  r(x_k, u_k) = -(x_k^\top Q x_k + u_k^\top R u_k) .
+  \]
+  \item \textbf{Integration:} Fixed-step Runge--Kutta 4th-order (\texttt{rk4\_step}) matching physical simulation fidelity.
+\end{itemize}
+
+\paragraph{State/Action Discretization \& Tabular Q-Learning.}
+For plants with low state dimension (e.g. inverted pendulum), \texttt{Discretizer} partitions continuous observations into $N_{\text{bins}}$ uniform intervals. The \texttt{QLearning} agent updates action-value estimates via Temporal Difference (TD) learning:
+\[
+Q(s_t, a_t) \gets Q(s_t, a_t) + \alpha \left[ r_{t+1} + \gamma \max_{a' \in \mathcal{A}} Q(s_{t+1}, a') - Q(s_t, a_t) \right] ,
+\]
+with $\epsilon$-greedy exploration decaying geometrically as $\epsilon_{k+1} = \max(\epsilon_{\min}, \epsilon_k \cdot d_\epsilon)$.
+
+% ---------------------------------------------------------------------------
+\subsection{Worked Example: Tabular Q-Learning vs. Classical Control on Pendulum (Experiment 11)}
+% ---------------------------------------------------------------------------
+
+We evaluate tabular Q-learning against classical energy shaping and LQR on the nonlinear Inverted Pendulum ($m=1.0\,\text{kg}, L=1.0\,\text{m}, b=0.1\,\text{Nms/rad}, g=9.81\,\text{m/s}^2$) under torque limit $|u| \le 4.0\,\text{N}\cdot\text{m}$ across two tasks: (1) swing-up from hanging ($\theta_0 = 0$), and (2) balancing from a tilted state ($\theta_0 = 0.4\,\text{rad}$):
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}llccccccc@{}}
+\toprule
+\textbf{Controller} & \textbf{Task} & \textbf{Min Err [rad]} & \textbf{Held Upright?} & \textbf{$t_{\text{upright}}$ [s]} & \textbf{Final Err [rad]} & \textbf{Energy $E_u$} & \textbf{Train Samples} & \textbf{Parameters} \\
+\midrule
+\textbf{Energy-Shaping + LQR} & Swing-Up & \textbf{0.00} & \textbf{Yes} & \textbf{4.00} & \textbf{0.000} & \textbf{45.9} & \textbf{0} & \textbf{3} \\
+\textbf{Tabular Q-Learning} & Swing-Up & 0.02 & No & 9.10 & 1.479 & 101.2 & 450,000 & 61,875 \\
+\addlinespace
+\textbf{LQR} & Balance & \textbf{0.00} & \textbf{Yes} & \textbf{0.85} & \textbf{0.000} & \textbf{11.7} & \textbf{0} & \textbf{2} \\
+\textbf{Tabular Q-Learning} & Balance & 0.05 & No & 3.45 & 1.527 & 40.4 & 180,000 & 51,975 \\
+\bottomrule
+\end{tabular}
+\caption{Benchmark results for Experiment 11 comparing Tabular Q-Learning against Classical Energy-Shaping and LQR on the Inverted Pendulum (from \texttt{experiments/11\_qlearning\_vs\_classical/table.md}).}
+\label{tab:exp11}
+\end{table}
+
+\paragraph{Key Reinforcement Learning vs. Classical Control Insights:}
+\begin{enumerate}[nosep]
+  \item \textbf{Model-Free Policy Discovery:} Without any knowledge of gravity, inertia, or damping equations, Q-learning autonomously discovers energy pumping (reaching min error $0.02\,\text{rad}$) and tilt recovery from pure scalar rewards.
+  \item \textbf{Discretization Chattering \& Limit Cycles:} Due to finite grid resolution ($\approx 0.4\,\text{rad/s}$ per velocity bin near vertical), the discrete greedy policy cannot perform the fine corrections required to hold upright, entering a permanent limit cycle (final error $\approx 1.5\,\text{rad}$).
+  \item \textbf{Massive Sample Cost:} Q-learning requires $180,000 - 450,000$ environment interactions ($2.5 - 6.0\,\text{hours}$ of physical real-time data) to approximate policies derived analytically for zero training cost.
+  \item \textbf{Interpretability and Verification Gap:} Classical control produces $2-3$ transparent, mathematically certifiable gain values ($K, k_E$). Q-learning outputs an opaque table of $50,000-60,000$ floating-point entries with zero stability guarantees.
+  \item \textbf{The Core Engineering Verdict:} When a mathematical plant model can be derived from physics or system identification, classical and optimal control dominate across every metric (zero sample cost, optimal energy, provable stability). Reinforcement learning provides unique value where modeling is impossible or intractable.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/exp11_rl_pendulum.png}
+\caption{Experiment 11 benchmark comparison: Tabular Q-Learning vs. Classical Control on Inverted Pendulum. (a) Swing-up from hanging, (b) Balancing from tilt, (c) Control torque comparison, and (d) 2D slice of learned Q-policy.}
+\label{fig:exp11}
+\end{figure}
+
+% ===========================================================================
 \section{Project Status and Roadmap}
 % ===========================================================================
 
 \paragraph{Milestone \milestone{} --- Completed.}
-Library core, four reference dynamical systems, RK4 simulator, PID with anti-windup, StateFeedback (Ackermann), LQR (from-scratch CARE solver), ObserverFeedback, Spong energy shaping (\texttt{EnergyShapingSwingUp}), hybrid hysteresis supervisor (\texttt{HybridSwingUpLQR}), constrained linear MPC with active-set QP solver (\texttt{aimct.controllers.LinearMPC}), sampling-based MPC (\texttt{aimct.controllers.SamplingMPC}), complete state estimation suite (\texttt{aimct.estimation}: Luenberger observers, Filter ARE solver, continuous/discrete Kalman filters, observability matrix), system identification engine (\texttt{aimct.sysid}: Least-Squares, DMDc, block logm ZOH inversion), machine learning suite (\texttt{aimct.ml}: MLP backprop + Adam, LearnedDynamics residual model), 13 benchmark metrics, multi-controller comparison harness, parameter sweep engine, Experiments 03, 04, 05, 06, 07, 08, 09, and 10, CI on Python 3.10--3.12 with 196 passing unit tests, and theory notes for Modules 01--06.
+Library core, four reference dynamical systems, RK4 simulator, PID with anti-windup, StateFeedback (Ackermann), LQR (from-scratch CARE solver), ObserverFeedback, Spong energy shaping (\texttt{EnergyShapingSwingUp}), hybrid hysteresis supervisor (\texttt{HybridSwingUpLQR}), constrained linear MPC with active-set QP solver (\texttt{aimct.controllers.LinearMPC}), sampling-based MPC (\texttt{aimct.controllers.SamplingMPC}), complete state estimation suite (\texttt{aimct.estimation}: Luenberger observers, Filter ARE solver, continuous/discrete Kalman filters, observability matrix), system identification engine (\texttt{aimct.sysid}: Least-Squares, DMDc, block logm ZOH inversion), machine learning suite (\texttt{aimct.ml}: MLP backprop + Adam, LearnedDynamics residual model), reinforcement learning suite (\texttt{aimct.rl}: ControlEnv Gymnasium adapter, Discretizer, QLearning), 13 benchmark metrics, multi-controller comparison harness, parameter sweep engine, Experiments 03 through 11, CI on Python 3.10--3.12 with 213 passing unit tests, and theory notes for Modules 01--07.
 
 \paragraph{Phase 3 Priorities (Next).}
 \begin{itemize}[nosep]
-  \item \textbf{Module 07: Reinforcement Learning:} Gym-style environment wrapper (\texttt{aimct.rl}), Tabular Q-learning with discretization, Policy Gradients (REINFORCE), and Proximal Policy Optimization (PPO) implemented from scratch.
-  \item \textbf{Experiment 11:} Tabular Q-learning vs. LQR / Hybrid Swing-Up on inverted pendulum and cart-pole.
+  \item \textbf{Deep Reinforcement Learning:} Continuous-action Policy Gradients (REINFORCE) and Proximal Policy Optimization (PPO) implemented from scratch.
   \item \textbf{Module 08: AI + Control (Hybrid Architectures):} Learned MPC cost shaping, RL policy with Control Barrier Function (CBF) safety filters.
 \end{itemize}
 
@@ -806,6 +873,7 @@ python experiments/07_cartpole_swingup_hybrid/run.py
 python experiments/08_mpc_vs_lqr_constrained_cartpole/run.py
 python experiments/09_control_on_identified_model/run.py
 python experiments/10_planning_learned_vs_true_model/run.py
+python experiments/11_qlearning_vs_classical/run.py
 \end{lstlisting}
 
 \end{document}
