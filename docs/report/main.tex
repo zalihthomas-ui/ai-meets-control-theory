@@ -50,7 +50,7 @@
 \lhead{\small\textsc{Living Technical Report}}
 \rfoot{\thepage}
 
-\newcommand{\milestone}{M8 --- Real-World Capstones: Quadrotor Flatness \& EKF Tracking}
+\newcommand{\milestone}{M8 --- Real-World Capstones: Quadrotor Flatness, EKF \& UKF}
 \newcommand{\reportdate}{\today}
 
 \title{\textbf{\LARGE AI Meets Control Theory}\\[0.35em]
@@ -89,8 +89,8 @@ visualise it, and compare it honestly}.
 The central question of the project is: \textbf{when should we use classical
 control, when should we use AI, and when should we use both?} Rather than
 assuming a neural network or an RL agent is the answer, every problem is first
-attacked with PID, state feedback, observers, LQR, Kalman filtering, system
-identification, nonlinear energy shaping, constrained MPC, learned neural dynamics,
+attacked with PID, state feedback, observers, LQR, Kalman filtering (linear, EKF, UKF),
+system identification, nonlinear energy shaping, constrained MPC, learned neural dynamics,
 reinforcement learning, and safety shields, and each method is measured against the
 others under identical initial conditions, sensor suites, noise profiles, disturbances,
 and actuator constraints.
@@ -155,9 +155,9 @@ src/aimct/
   simulate.py   rk4_step(), simulate() -> Trajectory(t, x, u, y)
   controllers/  PID, StateFeedback, LQR, ObserverFeedback,
                 EnergyShapingSwingUp, HybridSwingUpLQR,
-                LinearMPC, SamplingMPC (CEM planner), _qp.solve_qp
+                LinearMPC (with reference preview), SamplingMPC (CEM), _qp.solve_qp
   estimation/   LuenbergerObserver, KalmanFilter (LQE/FARE), DiscreteKalmanFilter,
-                ExtendedKalmanFilter, observability_matrix, is_observable, place_observer
+                ExtendedKalmanFilter, UnscentedKalmanFilter, observability_matrix
   sysid/        least_squares_id, dmdc, to_continuous (block logm), prediction_error
   ml/           MLP (from-scratch backprop + Adam), LearnedDynamics (residual model)
   rl/           ControlEnv (Gymnasium adapter), Discretizer, QLearning, GreedyPolicy
@@ -199,20 +199,21 @@ Table~\ref{tab:capabilities} summarises the implemented components, their mathem
   solved from scratch via Hamiltonian Schur decomposition, cross-checked with \texttt{scipy.linalg}. & \checkmark \\
 \addlinespace
 \texttt{aimct.controllers.ObserverFeedback} & Unified output feedback combining any state estimator
-  (Luenberger observer, linear Kalman filter, or EKF) with static feedback gain $u = -K\hat x$. & \checkmark \\
+  (Luenberger, linear KF, EKF, UKF) with static feedback gain $u = -K\hat x$. & \checkmark \\
 \addlinespace
 \texttt{aimct.controllers.SwingUp} & Nonlinear Spong energy shaping (\texttt{EnergyShapingSwingUp}) with partial
   feedback linearisation, plus finite-state hysteresis supervisor (\texttt{HybridSwingUpLQR}). & \checkmark \\
 \addlinespace
 \texttt{aimct.controllers.LinearMPC} & Constrained linear MPC via condensed receding-horizon QP,
-  from-scratch active-set solver (\texttt{\_qp.solve\_qp}), DARE terminal cost, and soft state constraints. & \checkmark \\
+  active-set solver (\texttt{\_qp.solve\_qp}), DARE terminal cost, soft state constraints, and reference preview. & \checkmark \\
 \addlinespace
 \texttt{aimct.controllers.SamplingMPC} & Sampling-based nonlinear MPC using the Cross-Entropy Method (CEM),
   vectorized batch trajectory rollouts, variance floor, and CARE terminal weight. & \checkmark \\
 \addlinespace
 \texttt{aimct.estimation} & State estimation suite: \texttt{observability\_matrix}, \texttt{is\_observable},
   \texttt{place\_observer}, \texttt{LuenbergerObserver}, \texttt{solve\_fare}, \texttt{KalmanFilter},
-  \texttt{DiscreteKalmanFilter}, and \texttt{ExtendedKalmanFilter} (nonlinear model propagation + Joseph update). & \checkmark \\
+  \texttt{DiscreteKalmanFilter}, \texttt{ExtendedKalmanFilter}, and \texttt{UnscentedKalmanFilter}
+  ($2n+1$ scaled sigma points, Merwe parameters, zero Jacobian linearisation). & \checkmark \\
 \addlinespace
 \texttt{aimct.sysid} & Data-driven system identification: \texttt{least\_squares\_id}, \texttt{dmdc}
   (rank-truncated SVD), \texttt{to\_continuous} (exact block matrix logarithm), \texttt{model\_mismatch}. & \checkmark \\
@@ -685,10 +686,11 @@ By expressing predicted future states $X = \mathcal{S}_x x_0 + \mathcal{S}_u U$ 
 \]
 which is solved from scratch via our primal \textbf{active-set QP solver} (\texttt{\_qp.solve\_qp}) with regularized Cholesky factorization and Schur complement equality-constrained subproblems.
 
-\paragraph{DARE Terminal Cost \& Soft State Constraints.}
+\paragraph{DARE Terminal Cost, Soft State Constraints \& Reference Preview.}
 \begin{itemize}[nosep]
   \item \textbf{Terminal Weight $Q_f = P_{\text{DARE}}$:} Setting the terminal weight equal to the discrete infinite-horizon Riccati solution ensures that unconstrained MPC identically reproduces discrete LQR feedback to $10^{-7}$ precision.
   \item \textbf{Soft State Constraints:} Exact quadratic penalty variables maintain recursive QP feasibility even during extreme transient disturbances where hard constraints would be temporarily violated.
+  \item \textbf{Reference Trajectory Preview:} When tracking dynamic trajectories, passing the sequence of future references $X_{\text{ref}} \in \mathbb{R}^{N \times n}$ over the horizon enables anticipatory control, eliminating corner-cutting and trajectory lag.
 \end{itemize}
 
 \begin{table}[H]
@@ -945,7 +947,7 @@ In Experiment~11, the tabular Q-learning swing-up agent swung the pendulum to ve
 \end{figure}
 
 % ===========================================================================
-\section{Theory: Real-World Capstone Showcases (Module 09)}
+\section{Theory: Real-World Capstones \& Advanced State Estimation (Module 09)}
 % ===========================================================================
 
 Moving from benchmark physics toys (pendulums, cart-poles) to real-world autonomous robotics introduces severe physical challenges: severe actuator gain imbalances spanning multiple orders of magnitude, nonlinear kinematics, unmeasured high-order dynamic states, sensor noise, and external environmental disturbances (wind gusts). The \texttt{aimct.systems.PlanarQuadrotor} model captures the full nonlinear dynamics of the **Bitcraze Crazyflie 2.0** nano-quadrotor ($m=28\,\text{g}, I_{yy}=1.4\times 10^{-5}\,\text{kg}\cdot\text{m}^2, \ell=46\,\text{mm}$, thrust limits $u_i \in [0, 0.30]\,\text{N}$, thrust-to-weight ratio $\sim 2.2:1$).
@@ -974,18 +976,15 @@ Q_{ii} = \frac{1}{x_{i,\max}^2}, \qquad R_{jj} = \frac{1}{u_{j,\max}^2} ,
 \]
 choosing maximum allowable deviations $x_{\max} = [0.10\,\text{m}, 0.10\,\text{m}, 0.20\,\text{rad}, 0.50\,\text{m/s}, 0.50\,\text{m/s}, 3.0\,\text{rad/s}]$ and control authority $u_{\max} = [0.15\,\text{N}, 0.15\,\text{N}]$ to synthesize a well-damped, optimal multivariable regulator.
 
-\paragraph{The Extended Kalman Filter (EKF) for Nonlinear Output Feedback.}
-When translational velocities $(\dot x, \dot z)$ are unmeasured, the \texttt{ExtendedKalmanFilter} executes continuous-discrete estimation by propagating the nonlinear continuous dynamics via internal RK4:
-\[
-\hat x_{k|k-1} = \text{rk4\_step}(f, t_{k-1}, \hat x_{k-1|k-1}, u_{k-1}, \Delta t), \qquad
-F_k = I + \Delta t \left.\frac{\partial f}{\partial x}\right|_{\hat x}, \qquad
-P_{k|k-1} = F_k P_{k-1|k-1} F_k^\top + Q_w ,
-\]
-and applying the Joseph-form covariance update against partial, noisy measurements $y_k = h(x_k) + v_k$:
-\[
-K_k = P_{k|k-1} H_k^\top (H_k P_{k|k-1} H_k^\top + R_v)^{-1}, \qquad
-\hat x_{k|k} = \hat x_{k|k-1} + K_k \big(y_k - h(\hat x_{k|k-1})\big) .
-\]
+\paragraph{Nonlinear State Estimation: Extended (EKF) vs. Unscented (UKF) Kalman Filtering.}
+\begin{itemize}[nosep]
+  \item \textbf{Extended Kalman Filter (\texttt{ExtendedKalmanFilter}):} Linearises continuous dynamics $f$ and output map $h$ about the current conditional mean via Taylor expansion ($F = I + \Delta t \frac{\partial f}{\partial x}$, $H = \frac{\partial h}{\partial x}$) and propagates the covariance via $P_{k|k-1} = F_k P_{k-1|k-1} F_k^\top + Q_w$. Computationally minimal ($1$ evaluation per step), but vulnerable to divergence if uncertainty spans large nonlinear curvature.
+  \item \textbf{Unscented Kalman Filter (\texttt{UnscentedKalmanFilter}):} Avoids analytical/numerical Jacobian linearisation entirely by propagating $2n+1$ deterministic sigma points through the exact nonlinear equations:
+  \[
+  \chi_0 = \hat x, \quad \chi_i = \hat x + \sqrt{n+\lambda} [\sqrt{P}]_i, \quad \chi_{i+n} = \hat x - \sqrt{n+\lambda} [\sqrt{P}]_i, \quad i=1,\dots,n
+  \]
+  where $\lambda = \alpha^2(n+\kappa) - n$. Propagating each $\chi_i$ through $f$ and $h$ captures posterior mean and covariance accurately to 3rd order for Gaussian inputs (Merwe scaling parameters $\alpha, \beta, \kappa$).
+\end{itemize}
 
 % ---------------------------------------------------------------------------
 \subsection{Worked Example: Crazyflie 2.0 Flying a Lemniscate (Experiment 14)}
@@ -1060,9 +1059,9 @@ Velocities $(\dot x, \dot z)$ are completely unmeasured. We evaluate the Extende
 
 \paragraph{Key State Estimation Insights:}
 \begin{enumerate}[nosep]
-  \item \textbf{Near-Zero Performance Penalty with EKF:} The EKF achieves an RMS position error of $9.51\,\text{mm}$ vs. the ideal full-state baseline of $9.04\,\text{mm}$---a negligible **5\% penalty** for omitting physical velocity sensors.
-  \item \textbf{Sub-Centimeter Velocity Reconstruction:} The EKF infers unmeasured translational velocities $(\dot x, \dot z)$ purely from noisy position history through the physical model to within **$8\,\text{mm/s}$ RMS accuracy**.
-  \item \textbf{Catastrophic Energy Penalty of Naive Differencing:} Differencing $3\,\text{mm}$ position noise at $\Delta t = 4\,\text{ms}$ injects massive noise into velocity derivatives ($0.33\,\text{m/s}$ error), inflating control energy by **150$\times$** ($0.3580$ vs. $0.0024\,\text{N}^2\text{s}$) and inducing severe actuator thrashing that destroys physical drone motors.
+  \item \textbf{Near-Zero Performance Penalty with EKF:} The EKF achieves an RMS position error of $9.51\,\text{mm}$ vs. the ideal full-state baseline of $9.04\,\text{mm}$---a negligible \textbf{5\% penalty} for omitting physical velocity sensors.
+  \item \textbf{Sub-Centimeter Velocity Reconstruction:} The EKF infers unmeasured translational velocities $(\dot x, \dot z)$ purely from noisy position history through the physical model to within \textbf{8 mm/s RMS accuracy}.
+  \item \textbf{Catastrophic Energy Penalty of Naive Differencing:} Differencing $3\,\text{mm}$ position noise at $\Delta t = 4\,\text{ms}$ injects massive noise into velocity derivatives ($0.33\,\text{m/s}$ error), inflating control energy by \textbf{150$\times$} ($0.3580$ vs. $0.0024\,\text{N}^2\text{s}$) and inducing severe actuator thrashing that destroys physical drone motors.
 \end{enumerate}
 
 \begin{figure}[H]
@@ -1072,23 +1071,68 @@ Velocities $(\dot x, \dot z)$ are completely unmeasured. We evaluate the Extende
 \label{fig:exp15}
 \end{figure}
 
+% ---------------------------------------------------------------------------
+\subsection{Worked Example: EKF vs. UKF on Nonlinear Pendulum Estimation (Experiment 16)}
+% ---------------------------------------------------------------------------
+
+Experiment~16 compares the Extended Kalman Filter (tangent linearisation) against the Unscented Kalman Filter ($2n+1$ sigma points) on a nonlinear Inverted Pendulum across two distinct uncertainty regimes:
+\begin{itemize}[nosep]
+  \item \textbf{Hard Regime (Strong Curvature \& Broad Prior):} Curved sensor map $y = [\sin\theta, \cos\theta]^\top + v$ ($\sigma=0.1$, sampled every 5th step), large initial angle error $\hat\theta_0 = 0$ ($\pi\,\text{rad}$ off true $\theta_0 = 3.1\,\text{rad}$), broad prior $P_0 = \text{diag}(15, 15)$.
+  \item \textbf{Mild Regime (Weak Curvature \& Tight Prior):} Sensor map $y = [\sin\theta, \dot\theta]^\top + v$ ($\sigma=0.03$, sampled every step), small initial error ($\hat\theta_0 = 2.75\,\text{rad}$ vs. $\theta_0 = 3.0\,\text{rad}$), tight prior $P_0 = \text{diag}(0.2, 0.2)$.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Regime} & \textbf{Filter} & \textbf{RMS Error [rad]} & \textbf{Final Error [rad]} & \textbf{Recovered?} \\
+\midrule
+\textbf{Hard (sin/cos, $\pi$-off init)} & \textbf{EKF} & 6.514 & \textbf{6.282 ($\approx 2\pi$)} & \textbf{False (Trapped)} \\
+\textbf{Hard (sin/cos, $\pi$-off init)} & \textbf{UKF} & \textbf{1.382} & \textbf{0.068} & \textbf{True (Converged)} \\
+\addlinespace
+\textbf{Mild (sin/rate, good init)} & \textbf{EKF} & \textbf{0.021} & \textbf{0.026} & \textbf{True} \\
+\textbf{Mild (sin/rate, good init)} & \textbf{UKF} & \textbf{0.021} & \textbf{0.026} & \textbf{True} \\
+\bottomrule
+\end{tabular}%
+}
+\caption{Benchmark results for Experiment 16: EKF vs. UKF on nonlinear Pendulum estimation (from \texttt{experiments/16\_ekf\_vs\_ukf/table.md}).}
+\label{tab:exp16}
+\end{table}
+
+\paragraph{Key Non-Linear Estimation Takeaways:}
+\begin{enumerate}[nosep]
+  \item \textbf{EKF Divergence in Severe Curvature:} Under broad uncertainty across the nonlinear $[\sin\theta, \cos\theta]$ manifold, the EKF linearises about an incorrect initial point, pulling the estimate into a mirror false basin (final error $6.28\,\text{rad} \approx 2\pi$), and shrinks its covariance $P$ around that error---becoming \emph{confidently wrong} (Figure~\ref{fig:exp16}c).
+  \item \textbf{UKF Curvature Capture via Sigma Points:} The UKF spreads $2n+1=5$ sigma points across the prior ellipsoid and maps them through the exact trigonometric functions, capturing the quadratic fold and converging to $0.068\,\text{rad}$.
+  \item \textbf{The Practical Practitioner Rule:} When the prior uncertainty is tightly localized and the operating regime is mildly nonlinear (as in the Experiment 15 Quadrotor tracking case), EKF and UKF produce identical estimates to 3 decimal places ($0.021\,\text{rad}$ RMS). In such settings, the EKF is preferred because it requires $5\times$ fewer nonlinear function evaluations per time step.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/exp16_ekf_vs_ukf.png}
+\caption{Experiment 16 benchmark comparison: EKF vs. UKF on nonlinear Pendulum estimation illustrating trajectory convergence, covariance trace $\text{tr}(P)$, and error profiles across hard and mild regimes.}
+\label{fig:exp16}
+\end{figure}
+
 % ===========================================================================
 \section{Project Status and Roadmap}
 % ===========================================================================
 
 \paragraph{Milestone \milestone{} --- Completed.}
-All curriculum modules and capstone real-world showcases are fully implemented from scratch, tested, and validated across 14 experiments:
+All curriculum modules and capstone real-world showcases are fully implemented from scratch, tested, and validated across 15 experiments:
 \begin{enumerate}[nosep]
   \item \textbf{Module 01: Mathematical Foundations} --- Linear algebra, matrix exponential, Runge--Kutta integration, numerical optimization.
   \item \textbf{Module 02: Dynamic System Modeling} --- First-principles modeling, state-space representations, Jacobian linearisation, discretization.
   \item \textbf{Module 03: Classical Control} --- Filtered derivative PID, conditional anti-windup clamping, frequency response, stability margins (Experiment 03).
-  \item \textbf{Module 04: Modern Control \& Estimation} --- Controllability, observability, Ackermann pole placement, full-state Luenberger observers, Filter ARE duality, continuous/discrete Kalman filtering with Joseph update (Experiments 04, 05, 06).
-  \item \textbf{Module 05: Optimal \& Constrained Control} --- Continuous Algebraic Riccati Equation (CARE) Hamiltonian solver, LQR robustness margins, constrained Model Predictive Control via active-set QP solver (Experiment 08).
+  \item \textbf{Module 04: Modern Control \& Estimation} --- Controllability, observability, Ackermann pole placement, full-state Luenberger observers, Filter ARE duality, continuous/discrete Kalman filtering with Joseph update, Extended Kalman Filter (EKF), Unscented Kalman Filter (UKF) with scaled sigma points (Experiments 04, 05, 06, 15, 16).
+  \item \textbf{Module 05: Optimal \& Constrained Control} --- Continuous Algebraic Riccati Equation (CARE) Hamiltonian solver, LQR robustness margins, constrained Model Predictive Control with active-set QP solver and reference preview (Experiments 08, 14).
   \item \textbf{Module 06: System ID \& Machine Learning} --- Least-squares state-space ID, DMDc, matrix logarithm ZOH inversion, from-scratch MLP with Adam, residual LearnedDynamics, SamplingMPC (CEM) with CARE terminal cost (Experiments 07, 09, 10).
   \item \textbf{Module 07: Reinforcement Learning} --- Gymnasium \texttt{ControlEnv} adapter, state/action discretization, Tabular Q-Learning, Monte-Carlo policy gradients (Experiment 11).
   \item \textbf{Module 08: AI + Control (Hybrid Architectures)} --- Supervisory safety shielding, action filtering, barrier predicates, auditable intervention logging (Experiment 12).
-  \item \textbf{Module 09: Real-World Robotics Capstones} --- Full 6-state Planar Quadrotor (Bitcraze Crazyflie 2.0), differential flatness feedforward trajectory generation, Bryson-rule scaling, Extended Kalman Filter (EKF) output feedback under unmeasured velocities (Experiments 14, 15).
+  \item \textbf{Module 09: Real-World Robotics Capstones} --- Full 6-state Planar Quadrotor (Bitcraze Crazyflie 2.0), differential flatness feedforward trajectory generation, Bryson-rule scaling, EKF output feedback under unmeasured velocities, and EKF vs. UKF estimation comparison (Experiments 14, 15, 16).
 \end{enumerate}
+CI passes on Python 3.10--3.12 with \textbf{263 passing unit tests}.
 
 \paragraph{Reproduction Commands.}
 \begin{lstlisting}[language=bash]
@@ -1108,6 +1152,7 @@ python experiments/11_qlearning_vs_classical/run.py
 python experiments/12_shielded_qlearning/run.py
 python experiments/14_quadrotor_figure8_tracking/run.py
 python experiments/15_quadrotor_ekf_output_feedback/run.py
+python experiments/16_ekf_vs_ukf/run.py
 \end{lstlisting}
 
 \end{document}

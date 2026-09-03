@@ -31,6 +31,7 @@ Copy-Fig "11_qlearning_vs_classical" "figure.png" "exp11_rl_pendulum.png"
 Copy-Fig "12_shielded_qlearning" "figure.png" "exp12_shielded.png"
 Copy-Fig "14_quadrotor_figure8_tracking" "figure.png" "exp14_quadrotor.png"
 Copy-Fig "15_quadrotor_ekf_output_feedback" "figure.png" "exp15_quadrotor_ekf.png"
+Copy-Fig "16_ekf_vs_ukf" "figure.png" "exp16_ekf_vs_ukf.png"
 
 Write-Host "compiling main.tex..."
 Push-Location $here
