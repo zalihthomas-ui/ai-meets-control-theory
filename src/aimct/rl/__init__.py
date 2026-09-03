@@ -1,12 +1,14 @@
-"""Reinforcement learning: a Gymnasium adapter for ``aimct.systems`` and
-from-scratch tabular Q-learning.
+"""Reinforcement learning, all from scratch on NumPy.
 
-``env``     : :class:`ControlEnv`, the :data:`TASKS` registry, :func:`make`.
-``tabular`` : :class:`Discretizer`, :class:`QLearning`, :func:`train`,
-              :func:`evaluate`.
+``env``             : :class:`ControlEnv`, the :data:`TASKS` registry, :func:`make`.
+``tabular``         : :class:`Discretizer`, :class:`QLearning`, :func:`train`.
+``policy_gradient`` : :class:`GaussianPolicy`, :func:`reinforce` (REINFORCE).
+``dqn``             : :class:`DQN` (deep Q-network with replay + target net).
 """
 
+from .dqn import DQN, QNetwork, ReplayBuffer, dqn
 from .env import TASKS, ControlEnv, make, wrap_to_pi
+from .policy_gradient import GaussianPolicy, evaluate_policy, reinforce
 from .tabular import Discretizer, GreedyPolicy, QLearning, evaluate, train
 
 __all__ = [
@@ -19,4 +21,11 @@ __all__ = [
     "GreedyPolicy",
     "train",
     "evaluate",
+    "GaussianPolicy",
+    "reinforce",
+    "evaluate_policy",
+    "DQN",
+    "QNetwork",
+    "ReplayBuffer",
+    "dqn",
 ]
