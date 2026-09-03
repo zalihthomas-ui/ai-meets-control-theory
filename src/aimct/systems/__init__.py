@@ -5,6 +5,7 @@ from .cartpole import CartPole
 from .linear import LinearSystem
 from .mass_spring_damper import MassSpringDamper
 from .pendulum import Pendulum
+from .quadrotor import PlanarQuadrotor
 
 __all__ = [
     "DynamicalSystem",
@@ -12,4 +13,5 @@ __all__ = [
     "MassSpringDamper",
     "Pendulum",
     "CartPole",
+    "PlanarQuadrotor",
 ]
