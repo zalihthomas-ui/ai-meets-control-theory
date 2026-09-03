@@ -17,14 +17,16 @@ function Copy-Fig($expDir, $target) {
 
 Write-Host "refreshing figures..."
 Copy-Fig "03_pid_stabilizes_unstable" "exp03_pid_unstable.png"
-# Copy-Fig "04_lqr_vs_pole_placement_cartpole" "exp04_lqr_cartpole.png"
 
 Write-Host "compiling main.tex..."
 Push-Location $here
 try {
-    latexmk -pdf -interaction=nonstopmode -halt-on-error -silent main.tex
+    # Run pdflatex twice to resolve references and table of contents
+    pdflatex -interaction=nonstopmode -halt-on-error main.tex | Out-Null
+    pdflatex -interaction=nonstopmode -halt-on-error main.tex | Out-Null
     Copy-Item (Join-Path $here "main.pdf") (Join-Path $here "ai-meets-control-theory.pdf") -Force
-    latexmk -c -silent main.tex | Out-Null
+    # Clean up auxiliary files
+    Get-ChildItem -Path $here -Include *.aux, *.log, *.out, *.toc -File | Remove-Item -Force
 } finally {
     Pop-Location
 }
