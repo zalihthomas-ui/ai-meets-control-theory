@@ -1,0 +1,32 @@
+# Experiment 09 - designing a controller on a data-identified model
+# References: docs/references/cartpole-lqr-reference.md; src/aimct/sysid
+
+question: >
+  If you don't have the equations of motion, can you identify a linear model of
+  the cart-pole from input/output data and design an LQR on it that works on the
+  real (nonlinear) plant? How much data do you need, and how does model error
+  propagate into closed-loop performance?
+
+plant:
+  system: CartPole            # canonical params
+  f_max: 20.0
+
+identification:
+  method: closed_loop_prbs    # mild stabiliser + PRBS excitation keeps data near upright
+  data_stabiliser_Q: [1.0, 1.0, 10.0, 1.0]
+  data_stabiliser_R: 1.0
+  prbs_amplitude: 8.0         # N
+  prbs_hold_steps: 10
+  data_lengths: [500, 2000, 8000]   # steps  (x dt = 1, 4, 16 s of data)
+  fit: least_squares_id + to_continuous (block-logm ZOH inversion)
+
+task_controller:              # LQR designed on each identified model, run on the true plant
+  Q_diag: [10.0, 1.0, 100.0, 10.0]
+  R: 0.1
+  x0: [0.0, 0.0, 0.10, 0.0]
+  target: 0.0
+
+sim:
+  dt: 0.002
+  t_final: 6.0
+  seed: 0
