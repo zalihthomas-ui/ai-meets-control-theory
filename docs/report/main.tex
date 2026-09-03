@@ -50,7 +50,7 @@
 \lhead{\small\textsc{Living Technical Report}}
 \rfoot{\thepage}
 
-\newcommand{\milestone}{M2 --- Classical + Modern Control}
+\newcommand{\milestone}{M2 --- Classical, Modern, and Estimation}
 \newcommand{\reportdate}{\today}
 
 \title{\textbf{\LARGE AI Meets Control Theory}\\[0.35em]
@@ -70,10 +70,10 @@
 \noindent This report is regenerated at every project milestone. It documents
 \emph{what the codebase can do}, \emph{the theory behind each component}, and
 \emph{where the project currently stands}. The project is an open-source
-laboratory for comparing classical control, optimal control, machine learning
-and reinforcement learning on dynamical systems, under the core principle:
-\textit{build every method from scratch, simulate it, visualise it, and compare
-it honestly}.
+laboratory for comparing classical control, optimal control, state estimation,
+machine learning and reinforcement learning on dynamical systems, under the core
+principle: \textit{build every method from scratch, simulate it, visualise it,
+and compare it honestly}.
 \end{abstract}
 
 \tableofcontents
@@ -88,9 +88,9 @@ it honestly}.
 The central question of the project is: \textbf{when should we use classical
 control, when should we use AI, and when should we use both?} Rather than
 assuming a neural network or an RL agent is the answer, every problem is first
-attacked with PID, state feedback, LQR and MPC, and each method is measured
-against the others under identical initial conditions, setpoints, disturbances,
-and actuator constraints.
+attacked with PID, state feedback, observers, LQR, Kalman filtering, and MPC, and
+each method is measured against the others under identical initial conditions,
+sensor suites, noise profiles, disturbances, and actuator constraints.
 
 Every topic follows the standardized engineering cycle:
 \begin{center}
@@ -107,9 +107,9 @@ used strictly for verification and cross-checking.
 % ===========================================================================
 
 The reusable library is the Python package \texttt{aimct} (\texttt{src/aimct/}).
-Its architecture separates three distinct concerns behind minimal, strongly-typed
-interfaces so that any dynamical system, any controller, and the numerical simulator
-compose seamlessly without circular coupling.
+Its architecture separates distinct concerns behind minimal, strongly-typed
+interfaces so that dynamical systems, controllers, state estimators, and the
+numerical simulator compose seamlessly without circular coupling.
 
 \begin{figure}[H]
 \centering
@@ -124,7 +124,7 @@ compose seamlessly without circular coupling.
   sig/.style={draw=black!80, line width=1.0pt, ->},
 ]
 % Nodes
-\node[ctl] (ctrl) {\textbf{Controller}\\ \footnotesize\texttt{update(meas, dt)}\\ \footnotesize\texttt{reset()}};
+\node[ctl] (ctrl) {\textbf{Controller / Estimator}\\ \footnotesize\texttt{update(meas, dt)}\\ \footnotesize\texttt{reset()}};
 \node[sim, right=18mm of ctrl] (sim) {\textbf{simulate()}\\ \footnotesize RK4 + ZOH\\ \footnotesize\texttt{Trajectory(t, x, u, y)}};
 \node[sys, right=18mm of sim] (sysm) {\textbf{DynamicalSystem}\\ \footnotesize\texttt{dynamics(t, x, u)}\\ \footnotesize\texttt{linearize(x\_eq, u\_eq)}};
 \node[bench, below=12mm of sim] (bench)
@@ -148,9 +148,11 @@ src/aimct/
                 Pendulum, CartPole (analytic + numerical Jacobians)
   simulate.py   rk4_step(), simulate() -> Trajectory(t, x, u, y)
   controllers/  Controller base + PID, StateFeedback, LQR
-  benchmarks/   metrics.py (13 metrics), harness.py (compare() -> table + figure)
+  estimation/   LuenbergerObserver, KalmanFilter (LQE/FARE), DiscreteKalmanFilter,
+                observability_matrix, is_observable, place_observer
+  benchmarks/   metrics.py (13 metrics), harness.py (compare() -> table + figure), sweep.py
   plot_style.py Okabe-Ito palette + publication-ready 4-panel comparison figure
-  estimation/ ml/ rl/   (reserved for upcoming project phases)
+  ml/ rl/       (reserved for upcoming project phases)
 \end{lstlisting}
 
 % ===========================================================================
@@ -182,6 +184,11 @@ Table~\ref{tab:capabilities} summarises the implemented components, their mathem
 \addlinespace
 \texttt{aimct.controllers.LQR} & Infinite-horizon optimal regulator; Continuous Algebraic Riccati Equation (CARE)
   solved from scratch via Hamiltonian Schur decomposition, cross-checked with \texttt{scipy.linalg}. & \checkmark \\
+\addlinespace
+\texttt{aimct.estimation} & State estimation suite: \texttt{observability\_matrix}, \texttt{is\_observable},
+  \texttt{place\_observer} (dual Ackermann), \texttt{LuenbergerObserver} (RK4 internal propagation),
+  \texttt{solve\_fare} (Filter ARE), \texttt{KalmanFilter} (LQE), and \texttt{DiscreteKalmanFilter}
+  with Joseph-form covariance update. & \checkmark \\
 \addlinespace
 \texttt{aimct.benchmarks.metrics} & 13 standard step-response and effort metrics: rise time $t_r$,
   settling time $t_s$ (2\%), overshoot $M_p$, $e_{ss}$, RMSE, IAE, ITAE, ISE, energy $E_u$,
@@ -286,8 +293,10 @@ The system is tested under a unit step reference $r = 1.0\,\text{rad}$, a step i
 \end{figure}
 
 % ===========================================================================
-\section{Theory: Modern Control --- Pole Placement and LQR}
+\section{Theory: Modern Control, Estimation, and Optimal Design}
 % ===========================================================================
+
+\subsection{Pole Placement and LQR}
 
 For controllable linear systems $\dot x = Ax + Bu$, full-state feedback $u = -Kx + k_r r$ assigns arbitrary closed-loop poles $\sigma(A - BK)$. \texttt{StateFeedback} computes $K$ via Ackermann's formula:
 \[
@@ -355,16 +364,69 @@ Controllers are designed on the linearised model and executed on the \textbf{tru
 \label{fig:exp04}
 \end{figure}
 
+% ---------------------------------------------------------------------------
+\subsection{State Estimation: Observers, Kalman Filtering, and Duality}
+% ---------------------------------------------------------------------------
+
+In physical applications, directly measuring the complete state vector $x(t) \in \mathbb{R}^n$ is rarely possible due to sensor cost, weight, or accessibility. The \texttt{aimct.estimation} module provides full-state reconstruction from partial, noisy outputs $y(t) = C x(t) + v(t)$.
+
+\paragraph{The Full-State Luenberger Observer.}
+Driven by plant input $u(t)$ and measured output $y(t)$:
+\[
+\dot{\hat{x}}(t) = A \hat{x}(t) + B u(t) + L \big(y(t) - C \hat{x}(t)\big) ,
+\]
+where $e(t) \triangleq x(t) - \hat{x}(t)$ evolves autonomously as $\dot e(t) = (A - LC) e(t)$. By the \textbf{Separation Principle}, the eigenvalues of the combined plant-observer system decouple into:
+\[
+\det \begin{bmatrix} sI - (A - BK) & -BK \\ 0 & sI - (A - LC) \end{bmatrix} = \det(sI - (A - BK)) \cdot \det(sI - (A - LC)) .
+\]
+
+\paragraph{Mathematical Duality: LQR Control vs. Kalman Filtering (LQE).}
+State estimation and optimal control are exact mathematical duals:
+\[
+\begin{aligned}
+\text{\textbf{LQR Regulator (CARE):}} \quad & A^\top P + P A - P B R^{-1} B^\top P + Q = 0, \quad & K = R^{-1} B^\top P \\
+\text{\textbf{LQE Estimator (FARE):}} \quad & A P + P A^\top - P C^\top R_v^{-1} C P + Q_w = 0, \quad & L = P C^\top R_v^{-1}
+\end{aligned}
+\]
+where $Q_w \succeq 0$ is process disturbance covariance and $R_v \succ 0$ is measurement noise covariance.
+
+\paragraph{Discrete Kalman Filter (DKF).}
+For sampled systems ($x_{k+1} = A_d x_k + B_d u_k + w_k$), the filter executes predict-update recursions using the numerically robust \textbf{Joseph-form} covariance update:
+\[
+\hat x_{k|k} = \hat x_{k|k-1} + K_k (y_k - C_d \hat x_{k|k-1}), \qquad
+P_{k|k} = (I - K_k C_d) P_{k|k-1} (I - K_k C_d)^\top + K_k R_v K_k^\top .
+\]
+
+\paragraph{Sensor-Suite Observability on Cart-Pole.}
+Evaluating the observability matrix $\mathcal{O} = [C^\top, \; A^\top C^\top, \; (A^\top)^2 C^\top, \; (A^\top)^3 C^\top]^\top$ reveals profound differences across sensor configurations:
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}lccl@{}}
+\toprule
+\textbf{Sensor Configuration} & \textbf{Measurement $y$} & \textbf{Rank($\mathcal{O}$)} & \textbf{Physical / Structural Mechanism} \\
+\midrule
+\textbf{Full State} & $[x, \dot x, \theta, \dot \theta]^\top$ & 4 & Direct sensing of all coordinates. \\
+\textbf{Cart Position Only} & $y = x$ & \textbf{4 (Observable)} & Cart acceleration $\ddot x$ dynamically couples to pole angle $\theta$. \\
+\textbf{Pole Angle Only} & $y = \theta$ & \textbf{2 (Unobservable)} & Rigid-body rail translation produces zero torque on the pole. \\
+\textbf{Dual Encoders} & $y = [x, \theta]^\top$ & \textbf{4 (Observable)} & Direct kinematic sensing; optimal numerical conditioning. \\
+\bottomrule
+\end{tabular}
+\caption{Observability rank of the 4-state Cart-Pole under candidate sensor suites.}
+\label{tab:obs}
+\end{table}
+
 % ===========================================================================
 \section{Project Status and Roadmap}
 % ===========================================================================
 
 \paragraph{Milestone \milestone{} --- Completed.}
-Library core, four reference dynamical systems, RK4 simulator, PID with anti-windup, StateFeedback (Ackermann), LQR (from-scratch CARE solver), 13 benchmark metrics, multi-controller comparison harness, Experiment 03 (PID unstable stabilization), Experiment 04 (LQR vs. Pole Placement vs. PID on Cart-Pole), CI on Python 3.10--3.12 with 90+ passing unit tests, and complete theory notes for Modules 01--05.
+Library core, four reference dynamical systems, RK4 simulator, PID with anti-windup, StateFeedback (Ackermann), LQR (from-scratch CARE solver), complete state estimation suite (\texttt{aimct.estimation}: Luenberger observers, Filter ARE solver, continuous/discrete Kalman filters, observability matrix), 13 benchmark metrics, multi-controller comparison harness, Experiment 03, Experiment 04, CI on Python 3.10--3.12 with 117 passing unit tests, and theory notes for Modules 01--05.
 
 \paragraph{Phase 1 Priorities (Next).}
 \begin{itemize}[nosep]
-  \item \textbf{State Estimation (\texttt{aimct.estimation}):} Luenberger observers and continuous/discrete Kalman filtering.
+  \item \textbf{Experiment 05 \& 06:} Parameter sensitivity sweep and full LQG (LQR + Kalman Filter) on Cart-Pole under sensor noise.
   \item \textbf{System Identification:} Data-driven linear state-space fitting for L1 and L2 benchmark systems.
   \item \textbf{Nonlinear Control \& Swing-Up:} Energy-based swing-up controller for the Cart-Pole to push $\theta_0$ past the linear basin ($\theta_0 = \pi \to 0$).
   \item \textbf{Phase 2 (Optimal Control):} Constrained Model Predictive Control (linear MPC with from-scratch QP solver).
