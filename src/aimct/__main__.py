@@ -75,11 +75,27 @@ def main(argv=None) -> int:
 
     sub.add_parser("list", help="list the built-in systems")
 
+    pl = sub.add_parser("live", help="interactive drone-vs-wind sandbox")
+    pl.add_argument("--headless", action="store_true",
+                    help="run the physics smoke check without a GUI")
+
     args = p.parse_args(argv)
 
     if args.cmd == "list":
         for name in sorted(_PRESETS):
             print(name)
+        return 0
+
+    if args.cmd == "live":
+        import runpy
+        from pathlib import Path
+        script = (Path(__file__).resolve().parents[2]
+                  / "experiments" / "live_drone" / "live.py")
+        if args.headless:
+            sys.argv = [str(script), "--headless"]
+        else:
+            sys.argv = [str(script)]
+        runpy.run_path(str(script), run_name="__main__")
         return 0
 
     factory, kw = _PRESETS[args.system]
