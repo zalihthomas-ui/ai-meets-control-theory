@@ -1,0 +1,4 @@
+controller,cart_peak_m,constraint_violation_m,theta_settle_s,control_energy,peak_force_N
+LQR,0.6162,0.1162,2.79,28.8,20.0
+MPC (unconstrained),0.6232,0.1232,2.81,27.7,20.0
+MPC (|x|<=0.5),0.5014,0.0014,2.56,46.3,20.0

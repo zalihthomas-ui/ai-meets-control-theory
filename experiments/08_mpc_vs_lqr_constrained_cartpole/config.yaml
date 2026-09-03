@@ -1,0 +1,35 @@
+# Experiment 08 - Constrained linear MPC vs LQR on the cart-pole
+# Companion theory: modules/05-optimal-control/05-model-predictive-control-intro.md
+#                   docs/references/cartpole-lqr-reference.md (balanced tuning)
+
+question: >
+  Balancing the cart-pole from a moderate tilt with a bounded actuator, the LQR
+  recovery swings the cart past the +/-0.5 m track limit. Can linear MPC with
+  the SAME Q, R but an explicit cart-position constraint plan a recovery that
+  respects the limit - and what does it cost?
+
+system:
+  model: aimct.systems.CartPole      # M=1.0, m=0.1, l=0.5, g=9.81
+  x0: [0.0, 0.0, 0.35, 0.0]          # 0.35 rad (~20 deg) initial pole tilt
+  actuator: {F_max: 20.0}
+  track_limit: {x_cart_abs_max: 0.5} # the constraint MPC respects and LQR ignores
+
+controllers:                         # identical weights, from cartpole-lqr-reference "balanced"
+  Q: [10, 1, 100, 10]
+  R: 0.1
+  variants:
+    - LQR                            # analytic, no constraint awareness
+    - MPC unconstrained              # condensed N-step QP; matches LQR here
+    - MPC |x_cart| <= 0.5            # + softened state box
+
+mpc:
+  horizon_N: 75                      # 0.75 s look-ahead at dt = 0.01
+  discretisation: ZOH via expm, cached per dt
+  terminal_cost: discrete-ARE solution (Qf default)
+  qp: from-scratch active-set (aimct.controllers._qp)
+  state_constraint: soft quadratic penalty, soft_weight = 1e5
+
+sim:
+  dt: 0.01
+  t_final: 6.0
+  integrator: rk4
