@@ -16,6 +16,7 @@ from .lqr import LQR, solve_care
 from .mpc import LinearMPC, dare
 from .observer_feedback import ObserverFeedback
 from .pid import PID
+from .sampling_mpc import SamplingMPC
 from .state_feedback import (
     StateFeedback,
     controllability_matrix,
@@ -34,6 +35,7 @@ __all__ = [
     "HybridSwingUpLQR",
     "wrap_angle",
     "LinearMPC",
+    "SamplingMPC",
     "dare",
     "place_poles",
     "solve_care",

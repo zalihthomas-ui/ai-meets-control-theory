@@ -15,7 +15,7 @@ dependencies = ["numpy>=1.26", "scipy>=1.11", "matplotlib>=3.8"]
 # python-control: used to cross-check from-scratch implementations. The core
 # library still must not import it at runtime — keep it test-only.
 xcheck = ["control>=0.10"]
-ml = ["torch>=2.2", "gymnasium>=0.29"]
+ml = ["torch>=2.2", "gymnasium>=1.0"]  # torch: use the CPU wheel index in CI
 dev = ["pytest>=8.0", "control>=0.10"]
 
 [tool.setuptools.packages.find]
