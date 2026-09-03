@@ -31,15 +31,16 @@ NORMALISERS: dict[str, tuple[float, float]] = {
 }
 
 
-def robust_degradation(j_nominal: float, j_perturbed_mean: float) -> float:
+def robust_degradation(j_nominal: float, j_perturbed_mean: float, floor: float = 0.20) -> float:
     """
-    Computes robustness degradation factor in [0.0, 1.0] (spec §3.4):
-      S_robust = max(0.0, 1.0 - (J_pert_mean - J_nom) / J_nom)
+    Computes robustness degradation factor in [floor, 1.0] (spec §3.4):
+      S_robust = max(floor, 1.0 - (J_pert_mean - J_nom) / J_nom)
     """
     if j_nominal <= 0.0:
         return 1.0
     degradation = (j_perturbed_mean - j_nominal) / j_nominal
-    return float(np.clip(1.0 - max(0.0, degradation), 0.0, 1.0))
+    raw_factor = 1.0 - max(0.0, degradation)
+    return float(np.clip(max(floor, raw_factor), floor, 1.0))
 
 
 def score_run(
@@ -50,6 +51,7 @@ def score_run(
     safety_ok: bool = True,
     weights: Mapping[str, float] | None = None,
     dq_reasons: Sequence[str] | None = None,
+    max_ratio: float = 10.0,
 ) -> dict[str, object]:
     """
     Scores a single evaluation rollout against baseline costs (spec §4).
@@ -59,6 +61,9 @@ def score_run(
                          w_energy * (J_energy / J_energy_base) +
                          w_slew * (J_slew / J_slew_base) ] )
           * S_robust * I(safety_ok)
+
+    Individual cost ratios are capped at max_ratio (default 10.0) to prevent
+    high-frequency numerical noise from causing exponential underflow to 0.0.
 
     Returns:
       {
@@ -82,10 +87,10 @@ def score_run(
     b_energy = float(baseline.get("control_energy", baseline.get("energy", baseline.get("j_energy", 1.0))))
     b_slew = float(baseline.get("slew_rate", baseline.get("slew", baseline.get("j_slew", 1.0))) or 1.0)
 
-    # Avoid zero division
-    r_itae = m_itae / max(1e-6, b_itae)
-    r_energy = m_energy / max(1e-6, b_energy)
-    r_slew = m_slew / max(1e-6, b_slew)
+    # Ratio capping at max_ratio (default 10.0)
+    r_itae = min(max_ratio, m_itae / max(1e-6, b_itae))
+    r_energy = min(max_ratio, m_energy / max(1e-6, b_energy))
+    r_slew = min(max_ratio, m_slew / max(1e-6, b_slew))
 
     norm_cost = (
         w.get("itae", 0.50) * r_itae

@@ -70,15 +70,25 @@ def test_robust_degradation_calculation() -> None:
     # 0% degradation
     assert robust_degradation(10.0, 10.0) == 1.0
 
-    # 50% degradation
+    # 50% degradation -> 0.50
     assert robust_degradation(10.0, 15.0) == pytest.approx(0.50, rel=1e-3)
 
-    # 100% or worse degradation clamped to 0.0
-    assert robust_degradation(10.0, 20.0) == 0.0
-    assert robust_degradation(10.0, 50.0) == 0.0
+    # 100% or worse degradation floored at 0.20
+    assert robust_degradation(10.0, 20.0) == 0.20
+    assert robust_degradation(10.0, 50.0) == 0.20
 
     # Better performance under perturbation clamped to 1.0
     assert robust_degradation(10.0, 8.0) == 1.0
+
+
+def test_score_run_ratio_capping() -> None:
+    baseline = {"itae": 1.0, "control_energy": 1.0, "slew_rate": 1.0}
+    # Extreme noise on slew rate: ratio = 10000.0 -> capped at 10.0
+    metrics_noisy = {"itae": 1.0, "control_energy": 1.0, "slew_rate": 10000.0}
+    res = score_run(metrics_noisy, baseline, max_ratio=10.0)
+    assert res["terms"]["slew_ratio"] == 10.0
+    # norm_cost = 0.5*1 + 0.3*1 + 0.2*10 = 2.8 -> composite = 100*exp(-2.8) > 0
+    assert res["composite"] > 5.0
 
 
 # ============================================================================
