@@ -99,8 +99,11 @@ All candidate controllers are evaluated across five orthogonal dimensions:
 
 ### 3.4 Robustness Degradation Score ($S_{\text{robust}}$)
 Let $\bar{J}_{\text{nominal}}$ be the nominal cost and $\bar{J}_{\text{perturbed}}$ be the mean cost over a 50-seed Monte Carlo sweep of $\pm 30\%$ parametric shifts:
-$$S_{\text{robust}} = \max\left( 0.0, \ 1.0 - \frac{\bar{J}_{\text{perturbed}} - \bar{J}_{\text{nominal}}}{\bar{J}_{\text{nominal}}} \right)$$
-A controller whose performance degrades by $>100\%$ receives $S_{\text{robust}} = 0$.
+$$S_{\text{robust}} = \max\left( 0.20, \ 1.0 - \frac{\bar{J}_{\text{perturbed}} - \bar{J}_{\text{nominal}}}{\bar{J}_{\text{nominal}}} \right)$$
+
+- **Floor Calibration ($0.20$)**: To reward controllers that achieve excellent nominal tracking and maintain task success under perturbation without severe divergence, $S_{\text{robust}}$ is floored at $0.20$.
+- A non-adaptive controller whose cost degrades by $>100\%$ but remains stable receives $S_{\text{robust}} = 0.20$, preserving its nominal ranking position rather than collapsing to zero.
+- Any actual safety constraint breach or loss of stability triggers an instant hard-zero via $\mathbb{I}(\text{No Safety Failures})$.
 
 ### 3.5 Computational Efficiency Index ($J_{\text{comp}}$)
 1. **Mean Step Latency ($\bar{t}_{\text{step}}$)**: Must not exceed the real-time deadline $t_{\text{deadline}} = 0.5 \cdot \Delta t$ (e.g., $\le 0.5\text{ ms}$ for a $1000\text{ Hz}$ control loop).
@@ -113,12 +116,17 @@ A controller whose performance degrades by $>100\%$ receives $S_{\text{robust}} 
 
 For any evaluation run, the overall challenge score $S \in [0, 100]$ is computed as:
 
-$$S = 100 \cdot \exp\left( - \left[ w_1 \frac{J_{\text{ITAE}}}{J_{\text{ITAE}}^{\text{base}}} + w_2 \frac{J_{\text{energy}}}{J_{\text{energy}}^{\text{base}}} + w_3 \frac{J_{\text{slew}}}{J_{\text{slew}}^{\text{base}}} \right] \right) \times S_{\text{robust}} \times \mathbb{I}(\text{No Safety Failures})$$
+$$S = 100 \cdot \exp\left( - \left[ w_1 r_{\text{ITAE}} + w_2 r_{\text{energy}} + w_3 r_{\text{slew}} \right] \right) \times S_{\text{robust}} \times \mathbb{I}(\text{No Safety Failures})$$
 
-**Standard Default Weights**:
-- $w_1 = 0.50$ (Tracking accuracy)
-- $w_2 = 0.30$ (Energy efficiency)
-- $w_3 = 0.20$ (Actuator smoothness)
+where individual cost ratios are capped at $10.0$:
+$$r_{\text{ITAE}} = \min\left( 10.0, \ \frac{J_{\text{ITAE}}}{J_{\text{ITAE}}^{\text{base}}} \right), \quad r_{\text{energy}} = \min\left( 10.0, \ \frac{J_{\text{energy}}}{J_{\text{energy}}^{\text{base}}} \right), \quad r_{\text{slew}} = \min\left( 10.0, \ \frac{J_{\text{slew}}}{J_{\text{slew}}^{\text{base}}} \right)$$
+
+**Calibration Rationale**:
+- **Ratio Capping**: Capping at $10.0$ bounds the maximum normalized cost to $10.0$, guaranteeing that any successful controller (even with high derivative slew from sensor noise) receives a non-zero score $S \ge 100 e^{-10} \approx 0.0045$, creating a meaningful performance gradient on the leaderboard rather than an exponential cliff.
+- **Standard Default Weights**:
+  - $w_1 = 0.50$ (Tracking accuracy / ITAE)
+  - $w_2 = 0.30$ (Energy efficiency)
+  - $w_3 = 0.20$ (Actuator smoothness / Slew rate)
 - Baseline values $J^{\text{base}}$ are defined by the canonical reference LQR controller in `docs/references/benchmark-systems.md`.
 
 ---
