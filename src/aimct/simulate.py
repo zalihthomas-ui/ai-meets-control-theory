@@ -29,6 +29,7 @@ class Trajectory:
     x: np.ndarray  # (N, n_states)   state at each sample
     u: np.ndarray  # (N, n_inputs)   input applied over [t[k], t[k+1]); u[-1] repeats
     y: np.ndarray  # (N, n_outputs)  measured output at each sample
+    diverged: bool = False  # True if the run stopped early on a non-finite state
 
     def __len__(self) -> int:
         return len(self.t)
@@ -112,9 +113,19 @@ def simulate(
         if input_disturbance is not None:
             d = np.atleast_1d(np.asarray(input_disturbance(t), dtype=float))
             u_applied = u + d
-        x = rk4_step(system.dynamics, t, x, u_applied, dt)
+        with np.errstate(over="ignore", invalid="ignore"):
+            x = rk4_step(system.dynamics, t, x, u_applied, dt)
         ts[k + 1] = t + dt
         xs[k + 1] = x
+
+        if not np.all(np.isfinite(x)):
+            # The run blew up. Keep this first non-finite sample (so downstream
+            # divergence checks still fire) and stop -- further RK4 steps would
+            # just spew overflow warnings.
+            last = k + 2
+            return Trajectory(
+                t=ts[:last], x=xs[:last], u=us[:last], y=ys[:last], diverged=True
+            )
 
     us[-1] = us[-2] if n_steps > 0 else us[-1]
     ys[-1] = np.atleast_1d(np.asarray(system.output(ts[-1], xs[-1], us[-1]), dtype=float))

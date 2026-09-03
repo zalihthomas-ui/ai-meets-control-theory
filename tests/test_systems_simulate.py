@@ -48,6 +48,21 @@ def test_cartpole_linearize_numeric_matches_analytic():
     assert np.allclose(B_num, B_an, atol=1e-4)
 
 
+def test_divergent_run_stops_early_and_flags_diverged():
+    # unstable scalar plant xdot = +x with no control -> blows up
+    sys = LinearSystem(A=[[1.0]], B=[[1.0]])
+    traj = simulate(sys, lambda y, dt: np.zeros(1), x0=[1.0], dt=0.1, t_final=1e6)
+    assert traj.diverged is True
+    assert len(traj) < int(round(1e6 / 0.1)) + 1     # stopped early
+    assert not np.all(np.isfinite(traj.x))           # keeps the blow-up sample
+
+
+def test_finite_run_is_not_flagged_diverged():
+    sys = MassSpringDamper()
+    traj = simulate(sys, lambda y, dt: np.zeros(1), x0=[1.0, 0.0], dt=0.01, t_final=5.0)
+    assert traj.diverged is False
+
+
 def test_input_bounds_are_enforced():
     sys = LinearSystem(A=[[0.0]], B=[[1.0]])
     traj = simulate(
