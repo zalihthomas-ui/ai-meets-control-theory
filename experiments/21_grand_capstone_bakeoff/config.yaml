@@ -1,0 +1,30 @@
+# Experiment 21 - the grand bake-off (capstone C9.4)
+# One real system, every methodology, the honest comparison.
+
+question: >
+  Figure-8 + a keep-out disk + a wind gust, on the Crazyflie 2.0. Put every
+  paradigm on the same course - classical (LQR + flatness), optimal
+  (linear MPC preview), learned-model planning (sampling MPC + grey-box net),
+  reinforcement learning (PPO policy), and the hybrid (RL behind a safety
+  shield) - and score them on tracking, effort, constraint violations,
+  robustness, and design/compute cost. Does combining methodologies help?
+
+course:
+  trajectory: lemniscate  x_r = 0.55 sin(w t),  z_r = 1.0 + 0.30 sin(2 w t),  period 6 s
+  obstacle: disk centre [0.30, 1.16], radius 0.16 m, 0.04 m buffer
+  wind_gust: 0.030 N lateral during t in [4.5, 7.5] s  (~11% of weight)
+
+controllers:
+  - LQR + flatness feedforward          (exp 14)
+  - Linear MPC (preview)                (exp 14, N=40 horizon reference)
+  - Sampling MPC + learned grey-box     (exp 20, obstacle-aware, CARE terminal)
+  - RL policy (PPO)                     (toku, trained on quad-figure8-track)
+  - RL + safety shield                  (RL policy, LQR fallback near obstacle / large error)
+
+scoring: docs/references/capstone-rubric.md  (famo) - normalised terms +
+         composite; robustness = re-run over a wind-gust seed sweep.
+
+sim:
+  dt: 0.02
+  duration: 12.0
+  seed: 0
