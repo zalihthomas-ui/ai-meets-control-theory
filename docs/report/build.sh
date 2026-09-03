@@ -35,6 +35,9 @@ copy_fig "12_shielded_qlearning" "figure.png" "exp12_shielded.png"
 copy_fig "14_quadrotor_figure8_tracking" "figure.png" "exp14_quadrotor.png"
 copy_fig "15_quadrotor_ekf_output_feedback" "figure.png" "exp15_quadrotor_ekf.png"
 copy_fig "16_ekf_vs_ukf" "figure.png" "exp16_ekf_vs_ukf.png"
+copy_fig "17_adaptive_vs_fixed_changing_plant" "figure.png" "exp17_adaptive.png"
+copy_fig "18_rl_zoo_vs_lqr" "figure.png" "exp18_rl_zoo.png"
+copy_fig "19_icc_leaderboard" "figure.png" "exp19_icc_leaderboard.png"
 
 # --- 2. compile (latexmk drives pdflatex, 2-3 passes for the ToC)
 echo "compiling main.tex..."
