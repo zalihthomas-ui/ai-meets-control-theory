@@ -1,0 +1,44 @@
+# Experiment 06 - LQG vs full-state LQR under measurement noise (cart-pole)
+# References: docs/references/observers-kalman-reference.md,
+#            docs/references/cartpole-lqr-reference.md
+
+question: >
+  A full-state LQR needs all four states, noise-free - it never exists on real
+  hardware. Given only two noisy encoders (cart x, pole angle), how close does
+  LQG (Kalman filter + the same LQR gain) get to that ideal, and what does a
+  pole-placed Luenberger observer cost you instead of the noise-matched filter?
+
+plant:                 # aimct.systems.CartPole, canonical params
+  m_cart: 1.0
+  m_pole: 0.1
+  length: 0.5
+  g: 9.81
+  f_max: 20.0
+
+task:
+  x0: [0.0, 0.0, 0.08, 0.0]   # theta0 = 0.08 rad ~ 4.6 deg
+  target: 0.0                  # regulate pole angle to upright
+  scored_channel: 2
+  deriv_channel: 3
+
+sensors:                       # dual encoders: measure x and theta
+  C: [[1, 0, 0, 0], [0, 0, 1, 0]]
+  sigma_x: 0.005               # cart position noise std [m]
+  sigma_theta: 0.0087          # pole angle noise std [rad] (~0.5 deg)
+
+lqr:
+  Q_diag: [10.0, 1.0, 100.0, 10.0]
+  R: 0.1
+
+kalman:
+  W_diag: [1.0e-4, 1.0e-3, 1.0e-4, 1.0e-3]   # process-noise / model-uncertainty
+  # V = diag(sigma_x^2, sigma_theta^2)
+
+luenberger:
+  observer_poles: [-20.0, -22.0, -24.0, -26.0]   # deliberately fast, unfiltered
+
+sim:
+  dt: 0.002
+  t_final: 5.0
+  integrator: rk4
+  seed: 0
