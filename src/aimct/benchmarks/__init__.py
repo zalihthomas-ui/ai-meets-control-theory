@@ -2,8 +2,27 @@
 Benchmark suites, metrics, and comparison harnesses.
 """
 
+from aimct.benchmarks.challenge_scoring import (
+    NORMALISERS,
+    WEIGHTS,
+    BaselineCosts,
+    ChallengeScoreResult,
+    SafetyEnvelope,
+    ScoreWeights,
+    evaluate_safety,
+    robust_degradation,
+    score_run,
+)
+from aimct.benchmarks.challenge_wrappers import (
+    ActuatorLag,
+    BlackBoxEnvironment,
+    BlackBoxPlant,
+    ImpulseDisturbance,
+    ImpulseInjector,
+    ParamPerturbed,
+    perturbed_system,
+)
 from aimct.benchmarks.harness import ComparisonResult, compare
-from aimct.benchmarks.sweep import SweepResult, sweep
 from aimct.benchmarks.metrics import (
     compute_all_metrics,
     control_energy,
@@ -20,6 +39,7 @@ from aimct.benchmarks.metrics import (
     slew_rate,
     steady_state_error,
 )
+from aimct.benchmarks.sweep import SweepResult, sweep
 
 __all__ = [
     "rise_time",
@@ -40,4 +60,21 @@ __all__ = [
     "ComparisonResult",
     "sweep",
     "SweepResult",
+    # Challenge scoring & wrappers
+    "WEIGHTS",
+    "NORMALISERS",
+    "ScoreWeights",
+    "BaselineCosts",
+    "SafetyEnvelope",
+    "ChallengeScoreResult",
+    "robust_degradation",
+    "evaluate_safety",
+    "score_run",
+    "ParamPerturbed",
+    "perturbed_system",
+    "ActuatorLag",
+    "ImpulseDisturbance",
+    "ImpulseInjector",
+    "BlackBoxPlant",
+    "BlackBoxEnvironment",
 ]
