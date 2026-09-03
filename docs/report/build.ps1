@@ -28,6 +28,7 @@ Copy-Fig "08_mpc_vs_lqr_constrained_cartpole" "cart_constraint.png" "exp08_cart_
 Copy-Fig "09_control_on_identified_model" "figure.png" "exp09_sysid.png"
 Copy-Fig "10_planning_learned_vs_true_model" "figure.png" "exp10_learned_mpc.png"
 Copy-Fig "11_qlearning_vs_classical" "figure.png" "exp11_rl_pendulum.png"
+Copy-Fig "12_shielded_qlearning" "figure.png" "exp12_shielded.png"
 
 Write-Host "compiling main.tex..."
 Push-Location $here

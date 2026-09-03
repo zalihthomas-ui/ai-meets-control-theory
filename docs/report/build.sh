@@ -31,6 +31,7 @@ copy_fig "08_mpc_vs_lqr_constrained_cartpole" "cart_constraint.png" "exp08_cart_
 copy_fig "09_control_on_identified_model" "figure.png" "exp09_sysid.png"
 copy_fig "10_planning_learned_vs_true_model" "figure.png" "exp10_learned_mpc.png"
 copy_fig "11_qlearning_vs_classical" "figure.png" "exp11_rl_pendulum.png"
+copy_fig "12_shielded_qlearning" "figure.png" "exp12_shielded.png"
 
 # --- 2. compile (latexmk drives pdflatex, 2-3 passes for the ToC)
 echo "compiling main.tex..."
