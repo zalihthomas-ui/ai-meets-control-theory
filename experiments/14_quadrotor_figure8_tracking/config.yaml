@@ -1,0 +1,38 @@
+# Experiment 14 - planar quadrotor flying a figure-8 : LQR vs linear MPC
+# Real-world system: aimct.systems.PlanarQuadrotor (Crazyflie 2.0 parameters)
+
+question: >
+  Can a controller designed on the hover linearisation fly a real nano-drone
+  (Crazyflie 2.0) around an aggressive figure-8 trajectory on the true
+  nonlinear dynamics - and how do LQR and a receding-horizon linear MPC compare
+  on tracking accuracy, control effort, and thrust headroom?
+
+plant:                       # Crazyflie 2.0
+  mass: 0.028                # kg
+  Iyy: 1.4e-5                # kg m^2
+  arm: 0.046                 # m
+  thrust_max_per_rotor_group: 0.1573   # N  (~2:1 thrust-to-weight)
+  hover_thrust_per_group: 0.1373        # N  (= m g / 2)
+
+trajectory:                  # lemniscate of Gerono in the x-z plane
+  x_r: A * sin(w t)
+  z_r: z0 + B * sin(2 w t)
+  A: 0.6                     # m
+  B: 0.35                    # m
+  period: 6.0               # s  (w = 2 pi / period)
+  z0: 1.0                    # m  hover height
+  feedforward: hover thrust + m * [xdd_r, zdd_r] mapped through the input
+
+controllers:
+  - LQR + trajectory feedforward   Q=diag(8,8,2,1,1,0.2), R=diag(1,1)
+  - LinearMPC (receding)           same Q,R diag, N=25, horizon setpoint = ref at t+N dt
+
+task:
+  x0: [0.0, 1.0, 0.0, 0.0, 0.0, 0.0]   # start at hover height, on the trajectory
+  duration: 12.0                        # two laps
+  score: RMS position error, RMS pitch, control energy, peak thrust, thrust sat %
+
+sim:
+  dt: 0.004
+  integrator: rk4
+  seed: 0
