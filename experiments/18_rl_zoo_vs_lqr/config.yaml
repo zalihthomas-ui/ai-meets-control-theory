@@ -1,0 +1,22 @@
+# Experiment 18 - the RL zoo vs LQR on cart-pole balance
+# What does model-free learning cost, and does it beat the analytic controller?
+
+task: aimct.rl.make("cartpole-balance", max_steps=200)
+     # reward -(x'Qx + u'Ru); terminate on |theta| > 0.8 or |x| > 2.4
+
+agents:
+  - LQR (analytic)          Q=diag(10,1,100,10), R=0.1 ; zero samples, 4 numbers
+  - Tabular Q-learning      15x15x15x15 state bins, 7 action bins
+  - DQN (from scratch)      MLP [4,64,64,5], replay + target net
+  - PPO (from scratch)      GaussianPolicy [4,64,64,1] + MLP critic, GAE + clip
+  - PPO (Stable-Baselines3) library cross-check, same step budget (if installed)
+
+report (per agent):
+  greedy mean return, mean episode length held / 200, environment steps
+  consumed in training, wall-clock training seconds, controller parameter count
+
+budgets:
+  default (CI):  DQN 150 episodes, PPO 30 iters, tabular 400 episodes, SB3 40k steps
+  AIMCT_EXP_FULL=1:  ~3-5x each (committed artifacts use this)
+
+seed: 0
