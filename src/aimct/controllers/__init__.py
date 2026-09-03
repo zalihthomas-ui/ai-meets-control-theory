@@ -13,6 +13,7 @@ Available
 
 from .base import Controller
 from .lqr import LQR, solve_care
+from .mpc import LinearMPC, dare
 from .observer_feedback import ObserverFeedback
 from .pid import PID
 from .state_feedback import (
@@ -32,6 +33,8 @@ __all__ = [
     "EnergyShapingSwingUp",
     "HybridSwingUpLQR",
     "wrap_angle",
+    "LinearMPC",
+    "dare",
     "place_poles",
     "solve_care",
     "controllability_matrix",
