@@ -1150,7 +1150,7 @@ Five paradigm representatives are evaluated across five ICC tracks:
 \midrule
 \textbf{Linear MPC} & \textbf{21.1 (PASS)} & \textbf{41.3 (PASS)} & 0.0 (FAILED) & 0.0 (FAILED) & 0.0 (FAILED) \\
 \textbf{LQR} & 7.4 (PASS) & 36.8 (PASS) & 0.0 (FAILED) & 0.0 (FAILED) & 0.0 (FAILED) \\
-\textbf{Energy+LQR Hybrid} & 1.8 (PASS) & 0.0 (FAILED) & \textbf{23.8 (PASS)} & 0.0 (DQ) & \textbf{29.9 (PASS)} \\
+\textbf{Energy+LQR Hybrid} & 1.8 (PASS) & 0.0 (FAILED) & \textbf{23.8 (PASS)} & \textbf{9.6 (PASS)} & \textbf{29.9 (PASS)} \\
 \textbf{PID} & 0.6 (PASS) & 0.0 (FAILED) & 0.0 (FAILED) & 0.0 (FAILED) & 0.0 (FAILED) \\
 \textbf{Tabular Q-Learning} & 0.0 (FAILED) & 0.0 (FAILED) & 0.0 (FAILED) & 0.0 (FAILED) & 0.0 (FAILED) \\
 \bottomrule
@@ -1162,9 +1162,9 @@ Five paradigm representatives are evaluated across five ICC tracks:
 
 \paragraph{Key Leaderboard Verdicts:}
 \begin{enumerate}[nosep]
-  \item \textbf{Optimal Control Dominates Precision:} Linear MPC achieves the highest score on DC Motor ($41.3$, beating the baseline) and passes Mass-Spring-Damper ($21.1$) by optimally scheduling control authority against actuator voltage limits.
-  \item \textbf{Nonlinear Energy Shaping Dominates Agility \& Robustness:} The Energy+LQR hybrid is the only submission to solve Pendulum swing-up ($23.8$) and withstand Track 3 stacked stress ($29.9$).
-  \item \textbf{No Single Paradigm Wins Everywhere:} Precision tracking rewards constrained optimization (MPC), whereas large-basin maneuvers reward global nonlinear energy methods, highlighting the necessity of hybrid architectures.
+  \item \textbf{Optimal Control Dominates Precision:} Linear MPC is the only entry that passes both precision tracks with margin, achieving the highest score on DC Motor ($41.3$, beating the reference baseline $\approx 37$) and passing Mass-Spring-Damper ($21.1$) by optimally scheduling control authority against actuator voltage limits.
+  \item \textbf{Classical Energy-Shaping Hybrid Owns Agility Across Every Track:} The Energy+LQR hybrid is the \emph{only} submission to clear all three agility and stress tracks: Pendulum swing-up ($23.8$), Cart-Pole swing-up ($9.6$, using the Experiment-07 Spong energy pump with hysteresis catch), and the Track 3 robustness gauntlet with stacked parameter variations, actuator lag, and impulse shocks, where it scores the highest of any entry on the board ($29.9$).
+  \item \textbf{No Single Paradigm Wins Everywhere:} Precision tracking rewards constrained model-based optimization (MPC), whereas large-basin non-convex maneuvers reward global nonlinear energy methods. Every single track now has at least one passing paradigm, highlighting the fundamental complementarity of control methodologies.
 \end{enumerate}
 
 \begin{figure}[H]
