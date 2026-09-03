@@ -9,18 +9,20 @@ FIG="$HERE/figures"
 mkdir -p "$FIG"
 
 # --- 1. refresh figures from the experiments (each writes figure.png next to run.py)
-copy_fig() {  # <experiment-dir> <target-name>
-  local src="$ROOT/experiments/$1/figure.png"
+copy_fig() {  # <experiment-dir> <source-fig> <target-name>
+  local src="$ROOT/experiments/$1/$2"
   if [[ -f "$src" ]]; then
-    cp "$src" "$FIG/$2"
-    echo "  figure: $1  ->  figures/$2"
+    cp "$src" "$FIG/$3"
+    echo "  figure: $1/$2  ->  figures/$3"
   else
     echo "  WARNING: missing $src (run its run.py first)" >&2
   fi
 }
 echo "refreshing figures..."
-copy_fig "03_pid_stabilizes_unstable" "exp03_pid_unstable.png"
-copy_fig "04_lqr_vs_pole_placement_cartpole" "exp04_cartpole.png"
+copy_fig "03_pid_stabilizes_unstable" "figure.png" "exp03_pid_unstable.png"
+copy_fig "04_lqr_vs_pole_placement_cartpole" "figure.png" "exp04_cartpole.png"
+copy_fig "05_cartpole_basin_of_attraction" "basin_map.png" "exp05_basin_map.png"
+copy_fig "05_cartpole_basin_of_attraction" "robustness_sweep.png" "exp05_robustness_sweep.png"
 
 # --- 2. compile (latexmk drives pdflatex, 2-3 passes for the ToC)
 echo "compiling main.tex..."

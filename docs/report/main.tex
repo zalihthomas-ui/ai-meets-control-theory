@@ -196,6 +196,9 @@ Table~\ref{tab:capabilities} summarises the implemented components, their mathem
 \addlinespace
 \texttt{aimct.benchmarks.harness} & Multi-controller benchmark harness: runs $N$ controllers on one
   plant under identical conditions, emitting canonical Markdown/CSV tables and 4-panel figures. & \checkmark \\
+\addlinespace
+\texttt{aimct.benchmarks.sweep} & Grid and 1D parameter sweeps for robustness, parameter sensitivity,
+  and basin of attraction mapping. & \checkmark \\
 \bottomrule
 \end{tabular}
 \caption{Implemented functionality and test coverage across the library as of \milestone.}
@@ -417,18 +420,62 @@ Evaluating the observability matrix $\mathcal{O} = [C^\top, \; A^\top C^\top, \;
 \label{tab:obs}
 \end{table}
 
+% ---------------------------------------------------------------------------
+\subsection{Nonlinear Basin of Attraction: Cart-Pole LQR Robustness (Experiment 05)}
+% ---------------------------------------------------------------------------
+
+A linear controller $u = -Kx$ designed on the upright linearisation operates within a finite \textbf{basin of attraction} on the true nonlinear plant. In Experiment~05, we quantify the boundary of recoverable initial conditions $(\theta_0, \dot\theta_0)$ across three reference LQR tunings under hard actuator saturation $|F| \le 20.0\,\text{N}$.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Tuning} & \textbf{Effort $R$} & \textbf{Measured $\theta_0$ Edge} & \textbf{Lyapunov Est.} & \textbf{Measured $\dot\theta_0$ Edge} & \textbf{Lyapunov Est.} \\
+\midrule
+\textbf{Balanced} & 0.10 & \textbf{0.83 rad (48$^\circ$)} & 0.80 rad (46$^\circ$) & \textbf{4.4 rad/s} & 4.0 rad/s \\
+\textbf{Aggressive} & 0.01 & \textbf{0.92 rad (53$^\circ$)} & 0.80 rad (46$^\circ$) & \textbf{5.3 rad/s} & 4.0 rad/s \\
+\textbf{Soft} & 1.00 & \textbf{1.00 rad (57$^\circ$)} & 0.33 rad (19$^\circ$) & \textbf{5.3 rad/s} & 1.3 rad/s \\
+\bottomrule
+\end{tabular}
+\caption{Measured recoverable boundaries vs. theoretical Lyapunov sub-level sets on nonlinear Cart-Pole.}
+\label{tab:basin}
+\end{table}
+
+\paragraph{Key Physical and Algorithmic Findings:}
+\begin{enumerate}[nosep]
+  \item \textbf{Replication of Literature Envelopes:} The from-scratch CARE solver precisely replicates the canonical Lyapunov envelope ($0.83\,\text{rad} / 4.4\,\text{rad/s}$ measured vs. $0.80\,\text{rad} / 4.0\,\text{rad/s}$ predicted).
+  \item \textbf{Conservatism of Quadratic Lyapunov Sets:} The sub-level set $x_0^\top P x_0 \le c^*$ provides an inner conservative bound. For the soft tuning, the true nonlinear recoverable angle is $\sim 3\times$ larger ($1.00\,\text{rad}$ vs $0.33\,\text{rad}$) because the quadratic form $P$ is not aligned with the nonlinear invariant manifold.
+  \item \textbf{Actuator Saturation Expands the Basin:} Unconstrained linear feedback over-commands extreme forces at large angles ($\theta > 50^\circ$), leading to rapid numerical and physical divergence. Hard clamping to $\pm 20\,\text{N}$ produces smoother, recoverable trajectories.
+  \item \textbf{Boundary for Nonlinear Control:} Beyond $\theta_0 > 57^\circ$, linear state feedback fails definitively, establishing the explicit operating domain where **nonlinear energy-based swing-up** is required.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.90\textwidth]{figures/exp05_basin_map.png}
+\caption{Experiment 05 2D $(\theta_0 \times \dot\theta_0)$ basin of attraction maps comparing Balanced, Aggressive, and Soft LQR tunings under $\pm 20\,\text{N}$ actuator limits on nonlinear Cart-Pole.}
+\label{fig:exp05_basin}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/exp05_robustness_sweep.png}
+\caption{Experiment 05 1D initial angle sweep from rest ($\theta_0 \in [0, 90^\circ]$) illustrating settling time $t_s$ (left) and control energy $E_u$ / peak force $|u|_{\max}$ (right).}
+\label{fig:exp05_sweep}
+\end{figure}
+
 % ===========================================================================
 \section{Project Status and Roadmap}
 % ===========================================================================
 
 \paragraph{Milestone \milestone{} --- Completed.}
-Library core, four reference dynamical systems, RK4 simulator, PID with anti-windup, StateFeedback (Ackermann), LQR (from-scratch CARE solver), complete state estimation suite (\texttt{aimct.estimation}: Luenberger observers, Filter ARE solver, continuous/discrete Kalman filters, observability matrix), 13 benchmark metrics, multi-controller comparison harness, Experiment 03, Experiment 04, CI on Python 3.10--3.12 with 117 passing unit tests, and theory notes for Modules 01--05.
+Library core, four reference dynamical systems, RK4 simulator, PID with anti-windup, StateFeedback (Ackermann), LQR (from-scratch CARE solver), complete state estimation suite (\texttt{aimct.estimation}: Luenberger observers, Filter ARE solver, continuous/discrete Kalman filters, observability matrix), 13 benchmark metrics, multi-controller comparison harness, Experiment 03 (PID unstable stabilization), Experiment 04 (LQR vs. Pole Placement vs. PID on Cart-Pole), Experiment 05 (Cart-Pole basin of attraction mapping), CI on Python 3.10--3.12 with 120 passing unit tests, and theory notes for Modules 01--05.
 
 \paragraph{Phase 1 Priorities (Next).}
 \begin{itemize}[nosep]
-  \item \textbf{Experiment 05 \& 06:} Parameter sensitivity sweep and full LQG (LQR + Kalman Filter) on Cart-Pole under sensor noise.
+  \item \textbf{Experiment 06 (LQG Cart-Pole):} Output-feedback control (LQR + Kalman Filter) with noisy dual encoders and Doyle's robustness recovery.
   \item \textbf{System Identification:} Data-driven linear state-space fitting for L1 and L2 benchmark systems.
-  \item \textbf{Nonlinear Control \& Swing-Up:} Energy-based swing-up controller for the Cart-Pole to push $\theta_0$ past the linear basin ($\theta_0 = \pi \to 0$).
+  \item \textbf{Nonlinear Control \& Swing-Up:} Energy-based swing-up controller for the Cart-Pole to bridge the gap from inverted down ($\theta_0 = \pi$) into the linear basin ($\theta_0 \le 0.83\,\text{rad}$).
   \item \textbf{Phase 2 (Optimal Control):} Constrained Model Predictive Control (linear MPC with from-scratch QP solver).
 \end{itemize}
 
@@ -440,6 +487,7 @@ pip install -e ".[dev,xcheck]"
 pytest -q
 python experiments/03_pid_stabilizes_unstable/run.py
 python experiments/04_lqr_vs_pole_placement_cartpole/run.py
+python experiments/05_cartpole_basin_of_attraction/run.py
 \end{lstlisting}
 
 \end{document}

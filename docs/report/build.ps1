@@ -5,19 +5,21 @@ $root = Resolve-Path (Join-Path $here "..\..")
 $fig  = Join-Path $here "figures"
 New-Item -ItemType Directory -Force -Path $fig | Out-Null
 
-function Copy-Fig($expDir, $target) {
-    $src = Join-Path $root "experiments\$expDir\figure.png"
+function Copy-Fig($expDir, $sourceFig, $target) {
+    $src = Join-Path $root "experiments\$expDir\$sourceFig"
     if (Test-Path $src) {
         Copy-Item $src (Join-Path $fig $target) -Force
-        Write-Host "  figure: $expDir  ->  figures/$target"
+        Write-Host "  figure: $expDir\$sourceFig  ->  figures/$target"
     } else {
         Write-Warning "missing $src (run its run.py first)"
     }
 }
 
 Write-Host "refreshing figures..."
-Copy-Fig "03_pid_stabilizes_unstable" "exp03_pid_unstable.png"
-Copy-Fig "04_lqr_vs_pole_placement_cartpole" "exp04_cartpole.png"
+Copy-Fig "03_pid_stabilizes_unstable" "figure.png" "exp03_pid_unstable.png"
+Copy-Fig "04_lqr_vs_pole_placement_cartpole" "figure.png" "exp04_cartpole.png"
+Copy-Fig "05_cartpole_basin_of_attraction" "basin_map.png" "exp05_basin_map.png"
+Copy-Fig "05_cartpole_basin_of_attraction" "robustness_sweep.png" "exp05_robustness_sweep.png"
 
 Write-Host "compiling main.tex..."
 Push-Location $here
