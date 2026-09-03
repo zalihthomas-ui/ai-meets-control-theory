@@ -56,6 +56,14 @@ class SamplingMPC(Controller):
         self.step = step
         self.running_cost = running_cost
         self.terminal_cost = terminal_cost
+        # a 3-arg running_cost(X, U, k) gets the horizon-relative step k; combine
+        # it with the live control-step count ``self.k`` for trajectory tracking.
+        try:
+            import inspect
+            self._cost_takes_k = len(inspect.signature(running_cost).parameters) >= 3
+        except (TypeError, ValueError):  # builtins / C funcs
+            self._cost_takes_k = False
+        self.k = 0
         self.H = int(horizon)
         self.n_samples = int(n_samples)
         self.n_elite = int(n_elite)
@@ -75,6 +83,7 @@ class SamplingMPC(Controller):
         self.mu = np.zeros((self.H, self.m))
         self.std = np.full((self.H, self.m), self._init_std)
         self.last_cost = np.nan
+        self.k = 0
 
     # ------------------------------------------------------------------ solve
 
@@ -89,7 +98,10 @@ class SamplingMPC(Controller):
             cost = np.zeros(B)
             for h in range(H):
                 Uh = samples[:, h, :]
-                cost += np.asarray(self.running_cost(X, Uh), dtype=float)
+                if self._cost_takes_k:
+                    cost += np.asarray(self.running_cost(X, Uh, h), dtype=float)
+                else:
+                    cost += np.asarray(self.running_cost(X, Uh), dtype=float)
                 X = np.asarray(self.step(X, Uh), dtype=float)
             if self.terminal_cost is not None:
                 cost += np.asarray(self.terminal_cost(X), dtype=float)
@@ -109,4 +121,5 @@ class SamplingMPC(Controller):
         # otherwise freeze the planner on its previous solution).
         self.mu = np.vstack([self.mu[1:], self.mu[-1]])
         self.std = np.full((self.H, self.m), self._init_std)
+        self.k += 1
         return u0 if self.m > 1 else float(u0[0])

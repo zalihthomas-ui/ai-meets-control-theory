@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from ..systems import CartPole, MassSpringDamper, Pendulum
+from ..systems import CartPole, MassSpringDamper, Pendulum, PlanarQuadrotor
 
 __all__ = ["batched_rk4", "system_step"]
 
@@ -62,10 +62,26 @@ def _cartpole_field(sys: CartPole):
     return f
 
 
+def _quadrotor_field(sys: PlanarQuadrotor):
+    m, cd, g, l, Iyy = sys.m, sys.cd, sys.g, sys.l, sys.Iyy
+
+    def f(X, U):
+        th, xd, zd = X[:, 2], X[:, 3], X[:, 4]
+        thd = X[:, 5]
+        T = U[:, 0] + U[:, 1]
+        s, c = np.sin(th), np.cos(th)
+        xdd = -T * s / m - cd * xd / m
+        zdd = T * c / m - g - cd * zd / m
+        thdd = (U[:, 0] - U[:, 1]) * l / Iyy
+        return np.stack([xd, zd, thd, xdd, zdd, thdd], axis=1)
+    return f
+
+
 _FIELDS = {
     MassSpringDamper: _msd_field,
     Pendulum: _pendulum_field,
     CartPole: _cartpole_field,
+    PlanarQuadrotor: _quadrotor_field,
 }
 
 
