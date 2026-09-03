@@ -105,29 +105,29 @@ To guarantee smooth transition and avoid high-frequency switching chattering, a 
 
 ## 3. Quantitative Basin of Attraction for Cart-Pole LQR
 
-When initialized near upright without swing-up assistance, the linear LQR controller $u = -K x$ stabilizes the full nonlinear `CartPole` system if and only if the initial state lies within the **Lyapunov Basin of Attraction $\mathcal{B}$**.
+When initialized near upright without swing-up assistance, the linear LQR controller $u = -K x$ stabilizes the full nonlinear `CartPole` system within the basin of attraction $\mathcal{B}$.
+
+We distinguish between two bounds:
+1. **Guaranteed Lyapunov Invariant Sub-Level Set (Inner Certificate)**: $\Omega_{c^*} = \{x \in \mathbb{R}^4 \mid x^T P x \le c^*\}$ where $\dot{V}(x) < 0$ along unconstrained linear flow.
+2. **Measured Recovery Basin (Empirical Boundary with $\pm 20\text{ N}$ Saturation)**: Empirically measured via high-resolution parameter sweeps in [Experiment 05](../../experiments/05_cartpole_basin_of_attraction/README.md).
 
 ### 3.1 Initial Condition Recovery Boundaries ($x_0 = [0, 0, \theta_0, \dot{\theta}_0]^T$)
 
-Simulated on `CartPole` ($M=1.0\text{ kg}, m=0.1\text{ kg}, l=0.5\text{ m}$) under RK4 integration ($dt = 0.001\text{ s}$, $T = 5.0\text{ s}$):
+Simulated on `CartPole` ($M=1.0\text{ kg}, m=0.1\text{ kg}, l=0.5\text{ m}$) under RK4 integration ($dt = 0.001\text{ s}$, $T = 6.0\text{ s}$–$8.0\text{ s}$, $|F| \le 20\text{ N}$):
 
-| LQR Configuration | Weights $(Q, R)$ | Max Recoverable Angle $|\theta_0|_{\max}$ | Max Recoverable Ang. Vel $|\dot{\theta}_0|_{\max}$ | Peak Cart Excursion $|x|_{\max}$ | Settling Time $t_s$ ($2\%$) |
+| LQR Configuration | Weights $(Q, R)$ | Lyapunov Inner Bound $|\theta_0|_{\text{lyap}}$ | Measured Max Angle $|\theta_0|_{\max}$ ($\dot{\theta}_0=0$) | Measured Max Ang. Vel $|\dot{\theta}_0|_{\max}$ ($\theta_0=0$) | Settling Time $t_s$ ($2\%$) |
 | :--- | :--- | :---: | :---: | :---: | :---: |
-| **Set 1: Standard Balanced** | $Q=\text{diag}([10, 1, 100, 10]), R=0.1$ | **$0.800\text{ rad}$ ($45.8^\circ$)** | **$4.000\text{ rad/s}$** | $0.28\text{ m}$ | $2.45\text{ s}$ |
-| **Set 2: Aggressive Angle** | $Q=\text{diag}([1, 0.1, 1000, 10]), R=0.01$ | **$0.800\text{ rad}$ ($45.8^\circ$)** | **$4.000\text{ rad/s}$** | $0.12\text{ m}$ | $0.82\text{ s}$ |
-| **Set 3: Soft Energy-Saving** | $Q=\text{diag}([1, 0.1, 10, 1]), R=1.0$ | **$0.334\text{ rad}$ ($19.2^\circ$)** | **$1.310\text{ rad/s}$** | $0.54\text{ m}$ | $4.10\text{ s}$ |
+| **Set 1: Standard Balanced** | $Q=\text{diag}([10, 1, 100, 10]), R=0.1$ | $0.38\text{ rad}$ ($21.8^\circ$) | **$0.83\text{ rad}$ ($47.6^\circ$)** | **$4.4\text{ rad/s}$** | $2.45\text{ s}$ |
+| **Set 2: Aggressive Angle** | $Q=\text{diag}([1, 0.1, 1000, 10]), R=0.01$ | $0.45\text{ rad}$ ($25.8^\circ$) | **$0.92\text{ rad}$ ($52.7^\circ$)** | **$5.3\text{ rad/s}$** | $0.82\text{ s}$ |
+| **Set 3: Soft Energy-Saving** | $Q=\text{diag}([1, 0.1, 10, 1]), R=1.0$ | $0.22\text{ rad}$ ($12.6^\circ$) | **$1.00\text{ rad}$ ($57.3^\circ$)** | **$5.3\text{ rad/s}$** | $4.10\text{ s}$ |
 
 ---
 
-### 3.2 Ellipsoidal Lyapunov Invariant Sets
+### 3.2 Ellipsoidal Lyapunov Invariant Sets vs. True Basin
 
-The quadratic Lyapunov function $V(x) = x^T P x$ defines invariant ellipsoidal sub-level sets $\Omega_c = \{x \in \mathbb{R}^4 \mid x^T P x \le c\}$.
+The quadratic Lyapunov function $V(x) = x^T P x$ provides a conservative analytical certificate $\Omega_{c^*} = \{x \in \mathbb{R}^4 \mid x^T P x \le c^*\}$.
 
-Along system trajectories under nonlinear dynamics $\dot{x} = f(x, -Kx)$:
-$$\dot{V}(x) = x^T (A^T P + P A - 2 P B R^{-1} B^T P) x + 2 x^T P [f(x, -Kx) - (Ax - BKx)]$$
-
-For **Tuning Set 1 (Standard)**:
-- Critical Lyapunov Level: $c^* = 14.82$
-- Guaranteed Invariant Ellipsoid:
-  $$\Omega_{c^*} = \left\{ x \in \mathbb{R}^4 \ \Big|\ x^T P_1 x \le 14.82 \right\}$$
-- Any state satisfying $x_0^T P_1 x_0 \le 14.82$ is proven mathematically to converge asymptotically to the origin without leaving the linear operating basin.
+- **Why Lyapunov Certificates are Conservative:**  
+  The sub-level set $\Omega_{c^*}$ requires $\dot{V}(x) < 0$ for *all* points in the ellipsoid simultaneously. However, system trajectories that start outside $\Omega_{c^*}$ can temporarily increase $V(x)$ while still remaining bounded and eventually entering $\Omega_{c^*}$ asymptotically.
+- **Why Saturation Enlarges the Recoverable Basin:**  
+  On large initial angles ($> 45^\circ$), an unconstrained linear law $u = -Kx$ commands massive forces ($> 200\text{ N}$), driving numerical instability in the coupled non-minimum phase dynamics. Clamping to $\pm 20\text{ N}$ naturally tempers cart acceleration, allowing the pole's momentum to be smoothly arrested.
