@@ -275,12 +275,7 @@ def test_vector_and_scalar_agree_channelwise():
 # ---------------------------------------------------- cross-check (python-control)
 
 def test_pi_step_response_matches_python_control():
-    try:
-        import control  # noqa: F401
-    except ImportError as exc:
-        # This environment blocks SciPy's compiled extensions, which python-control
-        # imports transitively; the cross-check still runs wherever control loads.
-        pytest.skip(f"python-control unavailable: {exc}")
+    import control
 
     kp, ki = 2.0, 3.0
     # plant G(s) = 1 / (s + 1)

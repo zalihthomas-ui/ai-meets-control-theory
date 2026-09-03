@@ -12,16 +12,12 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
+from scipy.linalg import solve_continuous_are as _scipy_care
+
 from aimct.controllers import LQR, solve_care
 from aimct.controllers.state_feedback import StateFeedback
 from aimct.systems import CartPole, MassSpringDamper
 from aimct.simulate import simulate
-
-try:
-    from scipy.linalg import solve_continuous_are as _scipy_care
-    HAVE_SCIPY_CARE = True
-except Exception:  # pragma: no cover - depends on environment
-    HAVE_SCIPY_CARE = False
 
 
 A_DI = np.array([[0.0, 1.0], [0.0, 0.0]])
@@ -72,7 +68,6 @@ def test_care_residual_is_negligible(A, B, Q, R):
     assert np.all(np.linalg.eigvalsh(P) > -1e-9)        # positive semidefinite
 
 
-@pytest.mark.skipif(not HAVE_SCIPY_CARE, reason="scipy.linalg CARE not importable")
 @pytest.mark.parametrize(
     "A, B, Q, R",
     [

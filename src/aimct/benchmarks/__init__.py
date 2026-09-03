@@ -2,6 +2,7 @@
 Benchmark suites, metrics, and comparison harnesses.
 """
 
+from aimct.benchmarks.harness import ComparisonResult, compare
 from aimct.benchmarks.metrics import (
     compute_all_metrics,
     control_energy,
@@ -34,4 +35,6 @@ __all__ = [
     "slew_rate",
     "saturation_duty_cycle",
     "compute_all_metrics",
+    "compare",
+    "ComparisonResult",
 ]
