@@ -35,7 +35,16 @@ import numpy as np
 
 from ..simulate import rk4_step
 
-__all__ = ["ExtendedKalmanFilter", "finite_diff_jacobian"]
+__all__ = ["ExtendedKalmanFilter", "finite_diff_jacobian", "step_map"]
+
+
+def step_map(f: Callable, x, u, dt: float, discrete: bool) -> np.ndarray:
+    """One discrete transition: ``f(x, u)`` directly (``discrete``) or one RK4
+    step of the continuous ``f`` (matching :func:`aimct.simulate.simulate`)."""
+    if discrete:
+        return np.atleast_1d(np.asarray(f(x, u), dtype=float))
+    return rk4_step(lambda t, xx, uu: np.asarray(f(xx, uu), dtype=float),
+                    0.0, np.asarray(x, dtype=float), u, dt)
 
 
 def finite_diff_jacobian(fn: Callable, x: np.ndarray, eps: float = 1e-6) -> np.ndarray:
@@ -118,10 +127,7 @@ class ExtendedKalmanFilter:
     # ------------------------------------------------------------------ model
 
     def _transition(self, x: np.ndarray, u: np.ndarray) -> np.ndarray:
-        if self.discrete:
-            return np.atleast_1d(np.asarray(self._f(x, u), dtype=float))
-        return rk4_step(lambda t, xx, uu: np.asarray(self._f(xx, uu), dtype=float),
-                        0.0, x, u, self.dt)
+        return step_map(self._f, x, u, self.dt, self.discrete)
 
     # ------------------------------------------------------------------ state
 

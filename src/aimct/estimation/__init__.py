@@ -7,6 +7,7 @@ golden fixture values the tests assert against.
 from .ekf import ExtendedKalmanFilter, finite_diff_jacobian
 from .kalman import DiscreteKalmanFilter, KalmanFilter, solve_fare
 from .luenberger import LuenbergerObserver, place_observer
+from .ukf import UnscentedKalmanFilter
 from .observability import (
     is_observable,
     observability_matrix,
@@ -23,5 +24,6 @@ __all__ = [
     "KalmanFilter",
     "DiscreteKalmanFilter",
     "ExtendedKalmanFilter",
+    "UnscentedKalmanFilter",
     "finite_diff_jacobian",
 ]
