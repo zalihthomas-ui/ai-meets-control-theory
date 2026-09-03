@@ -1,0 +1,39 @@
+# Experiment 15 - Output-feedback quadrotor figure-8 tracking with an EKF
+# Companion: modules/04-modern-control (observers / Kalman), Experiment 14 (full-state)
+
+question: >
+  The planar quadrotor flies the Experiment-14 lemniscate, but the controller no
+  longer sees the true state - only noisy position + attitude [x, z, theta] and a
+  gyro theta_dot; the two translational velocities are never measured. Can an
+  extended Kalman filter reconstruct the full state well enough for
+  output-feedback tracking to match full-state LQR, and how does it compare with
+  naive finite-difference velocity?
+
+system:
+  model: aimct.systems.PlanarQuadrotor    # Crazyflie 2.0
+  reference: lemniscate (A_x=0.5 m, B_z=0.3 m, period 8 s) + flatness feed-forward
+  dt: 0.004
+  duration: 12.0
+
+sensors:
+  measured: [x, z, theta, theta_dot]      # state indices 0, 1, 2, 5
+  sigma: [3e-3, 3e-3, 0.00524, 1e-2]      # m, m, rad (0.3 deg), rad/s
+  unmeasured: [xdot, zdot]
+
+controllers:                              # all use the same Bryson-scaled LQR gain
+  Q: diag(1 / [0.10, 0.10, 0.20, 0.5, 0.5, 3.0]^2)
+  R: diag(1 / [0.15, 0.15]^2)
+  variants:
+    - LQR (full state)                    # ideal baseline: true state feedback
+    - LQR + EKF                           # aimct.estimation.ExtendedKalmanFilter
+    - LQR + finite-diff vel               # difference position channels (1-pole LPF)
+
+ekf:
+  f: quad.dynamics (continuous, internal RK4)
+  h: x[[0, 1, 2, 5]]   (H_jac analytic constant selection)
+  Q: diag([1e-9, 1e-9, 1e-9, 1e-5, 1e-5, 1e-4])
+  R: diag(sigma^2)
+  P0: diag([1e-4, 1e-4, 1e-4, 1e-2, 1e-2, 1e-2])
+  x0: true hover + 1e-3
+
+sim: {integrator: rk4, seed: 0}
