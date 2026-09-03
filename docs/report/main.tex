@@ -50,7 +50,7 @@
 \lhead{\small\textsc{Living Technical Report}}
 \rfoot{\thepage}
 
-\newcommand{\milestone}{M3 --- State Estimation, LQG, and Hybrid Swing-Up}
+\newcommand{\milestone}{M4 --- Constrained MPC, System ID, and Optimal Control}
 \newcommand{\reportdate}{\today}
 
 \title{\textbf{\LARGE AI Meets Control Theory}\\[0.35em]
@@ -71,9 +71,10 @@
 \emph{what the codebase can do}, \emph{the theory behind each component}, and
 \emph{where the project currently stands}. The project is an open-source
 laboratory for comparing classical control, optimal control, state estimation,
-nonlinear energy shaping, machine learning and reinforcement learning on dynamical
-systems, under the core principle: \textit{build every method from scratch,
-simulate it, visualise it, and compare it honestly}.
+system identification, constrained Model Predictive Control (MPC), machine learning,
+and reinforcement learning on dynamical systems, under the core principle:
+\textit{build every method from scratch, simulate it, visualise it, and compare
+it honestly}.
 \end{abstract}
 
 \tableofcontents
@@ -88,10 +89,10 @@ simulate it, visualise it, and compare it honestly}.
 The central question of the project is: \textbf{when should we use classical
 control, when should we use AI, and when should we use both?} Rather than
 assuming a neural network or an RL agent is the answer, every problem is first
-attacked with PID, state feedback, observers, LQR, Kalman filtering, nonlinear
-energy shaping, and MPC, and each method is measured against the others under
-identical initial conditions, sensor suites, noise profiles, disturbances, and
-actuator constraints.
+attacked with PID, state feedback, observers, LQR, Kalman filtering, system
+identification, nonlinear energy shaping, and constrained MPC, and each method
+is measured against the others under identical initial conditions, sensor suites,
+noise profiles, disturbances, and actuator constraints.
 
 Every topic follows the standardized engineering cycle:
 \begin{center}
@@ -109,8 +110,8 @@ used strictly for verification and cross-checking.
 
 The reusable library is the Python package \texttt{aimct} (\texttt{src/aimct/}).
 Its architecture separates distinct concerns behind minimal, strongly-typed
-interfaces so that dynamical systems, controllers, state estimators, and the
-numerical simulator compose seamlessly without circular coupling.
+interfaces so that dynamical systems, controllers, state estimators, system identification
+routines, and the numerical simulator compose seamlessly without circular coupling.
 
 \begin{figure}[H]
 \centering
@@ -149,9 +150,11 @@ src/aimct/
                 Pendulum, CartPole (analytic + numerical Jacobians)
   simulate.py   rk4_step(), simulate() -> Trajectory(t, x, u, y)
   controllers/  PID, StateFeedback, LQR, ObserverFeedback,
-                EnergyShapingSwingUp, HybridSwingUpLQR
+                EnergyShapingSwingUp, HybridSwingUpLQR,
+                LinearMPC, _qp.solve_qp, dare.solve_dare
   estimation/   LuenbergerObserver, KalmanFilter (LQE/FARE), DiscreteKalmanFilter,
                 observability_matrix, is_observable, place_observer
+  sysid/        least_squares_id, dmdc, to_continuous (block logm), prediction_error
   benchmarks/   metrics.py (13 metrics), harness.py (compare() -> table + figure), sweep.py
   plot_style.py Okabe-Ito palette + publication-ready 4-panel comparison figure
   ml/ rl/       (reserved for upcoming project phases)
@@ -193,10 +196,16 @@ Table~\ref{tab:capabilities} summarises the implemented components, their mathem
 \texttt{aimct.controllers.SwingUp} & Nonlinear Spong energy shaping (\texttt{EnergyShapingSwingUp}) with partial
   feedback linearisation, plus finite-state hysteresis supervisor (\texttt{HybridSwingUpLQR}). & \checkmark \\
 \addlinespace
+\texttt{aimct.controllers.LinearMPC} & Constrained linear MPC via condensed receding-horizon QP,
+  from-scratch active-set solver (\texttt{\_qp.solve\_qp}), DARE terminal cost, and soft state constraints. & \checkmark \\
+\addlinespace
 \texttt{aimct.estimation} & State estimation suite: \texttt{observability\_matrix}, \texttt{is\_observable},
   \texttt{place\_observer} (dual Ackermann), \texttt{LuenbergerObserver} (RK4 internal propagation),
   \texttt{solve\_fare} (Filter ARE), \texttt{KalmanFilter} (LQE), and \texttt{DiscreteKalmanFilter}
   with Joseph-form covariance update. & \checkmark \\
+\addlinespace
+\texttt{aimct.sysid} & Data-driven system identification: \texttt{least\_squares\_id}, \texttt{dmdc}
+  (rank-truncated SVD), \texttt{to\_continuous} (exact block matrix logarithm), \texttt{model\_mismatch}. & \checkmark \\
 \addlinespace
 \texttt{aimct.benchmarks.metrics} & 13 standard step-response and effort metrics: rise time $t_r$,
   settling time $t_s$ (2\%), overshoot $M_p$, $e_{ss}$, RMSE, IAE, ITAE, ISE, energy $E_u$,
@@ -514,7 +523,7 @@ A linear controller $u = -Kx$ designed on the upright linearisation operates wit
 \subsection{Nonlinear Control \& Hybrid Swing-Up: Spong Energy Shaping (Experiment 07)}
 % ---------------------------------------------------------------------------
 
-To stabilize the Cart-Pole from the downward hanging equilibrium ($\theta_0 = \pi$), linear control cannot succeed because $\theta_0$ lies far outside the linear basin of attraction ($\le 0.83\,\text{rad}$). Experiment~07 implements nonlinear **Spong Energy Shaping** coupled with a hybrid finite-state supervisor (\texttt{HybridSwingUpLQR}) to pump mechanical energy into the pendulum and hand off control cleanly to LQR near upright.
+To stabilize the Cart-Pole from the downward hanging equilibrium ($\theta_0 = \pi$), linear control cannot succeed because $\theta_0$ lies far outside the linear basin of attraction ($\le 0.83\,\text{rad}$). Experiment~07 implements nonlinear \textbf{Spong Energy Shaping} coupled with a hybrid finite-state supervisor (\texttt{HybridSwingUpLQR}) to pump mechanical energy into the pendulum and hand off control cleanly to LQR near upright.
 
 \paragraph{Energy Shaping Mechanics.}
 The total mechanical energy of the unactuated pendulum relative to upright is:
@@ -576,18 +585,128 @@ To eliminate limit-cycle chattering near the transition boundary, the hybrid sup
 \label{fig:exp07_fourpanel}
 \end{figure}
 
+% ---------------------------------------------------------------------------
+\subsection{System Identification \& Data-Driven Control (Experiment 09)}
+% ---------------------------------------------------------------------------
+
+Model-based controllers (LQR, LQG, MPC) depend directly on the mathematical plant model $(A, B)$. In practical applications, physical parameters are uncertain or unmodeled. The \texttt{aimct.sysid} module estimates discrete-time state-space models $(A_d, B_d)$ directly from input-output trajectories $(X_0, U, X_1)$ via regularized Least-Squares and Dynamic Mode Decomposition with Control (DMDc):
+\[
+\min_{A_d, B_d} \left\| X_1 - [A_d \quad B_d] \begin{bmatrix} X_0 \\ U \end{bmatrix} \right\|_F^2 + \lambda \|[A_d \quad B_d]\|_F^2 .
+\]
+Continuous-time matrices $(A, B)$ are recovered through exact Zero-Order Hold (ZOH) block-matrix logarithm inversion:
+\[
+\begin{bmatrix} A & B \\ 0 & 0 \end{bmatrix} = \frac{1}{\Delta t} \text{logm} \begin{bmatrix} A_d & B_d \\ 0 & I_m \end{bmatrix} .
+\]
+
+\paragraph{Closed-Loop Identification vs. Data Horizon (Experiment 09).}
+We fit models on noisy closed-loop Cart-Pole rollout data ($\sigma_{\text{pos}} = 3\,\text{mm}, \sigma_{\text{angle}} = 0.35^\circ$) across three data budgets, evaluating LQR control designed on the estimated model against the true nonlinear plant:
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Data Length} & \textbf{Relative Error $A$} & \textbf{Relative Error $K_{\text{id}}$} & \textbf{RMSE $\theta$ [rad]} & \textbf{Stable Runs} & \textbf{Status} \\
+\midrule
+\textbf{300 steps (1 s)} & $5.86 \times 10^0$ & 0.992 & 26.77 & \textbf{1 / 6} & Severe Model Drift / Instability \\
+\textbf{1500 steps (3 s)} & $4.19 \times 10^{-1}$ & 0.527 & 0.0336 & \textbf{4 / 6} & Marginal / Oscillatory \\
+\textbf{12000 steps (24 s)} & $\mathbf{2.17 \times 10^{-1}}$ & \textbf{0.493} & \textbf{0.0246} & \textbf{6 / 6 (100\%)} & \textbf{Consistently Stable} \\
+\bottomrule
+\end{tabular}
+\caption{Experiment 09 Monte Carlo evaluation (6 seeds) of LQR designed on identified models (from \texttt{experiments/09\_control\_on\_identified\_model/table.md}).}
+\label{tab:exp09}
+\end{table}
+
+\paragraph{Key System Identification Insights:}
+\begin{enumerate}[nosep]
+  \item \textbf{The Data Budget Threshold:} 1\,s of closed-loop data yields wildly inaccurate Jacobians ($5.86\times$ relative error in $A$), causing $5/6$ controllers to destabilize the plant and spin the pole off-frame (Figure~\ref{fig:exp09}).
+  \item \textbf{Closed-Loop Feedback Correlation Bias:} In closed-loop data, input $u_k = -K x_k + v_k$ is strongly correlated with state $x_k$, causing the least-squares estimator error to plateau around $\approx 20\%$.
+  \item \textbf{LQR Robustness Absorbs Identification Residuals:} Despite $20\%$ residual parameter error, LQR designed on 24\,s data achieves 100\% stabilization across all seeds, demonstrating how LQR's $[-6\,\text{dB}, +\infty\,\text{dB}]$ gain margin tolerates substantial identification error. This serves as the bridge to learned neural dynamics in Module~06.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/exp09_sysid.png}
+\caption{Experiment 09 benchmark comparison showing LQR performance designed on identified models from 300, 1500, and 12000 steps of training data versus true model baseline.}
+\label{fig:exp09}
+\end{figure}
+
+% ---------------------------------------------------------------------------
+\subsection{Constrained Model Predictive Control (Experiment 08)}
+% ---------------------------------------------------------------------------
+
+While LQR produces optimal linear feedback, it cannot enforce state inequality constraints during trajectory planning. In robotic systems, exceeding physical travel bounds (e.g. cart running off the rail) causes mechanical damage. **Model Predictive Control (MPC)** solves an online Finite-Horizon Optimal Control Problem (FHOCP) at every sampling instant:
+\[
+\min_{U = \{u_0, \dots, u_{N-1}\}} \sum_{k=0}^{N-1} \left( x_k^\top Q x_k + u_k^\top R u_k \right) + x_N^\top Q_f x_N + \rho \sum_{k=1}^N \left( \|\max(0, x_k - x_{\max})\|^2 + \|\max(0, x_{\min} - x_k)\|^2 \right)
+\]
+subject to:
+\[
+x_{k+1} = A_d x_k + B_d u_k, \qquad u_{\min} \le u_k \le u_{\max} .
+\]
+
+\paragraph{Condensed Quadratic Program Formulation.}
+By expressing predicted future states $X = \mathcal{S}_x x_0 + \mathcal{S}_u U$ algebraically, the optimization reduces to a dense Quadratic Program in decision variables $U \in \mathbb{R}^{m N}$:
+\[
+\min_U \frac{1}{2} U^\top H U + (M x_0 + g)^\top U \quad\text{subject to}\quad C U \le d + S x_0, \quad u_{\min} \le U \le u_{\max} ,
+\]
+which is solved from scratch via our primal \textbf{active-set QP solver} (\texttt{\_qp.solve\_qp}) with regularized Cholesky factorization and Schur complement equality-constrained subproblems.
+
+\paragraph{DARE Terminal Cost \& Soft State Constraints.}
+\begin{itemize}[nosep]
+  \item \textbf{Terminal Weight $Q_f = P_{\text{DARE}}$:} Setting the terminal weight equal to the discrete infinite-horizon Riccati solution ensures that unconstrained MPC identically reproduces discrete LQR feedback to $10^{-7}$ precision.
+  \item \textbf{Soft State Constraints:} Exact quadratic penalty variables maintain recursive QP feasibility even during extreme transient disturbances where hard constraints would be temporarily violated.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Controller} & \textbf{Cart Peak $|x|_{\max}$ [m]} & \textbf{Constraint Violation [m]} & \textbf{Settle $\theta$ $t_s$ [s]} & \textbf{Energy $E_u$ [N$^2$s]} & \textbf{Status} \\
+\midrule
+\textbf{LQR} & 0.6162 & \textbf{0.1162 (23.2\%)} & 2.79 & \textbf{28.8} & Rail Violation \\
+\textbf{MPC (Unconstrained)} & 0.6232 & \textbf{0.1232 (24.6\%)} & 2.81 & \textbf{27.7} & Rail Violation \\
+\textbf{MPC ($|x_{\text{cart}}| \le 0.5$\,m)} & \textbf{0.5014} & \textbf{0.0014 (0.28\%)} & \textbf{2.56} & 46.3 & \textbf{Strictly Compliant} \\
+\bottomrule
+\end{tabular}
+\caption{Benchmark results for Experiment 08 on nonlinear Cart-Pole with $|F| \le 20\,\text{N}$ and rail limit $|x| \le 0.5\,\text{m}$ from $\theta_0 = 0.35\,\text{rad}$ (from \texttt{experiments/08\_mpc\_vs\_lqr\_constrained\_cartpole/table.md}).}
+\label{tab:exp08}
+\end{table}
+
+\paragraph{Key Constrained Control Takeaways:}
+\begin{enumerate}[nosep]
+  \item \textbf{LQR Has No Mechanism for State Boundaries:} LQR and unconstrained MPC swing the cart to $x = 0.62\,\text{m}$, overshooting the physical track limit by $23\%$ (Figure~\ref{fig:exp08_cart}).
+  \item \textbf{MPC Enforces Safety Envelopes:} Constrained MPC holds the cart strictly at the boundary ($x = 0.5014\,\text{m}$), actively modifying control actions to respect safety limits.
+  \item \textbf{Performance Gain via Rail Exploitation:} Because Constrained MPC purposefully rides the edge of allowable travel, it brings the pole upright $\mathbf{0.23\,\text{s}}$ \textbf{sooner} ($2.56\,\text{s}$ vs. $2.79\,\text{s}$) at the expense of $60\%$ more control energy ($46.3\,\text{N}^2\text{s}$ vs. $28.8\,\text{N}^2\text{s}$).
+  \item \textbf{Unconstrained MPC Identically Recovers LQR:} Under zero state constraints, the first move of LinearMPC matches discrete LQR to $< 10^{-7}$, confirming algebraic consistency.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/exp08_cart_constraint.png}
+\caption{Experiment 08 trajectory traces highlighting Cart Position $x(t)$ with the $\pm 0.5\,\text{m}$ track limit, Pole Angle $\theta(t)$, and Actuator Force $u(t)$ with the $\pm 20\,\text{N}$ saturation bounds.}
+\label{fig:exp08_cart}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/exp08_figure.png}
+\caption{Experiment 08 canonical 4-panel comparison: Constrained MPC vs. Unconstrained MPC vs. LQR on nonlinear Cart-Pole.}
+\label{fig:exp08_fourpanel}
+\end{figure}
+
 % ===========================================================================
 \section{Project Status and Roadmap}
 % ===========================================================================
 
 \paragraph{Milestone \milestone{} --- Completed.}
-Library core, four reference dynamical systems, RK4 simulator, PID with anti-windup, StateFeedback (Ackermann), LQR (from-scratch CARE solver), ObserverFeedback, Spong energy shaping (\texttt{EnergyShapingSwingUp}), hybrid hysteresis supervisor (\texttt{HybridSwingUpLQR}), complete state estimation suite (\texttt{aimct.estimation}: Luenberger observers, Filter ARE solver, continuous/discrete Kalman filters, observability matrix), 13 benchmark metrics, multi-controller comparison harness, parameter sweep engine, Experiment 03 (PID unstable stabilization), Experiment 04 (Cart-Pole LQR vs. Pole Placement vs. PID), Experiment 05 (Cart-Pole basin of attraction mapping), Experiment 06 (LQG vs. LQR under measurement noise), Experiment 07 (Cart-Pole swing-up from hanging + hybrid LQR handoff), CI on Python 3.10--3.12 with 148 passing unit tests, and theory notes for Modules 01--05.
+Library core, four reference dynamical systems, RK4 simulator, PID with anti-windup, StateFeedback (Ackermann), LQR (from-scratch CARE solver), ObserverFeedback, Spong energy shaping (\texttt{EnergyShapingSwingUp}), hybrid hysteresis supervisor (\texttt{HybridSwingUpLQR}), constrained linear MPC with active-set QP solver (\texttt{aimct.controllers.LinearMPC}), complete state estimation suite (\texttt{aimct.estimation}: Luenberger observers, Filter ARE solver, continuous/discrete Kalman filters, observability matrix), system identification engine (\texttt{aimct.sysid}: Least-Squares, DMDc, block logm ZOH inversion), 13 benchmark metrics, multi-controller comparison harness, parameter sweep engine, Experiments 03, 04, 05, 06, 07, 08, and 09, CI on Python 3.10--3.12 with 187 passing unit tests, and theory notes for Modules 01--05.
 
-\paragraph{Phase 1 \& 2 Priorities (Next).}
+\paragraph{Phase 3 Priorities (Next).}
 \begin{itemize}[nosep]
-  \item \textbf{System Identification:} Data-driven linear state-space fitting for L1 and L2 benchmark systems.
-  \item \textbf{Phase 2 (Optimal Control):} Constrained Model Predictive Control (linear MPC with from-scratch QP solver).
-  \item \textbf{Phase 3 (Reinforcement Learning):} PPO / SAC agents trained on Cart-Pole and compared against Hybrid Swing-Up LQR.
+  \item \textbf{Module 06: Machine Learning for Dynamical Systems:} Neural ODEs, residual physics models ($f_{\text{physics}} + f_{\text{NN}}$), and surrogate modeling.
+  \item \textbf{Module 07: Reinforcement Learning:} Model-free RL agents (PPO, SAC) trained on Cart-Pole and inverted pendulum, evaluated against Hybrid Swing-Up LQR and MPC.
+  \item \textbf{Module 08: AI + Control (Hybrid Architectures):} Learned MPC cost shaping, RL policy with control barrier function (CBF) safety filters.
 \end{itemize}
 
 \paragraph{Reproduction Commands.}
@@ -601,6 +720,8 @@ python experiments/04_lqr_vs_pole_placement_cartpole/run.py
 python experiments/05_cartpole_basin_of_attraction/run.py
 python experiments/06_lqg_vs_lqr_measurement_noise/run.py
 python experiments/07_cartpole_swingup_hybrid/run.py
+python experiments/08_mpc_vs_lqr_constrained_cartpole/run.py
+python experiments/09_control_on_identified_model/run.py
 \end{lstlisting}
 
 \end{document}
