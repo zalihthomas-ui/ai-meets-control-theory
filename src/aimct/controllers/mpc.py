@@ -80,11 +80,11 @@ def _prediction_matrices(Ad, Bd, N):
     Gamma = np.zeros((N * n, N * m))
     Apow = np.eye(n)
     for k in range(N):
-        Apow = Apow @ Ad                      # A_d^{k+1}
+        Apow = Apow @ Ad                                       # A_d^{k+1}
         Phi[k * n:(k + 1) * n] = Apow
-        for j in range(k + 1):
-            blk = np.linalg.matrix_power(Ad, k - j) @ Bd
-            Gamma[k * n:(k + 1) * n, j * m:(j + 1) * m] = blk
+        if k > 0:                                              # shift previous row down
+            Gamma[k * n:(k + 1) * n, :] = Ad @ Gamma[(k - 1) * n:k * n, :]
+        Gamma[k * n:(k + 1) * n, k * m:(k + 1) * m] = Bd       # new diagonal block
     return Phi, Gamma
 
 
@@ -105,14 +105,16 @@ class LinearMPC(Controller):
         ``(lo, hi)`` scalar or per-channel input box (hard).
     x_bounds:
         ``(lo, hi)`` per-state box; use ``+/-inf`` (or ``None`` entry) for
-        unconstrained components. Enforced **softly** (elastic slack, weight
-        ``soft_weight``) so the QP stays feasible if the current state is
-        already outside.
+        unconstrained components. Enforced **softly**: a quadratic penalty
+        ``soft_weight`` on the *active* violation, its active set found by a
+        short outer loop (warm-started across control steps). Softness keeps the
+        QP solvable when the current state already violates or the constraint is
+        infeasible over the horizon.
     Qf:
         Terminal weight; defaults to the discrete-ARE solution (=> unconstrained
         MPC reproduces LQR).
     soft_weight:
-        L1 penalty on state-constraint violation.
+        Quadratic penalty weight on state-box violation (larger => tighter).
     """
 
     def __init__(
@@ -128,7 +130,7 @@ class LinearMPC(Controller):
         u_bounds: tuple | None = None,
         x_bounds: tuple | None = None,
         Qf: ArrayLike | None = None,
-        soft_weight: float = 1e3,
+        soft_weight: float = 1e4,
     ) -> None:
         self.A = np.atleast_2d(np.asarray(A, dtype=float))
         self.B = np.atleast_2d(np.asarray(B, dtype=float))
@@ -203,6 +205,8 @@ class LinearMPC(Controller):
 
     def reset(self) -> None:
         self._warm = None
+        self._pen_hi = None
+        self._pen_lo = None
         self.horizon_plan: np.ndarray | None = None
         self.predicted_states: np.ndarray | None = None
         self.last_qp = None
@@ -227,38 +231,41 @@ class LinearMPC(Controller):
             res = solve_qp(b["H"], g_U, lb=u_lo, ub=u_hi, z0=z0)
             U = res.x.reshape(N, m)
         else:
-            # State box, softened: a quadratic penalty on the active violation,
-            # its active set re-linearised in an outer loop with penalty
-            # continuation, each inner solve a fast box-only QP on U.
+            # State box, softened: a fixed quadratic penalty on the *active*
+            # violation, its active set re-linearised in a short outer loop
+            # (warm-started from the previous control step); each inner solve is
+            # a fast box-only QP on U.
             Gs = b["Gamma"][srows]
             Phis = b["Phi"][srows]
             bhi = b["x_hi_h"][srows] - Phis @ x0
             blo = b["x_lo_h"][srows] - Phis @ x0
             hi_ok = np.isfinite(b["x_hi_h"][srows])
             lo_ok = np.isfinite(b["x_lo_h"][srows])
-
-            U = (z0.copy() if z0 is not None
-                 else np.clip(np.zeros(N * m), u_lo, u_hi))
             rho = self.soft_weight
-            prev_act = None
-            for _ in range(12):
+
+            ns = srows.size
+            same = lambda a: a is not None and a.size == ns
+            a_hi = self._pen_hi.copy() if same(self._pen_hi) else np.zeros(ns, bool)
+            a_lo = self._pen_lo.copy() if same(self._pen_lo) else np.zeros(ns, bool)
+            U = z0.copy() if z0 is not None else np.clip(np.zeros(N * m), u_lo, u_hi)
+            res = None
+            for _ in range(6):
+                if a_hi.any() or a_lo.any():
+                    Aa = np.vstack([Gs[a_hi], Gs[a_lo]])
+                    ba = np.concatenate([bhi[a_hi], blo[a_lo]])
+                    Hp = b["H"] + rho * (Aa.T @ Aa)
+                    gp = g_U + rho * (Aa.T @ (-ba))
+                else:
+                    Hp, gp = b["H"], g_U
+                res = solve_qp(Hp, gp, lb=u_lo, ub=u_hi, z0=U)
+                U = res.x
                 xh = Gs @ U
-                a_hi = hi_ok & (xh - bhi > 1e-10)
-                a_lo = lo_ok & (blo - xh > 1e-10)
-                Aa = np.vstack([Gs[a_hi], Gs[a_lo]]) if (a_hi.any() or a_lo.any()) \
-                    else np.zeros((0, N * m))
-                ba = np.concatenate([bhi[a_hi], blo[a_lo]])
-                Hp = b["H"] + rho * (Aa.T @ Aa)
-                gp = g_U + rho * (Aa.T @ (-ba)) if len(ba) else g_U
-                res = solve_qp(Hp, gp, lb=u_lo, ub=u_hi, z0=U.ravel())
-                U_new = res.x
-                act = (tuple(np.flatnonzero(a_hi)), tuple(np.flatnonzero(a_lo)))
-                converged = (act == prev_act
-                             and np.linalg.norm(U_new - U) < 1e-8 * (1 + np.linalg.norm(U)))
-                U, prev_act = U_new, act
-                if converged:
+                new_hi = hi_ok & (xh - bhi > 1e-9)
+                new_lo = lo_ok & (blo - xh > 1e-9)
+                if np.array_equal(new_hi, a_hi) and np.array_equal(new_lo, a_lo):
                     break
-                rho = min(rho * 10.0, 1e10)
+                a_hi, a_lo = new_hi, new_lo
+            self._pen_hi, self._pen_lo = a_hi, a_lo
             U = U.reshape(N, m)
 
         self.last_qp = res
