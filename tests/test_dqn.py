@@ -1,6 +1,7 @@
 """From-scratch DQN: network step, replay buffer, and learning on cart-pole."""
 
 import numpy as np
+import pytest
 
 from aimct.rl import DQN, QNetwork, ReplayBuffer, make
 
@@ -39,6 +40,7 @@ def test_target_network_soft_update_moves_toward_online():
     assert after < before
 
 
+@pytest.mark.slow
 def test_dqn_learns_to_balance_cartpole():
     env = make("cartpole-balance", max_steps=200)
     ag = DQN(env, n_actions=5, hidden=(64, 64), seed=0, lr=1e-3, batch_size=64,

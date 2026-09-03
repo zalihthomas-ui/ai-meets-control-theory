@@ -1,6 +1,7 @@
 """From-scratch PPO: GAE, clipped surrogate, and learning on cart-pole."""
 
 import numpy as np
+import pytest
 
 from aimct.rl import make
 from aimct.rl.ppo import PPO
@@ -35,6 +36,7 @@ def pytest_approx(x, tol=1e-9):
     return _A()
 
 
+@pytest.mark.slow
 def test_ppo_learns_a_balancing_policy_on_cartpole():
     env = make("cartpole-balance", max_steps=200)
     p = PPO(env, hidden=(64, 64), seed=0, rollout_steps=2000, epochs=10,

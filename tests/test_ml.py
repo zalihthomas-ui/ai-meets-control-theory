@@ -72,6 +72,7 @@ def test_learned_dynamics_predicts_mass_spring_damper():
     assert model.prediction_error(Xte, Ute, horizon=20) < 5e-2
 
 
+@pytest.mark.slow
 def test_learned_residual_over_a_wrong_physics_model_beats_both():
     """Grey-box: a learned correction on an approximate physics model should
     beat the physics alone AND a pure black-box residual model."""
@@ -130,6 +131,7 @@ def test_batched_field_matches_scalar_dynamics(sys):
 
 # ------------------------------------------------------------------ SamplingMPC
 
+@pytest.mark.slow
 def test_sampling_mpc_balances_pendulum_near_upright_with_true_model():
     sys = Pendulum(m=1.0, L=1.0, b=0.1)
     dt = 0.02
@@ -150,6 +152,7 @@ def test_sampling_mpc_balances_pendulum_near_upright_with_true_model():
     assert not traj.diverged
 
 
+@pytest.mark.slow
 def test_sampling_mpc_respects_action_box_and_regulates():
     sys = MassSpringDamper()
     dt = 0.05

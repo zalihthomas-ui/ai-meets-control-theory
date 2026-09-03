@@ -7,7 +7,8 @@
 """
 
 from .dqn import DQN, QNetwork, ReplayBuffer, dqn
-from .env import TASKS, ControlEnv, make, wrap_to_pi
+from .env import (FIGURE8_PERIOD, TASKS, ControlEnv, figure8_obs,
+                  figure8_reference, make, wrap_to_pi)
 from .policy_gradient import GaussianPolicy, evaluate_policy, reinforce
 from .ppo import PPO, ppo
 from .tabular import Discretizer, GreedyPolicy, QLearning, evaluate, train
@@ -17,6 +18,9 @@ __all__ = [
     "TASKS",
     "make",
     "wrap_to_pi",
+    "figure8_reference",
+    "figure8_obs",
+    "FIGURE8_PERIOD",
     "Discretizer",
     "QLearning",
     "GreedyPolicy",

@@ -1,6 +1,7 @@
 """Tests for the from-scratch REINFORCE policy gradient."""
 
 import numpy as np
+import pytest
 
 from aimct.rl import make
 from aimct.rl.policy_gradient import (
@@ -99,6 +100,7 @@ def test_reinforce_improves_on_a_one_step_target_env():
     assert abs(pol.greedy(np.zeros(1))[0] - 1.3) < 0.25
 
 
+@pytest.mark.slow
 def test_reinforce_learns_to_balance_cartpole():
     env = make("cartpole-balance", max_steps=200)
     obs_dim = env.observation_space.shape[0]
