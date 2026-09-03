@@ -24,6 +24,8 @@ copy_fig "04_lqr_vs_pole_placement_cartpole" "figure.png" "exp04_cartpole.png"
 copy_fig "05_cartpole_basin_of_attraction" "basin_map.png" "exp05_basin_map.png"
 copy_fig "05_cartpole_basin_of_attraction" "robustness_sweep.png" "exp05_robustness_sweep.png"
 copy_fig "06_lqg_vs_lqr_measurement_noise" "figure.png" "exp06_lqg.png"
+copy_fig "07_cartpole_swingup_hybrid" "figure.png" "exp07_figure.png"
+copy_fig "07_cartpole_swingup_hybrid" "swingup_energy.png" "exp07_swingup_energy.png"
 
 # --- 2. compile (latexmk drives pdflatex, 2-3 passes for the ToC)
 echo "compiling main.tex..."
