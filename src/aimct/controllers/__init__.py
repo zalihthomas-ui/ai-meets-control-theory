@@ -21,6 +21,7 @@ from .state_feedback import (
     is_controllable,
     place_poles,
 )
+from .swingup import EnergyShapingSwingUp, HybridSwingUpLQR, wrap_angle
 
 __all__ = [
     "Controller",
@@ -28,6 +29,9 @@ __all__ = [
     "StateFeedback",
     "LQR",
     "ObserverFeedback",
+    "EnergyShapingSwingUp",
+    "HybridSwingUpLQR",
+    "wrap_angle",
     "place_poles",
     "solve_care",
     "controllability_matrix",
