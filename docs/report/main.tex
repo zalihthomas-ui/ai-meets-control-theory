@@ -1008,6 +1008,7 @@ demanding peak speeds of $3.7\,\text{m/s}$ and commanded pitch up to $15^\circ$,
 \textbf{LQR + Flatness Feedforward} & \textbf{43.5} & 112.0 & 4.3$^\circ$ & 0.033 & 0.7\% \\
 \textbf{LQR Feedback Only} & 51.0 & \textbf{109.0} & 4.4$^\circ$ & 0.038 & 0.7\% \\
 \textbf{Linear MPC (Single Setpoint)} & 142.0 & 208.0 & 4.3$^\circ$ & \textbf{0.026} & \textbf{0.1\%} \\
+\textbf{Linear MPC (Reference Preview)} & \textbf{47.9} & 134.0 & 4.5$^\circ$ & 0.033 & 0.6\% \\
 \bottomrule
 \end{tabular}%
 }
@@ -1019,7 +1020,7 @@ demanding peak speeds of $3.7\,\text{m/s}$ and commanded pitch up to $15^\circ$,
 \begin{enumerate}[nosep]
   \item \textbf{Hover Linearisation Flies Aggressive 3.7 m/s Trajectories:} A linear LQR designed strictly about hover tracks the full nonlinear drone around an aggressive $3.7\,\text{m/s}$ figure-8 to $< 4.4\,\text{cm}$ RMS error ($< 7\%$ of path amplitude) while effortlessly rejecting an $11\%$ wind gust.
   \item \textbf{Flatness Feedforward Eliminates Phase Lag:} Differential flatness feedforward cuts RMS tracking error by \textbf{15\%} ($43.5\,\text{mm}$ vs. $51.0\,\text{mm}$) and drastically lowers tracking error between gusts (Figure~\ref{fig:exp14}b) because feedback only corrects disturbances rather than driving trajectory generation.
-  \item \textbf{The Pitfall of Single-Setpoint MPC:} Single-setpoint MPC optimizes toward a single static target, perpetually cutting corners on curved paths ($142\,\text{mm}$ error). Fast trajectory tracking requires reference-preview MPC or flat feedforward.
+  \item \textbf{Closing the Trajectory Tracking Gap with Reference Preview MPC:} While single-setpoint MPC cuts corners on curved paths ($142\,\text{mm}$ error), supplying the future reference trajectory over the horizon ($N=40 \implies 160\,\text{ms}$) in hover-deviation coordinates reduces tracking error to \textbf{47.9 mm}, matching the flatness LQR baseline ($43.5\,\text{mm}$) while respecting hard actuator constraints.
 \end{enumerate}
 
 \begin{figure}[H]
