@@ -49,7 +49,12 @@ from .metrics import (
 
 # famo's authoritative scoring rubric + Track-3/4 plant wrappers
 from .challenge_scoring import WEIGHTS, robust_degradation, score_run  # noqa: F401
-from .challenge_wrappers import ImpulseInjector, perturbed_system
+from .challenge_wrappers import ActuatorLag, ImpulseInjector, perturbed_system
+
+try:  # BlackBoxPlant is optional (Track 4)
+    from .challenge_wrappers import BlackBoxPlant
+except ImportError:  # pragma: no cover
+    BlackBoxPlant = None
 
 
 __all__ = ["ChallengeController", "Challenge", "ChallengeResult", "TRACKS"]
@@ -137,6 +142,7 @@ class TrackSpec:
     impulse_rate_hz: float = 0.5
     success_tol: float = 0.05          # |output - target| over the last 10 % => "did the task"
     angular_output: bool = False       # wrap the tracked-output error to (-pi, pi]
+    baseline_qr: tuple | None = None   # (Q, R) for the Track-1 LQR baseline (Bryson-scaled plants)
 
 
 def _msd_track() -> TrackSpec:
@@ -156,11 +162,13 @@ def _dcmotor_track() -> TrackSpec:
     return TrackSpec(
         key="track1-dcmotor", title="Track 1 - DC-motor position control",
         system_factory=lambda: DCMotor().reduced(),
-        x0=np.zeros(2), target=np.array([np.pi / 2, 0.0]), t_final=3.0, dt=1e-3,
-        action_limit=np.array([float(getattr(m, "v_max", 12.0))]),
-        safe_lo=np.array([-np.pi, -60.0]), safe_hi=np.array([2.0 * np.pi, 60.0]),
+        x0=np.zeros(2), target=np.array([np.pi / 2, 0.0]), t_final=2.0, dt=1e-3,
+        action_limit=np.array([float(getattr(m, "v_max", 24.0))]),
+        safe_lo=np.array([-np.pi, -150.0]), safe_hi=np.array([2.0 * np.pi, 150.0]),
         output_index=0, noise_sigma=np.array([1e-3, 5e-3]),
-        n_robust=30, impulse_b=0.0,
+        # DCMotor's B is badly scaled (~1433 gain); Bryson-scaled baseline
+        baseline_qr=(np.diag([4.0, 2e-3]), np.array([[3e-2]])),
+        success_tol=0.03, n_robust=30, impulse_b=0.0,
     )
 
 
@@ -193,11 +201,9 @@ def _pendulum_swingup_track() -> TrackSpec:
 
 TRACKS: dict[str, Callable[[], TrackSpec]] = {
     "track1-msd": _msd_track,
+    "track1-dcmotor": _dcmotor_track,
     "track2-pendulum": _pendulum_swingup_track,
     "track2-cartpole": _cartpole_swingup_track,
-    # "track1-dcmotor": _dcmotor_track  -- pending: DCMotor's B is badly scaled
-    #   (~1433 gain), the plain-LQR baseline needs Bryson scaling to reach the
-    #   target within the horizon.  _dcmotor_track() is kept for that follow-up.
 }
 
 
@@ -334,26 +340,34 @@ class Challenge:
 
     def _run_episode(self, controller_factory, system, *, noise_seed,
                      disturbance=None):
+        """One rollout.  ``system`` may be wider than the base plant (e.g.
+        :class:`ActuatorLag` augments the state); the submission still sees only
+        the first ``n_plant`` states, with sensor noise added."""
         ts = self.ts
+        n_plant = ts.system_factory().n_states
         rng = np.random.default_rng(noise_seed)
         n_steps = int(round(ts.t_final / ts.dt))
-        noise = rng.normal(0.0, 1.0, size=(n_steps + 2, ts.system_factory().n_states))
-        noise = noise * ts.noise_sigma
+        noise = rng.normal(0.0, 1.0, size=(n_steps + 2, n_plant)) * ts.noise_sigma
+
+        x0 = np.asarray(ts.x0, float)
+        if system.n_states > n_plant:                      # pad hidden augmented state
+            x0 = np.concatenate([x0, np.zeros(system.n_states - n_plant)])
 
         def measure(t, x, u):
             k = min(int(round(t / ts.dt)), len(noise) - 1)
-            return x + noise[k]
+            return np.asarray(x, float)[:n_plant] + noise[k]
 
         cc = controller_factory(self.spec)
         adapter = _Adapter(cc, ts.target, ts.action_limit)
-        traj = simulate(system, adapter, x0=ts.x0, dt=ts.dt, t_final=ts.t_final,
+        traj = simulate(system, adapter, x0=x0, dt=ts.dt, t_final=ts.t_final,
                         u_bounds=(-ts.action_limit[0], ts.action_limit[0]),
                         measurement_fn=measure, input_disturbance=disturbance)
         return traj, np.array(adapter.latencies)
 
     def _episode_metrics(self, traj: Trajectory, ref: np.ndarray | None) -> dict:
         ts = self.ts
-        t, x, u = traj.t, traj.x, traj.u
+        n_plant = ts.safe_lo.size
+        t, x, u = traj.t, traj.x[:, :n_plant], traj.u          # drop augmented state
         y = x[:, ts.output_index]
         target = float(ref[-1]) if ref is not None else float(ts.target[ts.output_index])
         r = ref if ref is not None else np.full_like(t, target)
@@ -406,7 +420,8 @@ class Challenge:
 
         if ts.key.startswith("track1"):
             A, B = sys.linearize()
-            K = LQR(A, B, np.eye(A.shape[0]), np.eye(B.shape[1]) * 0.1).K
+            Q, R = ts.baseline_qr or (np.eye(A.shape[0]), np.eye(B.shape[1]) * 0.1)
+            K = LQR(A, B, np.asarray(Q, float), np.atleast_2d(np.asarray(R, float))).K
             Bpinv = np.linalg.pinv(B)
 
             class _T1(ChallengeController):
@@ -540,6 +555,162 @@ class Challenge:
                       for m in nominal],
             _sample_traj=sample_traj,
             _sample_ref=ref,
+        )
+
+    # -- Track 3: robustness & parametric uncertainty ---------------------
+
+    def evaluate_robust(self, controller_factory, *, seed: int = 0,
+                        quick: bool = False, tau_a: float = 0.05) -> ChallengeResult:
+        """Track 3: every episode's plant is ``ActuatorLag`` over a fresh
+        +/-30% parameter draw, with Laplace-impulse shocks always on.  The
+        composite is the score *under* those conditions; ``s_robust`` compares
+        it against the same submission's nominal ITAE."""
+        ts = self.ts
+        n = 3 if quick else max(6, ts.n_nominal)
+        t_grid = np.arange(int(round(ts.t_final / ts.dt)) + 1) * ts.dt
+        ref = self._reference_array(t_grid)
+
+        b = max(ts.impulse_b, 1.0)
+        hard, sample = [], None
+        for s in range(n):
+            plant = ActuatorLag(perturbed_system(ts.system_factory, seed + s, 0.30),
+                                tau_a=tau_a)
+            # keep simulate's y-buffer consistent with the augmented state
+            plant.n_outputs = plant.n_states
+            plant.output = lambda t, x, u: np.atleast_1d(np.asarray(x, dtype=float))
+            dist = ImpulseInjector(seed + 30_000 + s, b_scale=b,
+                                   rate_hz=max(ts.impulse_rate_hz, 0.5),
+                                   t_final=ts.t_final)
+            traj, lat = self._run_episode(controller_factory, plant, noise_seed=seed + s,
+                                          disturbance=dist)
+            m = self._episode_metrics(traj, ref)
+            m["mean_latency_ms"] = float(np.mean(lat) * 1e3)
+            m["max_latency_ms"] = float(np.max(lat) * 1e3)
+            hard.append(m)
+            if s == 0:
+                sample = traj
+
+        agg = {k: float(np.mean([m[k] for m in hard]))
+               for k in hard[0] if k != "hard_fail"}
+        safety_ok = not any(m["hard_fail"] for m in hard)
+        task_ok = agg["final_err"] < ts.success_tol * 3.0    # looser under Track-3 stress
+
+        # nominal baseline (same as evaluate) for the ratio denominator
+        base = []
+        for s in range(n):
+            traj, _ = self._run_episode(self._baseline_factory(), ts.system_factory(),
+                                        noise_seed=seed + s)
+            base.append(self._episode_metrics(traj, ref))
+        baseline = {k: float(np.mean([m[k] for m in base]))
+                    for k in ("itae", "energy", "slew", "rmse")}
+        s_robust = robust_degradation(baseline["itae"], agg["itae"])
+
+        scored = score_run(agg, baseline, robust=s_robust, safety_ok=safety_ok,
+                           dq_reasons=[] if task_ok else ["no_convergence"])
+        status = ("DQ_SAFETY" if not safety_ok
+                  else "FAILED" if not task_ok else scored["status"])
+        if status != "PASS":
+            scored["composite"] = 0.0
+
+        return ChallengeResult(
+            track=ts.title + " [Track 3: +/-30% params + actuator lag + shocks]",
+            status=status, composite=scored["composite"],
+            performance={**{k: agg[k] for k in
+                            ("itae", "rmse", "settling_time", "peak_overshoot_pct")},
+                         "final_err": agg["final_err"], "task_ok": task_ok},
+            effort={"energy": agg["energy"], "slew": agg["slew"],
+                    "saturation_pct": agg["saturation_pct"]},
+            safety={"violation_penalty": agg["violation_penalty"],
+                    "worst_margin": agg["worst_margin"],
+                    "output_index": ts.output_index, "disturbance": {}},
+            robustness={"s_robust": s_robust, "j_nominal": baseline["itae"],
+                        "j_perturbed_mean": agg["itae"]},
+            compute={"mean_latency_ms": agg["mean_latency_ms"],
+                     "max_latency_ms": agg["max_latency_ms"],
+                     "deadline_ms": 0.5 * ts.dt * 1e3},
+            baseline=baseline,
+            per_seed=[{k: v for k, v in m.items() if k != "hard_fail"} for m in hard],
+            _sample_traj=sample, _sample_ref=ref,
+        )
+
+    # -- Track 4: safe black-box adaptation -----------------------------
+
+    def evaluate_blackbox(self, controller_factory, *, seed: int = 0,
+                          budget: int = 10_000) -> ChallengeResult:
+        """Track 4: one episode through :class:`BlackBoxPlant` - the submission
+        gets only observations, a strict ``budget`` of interaction steps, and an
+        instant DQ on any safe-box breach (via ``observe_feedback``)."""
+        if BlackBoxPlant is None:  # pragma: no cover
+            raise RuntimeError("challenge_wrappers.BlackBoxPlant is unavailable")
+        ts = self.ts
+        env = BlackBoxPlant(
+            ts.system_factory(), dt=ts.dt, max_step_budget=budget,
+            action_limit=float(ts.action_limit[0]),
+            state_safety_bounds=(ts.safe_lo, ts.safe_hi),
+        )
+        cc = controller_factory(self.spec)
+        cc.reset(ts.target)
+
+        rng = np.random.default_rng(seed)
+        n_plant = ts.system_factory().n_states
+        obs = np.asarray(env.reset(ts.x0), float)[:n_plant]
+        xs, us, lat = [obs.copy()], [], []
+        dq, t = False, 0.0
+        n_steps = int(round(ts.t_final / ts.dt))
+        for _ in range(n_steps):
+            t0 = time.perf_counter()
+            u = np.atleast_1d(np.asarray(cc.compute_action(
+                obs + rng.normal(0.0, ts.noise_sigma[:n_plant]), t), float))
+            lat.append(time.perf_counter() - t0)
+            u = np.clip(u, -ts.action_limit, ts.action_limit)
+            nxt, r, done, info = env.step(u)
+            cc.observe_feedback(nxt, r, done, info)
+            obs = np.asarray(nxt, float)[:n_plant]
+            xs.append(obs.copy())
+            us.append(u.copy())
+            t += ts.dt
+            if info.get("disqualified"):
+                dq = True
+                break
+            if done:
+                break
+
+        traj = Trajectory(t=np.arange(len(xs)) * ts.dt, x=np.array(xs),
+                          u=np.array(us + [us[-1]]) if us else np.zeros((1, n_plant)),
+                          y=np.array(xs))
+        ref = self._reference_array(traj.t)
+        m = self._episode_metrics(traj, ref)
+        task_ok = (not dq) and m["final_err"] < ts.success_tol * 2.0
+
+        base = self._episode_metrics(
+            *[self._run_episode(self._baseline_factory(), ts.system_factory(),
+                                noise_seed=seed)[0], ref])
+        baseline = {k: base[k] for k in ("itae", "energy", "slew", "rmse")}
+        scored = score_run(m, baseline, robust=1.0, safety_ok=not dq,
+                           dq_reasons=info.get("reasons", []) if dq else [])
+        status = "DQ_SAFETY" if dq else ("FAILED" if not task_ok else scored["status"])
+        if status != "PASS":
+            scored["composite"] = 0.0
+
+        return ChallengeResult(
+            track=ts.title + " [Track 4: black-box, %d-step budget]" % budget,
+            status=status, composite=scored["composite"],
+            performance={**{k: m[k] for k in
+                            ("itae", "rmse", "settling_time", "peak_overshoot_pct")},
+                         "final_err": m["final_err"], "task_ok": task_ok},
+            effort={"energy": m["energy"], "slew": m["slew"],
+                    "saturation_pct": m["saturation_pct"]},
+            safety={"violation_penalty": m["violation_penalty"],
+                    "worst_margin": m["worst_margin"],
+                    "output_index": ts.output_index,
+                    "steps_used": env._step_count, "budget": budget},
+            robustness={"s_robust": 1.0, "j_nominal": m["itae"],
+                        "j_perturbed_mean": m["itae"]},
+            compute={"mean_latency_ms": float(np.mean(lat) * 1e3),
+                     "max_latency_ms": float(np.max(lat) * 1e3),
+                     "deadline_ms": 0.5 * ts.dt * 1e3},
+            baseline=baseline, per_seed=[],
+            _sample_traj=traj, _sample_ref=ref,
         )
 
 

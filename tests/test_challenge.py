@@ -126,6 +126,31 @@ def test_actions_are_clipped_to_the_declared_limit():
     assert np.max(np.abs(res._sample_traj.u)) <= lim + 1e-9
 
 
+def test_track3_robustness_runner():
+    res = Challenge("track1-msd").evaluate_robust(_MsdSetpointLQR, seed=0, quick=True)
+    assert "Track 3" in res.track
+    assert res.status in ("PASS", "FAILED", "DQ_SAFETY")
+    assert 0.0 <= res.composite <= 100.0
+    assert 0.0 <= res.robustness["s_robust"] <= 1.0
+    # a do-nothing entry still fails the stressed task
+    assert Challenge("track1-msd").evaluate_robust(_Zero, seed=0, quick=True).status \
+        == "FAILED"
+
+
+def test_track4_blackbox_runner_and_budget():
+    ch = Challenge("track1-msd")
+    n_steps = int(round(ch.ts.t_final / ch.ts.dt))
+
+    ok = ch.evaluate_blackbox(_MsdSetpointLQR, seed=0, budget=n_steps + 100)
+    assert "Track 4" in ok.track and ok.safety["budget"] == n_steps + 100
+    assert ok.safety["steps_used"] <= n_steps + 1
+    assert ok.status == "PASS" and ok.performance["final_err"] < 0.05
+
+    tight = ch.evaluate_blackbox(_MsdSetpointLQR, seed=0, budget=n_steps // 2)
+    assert tight.status == "DQ_SAFETY"          # ran out of interaction budget
+    assert tight.composite == 0.0
+
+
 def test_report_and_save(tmp_path):
     res = Challenge("track1-msd").evaluate(_MsdSetpointLQR, seed=0, quick=True)
     md = res.report()
