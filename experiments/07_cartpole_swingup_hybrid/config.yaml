@@ -1,0 +1,38 @@
+# Experiment 07 - Cart-pole swing-up from hanging + hybrid handoff to LQR
+# Companion refs:
+#   docs/references/swingup-and-basin.md  section 1.2 (Spong energy shaping)
+#                                         section 2   (hysteresis switch)
+#   docs/references/cartpole-lqr-reference.md section 3.1 (balanced LQR tuning)
+
+question: >
+  Starting from the stable downward rest, can energy-shaping swing-up pump the
+  pendulum to the upright separatrix and a hysteresis switch hand off cleanly to
+  a balancing LQR? What does the energy-pump gain k_E trade between swing-up
+  time and control effort / cart travel?
+
+system:
+  model: aimct.systems.CartPole      # M=1.0, m=0.1, l=0.5, g=9.81 (canonical)
+  x0: [0.0, 0.0, 3.14159, 0.0]       # hanging, at rest (theta = pi)
+  actuator: {F_max: 20.0}
+
+swingup:
+  law: EnergyShapingSwingUp          # Spong partial feedback linearisation
+  k_energy: [6.0, 10.0, 14.0]        # energy-pump gains compared
+  k_cart: 2.0                        # cart centring (proportional)
+  k_cart_rate: 1.5                   # cart centring (derivative)
+
+handoff:
+  controller: HybridSwingUpLQR
+  capture_angle_rad: 0.35            # ~20 deg  -> enter LQR
+  capture_rate_rad_s: 1.5
+  release_angle_rad: 0.60            # ~34 deg  -> fall back to swing-up
+
+balance:
+  law: LQR
+  Q: [10, 1, 100, 10]
+  R: 0.1                             # "balanced" tuning, K from cartpole-lqr-reference
+
+sim:
+  dt: 0.002
+  t_final: 10.0
+  integrator: rk4
