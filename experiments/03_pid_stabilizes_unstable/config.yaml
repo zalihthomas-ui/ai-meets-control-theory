@@ -1,0 +1,32 @@
+# Experiment 03 - PID stabilizes an open-loop unstable second-order plant
+# Mirrors modules/03-classical-control/04-worked-example-unstable-system.md
+
+question: >
+  Can PID asymptotically stabilize an open-loop unstable plant
+  (RHP pole), reject a step disturbance, and stay recoverable under
+  actuator saturation - and what does each PID term buy?
+
+plant:
+  # y_ddot - omega0^2 y = u + d      (state = [y, y_dot])
+  omega0: 2.0            # unstable natural frequency [rad/s]; poles at s = +/- 2
+  u_max: 10.0           # actuator saturation [N.m] - tightened so windup is real
+
+reference:
+  setpoint: 1.0         # unit step [rad]
+
+disturbance:
+  magnitude: 0.5        # step input disturbance [N.m]
+  t_apply: 5.0          # applied at t = 5 s
+
+design:
+  wn: 4.0               # desired closed-loop natural frequency [rad/s]
+  zeta: 0.7071          # desired damping (Butterworth)
+  # -> Kp = wn^2 + omega0^2 = 20.0 ; Kd = 2 zeta wn ~= 5.657
+  ki: 15.0             # Routh-Hurwitz stable band is 0 < Ki < Kd (Kp - omega0^2) ~= 90.5
+  deriv_filter_N: 10.0  # filtered derivative: tau_d = Kd / (N Kp)
+
+sim:
+  dt: 0.001
+  t_final: 10.0
+  integrator: rk4
+  seed: 0

@@ -9,14 +9,14 @@ description = "AI Meets Control Theory — a laboratory for classical control, M
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-dependencies = ["numpy>=1.26", "matplotlib>=3.8"]
+dependencies = ["numpy>=1.26", "scipy>=1.11", "matplotlib>=3.8"]
 
 [project.optional-dependencies]
-# Reference solvers for cross-checking from-scratch implementations. Optional:
-# the library must run on numpy + matplotlib alone.
-xcheck = ["control>=0.10"]  # pulls scipy.signal; may be blocked on locked-down Windows
+# python-control: used to cross-check from-scratch implementations. The core
+# library still must not import it at runtime — keep it test-only.
+xcheck = ["control>=0.10"]
 ml = ["torch>=2.2", "gymnasium>=0.29"]
-dev = ["pytest>=8.0", "scipy>=1.11"]  # scipy.linalg (CARE/eig) used for cross-checks
+dev = ["pytest>=8.0", "control>=0.10"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
