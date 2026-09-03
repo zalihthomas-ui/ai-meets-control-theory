@@ -72,6 +72,38 @@ def test_learned_dynamics_predicts_mass_spring_damper():
     assert model.prediction_error(Xte, Ute, horizon=20) < 5e-2
 
 
+def test_learned_residual_over_a_wrong_physics_model_beats_both():
+    """Grey-box: a learned correction on an approximate physics model should
+    beat the physics alone AND a pure black-box residual model."""
+    from aimct.ml import system_step
+
+    true = MassSpringDamper(m=1.0, c=0.4, k=1.2)
+    wrong = MassSpringDamper(m=1.0, c=0.4, k=1.0)      # 17% stiffness error
+    dt = 0.02
+    base = system_step(wrong, dt)
+
+    Xtr, Utr = _rollout(true, dt, 1500, seed=0, amp=1.5)
+    Xte, Ute = _rollout(true, dt, 400, seed=7, amp=1.5)
+
+    plain = LearnedDynamics(2, 1, hidden=(32, 32), seed=0)
+    plain.fit(Xtr, Utr, epochs=300, lr=4e-3)
+    grey = LearnedDynamics(2, 1, hidden=(32, 32), base_step=base, seed=0)
+    grey.fit(Xtr, Utr, epochs=300, lr=4e-3)
+
+    # wrong physics alone, 30-step open loop
+    wrong_err = []
+    for k in range(len(Xte) - 31):
+        x = Xte[k].copy()
+        for j in range(30):
+            x = np.atleast_2d(base(x, Ute[k + j]))[0]
+        wrong_err.append(x - Xte[k + 30])
+    wrong_rms = float(np.sqrt(np.mean(np.asarray(wrong_err) ** 2)))
+
+    grey_rms = grey.prediction_error(Xte, Ute, horizon=30)
+    plain_rms = plain.prediction_error(Xte, Ute, horizon=30)
+    assert grey_rms < plain_rms < wrong_rms
+
+
 def test_learned_dynamics_batched_step_shapes():
     model = LearnedDynamics(4, 1, seed=0)
     X, U = _rollout(CartPole(), 0.01, 400, seed=1, amp=3.0)

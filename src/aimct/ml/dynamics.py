@@ -24,11 +24,16 @@ class LearnedDynamics:
         hidden=(64, 64),
         activation: str = "tanh",
         residual: bool = True,
+        base_step=None,
         seed: int = 0,
     ) -> None:
         self.n_states = int(n_states)
         self.n_inputs = int(n_inputs)
         self.residual = bool(residual)
+        #: optional known nominal model ``f(x, u) -> x_next`` (batched). When set,
+        #: the net learns the *residual over the nominal*:
+        #: ``x_{k+1} = base_step(x_k, u_k) + g_theta(x_k, u_k)``.
+        self.base_step = base_step
         self.net = MLP([n_states + n_inputs, *hidden, n_states],
                        activation=activation, seed=seed)
         self._xu_mu = np.zeros(n_states + n_inputs)
@@ -55,7 +60,13 @@ class LearnedDynamics:
         trajectories, concatenate their ``(x_k, u_k, x_{k+1})`` triples upstream.
         """
         XU, Xnext, Xcur = self._pairs(X, U)
-        target = (Xnext - Xcur) if self.residual else Xnext
+        if self.base_step is not None:
+            base = np.atleast_2d(self.base_step(Xcur, XU[:, self.n_states:]))
+            target = Xnext - base                    # residual over the nominal
+        elif self.residual:
+            target = Xnext - Xcur                     # residual over x_k
+        else:
+            target = Xnext
 
         self._xu_mu, self._xu_sd = XU.mean(0), XU.std(0) + 1e-8
         self._tg_mu, self._tg_sd = target.mean(0), target.std(0) + 1e-8
@@ -76,7 +87,12 @@ class LearnedDynamics:
         xu = np.hstack([x, u])
         out_n = self.net((xu - self._xu_mu) / self._xu_sd)
         out = out_n * self._tg_sd + self._tg_mu
-        nxt = x + out if self.residual else out
+        if self.base_step is not None:
+            nxt = np.atleast_2d(self.base_step(x, u)) + out
+        elif self.residual:
+            nxt = x + out
+        else:
+            nxt = out
         return nxt[0] if nxt.shape[0] == 1 else nxt
 
     def rollout(self, x0, U):
