@@ -1,0 +1,43 @@
+# Experiment 05 - Cart-pole basin of attraction for linear LQR balance
+# Companion refs:
+#   docs/references/cartpole-lqr-reference.md       (golden LQR tunings + gains)
+#   docs/references/swingup-and-basin.md  section 3 (predicted basin envelopes)
+
+question: >
+  A linear LQR law u = -K x, designed on the upright linearisation, is applied
+  to the TRUE nonlinear CartPole with no swing-up assistance and the canonical
+  +/-20 N actuator. From how far off upright can each tuning still catch the
+  pole, and how does the measured basin compare with the reference envelope?
+
+system:
+  model: aimct.systems.CartPole     # M=1.0, m=0.1, l=0.5, g=9.81 (canonical)
+  x0: [0.0, 0.0, theta0, thetadot0] # only the pole angle / rate are swept
+  actuator: {F_max: 20.0}           # cartpole-lqr-reference.md section 1
+
+controllers:                        # Q = diag(...), R = [...]; gains reproduce the ref
+  balanced:   { Q: [10, 1, 100, 10],   R: 0.1  }  # K ~= [-10, -12.9,  -87.1, -23.2]
+  aggressive: { Q: [1, 0.1, 1000, 10], R: 0.01 }  # K ~= [-10, -27.1, -364.8, -56.7]
+  soft:       { Q: [1, 0.1, 10, 1],    R: 1.0  }  # K ~= [ -1,  -2.0,  -30.8,  -7.9]
+
+# The committed figures/tables are the AIMCT_EXP_FULL=1 run (~90 s). The default
+# grid is coarse so CI's per-experiment smoke-run stays quick.
+sweep_1d:                           # theta0 from rest (thetadot0 = 0)
+  param: theta0
+  grid_full:    {start: 0.05, stop: 1.55, step: 0.05}   # 31 pts
+  grid_default: {start: 0.10, stop: 1.50, step: 0.20}   #  8 pts
+  dt_full: 0.002 ;  t_final_full: 8.0
+  dt_default: 0.004 ; t_final_default: 6.0
+  score: pole angle theta (output_index = 2), reference 0
+
+basin_map_2d:                       # theta0 x thetadot0, all three tunings
+  theta0_full:    {start: 0.0, stop: 1.5, num: 19}
+  thetadot0_full: {start: -8.0, stop: 8.0, num: 19}
+  dt_full: 0.004 ; t_final_full: 6.0
+  theta0_default:    {num: 9}
+  thetadot0_default: {num: 9}
+  caught: "state finite AND mean(|theta|) over last 10% of run < 0.10 rad"
+
+reference_prediction:               # swingup-and-basin.md section 3.1 (|theta0|, |thetadot0|)
+  balanced:   {theta0_rad: 0.800, thetadot0_rad_s: 4.00}
+  aggressive: {theta0_rad: 0.800, thetadot0_rad_s: 4.00}
+  soft:       {theta0_rad: 0.334, thetadot0_rad_s: 1.31}
