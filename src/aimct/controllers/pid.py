@@ -202,10 +202,12 @@ class PID(Controller):
         saturated = _clip(unsaturated, *self.output_limits)
 
         # Accept the integration step where the command is unsaturated, or
-        # where the incoming error points back into the linear region.
+        # where the incoming error points back into the linear region.  Channels
+        # with ki == 0 never accumulate, so raising ki later starts from zero
+        # rather than from a silently wound-up history.
         overshoot = unsaturated - saturated  # >0: clamped high, <0: clamped low
         winding_up = overshoot * error > 0
-        accept = np.logical_not(winding_up)
+        accept = np.logical_not(winding_up) & (self.ki != 0.0)
         self._integral = np.where(accept, candidate, self._integral)
 
         i_term = _clip(self.ki * self._integral, *self.integral_limits)
