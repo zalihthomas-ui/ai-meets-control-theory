@@ -29,6 +29,7 @@ copy_fig "07_cartpole_swingup_hybrid" "swingup_energy.png" "exp07_swingup_energy
 copy_fig "08_mpc_vs_lqr_constrained_cartpole" "figure.png" "exp08_figure.png"
 copy_fig "08_mpc_vs_lqr_constrained_cartpole" "cart_constraint.png" "exp08_cart_constraint.png"
 copy_fig "09_control_on_identified_model" "figure.png" "exp09_sysid.png"
+copy_fig "10_planning_learned_vs_true_model" "figure.png" "exp10_learned_mpc.png"
 
 # --- 2. compile (latexmk drives pdflatex, 2-3 passes for the ToC)
 echo "compiling main.tex..."

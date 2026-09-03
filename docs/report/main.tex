@@ -50,7 +50,7 @@
 \lhead{\small\textsc{Living Technical Report}}
 \rfoot{\thepage}
 
-\newcommand{\milestone}{M4 --- Constrained MPC, System ID, and Optimal Control}
+\newcommand{\milestone}{M5 --- Machine Learning for Dynamical Systems}
 \newcommand{\reportdate}{\today}
 
 \title{\textbf{\LARGE AI Meets Control Theory}\\[0.35em]
@@ -90,9 +90,9 @@ The central question of the project is: \textbf{when should we use classical
 control, when should we use AI, and when should we use both?} Rather than
 assuming a neural network or an RL agent is the answer, every problem is first
 attacked with PID, state feedback, observers, LQR, Kalman filtering, system
-identification, nonlinear energy shaping, and constrained MPC, and each method
-is measured against the others under identical initial conditions, sensor suites,
-noise profiles, disturbances, and actuator constraints.
+identification, nonlinear energy shaping, constrained MPC, and learned neural dynamics,
+and each method is measured against the others under identical initial conditions,
+sensor suites, noise profiles, disturbances, and actuator constraints.
 
 Every topic follows the standardized engineering cycle:
 \begin{center}
@@ -110,8 +110,8 @@ used strictly for verification and cross-checking.
 
 The reusable library is the Python package \texttt{aimct} (\texttt{src/aimct/}).
 Its architecture separates distinct concerns behind minimal, strongly-typed
-interfaces so that dynamical systems, controllers, state estimators, system identification
-routines, and the numerical simulator compose seamlessly without circular coupling.
+interfaces so that dynamical systems, controllers, state estimators, neural network models,
+and the numerical simulator compose seamlessly without circular coupling.
 
 \begin{figure}[H]
 \centering
@@ -126,9 +126,9 @@ routines, and the numerical simulator compose seamlessly without circular coupli
   sig/.style={draw=black!80, line width=1.0pt, ->},
 ]
 % Nodes
-\node[ctl] (ctrl) {\textbf{Controller / Estimator}\\ \footnotesize\texttt{update(meas, dt)}\\ \footnotesize\texttt{reset()}};
+\node[ctl] (ctrl) {\textbf{Controller / Estimator / Planner}\\ \footnotesize\texttt{update(meas, dt)}\\ \footnotesize\texttt{reset()}};
 \node[sim, right=18mm of ctrl] (sim) {\textbf{simulate()}\\ \footnotesize RK4 + ZOH\\ \footnotesize\texttt{Trajectory(t, x, u, y)}};
-\node[sys, right=18mm of sim] (sysm) {\textbf{DynamicalSystem}\\ \footnotesize\texttt{dynamics(t, x, u)}\\ \footnotesize\texttt{linearize(x\_eq, u\_eq)}};
+\node[sys, right=18mm of sim] (sysm) {\textbf{DynamicalSystem / LearnedDynamics}\\ \footnotesize\texttt{dynamics(t, x, u)}\\ \footnotesize\texttt{predict(x, u)}};
 \node[bench, below=12mm of sim] (bench)
      {\textbf{benchmarks} --- \texttt{metrics.compute\_all\_metrics()} \;+\; \texttt{harness.compare()} $\longrightarrow$ Markdown/CSV Table + 4-Panel Figure};
 
@@ -139,7 +139,7 @@ routines, and the numerical simulator compose seamlessly without circular coupli
 \draw[sig] ($(sim.south west)!0.3!(sim.south)$) -- ++(0,-0.4) -| node[below, pos=0.25, font=\footnotesize]{$y_k = g(t, x, u)$} ($(ctrl.south east)!0.3!(ctrl.south)$);
 \draw[sig] (sim.south) -- (bench.north);
 \end{tikzpicture}
-\caption{Core framework architecture. The numerical simulation engine drives a controller (\texttt{update()}) and continuous plant (\texttt{dynamics()}) via fixed-step 4th-order Runge--Kutta with Zero-Order Hold (ZOH). Optional hooks support custom sensor measurement transforms and additive input disturbances.}
+\caption{Core framework architecture. The numerical simulation engine drives a controller (\texttt{update()}) and continuous plant or learned neural surrogate (\texttt{dynamics()}) via fixed-step 4th-order Runge--Kutta with Zero-Order Hold (ZOH).}
 \label{fig:arch}
 \end{figure}
 
@@ -151,13 +151,14 @@ src/aimct/
   simulate.py   rk4_step(), simulate() -> Trajectory(t, x, u, y)
   controllers/  PID, StateFeedback, LQR, ObserverFeedback,
                 EnergyShapingSwingUp, HybridSwingUpLQR,
-                LinearMPC, _qp.solve_qp, dare.solve_dare
+                LinearMPC, SamplingMPC (CEM planner), _qp.solve_qp
   estimation/   LuenbergerObserver, KalmanFilter (LQE/FARE), DiscreteKalmanFilter,
                 observability_matrix, is_observable, place_observer
   sysid/        least_squares_id, dmdc, to_continuous (block logm), prediction_error
+  ml/           MLP (from-scratch backprop + Adam), LearnedDynamics (residual model)
   benchmarks/   metrics.py (13 metrics), harness.py (compare() -> table + figure), sweep.py
   plot_style.py Okabe-Ito palette + publication-ready 4-panel comparison figure
-  ml/ rl/       (reserved for upcoming project phases)
+  rl/           (reserved for upcoming project phase)
 \end{lstlisting}
 
 % ===========================================================================
@@ -199,6 +200,9 @@ Table~\ref{tab:capabilities} summarises the implemented components, their mathem
 \texttt{aimct.controllers.LinearMPC} & Constrained linear MPC via condensed receding-horizon QP,
   from-scratch active-set solver (\texttt{\_qp.solve\_qp}), DARE terminal cost, and soft state constraints. & \checkmark \\
 \addlinespace
+\texttt{aimct.controllers.SamplingMPC} & Sampling-based nonlinear MPC using the Cross-Entropy Method (CEM),
+  vectorized batch trajectory rollouts, variance floor, and CARE terminal weight. & \checkmark \\
+\addlinespace
 \texttt{aimct.estimation} & State estimation suite: \texttt{observability\_matrix}, \texttt{is\_observable},
   \texttt{place\_observer} (dual Ackermann), \texttt{LuenbergerObserver} (RK4 internal propagation),
   \texttt{solve\_fare} (Filter ARE), \texttt{KalmanFilter} (LQE), and \texttt{DiscreteKalmanFilter}
@@ -206,6 +210,9 @@ Table~\ref{tab:capabilities} summarises the implemented components, their mathem
 \addlinespace
 \texttt{aimct.sysid} & Data-driven system identification: \texttt{least\_squares\_id}, \texttt{dmdc}
   (rank-truncated SVD), \texttt{to\_continuous} (exact block matrix logarithm), \texttt{model\_mismatch}. & \checkmark \\
+\addlinespace
+\texttt{aimct.ml} & Machine learning suite: multi-layer perceptron (\texttt{MLP}) with hand-written
+  backpropagation + Adam, and residual forward dynamics predictor (\texttt{LearnedDynamics}). & \checkmark \\
 \addlinespace
 \texttt{aimct.benchmarks.metrics} & 13 standard step-response and effort metrics: rise time $t_r$,
   settling time $t_s$ (2\%), overshoot $M_p$, $e_{ss}$, RMSE, IAE, ITAE, ISE, energy $E_u$,
@@ -696,17 +703,93 @@ which is solved from scratch via our primal \textbf{active-set QP solver} (\text
 \end{figure}
 
 % ===========================================================================
+\section{Theory: Machine Learning and Learned Dynamics (Module 06)}
+% ===========================================================================
+
+When analytic equations of motion cannot be derived from first principles, machine learning allows parameterizing and learning nonlinear dynamics directly from rollout data. The \texttt{aimct.ml} module implements neural network modeling and sampling-based planning from scratch in \texttt{numpy}.
+
+\paragraph{From-Scratch Multi-Layer Perceptron (MLP) \& Backpropagation.}
+The forward pass through an $L$-layer network is:
+\[
+z^{(l)} = W^{(l)} a^{(l-1)} + b^{(l)}, \qquad a^{(l)} = \sigma(z^{(l)}), \qquad l = 1, \dots, L .
+\]
+Analytical gradients are derived via the vector chain rule and optimized using the **Adam** optimizer with first and second moment bias corrections:
+\[
+m_t = \beta_1 m_{t-1} + (1-\beta_1) g_t, \quad v_t = \beta_2 v_{t-1} + (1-\beta_2) g_t^2, \quad \hat m_t = \frac{m_t}{1-\beta_1^t}, \quad \hat v_t = \frac{v_t}{1-\beta_2^t}, \quad \theta_t = \theta_{t-1} - \frac{\eta}{\sqrt{\hat v_t} + \epsilon} \hat m_t .
+\]
+Gradients are strictly verified against central finite differences ($\|g_{\text{analytic}} - g_{\text{num}}\|_\infty < 10^{-7}$).
+
+\paragraph{Residual Dynamics Parameterization.}
+Rather than predicting the full next state $x_{k+1}$ directly, \texttt{LearnedDynamics} models the standardized discrete state increment $\Delta x_k \triangleq x_{k+1} - x_k$:
+\[
+x_{k+1} = x_k + \sigma_y \odot f_{\text{NN}}\left( \frac{x_k - \mu_x}{\sigma_x}, \; \frac{u_k - \mu_u}{\sigma_u} \right) + \mu_y .
+\]
+This residual formulation guarantees identity pass-through when network weights are small and avoids scaling artifacts across heterogeneous physical units (meters vs. radians).
+
+\paragraph{Sampling-Based MPC: The Cross-Entropy Method (CEM).}
+Given any forward model $f(x, u)$ (analytical or neural), \texttt{SamplingMPC} optimizes action sequences $U \in \mathbb{R}^{H \times m}$ over prediction horizon $H$ via iterative Gaussian refinement:
+\begin{enumerate}[nosep]
+  \item Sample $N_{\text{samples}}$ action sequences $U^{(i)} \sim \mathcal{N}(\mu, \Sigma)$.
+  \item Roll out each sequence in parallel through $f(x, u)$ to compute total cost $J(U^{(i)}) = \sum_{k=0}^{H-1} \ell(x_k, u_k) + x_H^\top P_{\text{CARE}} x_H$.
+  \item Identify the top elite fraction ($10\%$) and update $(\mu, \Sigma)$ with smoothing factor $\alpha$:
+  \[
+  \mu \gets \alpha \mu + (1-\alpha) \mu_{\text{elite}}, \qquad \Sigma \gets \alpha \Sigma + (1-\alpha) \Sigma_{\text{elite}} + \sigma_{\min}^2 I .
+  \]
+  \item Apply first action $u_0 = \mu_0$ and warm-start next step by shifting $\mu$.
+\end{enumerate}
+
+\paragraph{The Crucial Role of the CARE Terminal Cost.}
+Short-horizon sampling planners ($H = 30 \implies 0.6\,\text{s}$) cannot anticipate open-loop instability occurring beyond the horizon. Adding the infinite-horizon Riccati kernel $x_H^\top P_{\text{CARE}} x_H$—fitted from least-squares linearization on the same data—acts as an explicit terminal Lyapunov control surrogate, ensuring asymptotic stability without requiring long prediction horizons.
+
+% ---------------------------------------------------------------------------
+\subsection{Worked Example: Planning with Learned Dynamics vs. True Model (Experiment 10)}
+% ---------------------------------------------------------------------------
+
+We evaluate \texttt{SamplingMPC} (CEM) driving the nonlinear Cart-Pole from $\theta_0 = 0.20\,\text{rad} \approx 11.5^\circ$ using a 4,804-parameter residual MLP (\texttt{[5 $\to$ 64 $\to$ 64 $\to$ 4]}) trained on 80\,s (4,000 steps) of closed-loop PRBS data (train MSE $1.96 \times 10^{-4}$, 1-step error $4.45 \times 10^{-4}$, 30-step error $2.50 \times 10^{-2}$), compared against planning on the true equations of motion and analytic LQR:
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Controller} & \textbf{Settle $\theta$ $t_s$ [s]} & \textbf{RMSE $\theta$ [rad]} & \textbf{Energy $E_u$ [N$^2$s]} & \textbf{Peak $|u|_{\max}$ [N]} & \textbf{Status} \\
+\midrule
+\textbf{LQR (True Model)} & 1.26 & \textbf{0.0374} & \textbf{8.42} & 17.40 & Analytic Optimum \\
+\textbf{SamplingMPC (True Model)} & 4.44 & 0.0448 & 10.80 & 6.59 & Stable (CEM True) \\
+\textbf{SamplingMPC (Learned Model)} & \textbf{3.56} & \textbf{0.0462} & \textbf{10.20} & \textbf{6.00} & \textbf{Stable (CEM Learned)} \\
+\bottomrule
+\end{tabular}
+\caption{Benchmark results for Experiment 10 comparing CEM-MPC on learned neural dynamics vs. true model and LQR (from \texttt{experiments/10\_planning\_learned\_vs\_true\_model/table.md}).}
+\label{tab:exp10}
+\end{table}
+
+\paragraph{Key Machine Learning Insights:}
+\begin{enumerate}[nosep]
+  \item \textbf{Learned-Model vs. True-Model Parity:} CEM-MPC on the learned neural network achieves performance within $3\%$ RMSE ($0.0462$ vs. $0.0448$) and $6\%$ control energy of planning on the exact physical equations. Trajectories are visually indistinguishable (Figure~\ref{fig:exp10}).
+  \item \textbf{Zero Analytic Physics in the Learned Pipeline:} Data $\to$ MLP one-step model $\to$ data-fitted CARE terminal kernel $\to$ CEM plan $\to$ stable balance. No symbolic equations of motion are used anywhere.
+  \item \textbf{Planner Gap vs. Model Gap:} The performance difference relative to LQR ($3.56\,\text{s}$ vs. $1.26\,\text{s}$) is due to the stochastic nature of sampling MPC (averaging over elite distributions rather than executing a sharp bang-bang command), not errors in the learned neural dynamics.
+  \item \textbf{Necessity of the Terminal Kernel:} Without $x_N^\top P x_N$, the 0.6\,s prediction horizon fails to stabilize the unstable cart-pole (yielding RMSE $> 1.0$).
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/exp10_learned_mpc.png}
+\caption{Experiment 10 benchmark comparison: SamplingMPC on Learned Neural Model vs. SamplingMPC on True Model vs. LQR on nonlinear Cart-Pole.}
+\label{fig:exp10}
+\end{figure}
+
+% ===========================================================================
 \section{Project Status and Roadmap}
 % ===========================================================================
 
 \paragraph{Milestone \milestone{} --- Completed.}
-Library core, four reference dynamical systems, RK4 simulator, PID with anti-windup, StateFeedback (Ackermann), LQR (from-scratch CARE solver), ObserverFeedback, Spong energy shaping (\texttt{EnergyShapingSwingUp}), hybrid hysteresis supervisor (\texttt{HybridSwingUpLQR}), constrained linear MPC with active-set QP solver (\texttt{aimct.controllers.LinearMPC}), complete state estimation suite (\texttt{aimct.estimation}: Luenberger observers, Filter ARE solver, continuous/discrete Kalman filters, observability matrix), system identification engine (\texttt{aimct.sysid}: Least-Squares, DMDc, block logm ZOH inversion), 13 benchmark metrics, multi-controller comparison harness, parameter sweep engine, Experiments 03, 04, 05, 06, 07, 08, and 09, CI on Python 3.10--3.12 with 187 passing unit tests, and theory notes for Modules 01--05.
+Library core, four reference dynamical systems, RK4 simulator, PID with anti-windup, StateFeedback (Ackermann), LQR (from-scratch CARE solver), ObserverFeedback, Spong energy shaping (\texttt{EnergyShapingSwingUp}), hybrid hysteresis supervisor (\texttt{HybridSwingUpLQR}), constrained linear MPC with active-set QP solver (\texttt{aimct.controllers.LinearMPC}), sampling-based MPC (\texttt{aimct.controllers.SamplingMPC}), complete state estimation suite (\texttt{aimct.estimation}: Luenberger observers, Filter ARE solver, continuous/discrete Kalman filters, observability matrix), system identification engine (\texttt{aimct.sysid}: Least-Squares, DMDc, block logm ZOH inversion), machine learning suite (\texttt{aimct.ml}: MLP backprop + Adam, LearnedDynamics residual model), 13 benchmark metrics, multi-controller comparison harness, parameter sweep engine, Experiments 03, 04, 05, 06, 07, 08, 09, and 10, CI on Python 3.10--3.12 with 196 passing unit tests, and theory notes for Modules 01--06.
 
 \paragraph{Phase 3 Priorities (Next).}
 \begin{itemize}[nosep]
-  \item \textbf{Module 06: Machine Learning for Dynamical Systems:} Neural ODEs, residual physics models ($f_{\text{physics}} + f_{\text{NN}}$), and surrogate modeling.
-  \item \textbf{Module 07: Reinforcement Learning:} Model-free RL agents (PPO, SAC) trained on Cart-Pole and inverted pendulum, evaluated against Hybrid Swing-Up LQR and MPC.
-  \item \textbf{Module 08: AI + Control (Hybrid Architectures):} Learned MPC cost shaping, RL policy with control barrier function (CBF) safety filters.
+  \item \textbf{Module 07: Reinforcement Learning:} Gym-style environment wrapper (\texttt{aimct.rl}), Tabular Q-learning with discretization, Policy Gradients (REINFORCE), and Proximal Policy Optimization (PPO) implemented from scratch.
+  \item \textbf{Experiment 11:} Tabular Q-learning vs. LQR / Hybrid Swing-Up on inverted pendulum and cart-pole.
+  \item \textbf{Module 08: AI + Control (Hybrid Architectures):} Learned MPC cost shaping, RL policy with Control Barrier Function (CBF) safety filters.
 \end{itemize}
 
 \paragraph{Reproduction Commands.}
@@ -722,6 +805,7 @@ python experiments/06_lqg_vs_lqr_measurement_noise/run.py
 python experiments/07_cartpole_swingup_hybrid/run.py
 python experiments/08_mpc_vs_lqr_constrained_cartpole/run.py
 python experiments/09_control_on_identified_model/run.py
+python experiments/10_planning_learned_vs_true_model/run.py
 \end{lstlisting}
 
 \end{document}
