@@ -4,6 +4,7 @@ See ``docs/references/observers-kalman-reference.md`` for the theory and the
 golden fixture values the tests assert against.
 """
 
+from .ekf import ExtendedKalmanFilter, finite_diff_jacobian
 from .kalman import DiscreteKalmanFilter, KalmanFilter, solve_fare
 from .luenberger import LuenbergerObserver, place_observer
 from .observability import (
@@ -21,4 +22,6 @@ __all__ = [
     "solve_fare",
     "KalmanFilter",
     "DiscreteKalmanFilter",
+    "ExtendedKalmanFilter",
+    "finite_diff_jacobian",
 ]
