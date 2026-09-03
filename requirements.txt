@@ -1,10 +1,12 @@
-# Core numerical / scientific stack
+# Core numerical / plotting stack (required)
 numpy>=1.26
-scipy>=1.11
 matplotlib>=3.8
 
-# Control-specific
-control>=0.10          # python-control: transfer functions, LQR, place, etc.
+# Cross-check stack (OPTIONAL). Used only to verify from-scratch implementations
+# against reference solvers. On some locked-down Windows machines scipy's compiled
+# DLLs are blocked by Application Control policy; the library must run without it.
+# scipy>=1.11
+# control>=0.10          # python-control: transfer functions, LQR, place, etc.
 
 # ML / RL (optional-but-expected; heavy, install as needed)
 # torch>=2.2
