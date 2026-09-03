@@ -56,35 +56,37 @@ m \ell \ddot{x} \cos\theta + m \ell^2 \ddot{\theta} - m g \ell \sin\theta &= 0
 
 State vector: $x = [x_1, x_2, x_3, x_4]^T = [p, \dot{p}, \theta, \dot{\theta}]^T$, where $p$ is cart position and $\theta$ is pole angle from upright vertical.
 
-### 3.1 Small-Angle Approximations near $\theta \approx 0$
+### 3.1 General Inertia Form & Small-Angle Approximations
 Near the upright equilibrium $\theta_0 = 0, \dot{\theta}_0 = 0, u_0 = 0$:
 - $\cos\theta \approx 1$
 - $\sin\theta \approx \theta$
 - $\dot{\theta}^2 \sin\theta \approx 0$ (second-order term)
 
-The equations reduce to the coupled linear ODEs:
+For a pole with general rotational inertia $I$ about its center of mass ($I = 0$ for point mass, $I = \frac{1}{3}m\ell^2$ for uniform rod of half-length $\ell$):
 
-$$\begin{aligned}
-(M + m)\ddot{p} + m \ell \ddot{\theta} &= u \\
-m \ell \ddot{p} + m \ell^2 \ddot{\theta} - m g \ell \theta &= 0 \implies \ddot{p} + \ell \ddot{\theta} - g \theta = 0
-\end{aligned}$$
+$$\begin{bmatrix} M + m & m \ell \\ m \ell & I + m \ell^2 \end{bmatrix} \begin{bmatrix} \ddot{p} \\ \ddot{\theta} \end{bmatrix} = \begin{bmatrix} u \\ m g \ell \theta \end{bmatrix}$$
 
-### 3.2 Decoupling Accelerations
-From the pole equation: $\ell \ddot{\theta} = g \theta - \ddot{p}$. Substituting into the cart equation:
+Defining denominator $\mathcal{D} = (M + m)(I + m \ell^2) - (m \ell)^2$:
 
-$$(M + m)\ddot{p} + m (g \theta - \ddot{p}) = u \implies M \ddot{p} + m g \theta = u \implies \ddot{p} = -\frac{m g}{M} \theta + \frac{1}{M} u$$
+$$\ddot{\theta} = \frac{(M + m) m g \ell}{\mathcal{D}} \theta - \frac{m \ell}{\mathcal{D}} u$$
+$$\ddot{p} = -\frac{(m \ell)^2 g}{\mathcal{D}} \theta + \frac{I + m \ell^2}{\mathcal{D}} u$$
 
-Substituting $\ddot{p}$ back into the pole acceleration equation:
+### 3.2 The Barto/Sutton Benchmark Parameterization ($I = \frac{1}{3} m \ell^2$)
+In the canonical Barto/Sutton benchmark implemented in `aimct.systems.CartPole`, the pole is modeled as a uniform rod with $I = \frac{1}{3} m \ell^2$. Dividing numerator and denominator by $(M+m) m \ell$:
 
-$$\ddot{\theta} = \frac{g}{\ell} \theta - \frac{1}{\ell}\left( -\frac{m g}{M} \theta + \frac{1}{M} u \right) = \frac{(M + m) g}{M \ell} \theta - \frac{1}{M \ell} u$$
+$$\text{denom} = \ell \left( \frac{4}{3} - \frac{m}{M + m} \right)$$
+$$\ddot{\theta} = \frac{g}{\text{denom}} \theta - \frac{1}{(M + m)\text{denom}} u$$
+$$\ddot{p} = -\frac{m \ell}{M + m} \ddot{\theta} + \frac{1}{M + m} u$$
 
 ### 3.3 Linearized State-Space Matrices
 
-$$\begin{bmatrix} \dot{p} \\ \ddot{p} \\ \dot{\theta} \\ \ddot{\theta} \end{bmatrix} = \underbrace{\begin{bmatrix} 0 & 1 & 0 & 0 \\ 0 & 0 & -\frac{m g}{M} & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & \frac{(M + m) g}{M \ell} & 0 \end{bmatrix}}_{A} \begin{bmatrix} p \\ \dot{p} \\ \theta \\ \dot{\theta} \end{bmatrix} + \underbrace{\begin{bmatrix} 0 \\ \frac{1}{M} \\ 0 \\ -\frac{1}{M \ell} \end{bmatrix}}_{B} u$$
+$$\begin{bmatrix} \dot{p} \\ \ddot{p} \\ \dot{\theta} \\ \ddot{\theta} \end{bmatrix} = \underbrace{\begin{bmatrix} 0 & 1 & 0 & 0 \\ 0 & 0 & -\frac{m \ell}{M+m}\frac{g}{\text{denom}} & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & \frac{g}{\text{denom}} & 0 \end{bmatrix}}_{A} \begin{bmatrix} p \\ \dot{p} \\ \theta \\ \dot{\theta} \end{bmatrix} + \underbrace{\begin{bmatrix} 0 \\ \frac{1}{M+m}\left(1 + \frac{m\ell}{(M+m)\text{denom}}\right) \\ 0 \\ -\frac{1}{(M+m)\text{denom}} \end{bmatrix}}_{B} u$$
+
+*(Note: For point-mass pole $I = 0$, $\text{denom} = \frac{M \ell}{M + m}$, reducing $A_{2,3} = -\frac{mg}{M}$ and $A_{4,3} = \frac{(M+m)g}{M\ell}$.)*
 
 The pole dynamics matrix has eigenvalues:
 
-$$\lambda = \pm \sqrt{\frac{(M + m) g}{M \ell}}$$
+$$\lambda = \pm \sqrt{\frac{g}{\text{denom}}}$$
 
 One eigenvalue is strictly positive real ($\lambda_1 = +\omega_0 > 0$), proving that the upright equilibrium is **open-loop exponentially unstable**.
 
