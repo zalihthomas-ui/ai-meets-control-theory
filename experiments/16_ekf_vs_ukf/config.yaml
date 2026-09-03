@@ -1,0 +1,35 @@
+# Experiment 16 - EKF vs UKF on a nonlinear measurement
+# Companion: modules/04-modern-control (observers / Kalman), Experiment 15 (EKF on the quad)
+
+question: >
+  Both the EKF (linearise f, h about the estimate) and the UKF (propagate 2n+1
+  sigma points through the true f, h) fuse a noisy nonlinear measurement of the
+  pendulum. When does the EKF's single linearisation cost you the estimate, and
+  when is the UKF's extra cost wasted?
+
+system:
+  model: aimct.systems.Pendulum
+  dt: 0.02
+  process_noise_Q: diag(1e-5, 1e-3)
+
+cases:
+  hard:
+    h: "[sin theta, cos theta]"     # curved; EKF H = [cos, -sin] rotates with theta
+    x0_true: [3.1, 2.0]
+    x0_estimate: [0.0, 0.0]         # ~pi rad off, a hopeless guess
+    P0: diag(15, 15)               # very uncertain prior
+    R: diag(1e-2, 1e-2)
+    measure_every: 5                # sparse -> P grows between updates
+    measure_sigma: 0.1
+    ukf: {alpha: 1.0, beta: 2.0, kappa: 0.0}   # wide sigma-point spread
+  mild:
+    h: "[sin theta, theta_dot]"
+    x0_true: [3.0, 0.4]
+    x0_estimate: [2.75, 0.0]       # a good guess
+    P0: diag(0.2, 0.2)
+    R: diag(1e-3, 1e-3)
+    measure_every: 1
+    measure_sigma: [0.03, 0.03]
+    ukf: {alpha: 0.5}
+
+sim: {integrator: rk4, steps: 400}
