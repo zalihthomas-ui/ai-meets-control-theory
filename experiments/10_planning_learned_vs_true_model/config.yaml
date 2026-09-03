@@ -1,0 +1,41 @@
+# Experiment 10 - model-predictive planning with a LEARNED model vs the TRUE model
+# aimct.ml (from-scratch MLP + LearnedDynamics) + aimct.controllers.SamplingMPC (CEM)
+
+question: >
+  A sampling MPC needs only a one-step model f(x,u). If we fit that model from
+  data with a small neural net instead of using the equations of motion, does
+  the planner still balance the cart-pole - and how much performance do we lose
+  to model error, compared with (a) the same planner on the true model and
+  (b) a plain LQR?
+
+plant:
+  system: CartPole          # canonical params ; theta=0 upright
+  f_max: 20.0
+
+learned_model:
+  data: closed-loop PRBS rollout near upright (mild stabiliser + excitation),
+        4000 steps
+  net: residual MLP [5 -> 64 -> 64 -> 4], tanh, Adam, target = standardised dx
+  held_out: separate 1000-step rollout for prediction-error reporting
+
+planner:                    # aimct.controllers.SamplingMPC (CEM)
+  horizon: 25
+  n_samples: 400
+  n_elite: 40
+  n_iter: 3
+  running_cost: x' diag(1, 0.1, 20, 1) x + 0.02 u^2
+
+task:
+  x0: [0.0, 0.0, 0.20, 0.0]   # theta0 = 0.2 rad ~ 11.5 deg
+  target: 0.0                  # pole angle to upright
+  scored_channel: 2
+
+controllers:
+  - LQR (true linearisation)   Q=diag(10,1,100,10), R=0.1
+  - SamplingMPC + true model   (batched RK4 of CartPole.dynamics)
+  - SamplingMPC + learned model
+
+sim:
+  dt: 0.005
+  t_final: 4.0
+  seed: 0
