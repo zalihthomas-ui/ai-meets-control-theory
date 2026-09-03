@@ -1,0 +1,39 @@
+# Experiment 19 - Intelligent Control Challenge leaderboard
+# Companion: src/aimct/benchmarks/challenge.py (the ICC engine),
+#            docs/references/challenge-spec.md (rubric)
+
+question: >
+  Five controllers from five different paradigms are handed the same ICC spec
+  (state/action dims, actuator limit, dt, target) and nothing else - never the
+  plant. Each builds its own model or policy from that spec and is scored by the
+  hidden engine against a per-track baseline. Which paradigm wins where, and what
+  does each one cost?
+
+engine:
+  module: aimct.benchmarks.challenge
+  contract: |
+    controller sees Challenge.spec = {state_dim, action_dim, action_limit, dt,
+    target_state, t_final}; composite = 100 * exp(-[0.5 r_itae + 0.3 r_energy +
+    0.2 r_slew]) * S_robust, ratios = entry / baseline capped at 10, S_robust in
+    [0.20, 1.0]; FAILED (composite 0) if final error > success tolerance,
+    DQ_SAFETY (composite 0) if the safe box is breached or the sim diverges.
+
+submissions:
+  PID:                "model-free PID on the first output (kp,ki,kd = 30,8,6)"
+  LQR:                "reconstructs the plant from the spec, discrete LQR + set-point feed-forward"
+  Linear MPC:         "same reconstructed model, condensed QP, N = 20, Q = I / diag(1,1,10,1), R = 0.1"
+  Tabular Q:          "Experiment-11 tabular Q-learning swing-up policy; recognises the pendulum task from the spec, abstains otherwise"
+  Energy+LQR hybrid:  "energy-shaping swing-up + LQR catch; falls back to LQR regulation when the target is not the upright"
+
+tracks:
+  track1-msd:      "precision: mass-spring-damper, 8 s unit step, +/- actuator 25"
+  track1-dcmotor:  "precision: DC-motor reduced model, 2 s slew to pi/2, +/- 24 V (Bryson-scaled baseline)"
+  track2-pendulum: "agility: pendulum swing-up to upright, +/- 5 Nm, 8 s"
+  track2-cartpole: "agility: cart-pole swing-up + balance, +/- 20 N, 10 s"
+  track3-pendulum: "robustness runner: +/-30% params + actuator lag + impulse shocks (FULL only)"
+
+run:
+  quick:  "python experiments/19_icc_leaderboard/run.py            # track1-msd + track2-pendulum, quick eval"
+  full:   "AIMCT_EXP_FULL=1 python experiments/19_icc_leaderboard/run.py   # all four tracks + Track 3 on the pendulum"
+
+outputs: [leaderboard.md, leaderboard.csv, figure.png]

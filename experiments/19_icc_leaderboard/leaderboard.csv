@@ -1,0 +1,6 @@
+submission,track1-msd_score,track1-dcmotor_score,track2-pendulum_score,track2-cartpole_score,track3-pendulum_score,track1-msd_status,track1-dcmotor_status,track2-pendulum_status,track2-cartpole_status,track3-pendulum_status
+PID,0.58,0.00,0.00,0.00,0.00,PASS,FAILED,FAILED,FAILED,FAILED
+LQR,7.36,36.79,0.00,0.00,0.00,PASS,PASS,FAILED,FAILED,FAILED
+Linear MPC,21.14,41.32,0.00,0.00,0.00,PASS,PASS,FAILED,FAILED,FAILED
+Tabular Q,0.00,0.00,0.00,0.00,0.00,FAILED,FAILED,FAILED,FAILED,FAILED
+Energy+LQR hybrid,1.83,0.00,23.76,0.00,29.94,PASS,FAILED,PASS,DQ_SAFETY,PASS
