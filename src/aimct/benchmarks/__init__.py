@@ -2,6 +2,13 @@
 Benchmark suites, metrics, and comparison harnesses.
 """
 
+from aimct.benchmarks.capstone_scoring import (
+    CAPSTONE_BASELINES,
+    CAPSTONE_WEIGHTS,
+    capstone_leaderboard_table,
+    score_capstone,
+    score_capstone_entry,
+)
 from aimct.benchmarks.challenge_scoring import (
     NORMALISERS,
     WEIGHTS,
@@ -77,4 +84,10 @@ __all__ = [
     "ImpulseInjector",
     "BlackBoxPlant",
     "BlackBoxEnvironment",
+    # Capstone scoring & bake-off
+    "CAPSTONE_WEIGHTS",
+    "CAPSTONE_BASELINES",
+    "score_capstone_entry",
+    "score_capstone",
+    "capstone_leaderboard_table",
 ]
