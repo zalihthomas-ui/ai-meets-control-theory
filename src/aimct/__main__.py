@@ -3,6 +3,8 @@
     python -m aimct compare --system cartpole --out my_study
     python -m aimct compare --system quadrotor --t-final 12
     python -m aimct list
+    python -m aimct live arm
+    python -m aimct preview mymodule.py:MyPlant --watch
 """
 
 from __future__ import annotations
@@ -92,7 +94,34 @@ def main(argv=None) -> int:
     pl3.add_argument("--web", action="store_true",
                      help="serve the experimental WebGL/Three.js visualizer")
 
+    pp = sub.add_parser("preview", help="design-time preview for a DynamicalSystem "
+                                        "you are writing (see docs/DEV_PREVIEW.md)")
+    pp.add_argument("target", help="'module:Class' or 'path/to/file.py:Class'")
+    pp.add_argument("--out", default="design_preview.png",
+                    help="PNG path to (re)write (default: design_preview.png)")
+    pp.add_argument("--watch", action="store_true",
+                    help="poll the source file and rebuild on every change")
+    pp.add_argument("--poll", type=float, default=1.0, help="watch poll interval [s]")
+    pp.add_argument("--t-final", type=float, default=4.0)
+    pp.add_argument("--dt", type=float, default=0.01)
+
     args = p.parse_args(argv)
+
+    if args.cmd == "preview":
+        from .dev import preview_once, watch
+
+        kw = dict(dt=args.dt, t_final=args.t_final)
+        if args.watch:
+            print(f"watching {args.target} -> {args.out} (Ctrl+C to stop)")
+            try:
+                watch(args.target, out=args.out, poll=args.poll, **kw)
+            except KeyboardInterrupt:
+                print("\nstopped")
+            return 0
+        report = preview_once(args.target, out=args.out, **kw)
+        print(report.summary())
+        print(f"\nwrote {args.out}")
+        return 0
 
     if args.cmd == "list":
         from . import systems as _sys

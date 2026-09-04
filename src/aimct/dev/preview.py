@@ -25,7 +25,7 @@ other way.
 
 or watch a file while you edit it::
 
-    python -m aimct.dev mymodule.py:MyPlant --watch
+    python -m aimct preview mymodule.py:MyPlant --watch
 """
 
 from __future__ import annotations

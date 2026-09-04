@@ -1,7 +1,7 @@
 """``python -m aimct.dev TARGET`` — design-time preview, standalone.
 
-Not yet wired into ``python -m aimct`` (holding for puma's __main__.py pass —
-see docs/DEV_PREVIEW.md); this entry point works today without touching it.
+Also wired into the top-level CLI as ``python -m aimct preview`` (see
+docs/DEV_PREVIEW.md); this module works the same way one level down.
 
     python -m aimct.dev aimct.systems.pendulum:Pendulum
     python -m aimct.dev my_system.py:MyPlant --watch
