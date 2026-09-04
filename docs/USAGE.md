@@ -196,8 +196,14 @@ print(result.report())               # 5 metric dims + composite + PASS/FAIL/DQ
 
 ## 4. Simulate and *see*
 
-- `python -m aimct live` / `live3d` — the interactive sandboxes (drag targets,
-  toggle controllers, wind on/off).
+- **`python -m aimct live [drone|drone3d|arm|diffdrive]`** — an interactive
+  sandbox per system: drag the target, switch controllers, toggle a
+  disturbance, watch the telemetry HUD. `live3d` is an alias for `live drone3d`.
+- **`aimct.viz.animate(traj, system)`** — replay *any* `simulate()` or
+  `track_trajectory()` run as an animation (reference drawn alongside, a
+  breadcrumb trail, the same telemetry HUD); `.save("run.mp4" | "run.gif")`.
+  `TrackingResult.animate(system, controller=...)` is a one-line shortcut.
+  Works in a notebook via `_repr_html_`.
 - Every `experiments/NN_*/run.py` writes a publication-ready figure next to
   itself; heavy ones are gated by `AIMCT_EXP_FULL=1`.
 - `res.figure()` / `res.save(dir)` on any `ComparisonResult` / `SweepResult` /
@@ -205,9 +211,17 @@ print(result.report())               # 5 metric dims + composite + PASS/FAIL/DQ
 - `notebooks/01_tour.ipynb` — build → design → simulate → plot → study, top to
   bottom in < 30 s.
 
-> Replay animations and per-system interactive sandboxes for **every** 2-D plant
-> (pendulum, cart-pole, quad, arm, diff-drive) are landing in `aimct.viz`. See
-> [`docs/VISUALIZATION.md`](VISUALIZATION.md) for that layer once it lands.
+```python
+from aimct.viz import animate
+from aimct.simulate import simulate
+
+traj = simulate(sys, controller, x0, dt=0.01, t_final=6.0)
+animate(traj, sys).save("run.gif")     # or just `animate(traj, sys)` in a notebook
+```
+
+See [`docs/VISUALIZATION.md`](VISUALIZATION.md) for the `SystemArtist`
+contract — the one class you add to give a new system its own replay and
+sandbox.
 
 ---
 

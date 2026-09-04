@@ -1,0 +1,37 @@
+# Experiment 26 - does the Exp-24 iLQR/RTI-NMPC win survive a harder reference path?
+# Companion: Experiment 24 (iLQR/RTI-NMPC vs Sampling MPC CEM), aimct.trajectories
+
+question: >
+  Experiment 24 found iLQR/RTI-NMPC beating sampling MPC (CEM) by ~2 orders of
+  magnitude on the Exp-14 lemniscate - a smooth, low-curvature, obstacle-free
+  reference. Is that a fair fight, or the easiest case iLQR ever sees? Re-run
+  the identical two planners, cost, and horizon on two harder tracks.
+
+system:
+  model: aimct.systems.PlanarQuadrotor
+  Q: diag([6.0, 6.0, 0.5, 0.2, 0.2, 0.05])
+  R: diag([40.0, 40.0])
+  Qf: infinite-horizon CARE cost-to-go of the hover linearisation (shared by both planners)
+  horizon_steps: 20
+  dt: 0.02
+
+planners:
+  Sampling MPC (CEM): "derivative-free CEM refinement over action sequences (aimct.controllers.SamplingMPC)"
+  iLQR / RTI-NMPC:    "regularised backward Riccati sweep + line search; full solve step 1, 1 RTI iteration/step after (aimct.controllers.ILQR)"
+
+paths:
+  Lemniscate (baseline): "aimct.trajectories.Lemniscate(A=0.55, B=0.30, period=6) - the Exp-14/20/21/24 reference"
+  Lissajous 3:2:          "aimct.trajectories.Lissajous(A=0.55, B=0.35, a=3, b=2, period=8) - coprime frequency ratio, sharp velocity reversals at the lobes"
+  Spiral:                 "aimct.trajectories.Spiral(r0=0.15, growth=0.035, w=1.0, duration=12) - monotonically increasing curvature demand"
+
+flatness_note: >
+  The thrust feed-forward needs the reference's jerk/snap; aimct.trajectories
+  gives pos/vel/acc only, so this experiment recovers jerk/snap by central-
+  differencing the trajectory's own analytic acceleration (flat_reference() in
+  run.py) - generic across any Trajectory subclass, no changes to
+  aimct.trajectories needed.
+
+sim: {t_final_lemniscate: 12.0, t_final_lissajous: 8.0, t_final_spiral: 12.0}
+outputs: [table.md, table.csv, figure.png]
+run: "python experiments/26_harder_reference_paths/run.py"
+run_full: "AIMCT_EXP_FULL=1 python experiments/26_harder_reference_paths/run.py"
