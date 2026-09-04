@@ -36,9 +36,19 @@ LOOP = Lemniscate(A=1.2, B=0.7, period=1.0)     # period rescaled below by speed
 
 class Path:
     """A closed reference loop with the nearest-point / look-ahead / curvature
-    queries the followers need, all off one memoised polyline."""
+    queries the followers need, all off one memoised polyline.
 
-    def __init__(self, traj, n=1400):
+    A figure-8 self-intersects, so a *global* nearest-point search is
+    ambiguous right at the crossing: two arclength-distant samples sit at the
+    same spot, and a per-frame argmin can flip between them - the look-ahead
+    point (and the Stanley/LQR cross-track term) then jumps discontinuously
+    ("the ball teleports"). :meth:`nearest` fixes this with **progress
+    hysteresis**: after the first call it only searches a window of the
+    polyline around where it was last found, so it tracks the branch the
+    robot is actually on instead of re-resolving the ambiguity every frame.
+    """
+
+    def __init__(self, traj, n=1400, window_frac: float = 0.05):
         s = np.linspace(0.0, traj.duration, n)
         self.P = np.array([traj.pos(t) for t in s])
         d = np.linalg.norm(np.diff(self.P, axis=0), axis=1)
@@ -50,9 +60,26 @@ class Path:
         sp = np.hypot(dP[:, 0], dP[:, 1]) + 1e-12
         self.kappa = (dP[:, 0] * ddP[:, 1] - dP[:, 1] * ddP[:, 0]) / sp ** 3
         self.tang = np.arctan2(dP[:, 1], dP[:, 0])
+        self._n = len(self.P)
+        self._window = max(30, int(window_frac * self._n))
+        self._last: int | None = None
+
+    def reset_progress(self) -> None:
+        """Force the next :meth:`nearest` to do a full search (e.g. a hard
+        teleport / re-spawn, as opposed to an ordinary shove)."""
+        self._last = None
 
     def nearest(self, p):
-        return int(np.argmin(np.hypot(self.P[:, 0] - p[0], self.P[:, 1] - p[1])))
+        p = np.asarray(p, float)
+        if self._last is None:
+            i = int(np.argmin(np.hypot(self.P[:, 0] - p[0], self.P[:, 1] - p[1])))
+        else:
+            idx = (np.arange(self._last - self._window,
+                             self._last + self._window + 1) % self._n)
+            local = np.argmin(np.hypot(self.P[idx, 0] - p[0], self.P[idx, 1] - p[1]))
+            i = int(idx[local])
+        self._last = i
+        return i
 
     def frame(self, p):
         """``(point, path_heading, signed_cross_track, curvature, arclen)``."""
