@@ -40,7 +40,7 @@ python -m aimct live3d --web    # 6-DOF WebGL sandbox
 
 ---
 
-## The Experiments (01–24)
+## The Experiments (01–26)
 
 Every experiment is self-contained with its own configuration, runner, Markdown/CSV benchmark table, and publication-ready 4-panel figure. See [`docs/RESULTS.md`](docs/RESULTS.md) for full metrics.
 
@@ -70,6 +70,7 @@ Every experiment is self-contained with its own configuration, runner, Markdown/
 | **22** | [`22_diffdrive_path_following`](experiments/22_diffdrive_path_following/) | TurtleBot3-Burger (Unicycle) | Pure Pursuit vs Stanley vs Path LQR | Path LQR curvature feedforward gives tightest cross-track error ($9.25\,\text{mm}$); pure pursuit cuts corners ($35\,\text{mm}$). |
 | **23** | [`23_twolink_arm_tracking`](experiments/23_twolink_arm_tracking/) | 2-Link Planar Robot Arm | Computed Torque vs Slotine--Li MRAC | Nominal computed torque collapses under $+0.5\,\text{kg}$ load ($394\,\text{mm}$); Slotine--Li adapts to $4.93\,\text{mm}$ ($100\%$). |
 | **24** | [`24_ilqr_vs_sampling_mpc`](experiments/24_ilqr_vs_sampling_mpc/) | Cart-Pole & Crazyflie 2.0 | iLQR / RTI-NMPC vs Sampling MPC | iLQR converges $150\times$ tighter on quad ($1.34\,\text{mm}$ error) and solves in $14.6\,\text{ms}$ (meets $20\,\text{ms}$ flight budget). |
+| **26** | [`26_harder_reference_paths`](experiments/26_harder_reference_paths/) | Crazyflie 2.0 (Lissajous, Spiral) | iLQR vs Sampling MPC across Geometries | iLQR beats CEM by $32\times\text{--}840\times$ RMS error; CEM latency ($28\text{--}31\,\text{ms}$) violates $20\,\text{ms}$ flight budget on all paths. |
 
 ---
 
@@ -87,16 +88,13 @@ src/aimct/
                   ILQR (trajectory optimiser + real-time-iteration NMPC)
   estimation/     LuenbergerObserver, KalmanFilter (LQE/FARE), DiscreteKalmanFilter,
                   ExtendedKalmanFilter, UnscentedKalmanFilter, observability_matrix
-  trajectories/   Lemniscate, Spline, Minimum-Jerk Polynomials, Dubins paths
-  benchmarks/     metrics.py, harness.py, sweep.py, challenge.py, tracking.py
-```
-  estimation/     LuenbergerObserver, KalmanFilter (LQE/FARE), DiscreteKalmanFilter,
-                  ExtendedKalmanFilter, UnscentedKalmanFilter, observability_matrix
+  trajectories/   Lemniscate, Spline, Minimum-Jerk Polynomials, Dubins, Lissajous, Spiral, Rose
   sysid/          least_squares_id, dmdc, to_continuous (block logm), prediction_error
   ml/             MLP (backprop + Adam), LearnedDynamics (grey-box / residual)
   rl/             ControlEnv (Gymnasium adapter), Discretizer, QLearning, DQN, REINFORCE, PPO
   hybrid/         ShieldedController (switch/filter blends, predicate helpers)
-  benchmarks/     metrics.py (13 metrics), harness.py, sweep.py, challenge.py (ICC engine)
+  viz/            SystemArtist contract, animate() replay engine, Sandbox live GUI
+  benchmarks/     metrics.py (13 metrics), harness.py, sweep.py, challenge.py, tracking.py
   plot_style.py   Okabe-Ito color palette + publication-ready 4-panel comparison figures
 ```
 
@@ -136,7 +134,7 @@ THEORY → DERIVATION → IMPLEMENTATION → SIMULATION → VISUALISATION → VA
 
 ## Status: Phase 2 in Progress 🚀
 
-The core curriculum (Modules 01–10), 24 empirical benchmark experiments, living technical report, unified visualization layer (`aimct.viz`), and interactive sandboxes are complete with **373 passing unit tests** (367 fast / 374 total across Python 3.10–3.13).
+The core curriculum (Modules 01–10), 25 empirical benchmark experiments, living technical report, unified visualization layer (`aimct.viz`), and interactive sandboxes are complete with **387 passing unit tests** (380 fast / 390 total across Python 3.10–3.13).
 
 **Phase 2 is actively expanding the library with:**
 - **Track A (Real Systems):** Differential-drive mobile robots, 2-link planar manipulator arms (computed torque vs. adaptive MRAC), and dynamic bicycle ground vehicles.

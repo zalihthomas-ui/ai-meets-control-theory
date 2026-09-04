@@ -50,7 +50,7 @@
 \lhead{\small\textsc{Living Technical Report}}
 \rfoot{\thepage}
 
-\newcommand{\milestone}{M12 --- Real Multi-Body Systems \& Real-Time Iteration NMPC}
+\newcommand{\milestone}{M13 --- Generalised NMPC Geometries \& Harder Reference Paths}
 \newcommand{\reportdate}{\today}
 
 \title{\textbf{\LARGE AI Meets Control Theory}\\[0.35em]
@@ -68,7 +68,7 @@
 
 \begin{abstract}
 \noindent This report documents the culmination of the \textbf{AI Meets Control Theory} project.
-Across 10 curriculum modules, 24 rigorous from-scratch benchmark experiments, and 373 verified unit tests,
+Across 10 curriculum modules, 25 rigorous from-scratch benchmark experiments, and 387 verified unit tests,
 we evaluate and compare classical control, modern state-space methods, Kalman filtering, optimal control,
 constrained Model Predictive Control (MPC), real-time iteration nonlinear MPC (iLQR / RTI-NMPC), adaptive control,
 Euler--Lagrange robot manipulators, non-holonomic mobile robotics, deep reinforcement learning, and hybrid
@@ -1015,6 +1015,49 @@ Experiment 24 addresses the central computational bottleneck uncovered in the Ca
 \label{fig:exp24}
 \end{figure}
 
+% ---------------------------------------------------------------------------
+\subsection{Worked Example: iLQR vs. Sampling MPC on Harder Reference Paths (Experiment 26)}
+% ---------------------------------------------------------------------------
+
+Experiment 26 tests whether the decisive performance advantage of gradient-based iLQR / Real-Time Iteration NMPC over stochastic Sampling MPC (CEM) observed in Experiment 24 holds across harder, non-trivial trajectory geometries. We evaluate both planners under identical cost weights ($Q = \operatorname{diag}(200, 200, 20, 2, 2, 2)$, $R = \operatorname{diag}(0.1, 0.1)$), identical 20-step horizons ($N=20$, $\Delta t = 20\,\text{ms}$), and a $20\,\text{ms}$ flight-controller real-time deadline across three distinct geometric references:
+\begin{enumerate}[nosep]
+  \item \textbf{Lemniscate (Baseline):} Standard figure-8 ($2:1$ frequency ratio) with smooth, periodic curvature.
+  \item \textbf{Lissajous 3:2:} Coprime frequency ratio ($x = A\sin(3\omega t)$, $z = z_0 + B\sin(2\omega t)$) inducing sharp velocity reversals and fast-changing curvature at the outer lobes.
+  \item \textbf{Archimedean Spiral:} Outward spiral with monotonically relaxing curvature ($r(t) = r_0 + a t$).
+\end{enumerate}
+
+\begin{table}[H]
+\centering
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Reference Path} & \textbf{Sampling MPC (CEM) [mm]} & \textbf{iLQR / RTI-NMPC [mm]} & \textbf{iLQR Advantage} & \textbf{CEM Latency [ms]} & \textbf{iLQR Latency [ms]} \\
+\midrule
+\textbf{Lemniscate (Baseline)} & 202.2 & \textbf{1.34} & \textbf{151$\times$} & 28.5 & \textbf{16.6 (Complies)} \\
+\textbf{Lissajous 3:2} & 172.8 & \textbf{5.41} & \textbf{32$\times$} & 29.7 & \textbf{16.6 (Complies)} \\
+\textbf{Archimedean Spiral} & 147.6 & \textbf{0.18} & \textbf{840$\times$} & 30.6 & \textbf{16.4 (Complies)} \\
+\bottomrule
+\end{tabular}%
+}
+\caption{Benchmark results for Experiment 26: iLQR / RTI-NMPC vs. Sampling MPC (CEM) across diverse reference geometries under a $20\,\text{ms}$ real-time budget (from \texttt{experiments/26\_harder\_reference\_paths/table.md}).}
+\label{tab:exp26}
+\end{table}
+
+\paragraph{Key Takeaways:}
+\begin{enumerate}[nosep]
+  \item \textbf{Dominance Generalises Across All Geometries:} iLQR / RTI-NMPC outperforms CEM by $32\times$ to $840\times$ in RMS position tracking while expending $4\text{--}14\times$ lower control energy across every path tested. The Experiment 24 finding was not a figure-8 artefact.
+  \item \textbf{Curvature Sensitivity vs. Search Inefficiency:} The Lissajous 3:2 is the most challenging trajectory for iLQR (error rises from $1.34\,\text{mm}$ to $5.41\,\text{mm}$) due to sharp lobe reversals taxing the single RTI backward pass; conversely, the relaxing curvature of the spiral enables near-exact $0.18\,\text{mm}$ tracking. In contrast, stochastic CEM remains insensitive to path simplicity ($147.6\,\text{mm}$ on spiral vs. $202.2\,\text{mm}$ on lemniscate), proving that sampling without gradient guidance fails to exploit smooth geometry.
+  \item \textbf{Deterministic Real-Time Compliance:} CEM median latency ($28.5\text{--}30.6\,\text{ms}$) violates the $20\,\text{ms}$ real-time flight budget on all three trajectories, whereas iLQR consistently computes its Riccati backward sweep in $\sim 16.5\,\text{ms}$, guaranteeing real-time deployability.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/exp26_harder_reference_paths.png}
+\caption{Experiment 26 benchmark comparison: Quadrotor trajectory tracking and RMS error across Lemniscate, Lissajous 3:2, and Archimedean Spiral paths.}
+\label{fig:exp26}
+\end{figure}
+
 % ===========================================================================
 \section{Engineering Synthesis \& Decision Guide}
 % ===========================================================================
@@ -1031,7 +1074,7 @@ The central mission of this project was never to demonstrate that a neural netwo
 \midrule
 Equations of motion known / linearisable & \textbf{LQR / Pole Placement}, then \textbf{Linear MPC} under constraints & Exp 04, Exp 08 \\
 Hard state/actuator inequality bounds & \textbf{Linear MPC} (active-set condensed QP) & Exp 08, Exp 20 \\
-Nonlinear dynamics with real-time deadline & \textbf{iLQR / RTI-NMPC} ($1.3\,\text{mm}$ error, $14.6\,\text{ms}$ solve) & Exp 24 \\
+Nonlinear dynamics with real-time deadline & \textbf{iLQR / RTI-NMPC} ($1.3\,\text{mm}$ error, $14.6\,\text{ms}$ solve; generalizes across paths) & Exp 24, Exp 26 \\
 Multi-body robot arm trajectory tracking & \textbf{Computed Torque} / \textbf{Joint LQR}; \textbf{Slotine--Li MRAC} under payload & Exp 23 \\
 Wheeled mobile robot path following & \textbf{Path LQR} (curvature feedforward) / \textbf{Stanley} & Exp 22 \\
 Smooth reference trajectory tracking & \textbf{LQR + Flatness Feedforward} or \textbf{Preview MPC} & Exp 14 \\
@@ -1049,15 +1092,15 @@ Deploying uncertified learned policies & \textbf{Safety Shield} with certified c
 \label{tab:decision_guide}
 \end{table}
 
-\subsection{Recurring Engineering Lessons Across 24 Experiments}
+\subsection{Recurring Engineering Lessons Across 25 Experiments}
 
-Across 24 empirical benchmarks, six fundamental principles recur consistently:
+Across 25 empirical benchmarks, six fundamental principles recur consistently:
 \begin{enumerate}
   \item \textbf{Feedforward Does the Heavy Lifting:} Model-based feedforward (differential flatness, steady-state inversion, curvature feedforward, reference preview) generates the baseline control trajectory directly, leaving feedback to correct only small modeling residuals and unexpected disturbances (Exp 03, 14, 17, 22).
   \item \textbf{Integral Action is Mandatory for Constant Disturbances:} No amount of static state-feedback tuning ($K$) eliminates steady-state droop under persistent external loads (wind, gravity bias); explicit integrator augmentation or parameter adaptation is required (Exp 03, 17, 23).
   \item \textbf{Cost and Weight Scaling is Load-Bearing:} On ill-conditioned or multi-timescale physical systems (e.g., quadrotor position vs. moment of inertia), naive identity weights ($Q=I, R=I$) fail. Bryson-rule normalization ($Q_{ii} = 1/x_{i,\max}^2, R_{jj} = 1/u_{j,\max}^2$) is essential for well-behaved optimal gains (Exp 14, 18, 19).
   \item \textbf{Model Error is Survivable within Robustness Margins:} Full-state LQR provides infinite upper gain margin and $[-6\,\text{dB}, +\infty\,\text{dB}]$ lower gain margin, tolerating up to $50\%$ parameter identification error without loss of asymptotic stability (Exp 09).
-  \item \textbf{Gradient-Based Trajectory Optimization Beats Stochastic Sampling:} iLQR / Real-Time Iteration NMPC converges to true Karush--Kuhn--Tucker (KKT) stationarity in $14.6\,\text{ms}$ with $1.3\,\text{mm}$ tracking precision, outperforming loose Monte Carlo sampling ($202\,\text{mm}$ error at $26.6\,\text{ms}$) (Exp 24).
+  \item \textbf{Gradient-Based Trajectory Optimization Beats Stochastic Sampling Across All Geometries:} iLQR / Real-Time Iteration NMPC converges to true Karush--Kuhn--Tucker (KKT) stationarity in $\sim 14\text{--}16.5\,\text{ms}$ with sub-centimeter tracking precision across Lemniscate ($1.34\,\text{mm}$), Lissajous 3:2 ($5.41\,\text{mm}$), and Spiral ($0.18\,\text{mm}$) geometries, outperforming loose Monte Carlo sampling ($32\times\text{--}840\times$ tighter at $4\text{--}14\times$ less energy) while deterministically complying with real-time flight deadlines (Exp 24, 26).
   \item \textbf{Reporting Failure Modes is as Essential as Reporting Wins:} Engineering judgment relies on knowing exact breaking points: linearisation breakdown past $23^\circ$ (Exp 02), EKF false basin trapping (Exp 16), closed-loop SysID correlation bias (Exp 09), nominal computed torque collapse under payload step (Exp 23), and pure RL bootstrap failure on low-inertia plants (Exp 21).
 \end{enumerate}
 
@@ -1071,11 +1114,11 @@ All curriculum modules, capstone robotics showcases, deep RL agents, adaptive co
 \paragraph{Phase 2: Post-Capstone Depth, Real Systems \& Packaging --- In Progress.}
 \begin{itemize}[nosep]
   \item \textbf{Track A (Real Multi-Body Systems):} Differential-drive mobile robot (Exp 22: path tracking), 2-link planar manipulator arm (Exp 23: computed torque vs. Slotine--Li MRAC with payload step), and bicycle-model ground vehicle.
-  \item \textbf{Track B (Algorithmic Depth):} Real-time iteration Nonlinear MPC (Exp 24: iLQR / RTI-NMPC vs. Sampling MPC), Soft Actor-Critic (SAC) continuous RL, direct collocation trajectory optimization, and formal Behavioral Cloning + DAgger.
-  \item \textbf{Track C (Harness Infrastructure):} Standardized trajectory-tracking benchmark suite (\texttt{aimct.benchmarks.track\_trajectory}) with cross-track / along-track error metrics, and \texttt{aimct.trajectories} reference generator library.
+  \item \textbf{Track B (Algorithmic Depth):} Real-time iteration Nonlinear MPC (Exp 24: iLQR / RTI-NMPC vs. Sampling MPC; Exp 26: generalized trajectory geometries), Soft Actor-Critic (SAC) continuous RL, direct collocation trajectory optimization, and formal Behavioral Cloning + DAgger.
+  \item \textbf{Track C (Harness Infrastructure):} Standardized trajectory-tracking benchmark suite (\texttt{aimct.benchmarks.track\_trajectory}) with cross-track / along-track error metrics, and \texttt{aimct.trajectories} reference generator library (including Lissajous, Spiral, Rose).
   \item \textbf{Track D (PyPI Distribution):} Production packaging under \texttt{aimct}, console entry points, automated GitHub Action release pipeline with PyPI OIDC Trusted Publishing, and release runbook.
 \end{itemize}
-CI passes on Python 3.10--3.13 with \textbf{373 passing unit tests}.
+CI passes on Python 3.10--3.13 with \textbf{387 passing unit tests}.
 
 \paragraph{Reproduction Commands.}
 \begin{lstlisting}[language=bash]

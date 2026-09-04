@@ -41,6 +41,7 @@ Copy-Fig "22_diffdrive_path_following" "tracking.png" "exp22_diffdrive.png"
 Copy-Fig "23_twolink_arm_tracking" "tracking.png" "exp23_twolink_tracking.png"
 Copy-Fig "23_twolink_arm_tracking" "payload.png" "exp23_twolink_payload.png"
 Copy-Fig "24_ilqr_vs_sampling_mpc" "figure.png" "exp24_ilqr_vs_sampling_mpc.png"
+Copy-Fig "26_harder_reference_paths" "figure.png" "exp26_harder_reference_paths.png"
 
 Write-Host "compiling main.tex..."
 Push-Location $here

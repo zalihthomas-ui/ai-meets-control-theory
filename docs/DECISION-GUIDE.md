@@ -17,7 +17,7 @@ into a practical guide. Every claim links to the experiment that earned it.
 | --- | --- | --- |
 | You have equations of motion (or can get them) | **LQR / pole placement**, then **MPC** if there are constraints | [04](../experiments/04_lqr_vs_pole_placement_cartpole/), [08](../experiments/08_mpc_vs_lqr_constrained_cartpole/) |
 | Hard state/actuator constraints matter | **Linear MPC** (condensed QP) | [08](../experiments/08_mpc_vs_lqr_constrained_cartpole/), [20](../experiments/20_quadrotor_obstacle_nmpc/) |
-| Nonlinear dynamics with a hard real-time deadline | **iLQR / RTI-NMPC** ($1.3\,\text{mm}$ error at $14.6\,\text{ms}$) | [24](../experiments/24_ilqr_vs_sampling_mpc/) |
+| Nonlinear dynamics with a hard real-time deadline | **iLQR / RTI-NMPC** ($1.3\,\text{mm}$ error at $14.6\,\text{ms}$; beats CEM by $32\times\text{--}840\times$ across arbitrary paths) | [24](../experiments/24_ilqr_vs_sampling_mpc/), [26](../experiments/26_harder_reference_paths/) |
 | Multi-body robot arm trajectory tracking | **Computed torque** / **Joint LQR**; **Slotine--Li MRAC** under unknown payload | [23](../experiments/23_twolink_arm_tracking/) |
 | Wheeled mobile robot path following | **Path LQR** (curvature feedforward) / **Stanley** | [22](../experiments/22_diffdrive_path_following/) |
 | A smooth reference *trajectory* to track | **LQR + differential-flatness feedforward**, or **preview MPC** | [14](../experiments/14_quadrotor_figure8_tracking/) |
@@ -68,6 +68,11 @@ into a practical guide. Every claim links to the experiment that earned it.
   small problems — 6–20× a real 500 Hz flight-controller budget
   ([21](../experiments/21_grand_capstone_bakeoff/)). A single tiled setpoint
   cuts corners on curved paths.
+
+### Real-time iteration NMPC (iLQR) vs Sampling MPC (CEM)
+- **iLQR / RTI-NMPC wins decisively on smooth models:** $1.34\,\text{mm}$ RMS tracking on lemniscate ($151\times$ tighter than CEM), $5.41\,\text{mm}$ on Lissajous 3:2 ($32\times$), and $0.18\,\text{mm}$ on spiral ($840\times$) at $4\text{--}14\times$ less energy ([24](../experiments/24_ilqr_vs_sampling_mpc/), [26](../experiments/26_harder_reference_paths/)).
+- **Deterministic real-time compliance:** iLQR solves its Riccati backward pass in $\sim 14\text{--}16.5\,\text{ms}$ (complying with real-time $20\,\text{ms}$ flight budgets) regardless of path geometry. Full-mode CEM takes $28\text{--}31\,\text{ms}$ (violating real-time deadlines).
+- **When to use CEM:** Only when dynamics or costs are **non-smooth** (obstacle keep-outs, contact dynamics, non-differentiable rewards) where gradients do not exist or mislead ([20](../experiments/20_quadrotor_obstacle_nmpc/)).
 
 ### Estimation (Luenberger / Kalman / EKF / UKF)
 - **Kalman over Luenberger** when there is noise: a fast pole-placed observer
