@@ -9,7 +9,7 @@
 
 **AI Meets Control Theory** is a rigorous, from-scratch experimentation framework that systematically bridges classical control theory, modern state-space methods, constrained Model Predictive Control (MPC), Kalman filtering, adaptive control, and modern machine learning/reinforcement learning on physical dynamical systems. Under the core discipline **"derive it, build it from scratch, simulate it, visualise it, and compare it honestly"**, every controller—from PID and LQR to active-set MPC, EKF/UKF, PPO actor-critic, and safety shields—is evaluated on identical plants, sensor noise profiles, disturbances, and actuator limits.
 
-📄 **[Read the Living Technical Report (PDF)](docs/report/ai-meets-control-theory.pdf)** &nbsp;|&nbsp; 📊 **[Master Results & Verdicts Table](docs/RESULTS.md)** &nbsp;|&nbsp; 🧭 **[Engineering Decision Guide](docs/DECISION-GUIDE.md)** &nbsp;|&nbsp; 🚁 **[Live 3D WebGL Sandbox](https://claude.ai/code/artifact/69b12b78-d7b2-4732-a7af-2af14930139b)** &nbsp;|&nbsp; 🎯 **[Project Vision & Manifesto](docs/vision.md)**
+📄 **[Read the Living Technical Report (PDF)](docs/report/ai-meets-control-theory.pdf)** &nbsp;|&nbsp; 📖 **[User Guide & API Recipes](docs/USAGE.md)** &nbsp;|&nbsp; 📊 **[Master Results & Verdicts Table](docs/RESULTS.md)** &nbsp;|&nbsp; 🧭 **[Engineering Decision Guide](docs/DECISION-GUIDE.md)** &nbsp;|&nbsp; 🚁 **[Live 3D WebGL Sandbox](https://claude.ai/code/artifact/69b12b78-d7b2-4732-a7af-2af14930139b)** &nbsp;|&nbsp; 🎯 **[Project Vision & Manifesto](docs/vision.md)**
 
 ---
 
@@ -34,6 +34,7 @@ python -m aimct live3d
 python -m aimct live
 ```
 
+📖 **Usage & Recipes:** See [`docs/USAGE.md`](docs/USAGE.md) for the 5-axis framework guide (*system × controller × trajectory × disturbance × parameters*) and copy-paste recipes.  
 📦 **Packaging & Releases:** See [`docs/PACKAGING.md`](docs/PACKAGING.md) for the PyPI distribution runbook and [`CHANGELOG.md`](CHANGELOG.md) for the version history.
 
 ---
