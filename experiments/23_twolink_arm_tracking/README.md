@@ -12,8 +12,9 @@ Companion: [`aimct.systems.TwoLinkArm`](../../src/aimct/systems/twolink_arm.py),
 drifting plant).
 
 > The tracking harness reports position-style metrics; here "position" is the
-> joint vector `(q1, q2)`, so **"mm" reads as milliradians** and panel (a) of
-> each figure is the joint plane, not Cartesian space.
+> joint vector `(q1, q2)`, so the figures use `space="joint"` (q1/q2 in rad,
+> cross-track in **mrad**) and the raw `*_mm` columns in `tracking.md` /
+> `payload.md` read as **milliradians**.
 
 ## Controllers
 

@@ -198,6 +198,7 @@ def main():
     res_a = track_trajectory(NOM, ctrls_a, REF, X0, dt=DT, t_final=T_TOTAL,
                              pos_index=(0, 1), u_bounds=TAU_BOUNDS,
                              title="Exp 23A - two-link arm joint tracking (nominal)")
+    res_a.space = "joint"                            # q1/q2 [rad], mrad cross-track
     res_a.save(HERE)
 
     # Part B - true arm carries an unknown 0.5 kg payload
@@ -210,6 +211,7 @@ def main():
     res_b = track_trajectory(true_arm, ctrls_b, REF, X0, dt=DT, t_final=T_TOTAL,
                              pos_index=(0, 1), u_bounds=TAU_BOUNDS,
                              title="Exp 23B - unknown 0.5 kg wrist payload")
+    res_b.space = "joint"
     (HERE / "payload.md").write_text(res_b.to_markdown(), encoding="utf-8", newline="\n")
     (HERE / "payload.csv").write_text(res_b.to_csv(), encoding="utf-8", newline="\n")
     try:
