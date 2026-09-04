@@ -17,7 +17,7 @@ import numpy as np
 
 __all__ = [
     "Trajectory", "Setpoint", "Circle", "Lemniscate", "MinimumJerk",
-    "Spline", "Dubins",
+    "Spline", "Dubins", "Lissajous", "Rose", "Spiral",
 ]
 
 
@@ -212,3 +212,86 @@ class Dubins(Trajectory):
             s -= L
         p0, d = self.segs[-1][1]
         return p0 + d * self.segs[-1][2], d * self.v, np.zeros(2)
+
+
+class Lissajous(Trajectory):
+    r"""``x = A sin(a w t + delta)``, ``y = B sin(b w t)``.
+
+    The frequency ratio ``a : b`` sets the shape; ``3 : 2`` gives sharp velocity
+    reversals at the lobes (a harder tracking test than the ``2 : 1`` figure-8,
+    which is the ``a=1, b=2`` special case). The pattern closes after
+    ``period / gcd(a, b)`` seconds (``= period`` for coprime ``a, b`` such as
+    ``3 : 2``); ``duration`` is set to exactly that so the ``.closed``
+    completion logic lands on a full lap.
+    """
+
+    closed = True
+
+    def __init__(self, A=0.6, B=0.4, a=3, b=2, delta=np.pi / 2, period=8.0):
+        self.A, self.B = float(A), float(B)
+        self.a, self.b = int(a), int(b)
+        self.delta = float(delta)
+        self.w = 2 * np.pi / float(period)
+        self.dim = 2
+        self.duration = float(period) / float(np.gcd(self.a, self.b))
+
+    def __call__(self, t):
+        wa, wb = self.a * self.w, self.b * self.w
+        pa, pb = wa * t + self.delta, wb * t
+        p = np.array([self.A * np.sin(pa), self.B * np.sin(pb)])
+        v = np.array([self.A * wa * np.cos(pa), self.B * wb * np.cos(pb)])
+        acc = np.array([-self.A * wa**2 * np.sin(pa),
+                        -self.B * wb**2 * np.sin(pb)])
+        return p, v, acc
+
+
+class Rose(Trajectory):
+    r"""Rhodonea curve: ``r(phi) = R cos(k phi)`` swept at constant angular rate
+    ``phi = w t``.  ``k`` petals for odd ``k``, ``2k`` for even ``k``.  Curvature
+    varies strongly along a petal, so a tracker meets a moving speed demand
+    even though the parametrisation is uniform in ``phi``."""
+
+    closed = True
+
+    def __init__(self, R=0.6, k=3, period=10.0):
+        self.R, self.k = float(R), int(k)
+        self.w = 2 * np.pi / float(period)
+        self.dim = 2
+        # a full rose closes after pi (odd k) or 2 pi (even k) of phi
+        self.duration = float(period) * (0.5 if self.k % 2 else 1.0)
+
+    def __call__(self, t):
+        w, k, R = self.w, self.k, self.R
+        phi = w * t
+        r = R * np.cos(k * phi)
+        rd = -R * k * w * np.sin(k * phi)
+        rdd = -R * k**2 * w**2 * np.cos(k * phi)
+        c, s = np.cos(phi), np.sin(phi)
+        p = np.array([r * c, r * s])
+        v = np.array([rd * c - r * w * s, rd * s + r * w * c])
+        acc = np.array([rdd * c - 2 * rd * w * s - r * w**2 * c,
+                        rdd * s + 2 * rd * w * c - r * w**2 * s])
+        return p, v, acc
+
+
+class Spiral(Trajectory):
+    r"""Outward Archimedean spiral: ``r = r0 + c * t`` at angular rate
+    ``phi = w t``.  Curvature ``kappa = ... `` decreases monotonically as the
+    radius grows, so the tracker sees a steadily *easing* path - the mirror
+    image of a tightening one.  Not closed."""
+
+    def __init__(self, r0=0.15, growth=0.05, w=1.2, duration=12.0):
+        self.r0, self.c, self.w = float(r0), float(growth), float(w)
+        self.dim = 2
+        self.duration = float(duration)
+
+    def __call__(self, t):
+        w, c = self.w, self.c
+        r = self.r0 + c * t
+        phi = w * t
+        cs, sn = np.cos(phi), np.sin(phi)
+        p = np.array([r * cs, r * sn])
+        v = np.array([c * cs - r * w * sn, c * sn + r * w * cs])
+        acc = np.array([-2 * c * w * sn - r * w**2 * cs,
+                        2 * c * w * cs - r * w**2 * sn])
+        return p, v, acc

@@ -92,6 +92,19 @@ class TrackingResult:
         fig.tight_layout()
         return fig, ax
 
+    def animate(self, system, *, controller: str | None = None, **kw):
+        """Replay one controller's run as an animation (needs :mod:`aimct.viz`).
+
+        ``controller`` selects which run when several were compared; the tracked
+        ``trajectory`` is drawn as the moving reference automatically.
+        Returns an :class:`aimct.viz.replay.Replay`.
+        """
+        from ..viz import animate as _animate
+
+        kw.setdefault("ref", self.trajectory)
+        kw.setdefault("title", self.title)
+        return _animate(self, system, controller=controller, **kw)
+
     def save(self, out_dir):
         out = Path(out_dir)
         out.mkdir(parents=True, exist_ok=True)

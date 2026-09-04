@@ -10,8 +10,11 @@ from aimct.trajectories import (
     Circle,
     Dubins,
     Lemniscate,
+    Lissajous,
     MinimumJerk,
+    Rose,
     Setpoint,
+    Spiral,
     Spline,
 )
 
@@ -22,6 +25,11 @@ _ALL = [
     MinimumJerk([0.0, 0.0], [1.0, 2.0], 2.0),
     Spline([[0, 0], [1, 1], [2, 0], [3, 2]]),
     Dubins(v=0.5),
+    Lissajous(0.6, 0.4, 3, 2, period=8.0),
+    Lissajous(0.5, 0.5, 5, 4, period=10.0),
+    Rose(0.6, 3, period=10.0),
+    Rose(0.6, 4, period=10.0),
+    Spiral(0.15, 0.05, 1.2, 12.0),
 ]
 
 
