@@ -36,24 +36,39 @@ class Trajectory:
         return np.asarray(self(t)[0], dtype=float)
 
     # -- path geometry (sampled; good enough for cross-track / completion) ----
+    #
+    # The polyline, its per-segment lengths and the cumulative arc length are
+    # cached on the instance: ``closest`` is called once per timestep by
+    # :func:`aimct.benchmarks.track_trajectory`, and rebuilding a 400-point
+    # sample every call dominated a multi-controller score (toku, Exp 22).
 
     def _polyline(self, n: int = 400):
-        ts = np.linspace(0.0, self.duration, n)
-        return ts, np.array([self.pos(t) for t in ts])
+        cache = self.__dict__.get("_poly_cache")
+        if cache is None or cache[0] != n:
+            ts = np.linspace(0.0, self.duration, n)
+            P = np.array([self.pos(t) for t in ts])
+            seg = np.linalg.norm(np.diff(P, axis=0), axis=1)
+            cum = np.concatenate([[0.0], np.cumsum(seg)])
+            self._poly_cache = (n, ts, P, cum)
+            cache = self._poly_cache
+        return cache[1], cache[2]
+
+    def _arc(self, n: int = 400):
+        self._polyline(n)
+        return self._poly_cache[3]            # cumulative arc length, shape (n,)
 
     @property
     def length(self) -> float:
-        _, P = self._polyline()
-        return float(np.sum(np.linalg.norm(np.diff(P, axis=0), axis=1)))
+        return float(self._arc()[-1])
 
     def closest(self, p):
         """Nearest sampled point on the path -> ``(point, arclength, frac)``."""
         _, P = self._polyline()
+        cum = self._arc()
         p = np.asarray(p, dtype=float)[: P.shape[1]]
-        d = np.linalg.norm(P - p, axis=1)
-        i = int(np.argmin(d))
-        s = float(np.sum(np.linalg.norm(np.diff(P[: i + 1], axis=0), axis=1)))
-        return P[i], s, (s / max(self.length, 1e-9))
+        i = int(np.argmin(np.linalg.norm(P - p, axis=1)))
+        s = float(cum[i])
+        return P[i], s, (s / max(cum[-1], 1e-9))
 
 
 class Setpoint(Trajectory):
