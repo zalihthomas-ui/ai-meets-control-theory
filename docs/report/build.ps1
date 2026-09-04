@@ -37,6 +37,10 @@ Copy-Fig "18_rl_zoo_vs_lqr" "figure.png" "exp18_rl_zoo.png"
 Copy-Fig "19_icc_leaderboard" "figure.png" "exp19_icc_leaderboard.png"
 Copy-Fig "20_quadrotor_obstacle_nmpc" "figure.png" "exp20_obstacle_nmpc.png"
 Copy-Fig "21_grand_capstone_bakeoff" "figure.png" "exp21_grand_bakeoff.png"
+Copy-Fig "22_diffdrive_path_following" "tracking.png" "exp22_diffdrive.png"
+Copy-Fig "23_twolink_arm_tracking" "tracking.png" "exp23_twolink_tracking.png"
+Copy-Fig "23_twolink_arm_tracking" "payload.png" "exp23_twolink_payload.png"
+Copy-Fig "24_ilqr_vs_sampling_mpc" "figure.png" "exp24_ilqr_vs_sampling_mpc.png"
 
 Write-Host "compiling main.tex..."
 Push-Location $here

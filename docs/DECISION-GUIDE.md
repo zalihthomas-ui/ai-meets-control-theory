@@ -17,6 +17,9 @@ into a practical guide. Every claim links to the experiment that earned it.
 | --- | --- | --- |
 | You have equations of motion (or can get them) | **LQR / pole placement**, then **MPC** if there are constraints | [04](../experiments/04_lqr_vs_pole_placement_cartpole/), [08](../experiments/08_mpc_vs_lqr_constrained_cartpole/) |
 | Hard state/actuator constraints matter | **Linear MPC** (condensed QP) | [08](../experiments/08_mpc_vs_lqr_constrained_cartpole/), [20](../experiments/20_quadrotor_obstacle_nmpc/) |
+| Nonlinear dynamics with a hard real-time deadline | **iLQR / RTI-NMPC** ($1.3\,\text{mm}$ error at $14.6\,\text{ms}$) | [24](../experiments/24_ilqr_vs_sampling_mpc/) |
+| Multi-body robot arm trajectory tracking | **Computed torque** / **Joint LQR**; **Slotine--Li MRAC** under unknown payload | [23](../experiments/23_twolink_arm_tracking/) |
+| Wheeled mobile robot path following | **Path LQR** (curvature feedforward) / **Stanley** | [22](../experiments/22_diffdrive_path_following/) |
 | A smooth reference *trajectory* to track | **LQR + differential-flatness feedforward**, or **preview MPC** | [14](../experiments/14_quadrotor_figure8_tracking/) |
 | Constant disturbance / steady-state error unacceptable | add **integral action** (LQI) or **MRAC** | [03](../experiments/03_pid_stabilizes_unstable/), [17](../experiments/17_adaptive_vs_fixed_changing_plant/), live sandbox |
 | The plant *changes* over time (wear, payload) | **MRAC** if the uncertainty is matched; **gain scheduling** if the parameter is measured | [17](../experiments/17_adaptive_vs_fixed_changing_plant/) |

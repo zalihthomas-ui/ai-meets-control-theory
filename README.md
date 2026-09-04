@@ -38,7 +38,7 @@ python -m aimct live
 
 ---
 
-## The Experiments (01–21)
+## The Experiments (01–24)
 
 Every experiment is self-contained with its own configuration, runner, Markdown/CSV benchmark table, and publication-ready 4-panel figure. See [`docs/RESULTS.md`](docs/RESULTS.md) for full metrics.
 
@@ -65,6 +65,9 @@ Every experiment is self-contained with its own configuration, runner, Markdown/
 | **19** | [`19_icc_leaderboard`](experiments/19_icc_leaderboard/) | Multi-Plant Challenge | Blind Black-Box Leaderboard | MPC dominates precision (DC Motor $41.3$); Energy+LQR hybrid sweeps agility (Pendulum $23.8$, Track 3 $29.9$). |
 | **20** | [`20_quadrotor_obstacle_nmpc`](experiments/20_quadrotor_obstacle_nmpc/) | Crazyflie 2.0 (Keep-Out) | Sampling NMPC vs Flatness LQR | NMPC bends trajectory around keep-out ($+11\,\text{mm}$ clearance); flatness LQR crashes straight through. |
 | **21** | [`21_grand_capstone_bakeoff`](experiments/21_grand_capstone_bakeoff/) | Crazyflie 2.0 (Grand Course) | Five-Way Grand Bake-Off | Sampling NMPC scores 8.0 (0 violations); imitation tracks 41.4 mm but cuts keep-out 46 times; hybrid scores 7.9. |
+| **22** | [`22_diffdrive_path_following`](experiments/22_diffdrive_path_following/) | TurtleBot3-Burger (Unicycle) | Pure Pursuit vs Stanley vs Path LQR | Path LQR curvature feedforward gives tightest cross-track error ($9.25\,\text{mm}$); pure pursuit cuts corners ($35\,\text{mm}$). |
+| **23** | [`23_twolink_arm_tracking`](experiments/23_twolink_arm_tracking/) | 2-Link Planar Robot Arm | Computed Torque vs Slotine--Li MRAC | Nominal computed torque collapses under $+0.5\,\text{kg}$ load ($394\,\text{mm}$); Slotine--Li adapts to $4.93\,\text{mm}$ ($100\%$). |
+| **24** | [`24_ilqr_vs_sampling_mpc`](experiments/24_ilqr_vs_sampling_mpc/) | Cart-Pole & Crazyflie 2.0 | iLQR / RTI-NMPC vs Sampling MPC | iLQR converges $150\times$ tighter on quad ($1.34\,\text{mm}$ error) and solves in $14.6\,\text{ms}$ (meets $20\,\text{ms}$ flight budget). |
 
 ---
 
@@ -73,11 +76,18 @@ Every experiment is self-contained with its own configuration, runner, Markdown/
 ```
 src/aimct/
   systems/        DynamicalSystem base + LinearSystem, MassSpringDamper,
-                  Pendulum, CartPole, PlanarQuadrotor (Crazyflie 2.0), DCMotor
+                  Pendulum, CartPole, PlanarQuadrotor (Crazyflie 2.0), DCMotor,
+                  DifferentialDriveRobot, TwoLinkArm
   simulate.py     rk4_step(), simulate() -> Trajectory(t, x, u, y)
-  controllers/    PID, StateFeedback, LQR, ObserverFeedback, MRAC,
+  controllers/    PID, StateFeedback, LQR, ObserverFeedback, MRAC, ComputedTorque,
                   EnergyShapingSwingUp, HybridSwingUpLQR,
-                  LinearMPC (with preview), SamplingMPC (CEM + obstacles), _qp.solve_qp
+                  LinearMPC (with preview), SamplingMPC (CEM + obstacles),
+                  ILQR (trajectory optimiser + real-time-iteration NMPC)
+  estimation/     LuenbergerObserver, KalmanFilter (LQE/FARE), DiscreteKalmanFilter,
+                  ExtendedKalmanFilter, UnscentedKalmanFilter, observability_matrix
+  trajectories/   Lemniscate, Spline, Minimum-Jerk Polynomials, Dubins paths
+  benchmarks/     metrics.py, harness.py, sweep.py, challenge.py, tracking.py
+```
   estimation/     LuenbergerObserver, KalmanFilter (LQE/FARE), DiscreteKalmanFilter,
                   ExtendedKalmanFilter, UnscentedKalmanFilter, observability_matrix
   sysid/          least_squares_id, dmdc, to_continuous (block logm), prediction_error
