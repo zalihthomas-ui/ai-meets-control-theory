@@ -85,7 +85,7 @@ def run_pyvista_arm(box, *, title: str, show_payload: bool = False,
     payload_actor = None
     if show_payload:
         payload_actor = pl.add_mesh(pv.Sphere(radius=1e-4), color="#d62728",
-                                    opacity=0.55, name="payload")
+                                    opacity=0.9, specular=0.6, name="payload")
     trail_actor = [None]
     hud = pl.add_text("", position="lower_right", font_size=9,
                       color="#cfe3ff", name="hud")
@@ -176,9 +176,12 @@ def run_pyvista_arm(box, *, title: str, show_payload: bool = False,
             target_actor.user_matrix = _translate(embed(box.target))
         if payload_actor is not None:
             mp = getattr(arm, "payload", 0.0)
-            rad = 0.0 if mp <= 0 else (0.03 + 0.10 * mp) * reach
+            rad = 0.0 if mp <= 0 else (0.05 + 0.16 * mp) * reach
+            # hang it just below the tip, like a real weight on a hook, so it
+            # never fights the tip sphere for the same pixels
+            below = tuple(w3 + np.array([0.0, 0.0, -1.4 * rad]))
             payload_actor.mapper.SetInputData(pv.Sphere(radius=max(rad, 1e-4),
-                                                         center=tuple(w3)))
+                                                         center=below))
         trail.append(w3)
         if len(trail) > 3:
             if trail_actor[0] is not None:
