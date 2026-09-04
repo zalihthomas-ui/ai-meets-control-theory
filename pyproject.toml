@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aimct"
-version = "0.1.0"
+dynamic = ["version"]
 description = "AI Meets Control Theory — A rigorous, code-first bridge from classical feedback control to modern machine learning and safe reinforcement learning"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -70,6 +70,9 @@ Documentation = "https://github.com/zalihthomas-ui/ai-meets-control-theory#readm
 Repository = "https://github.com/zalihthomas-ui/ai-meets-control-theory.git"
 "Bug Tracker" = "https://github.com/zalihthomas-ui/ai-meets-control-theory/issues"
 Changelog = "https://github.com/zalihthomas-ui/ai-meets-control-theory/blob/main/CHANGELOG.md"
+
+[tool.setuptools.dynamic]
+version = { attr = "aimct.__version__" }
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -73,7 +73,7 @@ def main(argv=None) -> int:
     pc.add_argument("--t-final", type=float, default=None)
     pc.add_argument("--dt", type=float, default=None)
 
-    sub.add_parser("list", help="list the built-in systems")
+    sub.add_parser("list", help="list the built-in systems (* = has a compare preset)")
 
     pl = sub.add_parser("live", help="interactive 2-D drone-vs-wind sandbox")
     pl.add_argument("--headless", action="store_true",
@@ -89,14 +89,34 @@ def main(argv=None) -> int:
     args = p.parse_args(argv)
 
     if args.cmd == "list":
+        from . import systems as _sys
+
+        print("runnable via `aimct compare --system <name>`:")
         for name in sorted(_PRESETS):
-            print(name)
+            print(f"  {name}")
+        skip = {"DynamicalSystem", "LinearSystem"}
+        extra = [c for c in sorted(getattr(_sys, "__all__", []))
+                 if c not in skip and isinstance(getattr(_sys, c, None), type)]
+        print("\nalso in aimct.systems (import directly; no compare preset yet):")
+        for c in extra:
+            print(f"  aimct.systems.{c}")
         return 0
 
     if args.cmd in ("live", "live3d"):
         import runpy
         from pathlib import Path
         d = Path(__file__).resolve().parents[2] / "experiments"
+        if not d.is_dir():
+            print(
+                "The interactive sandboxes live under experiments/ in the source\n"
+                "checkout and are not shipped in the installed package. Clone the\n"
+                "repo and run from there:\n"
+                "  git clone https://github.com/zalihthomas-ui/ai-meets-control-theory\n"
+                "  cd ai-meets-control-theory\n"
+                f"  python -m aimct {args.cmd}",
+                file=sys.stderr,
+            )
+            return 1
         if args.cmd == "live":
             script = d / "live_drone" / "live.py"
         elif getattr(args, "web", False):
