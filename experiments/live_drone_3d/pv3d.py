@@ -74,8 +74,16 @@ def main() -> int:
     eng = sim3d.Engine()
     arm = eng.quad.arm
 
-    pl = pv.Plotter(window_size=(1180, 820))
+    pl = pv.Plotter(window_size=(1180, 820), lighting="light_kit")
     pl.set_background("#0d1017", top="#1b2740")
+    # GPU render quality: VTK renders through OpenGL on the discrete GPU already;
+    # these just turn on the nicer paths.
+    try:
+        pl.enable_anti_aliasing("ssaa")          # supersampled edges
+        pl.enable_ssao(radius=0.15, bias=0.005)  # contact shadows / depth
+        pl.enable_depth_peeling(8)               # correct translucent props
+    except Exception:
+        pass
     pl.add_text("AI Meets Control Theory - 3D drone vs wind",
                 position="upper_left", font_size=11, color="#7fb0ff")
 
