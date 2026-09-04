@@ -23,11 +23,16 @@ Priority order for every contribution: **clarity → correctness → reproducibi
 
 ## Workflow
 
-1. `pytest` must pass (`pip install -e ".[dev,xcheck]"` for the full set, incl.
-   `python-control` cross-checks). CI runs the suite on 3.10–3.12 and smoke-runs
-   every `experiments/*/run.py`. For a fast local loop, skip the heavy
-   RL / learned-model training tests with `pytest -m "not slow"` (a few seconds
-   vs a couple of minutes); run the full `pytest` before pushing.
+1. `pytest` must pass (`pip install -e ".[dev,xcheck,ml]"` for the full set,
+   incl. `python-control` cross-checks and the RL stack — `aimct.rl` imports
+   `gymnasium` unconditionally, so `test_dqn.py` / `test_ppo.py` /
+   `test_policy_gradient.py` fail to collect without `ml`). Add `viz` too if
+   you're touching `aimct.viz.pv_arm` / the PyVista sandboxes — those tests
+   skip cleanly without it, but you won't see them run. CI runs the suite on
+   3.10–3.12 and smoke-runs every `experiments/*/run.py` (the interactive
+   `live_*` sandboxes with `--headless`). For a fast local loop, skip the
+   heavy RL / learned-model training tests with `pytest -m "not slow"` (a few
+   seconds vs a couple of minutes); run the full `pytest` before pushing.
 2. `git pull --rebase` before you push. Small commits; one logical change each.
 3. `experiments/*/run.py` must be non-interactive — set `matplotlib.use("Agg")`
    before importing `pyplot`, write outputs next to the script, commit the
