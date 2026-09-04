@@ -36,7 +36,7 @@ python -m aimct live3d --web    # 6-DOF WebGL sandbox
 
 📖 **Usage & Recipes:** See [`docs/USAGE.md`](docs/USAGE.md) for the 5-axis framework guide (*system × controller × trajectory × disturbance × parameters*) and copy-paste recipes.  
 🎨 **Unified Visualization:** See [`docs/VISUALIZATION.md`](docs/VISUALIZATION.md) for replay animation (`aimct.viz.animate`) and real-time interactive sandboxes (`aimct.viz.Sandbox`).  
-🛠️ **Design-Time Preview:** See [`docs/DEV_PREVIEW.md`](docs/DEV_PREVIEW.md) for model inspection and Jacobian validation (`python -m aimct.dev <Plant> --watch`).  
+🛠️ **Design-Time Preview:** See [`docs/DEV_PREVIEW.md`](docs/DEV_PREVIEW.md) for model inspection and Jacobian validation (`python -m aimct preview <Plant> --watch`).  
 📦 **Packaging & Releases:** See [`docs/PACKAGING.md`](docs/PACKAGING.md) for the PyPI distribution runbook and [`CHANGELOG.md`](CHANGELOG.md) for the version history.
 
 ---
