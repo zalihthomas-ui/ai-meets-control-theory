@@ -123,7 +123,12 @@ def track_trajectory(
         ref = np.array([trajectory.pos(min(t, trajectory.duration))[:2] for t in tr.t])
         err = np.linalg.norm(P - ref, axis=1)
         cross = np.array([np.linalg.norm(p - trajectory.closest(p)[0]) for p in P])
-        completion = trajectory.closest(P[-1])[2] * 100.0
+        if getattr(trajectory, "closed", False):
+            # arc length is ambiguous on a self-intersecting loop; use elapsed
+            # fraction of a lap instead
+            completion = 100.0 * min(1.0, float(tr.t[-1]) / trajectory.duration)
+        else:
+            completion = trajectory.closest(P[-1])[2] * 100.0
         du = tr.u - (system.u_hover if hasattr(system, "u_hover") else 0.0)
         energy = float(np.trapezoid(np.sum(np.atleast_2d(du) ** 2, axis=1), tr.t))
         res.metrics[name] = {

@@ -27,6 +27,7 @@ class Trajectory:
 
     duration: float = 1.0
     dim: int = 2
+    closed: bool = False   # True for periodic paths (Circle, Lemniscate)
 
     def __call__(self, t: float):                       # -> (pos, vel, acc)
         raise NotImplementedError
@@ -69,6 +70,7 @@ class Setpoint(Trajectory):
 
 
 class Circle(Trajectory):
+    closed = True
     def __init__(self, radius=1.0, period=6.0, center=(0.0, 0.0), z=None):
         self.r, self.w = float(radius), 2 * np.pi / float(period)
         self.c = np.asarray(center, dtype=float)
@@ -89,6 +91,8 @@ class Circle(Trajectory):
 class Lemniscate(Trajectory):
     """Figure-8 (lemniscate of Gerono): ``x = A sin(wt)``, ``y = B sin(2wt)``.
     Optionally a third coordinate held at ``z0`` or oscillating."""
+
+    closed = True
 
     def __init__(self, A=0.6, B=0.35, period=6.0, z0=None, Cz=0.0):
         self.A, self.B = float(A), float(B)
