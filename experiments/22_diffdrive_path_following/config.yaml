@@ -1,0 +1,33 @@
+# Experiment 22 - differential-drive robot: waypoint path following
+# Companion: aimct.systems.DifferentialDriveRobot, aimct.trajectories.Spline,
+#            aimct.benchmarks.track_trajectory
+
+question: >
+  Four path-followers on the same spline through five waypoints, all driving the
+  same differential-drive robot (unicycle + first-order speed/yaw-rate lag) at a
+  0.15 m/s cruise. A geometric law (pure pursuit), a lateral-control law
+  (Stanley), and two model-based laws (LQR and linear MPC about the path). What
+  does each design trade?
+
+system:
+  model: aimct.systems.DifferentialDriveRobot
+  params: {wheel_radius: 0.033, wheel_base: 0.160, tau_v: 0.05, tau_omega: 0.05,
+           v_max: 0.22, omega_max: 2.84}          # TurtleBot3-Burger class
+  state: "[x, y, theta, v, omega]"
+  input: "[v_cmd, omega_cmd]"
+
+reference:
+  generator: aimct.trajectories.Spline
+  waypoints: [[0, 0], [1, 0.6], [2.2, -0.2], [3.2, 0.8], [4.5, 0]]
+  timing: "re-timed so the reference is traversed at the 0.15 m/s cruise speed"
+
+controllers:
+  Pure pursuit:   "geometric - steer toward a 0.45 m look-ahead point on the path"
+  Stanley:        "null heading error + arctan(k_e * cross_track / v)"
+  Path LQR:       "LQR on the [y, theta, v, omega] error of the model linearised about a straight path, + curvature feed-forward"
+  Kinematic MPC:  "condensed linear MPC (N=25) on the same error model with a curvature-preview feed-forward"
+
+sim: {dt: 0.02, t_final: path.duration, integrator: rk4}
+metrics: [rms_err_mm, max_err_mm, rms_cross_track_mm, completion_pct, ctrl_energy]
+outputs: [tracking.md, tracking.csv, tracking.png]
+run: "python experiments/22_diffdrive_path_following/run.py"
