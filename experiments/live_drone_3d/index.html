@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Quadrotor Live Sandbox — AI Meets Control Theory</title>
+  <style>
+    :root {
+      --bg-dark: #0f141c;
+      --panel-bg: rgba(18, 24, 38, 0.85);
+      --panel-border: rgba(64, 150, 255, 0.25);
+      --accent-blue: #00d2ff;
+      --accent-green: #00e676;
+      --accent-orange: #ff9100;
+      --accent-red: #ff5252;
+      --text-main: #e0e6ed;
+      --text-muted: #8899a6;
+      --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    #canvas-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* UI Overlay Panels */
+    .panel {
+      position: absolute;
+      background: var(--panel-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      padding: 16px;
+      z-index: 10;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Top Left: Title & Brand */
+    #title-panel {
+      top: 16px;
+      left: 16px;
+      max-width: 360px;
+    }
+    #title-panel h1 {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #title-panel h1 span.badge {
+      background: rgba(0, 210, 255, 0.15);
+      color: var(--accent-blue);
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 210, 255, 0.3);
+    }
+    #title-panel p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    /* Top Right: Telemetry HUD */
+    #hud-panel {
+      top: 16px;
+      right: 16px;
+      min-width: 310px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+    }
+    .hud-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .hud-row:last-child { border-bottom: none; }
+    .hud-label { color: var(--text-muted); }
+    .hud-val { font-weight: 600; color: var(--accent-blue); }
+    .hud-val.good { color: var(--accent-green); }
+    .hud-val.warn { color: var(--accent-orange); }
+    .hud-val.bad { color: var(--accent-red); }
+
+    /* Bottom Left: Controls & Wind */
+    #controls-panel {
+      bottom: 16px;
+      left: 16px;
+      width: 360px;
+    }
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-blue);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .btn {
+      flex: 1;
+      padding: 8px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+    .btn:hover {
+      background: rgba(0, 210, 255, 0.15);
+      border-color: var(--accent-blue);
+      color: #fff;
+    }
+    .btn.active {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: #000;
+      box-shadow: 0 0 12px rgba(0, 210, 255, 0.4);
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 10px;
+      font-size: 12px;
+    }
+    .slider-row label {
+      width: 65px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .slider-row input[type=range] {
+      flex: 1;
+      accent-color: var(--accent-blue);
+      height: 4px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 2px;
+      cursor: pointer;
+    }
+    .slider-val {
+      width: 48px;
+      text-align: right;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #fff;
+    }
+
+    /* Bottom Right: Quick Gusts & Hotkeys */
+    #gust-panel {
+      bottom: 16px;
+      right: 16px;
+      width: 310px;
+    }
+    .gust-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .gust-btn {
+      padding: 6px 4px;
+      font-size: 10.5px;
+      font-family: var(--font-mono);
+      background: rgba(255, 145, 0, 0.1);
+      border: 1px solid rgba(255, 145, 0, 0.3);
+      color: var(--accent-orange);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+    }
+    .gust-btn:hover {
+      background: var(--accent-orange);
+      color: #000;
+      box-shadow: 0 0 10px rgba(255, 145, 0, 0.5);
+    }
+    .hotkey-tip {
+      font-size: 10px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .hotkey-tip kbd {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1px 4px;
+      border-radius: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-family: var(--font-mono);
+    }
+
+    /* Camera preset bar */
+    #cam-bar {
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 20px;
+      padding: 4px 8px;
+      z-index: 10;
+    }
+    .cam-btn {
+      padding: 4px 10px;
+      font-size: 11px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .cam-btn:hover, .cam-btn.active {
+      color: #fff;
+      background: rgba(0, 210, 255, 0.2);
+    }
+
+    /* Drag Gust Indicator */
+    #drag-overlay {
+      position: absolute;
+      pointer-events: none;
+      z-index: 5;
+      display: none;
+    }
+    #drag-line {
+      stroke: var(--accent-orange);
+      stroke-width: 2;
+      stroke-dasharray: 4, 4;
+    }
+  </style>
+  <!-- Three.js and OrbitControls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+
+  <div id="canvas-container"></div>
+
+  <!-- Camera Presets -->
+  <div id="cam-bar">
+    <button class="cam-btn active" onclick="setCameraView('orbit')">Orbit 3D</button>
+    <button class="cam-btn" onclick="setCameraView('side')">Side (XZ)</button>
+    <button class="cam-btn" onclick="setCameraView('front')">Front (YZ)</button>
+    <button class="cam-btn" onclick="setCameraView('top')">Top (XY)</button>
+    <button class="cam-btn" onclick="setCameraView('follow')">Follow Drone</button>
+  </div>
+
+  <!-- Title Panel -->
+  <div class="panel" id="title-panel">
+    <h1>Crazyflie 2.0 Sandbox <span class="badge">6-DOF</span></h1>
+    <p>12-state nonlinear physics ($m=28\,\text{g}$) with 2ms RK4 integration. Drive 3D wind and watch classical vs adaptive rejection.</p>
+  </div>
+
+  <!-- HUD Telemetry Panel -->
+  <div class="panel" id="hud-panel">
+    <div class="section-title">Telemetry & Flight HUD <span id="fps-val">60 FPS</span></div>
+    <div class="hud-row"><span class="hud-label">Controller</span><span class="hud-val" id="hud-ctrl">LQR (stiff)</span></div>
+    <div class="hud-row"><span class="hud-label">Status</span><span class="hud-val good" id="hud-status">HOVERING</span></div>
+    <div class="hud-row"><span class="hud-label">Pos Error</span><span class="hud-val" id="hud-pos-err">0.0 mm</span></div>
+    <div class="hud-row"><span class="hud-label">Position (x,y,z)</span><span class="hud-val" id="hud-xyz">0.00, 0.00, 1.50 m</span></div>
+    <div class="hud-row"><span class="hud-label">Attitude (r,p,y)</span><span class="hud-val" id="hud-rpy">0.0°, 0.0°, 0.0°</span></div>
+    <div class="hud-row"><span class="hud-label">Wind Vector</span><span class="hud-val warn" id="hud-wind">[+0.00, +0.00, +0.00] N</span></div>
+    <div class="hud-row"><span class="hud-label">Rotors (1-4)</span><span class="hud-val" id="hud-rotors">0.07, 0.07, 0.07, 0.07 N</span></div>
+  </div>
+
+  <!-- Controller & Steady Wind Controls -->
+  <div class="panel" id="controls-panel">
+    <div class="section-title">Control Law Selection</div>
+    <div class="btn-group">
+      <button class="btn active" id="btn-stiff" onclick="selectController('LQR (stiff)')">LQR Stiff</button>
+      <button class="btn" id="btn-lqi" onclick="selectController('LQR + integral (wind-adaptive)')">LQI Adaptive</button>
+      <button class="btn" id="btn-soft" onclick="selectController('LQR (soft)')">LQR Soft</button>
+    </div>
+
+    <div class="section-title">Steady 3D Wind Vector (N)</div>
+    <div class="slider-row">
+      <label>Wind X:</label>
+      <input type="range" id="slider-wx" min="-0.08" max="0.08" step="0.005" value="0" oninput="updateWind()">
+      <span class="slider-val" id="val-wx">0.00 N</span>
+    </div>
+    <div class="slider-row">
+      <label>Wind Y:</label>
+      <input type="range" id="slider-wy" min="-0.08" max="0.08" step="0.005" value="0" oninput="updateWind()">
+      <span class="slider-val" id="val-wy">0.00 N</span>
+    </div>
+    <div class="slider-row">
+      <label>Wind Z:</label>
+      <input type="range" id="slider-wz" min="-0.08" max="0.08" step="0.005" value="0" oninput="updateWind()">
+      <span class="slider-val" id="val-wz">0.00 N</span>
+    </div>
+    <div style="display:flex; gap:6px; margin-top:10px;">
+      <button class="btn" onclick="zeroWind()">Zero Wind (Space)</button>
+      <button class="btn" onclick="resetDrone()">Reset Drone (R)</button>
+    </div>
+  </div>
+
+  <!-- Quick Gusts & Hotkeys -->
+  <div class="panel" id="gust-panel">
+    <div class="section-title">Impulse Gusts (+0.06 N)</div>
+    <div class="gust-grid">
+      <button class="gust-btn" onclick="triggerGust(-0.06, 0.06, 0)">NW Gust</button>
+      <button class="gust-btn" onclick="triggerGust(0, 0.06, 0)">+Y (North)</button>
+      <button class="gust-btn" onclick="triggerGust(0.06, 0.06, 0)">NE Gust</button>
+      <button class="gust-btn" onclick="triggerGust(-0.06, 0, 0)">-X (West)</button>
+      <button class="gust-btn" style="background:rgba(0,210,255,0.1); border-color:rgba(0,210,255,0.3); color:var(--accent-blue);" onclick="triggerGust(0, 0, 0.06)">+Z (Up)</button>
+      <button class="gust-btn" onclick="triggerGust(0.06, 0, 0)">+X (East)</button>
+      <button class="gust-btn" onclick="triggerGust(-0.06, -0.06, 0)">SW Gust</button>
+      <button class="gust-btn" onclick="triggerGust(0, -0.06, 0)">-Y (South)</button>
+      <button class="gust-btn" onclick="triggerGust(0.06, -0.06, 0)">SE Gust</button>
+    </div>
+    <div class="hotkey-tip">
+      <kbd>Arrows</kbd>: X/Y Gusts &bull; <kbd>PgUp</kbd>/<kbd>PgDn</kbd> or <kbd>W</kbd>/<kbd>S</kbd>: Z Gusts<br>
+      <kbd>R</kbd>: Reset &bull; <kbd>Space</kbd>: Zero Wind &bull; <b>Click-Drag</b>: Blow gust
+    </div>
+  </div>
+
+  <!-- SVG for Drag Gust Arrow -->
+  <svg id="drag-overlay" width="100%" height="100%">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#ff9100"/>
+      </marker>
+    </defs>
+    <line id="drag-line" x1="0" y1="0" x2="0" y2="0" marker-end="url(#arrow)"/>
+  </svg>
+
+  <script>
+    /* =========================================================================
+       1. 12-State Physics & LQR Controller Engine (sim3d.py JS port)
+       ========================================================================= */
+    const CF2 = {
+      m: 0.028,
+      g: 9.81,
+      arm: 0.046,
+      cd: 0.0001,
+      Ixx: 1.4e-5,
+      Iyy: 1.4e-5,
+      Izz: 2.17e-5,
+      f_max: 0.60,
+      tau_max: 0.010,
+      u_hover: [0.028 * 9.81, 0.0, 0.0, 0.0],
+      hover: [0.0, 0.0, 1.5],
+      phys_dt: 0.002,
+      substeps: 8
+    };
+
+    // Precomputed Riccati Gain Matrices from scipy CARE
+    const K_STIFF = [
+      [9.75e-17, 1.55e-14, 1.333333, 2.09e-16, 4.73e-15, 0.430919, -6.15e-15, 6.58e-17, -1.47e-14, -7.14e-17, -2.08e-17, -3.60e-16],
+      [-6.65e-18, -0.020000, -1.69e-16, -6.55e-18, -0.009703, -3.21e-17, 0.016985, -4.93e-18, -6.52e-16, 0.001019, -9.65e-20, -2.20e-17],
+      [0.020000, 4.01e-17, -1.50e-16, 0.009703, 1.58e-17, -9.35e-18, -7.73e-18, 0.016985, 8.72e-18, -9.65e-20, 0.001019, 2.31e-18],
+      [3.55e-16, 2.92e-15, -9.24e-17, 1.59e-16, 8.38e-16, -1.04e-16, -8.25e-16, 1.06e-16, 0.007500, -1.42e-17, 1.49e-18, 0.000942]
+    ];
+
+    const KX_LQI = [
+      [2.53e-15, -3.22e-15, 1.486516, 1.23e-15, -1.17e-15, 0.440758, 2.52e-15, 2.05e-15, -1.36e-15, 5.05e-17, 4.11e-17, -3.67e-17],
+      [-8.30e-16, -0.023488, -4.85e-17, -3.76e-16, -0.010315, 2.27e-17, 0.017342, -1.51e-16, -3.98e-16, 0.001024, -7.23e-18, -1.29e-17],
+      [0.023488, 4.07e-16, -2.07e-16, 0.010315, 1.98e-16, 1.85e-17, -3.99e-16, 0.017342, 1.39e-16, -7.23e-18, 0.001024, 3.88e-18],
+      [1.52e-16, 4.65e-16, -8.90e-17, 1.63e-16, 1.76e-16, -1.07e-17, -2.97e-16, 1.42e-16, 0.007500, -8.34e-18, 2.51e-18, 0.000942]
+    ];
+
+    const KI_LQI = [
+      [9.38e-16, -7.20e-16, 0.489898],
+      [-3.04e-16, -0.007348, -4.33e-17],
+      [0.007348, 1.59e-16, -1.54e-17],
+      [4.32e-17, 1.46e-16, 2.50e-17]
+    ];
+
+    const K_SOFT = [
+      [1.64e-16, 1.07e-16, 0.053333, 5.43e-17, 7.33e-17, 0.056153, -1.98e-16, 4.43e-17, -1.96e-16, -5.10e-17, -9.00e-17, -6.14e-17],
+      [-2.49e-17, -0.000800, -2.44e-17, -1.29e-17, -0.000519, -2.29e-17, 0.001410, -2.48e-17, -1.56e-17, 0.000201, -2.03e-18, -6.33e-18],
+      [0.000800, 1.96e-17, -8.38e-17, 0.000519, 1.15e-17, -4.05e-17, -2.11e-17, 0.001410, -5.63e-18, -2.03e-18, 0.000201, -6.22e-18],
+      [-3.65e-17, 6.90e-17, -1.08e-17, -2.10e-17, 2.75e-17, -1.78e-17, -4.52e-17, -3.81e-17, 0.000300, -4.09e-18, -4.02e-18, 0.000118]
+    ];
+
+    class DroneEngine {
+      constructor() {
+        this.reset();
+        this.activeCtrl = "LQR (stiff)";
+        this.steadyWind = [0, 0, 0];
+        this.gust = [0, 0, 0];
+        this.gustTime = 0.0;
+        this.trail = [];
+      }
+
+      reset() {
+        // [x, y, z, vx, vy, vz, phi, theta, psi, p, q, r]
+        this.x = [0.0, 0.0, 1.5, 0.0, 0.0, 0.0, 0.15, -0.10, 0.0, 0.0, 0.0, 0.0];
+        this.integ = [0.0, 0.0, 0.0];
+        this.u = [...CF2.u_hover];
+        this.trail = [];
+      }
+
+      setController(name) {
+        this.activeCtrl = name;
+        this.integ = [0, 0, 0];
+      }
+
+      addGust(vec) {
+        this.gust = [...vec];
+        this.gustTime = 0.30;
+      }
+
+      getWind() {
+        let w = [...this.steadyWind];
+        if (this.gustTime > 0) {
+          w[0] += this.gust[0];
+          w[1] += this.gust[1];
+          w[2] += this.gust[2];
+        }
+        return w;
+      }
+
+      computeControl() {
+        const xr = [CF2.hover[0], CF2.hover[1], CF2.hover[2], 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        const dx = this.x.map((val, i) => val - xr[i]);
+        let u = [0, 0, 0, 0];
+
+        if (this.activeCtrl === "LQR (stiff)") {
+          for (let i = 0; i < 4; i++) {
+            let sum = 0;
+            for (let j = 0; j < 12; j++) sum += K_STIFF[i][j] * dx[j];
+            u[i] = CF2.u_hover[i] - sum;
+          }
+        } else if (this.activeCtrl === "LQR + integral (wind-adaptive)") {
+          for (let i = 0; i < 4; i++) {
+            let sumX = 0, sumI = 0;
+            for (let j = 0; j < 12; j++) sumX += KX_LQI[i][j] * dx[j];
+            for (let j = 0; j < 3; j++) sumI += KI_LQI[i][j] * this.integ[j];
+            u[i] = CF2.u_hover[i] - sumX - sumI;
+          }
+        } else if (this.activeCtrl === "LQR (soft)") {
+          for (let i = 0; i < 4; i++) {
+            let sum = 0;
+            for (let j = 0; j < 12; j++) sum += K_SOFT[i][j] * dx[j];
+            u[i] = CF2.u_hover[i] - sum;
+          }
+        }
+
+        // Actuator saturation limits
+        u[0] = Math.max(0.0, Math.min(CF2.f_max, u[0]));
+        for (let i = 1; i < 4; i++) {
+          u[i] = Math.max(-CF2.tau_max, Math.min(CF2.tau_max, u[i]));
+        }
+        return u;
+      }
+
+      dynamics(state, u, wind) {
+        const vx = state[3], vy = state[4], vz = state[5];
+        const phi = state[6], theta = state[7], psi = state[8];
+        const p = state[9], q = state[10], r = state[11];
+        const f = u[0], tx = u[1], ty = u[2], tz = u[3];
+
+        const cphi = Math.cos(phi), sphi = Math.sin(phi);
+        const cth = Math.cos(theta), sth = Math.sin(theta);
+        const cpsi = Math.cos(psi), spsi = Math.sin(psi);
+
+        // Rotation matrix column 3 (Z-axis direction in world frame)
+        const R13 = cpsi * sth * cphi + spsi * sphi;
+        const R23 = spsi * sth * cphi - cpsi * sphi;
+        const R33 = cth * cphi;
+
+        // Acceleration
+        const ax = (f / CF2.m) * R13 - (CF2.cd / CF2.m) * vx + wind[0] / CF2.m;
+        const ay = (f / CF2.m) * R23 - (CF2.cd / CF2.m) * vy + wind[1] / CF2.m;
+        const az = -CF2.g + (f / CF2.m) * R33 - (CF2.cd / CF2.m) * vz + wind[2] / CF2.m;
+
+        // Euler rates
+        const tth = Math.tan(theta);
+        const phi_dot = p + sphi * tth * q + cphi * tth * r;
+        const theta_dot = cphi * q - sphi * r;
+        const psi_dot = (sphi / cth) * q + (cphi / cth) * r;
+
+        // Angular acceleration
+        const p_dot = (tx - (CF2.Izz - CF2.Iyy) * q * r) / CF2.Ixx;
+        const q_dot = (ty - (CF2.Ixx - CF2.Izz) * p * r) / CF2.Iyy;
+        const r_dot = (tz - (CF2.Iyy - CF2.Ixx) * p * q) / CF2.Izz;
+
+        return [vx, vy, vz, ax, ay, az, phi_dot, theta_dot, psi_dot, p_dot, q_dot, r_dot];
+      }
+
+      stepFrame() {
+        const dt = CF2.phys_dt;
+        for (let s = 0; s < CF2.substeps; s++) {
+          const wind = this.getWind();
+          this.u = this.computeControl();
+          const x0 = [...this.x];
+
+          const k1 = this.dynamics(x0, this.u, wind);
+          const xk2 = x0.map((v, i) => v + 0.5 * dt * k1[i]);
+          const k2 = this.dynamics(xk2, this.u, wind);
+          const xk3 = x0.map((v, i) => v + 0.5 * dt * k2[i]);
+          const k3 = this.dynamics(xk3, this.u, wind);
+          const xk4 = x0.map((v, i) => v + dt * k3[i]);
+          const k4 = this.dynamics(xk4, this.u, wind);
+
+          for (let i = 0; i < 12; i++) {
+            this.x[i] += (dt / 6.0) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]);
+          }
+
+          // Update position integral (clamped to [-1.5, 1.5])
+          for (let i = 0; i < 3; i++) {
+            this.integ[i] += (this.x[i] - CF2.hover[i]) * dt;
+            this.integ[i] = Math.max(-1.5, Math.min(1.5, this.integ[i]));
+          }
+
+          if (this.gustTime > 0) this.gustTime -= dt;
+        }
+
+        // Trail history
+        this.trail.push([this.x[0], this.x[1], this.x[2]]);
+        if (this.trail.length > 240) this.trail.shift();
+
+        // Check tumbling
+        const tumbling = Math.abs(this.x[6]) > 1.2 || Math.abs(this.x[7]) > 1.2 || this.x[2] < 0.1;
+        return {
+          pos: [this.x[0], this.x[1], this.x[2]],
+          rpy: [this.x[6], this.x[7], this.x[8]],
+          rotors: this.computeRotorThrusts(this.u),
+          wind: this.getWind(),
+          tumbling: tumbling
+        };
+      }
+
+      computeRotorThrusts(u) {
+        const f = u[0], tx = u[1], ty = u[2], tz = u[3];
+        const d = CF2.arm / Math.SQRT2;
+        const t1 = f / 4 - ty / (4 * d) + tx / (4 * d) - tz / 0.04;
+        const t2 = f / 4 - ty / (4 * d) - tx / (4 * d) + tz / 0.04;
+        const t3 = f / 4 + ty / (4 * d) - tx / (4 * d) - tz / 0.04;
+        const t4 = f / 4 + ty / (4 * d) + tx / (4 * d) + tz / 0.04;
+        return [Math.max(0, t1), Math.max(0, t2), Math.max(0, t3), Math.max(0, t4)];
+      }
+    }
+
+    /* =========================================================================
+       2. Three.js High-Fidelity 3D Scene & PBR Drone Model
+       ========================================================================= */
+    let scene, camera, renderer, controls;
+    let droneGroup, propDiscs = [], thrustArrows = [], windParticles;
+    let trailLine, trailGeometry;
+    let targetBeacon;
+    const engine = new DroneEngine();
+
+    function init3D() {
+      const container = document.getElementById('canvas-container');
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x0a0e17);
+      scene.fog = new THREE.FogExp2(0x0a0e17, 0.08);
+
+      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 50);
+      camera.position.set(0.0, -2.4, 2.0);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      container.appendChild(renderer.domElement);
+
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.target.set(0, 0, 1.5);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.maxPolarAngle = Math.PI / 2 + 0.1;
+
+      // Lights
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      scene.add(ambientLight);
+
+      const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+      dirLight.position.set(3, 2, 5);
+      dirLight.castShadow = true;
+      dirLight.shadow.mapSize.width = 1024;
+      dirLight.shadow.mapSize.height = 1024;
+      scene.add(dirLight);
+
+      const rimLight = new THREE.PointLight(0x00d2ff, 1.5, 8);
+      rimLight.position.set(-2, -2, 3);
+      scene.add(rimLight);
+
+      // Environment Grid & Landing Pad
+      const grid = new THREE.GridHelper(10, 40, 0x00d2ff, 0x1f2d3d);
+      grid.rotation.x = Math.PI / 2;
+      grid.position.z = 0;
+      scene.add(grid);
+
+      // Target Waypoint (Hover Ring)
+      const beaconGeo = new THREE.TorusGeometry(0.08, 0.004, 16, 32);
+      const beaconMat = new THREE.MeshBasicMaterial({ color: 0x00e676, transparent: true, opacity: 0.6 });
+      targetBeacon = new THREE.Mesh(beaconGeo, beaconMat);
+      targetBeacon.position.set(0, 0, 1.5);
+      scene.add(targetBeacon);
+
+      // Build Procedural Crazyflie 2.0 Quadrotor
+      buildDroneModel();
+
+      // Trajectory Ribbon
+      trailGeometry = new THREE.BufferGeometry();
+      const trailPositions = new Float32Array(240 * 3);
+      trailGeometry.setAttribute('position', new THREE.BufferAttribute(trailPositions, 3));
+      const trailMat = new THREE.LineBasicMaterial({ color: 0x00d2ff, transparent: true, opacity: 0.7 });
+      trailLine = new THREE.Line(trailGeometry, trailMat);
+      scene.add(trailLine);
+
+      // Wind Particle Streamers
+      buildWindParticles();
+
+      // Events
+      window.addEventListener('resize', onWindowResize);
+      setupDragGusts();
+      setupKeyboard();
+    }
+
+    function buildDroneModel() {
+      droneGroup = new THREE.Group();
+      droneGroup.position.set(0, 0, 1.5);
+
+      // Materials
+      const carbonMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.4, metalness: 0.8 });
+      const pcbMat = new THREE.MeshStandardMaterial({ color: 0x004422, roughness: 0.3, metalness: 0.2 });
+      const motorMat = new THREE.MeshStandardMaterial({ color: 0x silver, roughness: 0.2, metalness: 0.9 });
+      const propMat = new THREE.MeshPhysicalMaterial({ color: 0x00d2ff, transparent: true, opacity: 0.35, roughness: 0.1, transmission: 0.6 });
+
+      // Central Body (PCB)
+      const bodyGeo = new THREE.BoxGeometry(0.035, 0.035, 0.008);
+      const body = new THREE.Mesh(bodyGeo, pcbMat);
+      body.castShadow = true;
+      droneGroup.add(body);
+
+      // Battery on top
+      const battGeo = new THREE.BoxGeometry(0.025, 0.015, 0.008);
+      const battMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8 });
+      const batt = new THREE.Mesh(battGeo, battMat);
+      batt.position.z = 0.008;
+      droneGroup.add(batt);
+
+      // Flashing LED
+      const ledGeo = new THREE.SphereGeometry(0.002, 8, 8);
+      const ledMat = new THREE.MeshBasicMaterial({ color: 0x00e676 });
+      const led = new THREE.Mesh(ledGeo, ledMat);
+      led.position.set(0.015, 0.015, 0.005);
+      droneGroup.add(led);
+
+      // X-Frame Arms & Motors (Crazyflie arm length = 46mm)
+      const armLength = CF2.arm;
+      const d = armLength / Math.SQRT2; // ~0.0325m
+      const armOffsets = [
+        [d, d],    // 1: Front-Right
+        [d, -d],   // 2: Back-Right
+        [-d, -d],  // 3: Back-Left
+        [-d, d]    // 4: Front-Left
+      ];
+
+      // Carbon Fiber Cross Tubes
+      for (let i = 0; i < 2; i++) {
+        const armGeo = new THREE.CylinderGeometry(0.002, 0.002, armLength * 2, 8);
+        const armMesh = new THREE.Mesh(armGeo, carbonMat);
+        armMesh.rotation.z = (i === 0) ? Math.PI / 4 : -Math.PI / 4;
+        armMesh.rotation.x = Math.PI / 2;
+        armMesh.castShadow = true;
+        droneGroup.add(armMesh);
+      }
+
+      // 4 Motor Pods & Spinning Propeller Discs
+      propDiscs = [];
+      thrustArrows = [];
+
+      armOffsets.forEach(([ox, oy], idx) => {
+        const motorGroup = new THREE.Group();
+        motorGroup.position.set(ox, oy, 0);
+
+        // Motor Can
+        const canGeo = new THREE.CylinderGeometry(0.004, 0.004, 0.015, 12);
+        const can = new THREE.Mesh(canGeo, motorMat);
+        can.rotation.x = Math.PI / 2;
+        motorGroup.add(can);
+
+        // Spinning Propeller Disc
+        const discGeo = new THREE.CylinderGeometry(0.022, 0.022, 0.001, 16);
+        const disc = new THREE.Mesh(discGeo, propMat);
+        disc.position.z = 0.009;
+        disc.rotation.x = Math.PI / 2;
+        motorGroup.add(disc);
+        propDiscs.push(disc);
+
+        // Thrust Arrow
+        const arrow = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 0.01), 0.05, 0x00d2ff, 0.015, 0.008);
+        motorGroup.add(arrow);
+        thrustArrows.push(arrow);
+
+        droneGroup.add(motorGroup);
+      });
+
+      // Forward Nose Marker (+X)
+      const noseGeo = new THREE.ConeGeometry(0.004, 0.012, 8);
+      const noseMat = new THREE.MeshBasicMaterial({ color: 0xff5252 });
+      const nose = new THREE.Mesh(noseGeo, noseMat);
+      nose.position.set(0.024, 0, 0.004);
+      nose.rotation.z = -Math.PI / 2;
+      droneGroup.add(nose);
+
+      scene.add(droneGroup);
+    }
+
+    function buildWindParticles() {
+      const pCount = 180;
+      const pGeo = new THREE.BufferGeometry();
+      const pPos = new Float32Array(pCount * 3);
+      for (let i = 0; i < pCount * 3; i += 3) {
+        pPos[i] = (Math.random() - 0.5) * 3;
+        pPos[i + 1] = (Math.random() - 0.5) * 3;
+        pPos[i + 2] = Math.random() * 2.5;
+      }
+      pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+      const pMat = new THREE.PointsMaterial({ color: 0xff9100, size: 0.025, transparent: true, opacity: 0.45 });
+      windParticles = new THREE.Points(pGeo, pMat);
+      scene.add(windParticles);
+    }
+
+    /* =========================================================================
+       3. Real-Time Loop & Telemetry HUD Update
+       ========================================================================= */
+    let lastTime = performance.now(), frameCount = 0, fps = 60;
+
+    function animate(now) {
+      requestAnimationFrame(animate);
+
+      // FPS tracking
+      frameCount++;
+      if (now - lastTime >= 1000) {
+        fps = frameCount;
+        frameCount = 0;
+        lastTime = now;
+        document.getElementById('fps-val').innerText = `${fps} FPS`;
+      }
+
+      // Step 6-DOF Physics
+      const frame = engine.stepFrame();
+
+      // Update Drone Mesh Pose
+      droneGroup.position.set(frame.pos[0], frame.pos[1], frame.pos[2]);
+      droneGroup.rotation.set(frame.rpy[0], frame.rpy[1], frame.rpy[2], 'ZYX');
+
+      // Spin Propellers & Scale Thrust Arrows
+      propDiscs.forEach((disc, i) => {
+        const speed = Math.sqrt(frame.rotors[i]) * 40;
+        disc.rotation.z += (i % 2 === 0 ? speed : -speed);
+        const arrowLen = Math.max(0.005, frame.rotors[i] * 0.8);
+        thrustArrows[i].setLength(arrowLen, arrowLen * 0.3, arrowLen * 0.15);
+      });
+
+      // Update Trail Ribbon
+      const trailArr = trailGeometry.attributes.position.array;
+      for (let i = 0; i < engine.trail.length; i++) {
+        trailArr[i * 3] = engine.trail[i][0];
+        trailArr[i * 3 + 1] = engine.trail[i][1];
+        trailArr[i * 3 + 2] = engine.trail[i][2];
+      }
+      trailGeometry.setDrawRange(0, engine.trail.length);
+      trailGeometry.attributes.position.needsUpdate = true;
+
+      // Update Wind Particle Flow
+      if (windParticles) {
+        const pArr = windParticles.geometry.attributes.position.array;
+        const wx = frame.wind[0] * 2.5;
+        const wy = frame.wind[1] * 2.5;
+        const wz = frame.wind[2] * 2.5;
+        for (let i = 0; i < pArr.length; i += 3) {
+          pArr[i] += wx * 0.05;
+          pArr[i + 1] += wy * 0.05;
+          pArr[i + 2] += wz * 0.05;
+          if (pArr[i] > 2.0) pArr[i] = -2.0; if (pArr[i] < -2.0) pArr[i] = 2.0;
+          if (pArr[i + 1] > 2.0) pArr[i + 1] = -2.0; if (pArr[i + 1] < -2.0) pArr[i + 1] = 2.0;
+          if (pArr[i + 2] > 3.0) pArr[i + 2] = 0.0; if (pArr[i + 2] < 0.0) pArr[i + 2] = 3.0;
+        }
+        windParticles.geometry.attributes.position.needsUpdate = true;
+      }
+
+      // Update Target Ring Glow
+      if (targetBeacon) {
+        targetBeacon.rotation.z += 0.01;
+      }
+
+      // Update HUD Text
+      updateHUD(frame);
+
+      // Follow Camera Mode
+      if (currentCamView === 'follow') {
+        controls.target.set(frame.pos[0], frame.pos[1], frame.pos[2]);
+      }
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    function updateHUD(frame) {
+      document.getElementById('hud-ctrl').innerText = engine.activeCtrl;
+
+      const posErr = Math.hypot(frame.pos[0] - CF2.hover[0], frame.pos[1] - CF2.hover[1], frame.pos[2] - CF2.hover[2]) * 1000;
+      const posElem = document.getElementById('hud-pos-err');
+      posElem.innerText = `${posErr.toFixed(1)} mm`;
+      posElem.className = 'hud-val ' + (posErr < 15 ? 'good' : (posErr < 120 ? 'warn' : 'bad'));
+
+      const statusElem = document.getElementById('hud-status');
+      if (frame.tumbling) {
+        statusElem.innerText = 'TUMBLING / CRASH (R)';
+        statusElem.className = 'hud-val bad';
+      } else if (Math.hypot(frame.wind[0], frame.wind[1], frame.wind[2]) > 0.01) {
+        statusElem.innerText = (engine.activeCtrl.includes('integral') ? 'WIND REJECTED (LQI)' : 'WIND DROOP ACTIVE');
+        statusElem.className = 'hud-val ' + (engine.activeCtrl.includes('integral') ? 'good' : 'warn');
+      } else {
+        statusElem.innerText = 'STABLE HOVER';
+        statusElem.className = 'hud-val good';
+      }
+
+      document.getElementById('hud-xyz').innerText = `${frame.pos[0].toFixed(2)}, ${frame.pos[1].toFixed(2)}, ${frame.pos[2].toFixed(2)} m`;
+      const rDeg = (frame.rpy[0] * 180 / Math.PI).toFixed(1);
+      const pDeg = (frame.rpy[1] * 180 / Math.PI).toFixed(1);
+      const yDeg = (frame.rpy[2] * 180 / Math.PI).toFixed(1);
+      document.getElementById('hud-rpy').innerText = `${rDeg}°, ${pDeg}°, ${yDeg}°`;
+
+      document.getElementById('hud-wind').innerText = `[${frame.wind[0] >= 0 ? '+' : ''}${frame.wind[0].toFixed(2)}, ${frame.wind[1] >= 0 ? '+' : ''}${frame.wind[1].toFixed(2)}, ${frame.wind[2] >= 0 ? '+' : ''}${frame.wind[2].toFixed(2)}] N`;
+      document.getElementById('hud-rotors').innerText = `${frame.rotors.map(t => t.toFixed(2)).join(', ')} N`;
+    }
+
+    /* =========================================================================
+       4. UI & Interaction Handlers
+       ========================================================================= */
+    function selectController(name) {
+      engine.setController(name);
+      document.getElementById('btn-stiff').className = 'btn ' + (name === 'LQR (stiff)' ? 'active' : '');
+      document.getElementById('btn-lqi').className = 'btn ' + (name === 'LQR + integral (wind-adaptive)' ? 'active' : '');
+      document.getElementById('btn-soft').className = 'btn ' + (name === 'LQR (soft)' ? 'active' : '');
+    }
+
+    function updateWind() {
+      const wx = parseFloat(document.getElementById('slider-wx').value);
+      const wy = parseFloat(document.getElementById('slider-wy').value);
+      const wz = parseFloat(document.getElementById('slider-wz').value);
+      engine.steadyWind = [wx, wy, wz];
+      document.getElementById('val-wx').innerText = `${wx >= 0 ? '+' : ''}${wx.toFixed(2)} N`;
+      document.getElementById('val-wy').innerText = `${wy >= 0 ? '+' : ''}${wy.toFixed(2)} N`;
+      document.getElementById('val-wz').innerText = `${wz >= 0 ? '+' : ''}${wz.toFixed(2)} N`;
+    }
+
+    function zeroWind() {
+      document.getElementById('slider-wx').value = 0;
+      document.getElementById('slider-wy').value = 0;
+      document.getElementById('slider-wz').value = 0;
+      updateWind();
+    }
+
+    function triggerGust(gx, gy, gz) {
+      engine.addGust([gx, gy, gz]);
+    }
+
+    function resetDrone() {
+      engine.reset();
+    }
+
+    let currentCamView = 'orbit';
+    function setCameraView(view) {
+      currentCamView = view;
+      document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+
+      if (view === 'orbit') {
+        camera.position.set(0.0, -2.4, 2.0);
+        controls.target.set(0, 0, 1.5);
+      } else if (view === 'side') {
+        camera.position.set(0.0, -3.2, 1.5);
+        controls.target.set(0, 0, 1.5);
+      } else if (view === 'front') {
+        camera.position.set(3.2, 0.0, 1.5);
+        controls.target.set(0, 0, 1.5);
+      } else if (view === 'top') {
+        camera.position.set(0.001, 0.0, 4.0);
+        controls.target.set(0, 0, 1.5);
+      }
+    }
+
+    function setupKeyboard() {
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowUp') triggerGust(0, 0.06, 0);
+        else if (e.key === 'ArrowDown') triggerGust(0, -0.06, 0);
+        else if (e.key === 'ArrowRight') triggerGust(0.06, 0, 0);
+        else if (e.key === 'ArrowLeft') triggerGust(-0.06, 0, 0);
+        else if (e.key === 'PageUp' || e.key === 'w' || e.key === 'W') triggerGust(0, 0, 0.06);
+        else if (e.key === 'PageDown' || e.key === 's' || e.key === 'S') triggerGust(0, 0, -0.06);
+        else if (e.key === 'r' || e.key === 'R') resetDrone();
+        else if (e.key === ' ') zeroWind();
+        else if (e.key === '1') selectController('LQR (stiff)');
+        else if (e.key === '2') selectController('LQR + integral (wind-adaptive)');
+        else if (e.key === '3') selectController('LQR (soft)');
+      });
+    }
+
+    function setupDragGusts() {
+      let isDragging = false, startX = 0, startY = 0;
+      const overlay = document.getElementById('drag-overlay');
+      const line = document.getElementById('drag-line');
+
+      window.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.panel') || e.target.closest('#cam-bar')) return;
+        if (e.button === 2 || e.shiftKey) { // Right click or shift-click for wind gust drag
+          isDragging = true;
+          startX = e.clientX;
+          startY = e.clientY;
+          overlay.style.display = 'block';
+          line.setAttribute('x1', startX);
+          line.setAttribute('y1', startY);
+          line.setAttribute('x2', startX);
+          line.setAttribute('y2', startY);
+        }
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        line.setAttribute('x2', e.clientX);
+        line.setAttribute('y2', e.clientY);
+      });
+
+      window.addEventListener('mouseup', (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        overlay.style.display = 'none';
+        const dx = (e.clientX - startX) * 0.0006;
+        const dy = -(e.clientY - startY) * 0.0006;
+        triggerGust(dx, dy, 0);
+      });
+
+      window.addEventListener('contextmenu', e => {
+        if (isDragging) e.preventDefault();
+      });
+    }
+
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    // Launch on load
+    window.addEventListener('DOMContentLoaded', () => {
+      init3D();
+      animate(performance.now());
+    });
+  </script>
+</body>
+</html>

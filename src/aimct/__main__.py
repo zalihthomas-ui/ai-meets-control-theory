@@ -81,6 +81,8 @@ def main(argv=None) -> int:
     pl3 = sub.add_parser("live3d", help="interactive 6-DOF drone-vs-wind sandbox")
     pl3.add_argument("--headless", action="store_true",
                      help="run the physics smoke check without a GUI")
+    pl3.add_argument("--web", action="store_true",
+                     help="launch the interactive WebGL/Three.js visualizer in the browser")
 
     args = p.parse_args(argv)
 
@@ -93,9 +95,13 @@ def main(argv=None) -> int:
         import runpy
         from pathlib import Path
         root = Path(__file__).resolve().parents[2]
-        script = (root / "experiments" / "live_drone" / "live.py" if args.cmd == "live"
-                  else root / "experiments" / "live_drone_3d" / "sim3d.py")
-        sys.argv = [str(script)] + (["--headless"] if args.headless else [])
+        if args.cmd == "live":
+            script = root / "experiments" / "live_drone" / "live.py"
+        elif getattr(args, "web", False):
+            script = root / "experiments" / "live_drone_3d" / "web.py"
+        else:
+            script = root / "experiments" / "live_drone_3d" / "sim3d.py"
+        sys.argv = [str(script)] + (["--headless"] if getattr(args, "headless", False) else [])
         runpy.run_path(str(script), run_name="__main__")
         return 0
 
