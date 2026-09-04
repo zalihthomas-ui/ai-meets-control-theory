@@ -13,6 +13,7 @@ Available
 
 from .adaptive import MRAC, GainScheduledLQR, solve_lyapunov
 from .base import Controller
+from .ilqr import ILQR, iLQR, iLQRResult
 from .lqr import LQR, solve_care
 from .mpc import LinearMPC, dare
 from .observer_feedback import ObserverFeedback
@@ -37,6 +38,9 @@ __all__ = [
     "wrap_angle",
     "LinearMPC",
     "SamplingMPC",
+    "ILQR",
+    "iLQR",
+    "iLQRResult",
     "GainScheduledLQR",
     "MRAC",
     "solve_lyapunov",
