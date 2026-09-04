@@ -1,0 +1,56 @@
+# Experiment 24 - iLQR / RTI-NMPC vs Sampling MPC (CEM)
+# Track B: closes the Exp-21 remark that the cross-entropy sampling MPC is
+# "loose and slow" by putting a gradient-based nonlinear MPC next to it.
+
+question: >
+  On the same nonlinear plants, horizon and cost, how much does a gradient
+  method (iLQR run as a real-time iteration) buy over the derivative-free
+  cross-entropy sampling MPC used through the capstone - in task accuracy,
+  control effort, and per-step latency?
+
+planners:
+  - name: Sampling MPC (CEM)
+    impl: aimct.controllers.SamplingMPC
+    plans: refine a Gaussian over action sequences, keep the elite rollouts
+    derivatives: none
+  - name: iLQR / RTI-NMPC
+    impl: aimct.controllers.ILQR
+    plans: regularised backward Riccati sweep + line-searched forward rollout
+    derivatives: finite-difference Jacobians of one RK4 step
+    schedule: full solve on step 1, then 1 iteration/step from the shifted plan
+    applies: u0 + K0 (x - x0)   # local feedback between re-solves
+
+shared: same Q, R, terminal cost (CARE cost-to-go for the quad), hard input box
+
+tasks:
+  1_cartpole_swingup:
+    plant: aimct.systems.CartPole
+    goal: from theta=pi, swing upright and hold, |F| <= 20 N, solved online
+    horizon: 60 steps
+    run: 4 s at dt = 0.02
+  2_quadrotor_figure8:
+    plant: aimct.systems.PlanarQuadrotor (Crazyflie 2.0)
+    trajectory: lemniscate  x_r = 0.55 sin(w t),  z_r = 1.0 + 0.3 sin(2 w t),  period 6 s
+    horizon: 20 steps
+    run: 12 s at dt = 0.02
+
+score: task/tracking error, control effort/energy, per-step latency (median,
+       p95, and the cold first solve reported separately)
+
+cem_settings:
+  fast:  swing-up 500 samples / 40 elite / 4 iters ; figure-8 300 / 30 / 3
+  full:  swing-up 800 samples / 60 elite / 5 iters ; figure-8 500 / 50 / 4
+
+ilqr_settings:
+  swing-up warm_iters 250 (400 with FULL) ; figure-8 warm_iters 60 ; rti_iters 1
+  horizon fixed at 60 / 20 steps in both modes
+
+outputs: table.md, table.csv, figure.png   # committed = AIMCT_EXP_FULL=1
+
+headline: >
+  iLQR/RTI tracks the figure-8 to ~1 mm vs CEM's ~250 mm (which reproduces the
+  Exp-20 sampling-MPC number) at the same per-step latency and ~10x less control
+  energy; it also reaches the swing-up faster and cleaner. Cost of the win: a
+  ~0.9 s cold solve, reliance on Jacobians + a line search, and a linearisation
+  that a stiff/contact model can defeat. CEM stays the robust choice for
+  non-smooth costs (the obstacle penalty) and black-box dynamics.
