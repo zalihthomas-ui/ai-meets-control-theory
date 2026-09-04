@@ -1,0 +1,18 @@
+include LICENSE
+include README.md
+include CHANGELOG.md
+include pyproject.toml
+
+recursive-include src/aimct *.py py.typed
+
+# Exclude binary PDFs, experiment runs, checkpoints, and LaTeX artifacts
+global-exclude *.py[cod] __pycache__ *.so *.dylib *.dll
+global-exclude *.pdf
+global-exclude .git* .DS_Store Thumbs.db desktop.ini
+prune experiments/**/runs
+prune experiments/**/checkpoints
+prune docs/report/build
+prune docs/papers/*.pdf
+prune wandb
+prune htmlcov
+prune .pytest_cache

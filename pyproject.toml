@@ -1,23 +1,75 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "aimct"
-version = "0.0.1"
-description = "AI Meets Control Theory — a laboratory for classical control, ML, and RL on dynamical systems"
+version = "0.1.0"
+description = "AI Meets Control Theory — A rigorous, code-first bridge from classical feedback control to modern machine learning and safe reinforcement learning"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-dependencies = ["numpy>=1.26", "scipy>=1.11", "matplotlib>=3.8"]
+authors = [
+    { name = "AIMCT Contributors", email = "maintainers@aimct.org" }
+]
+keywords = [
+    "control-theory",
+    "reinforcement-learning",
+    "optimal-control",
+    "lqr",
+    "mpc",
+    "neural-odes",
+    "sindy",
+    "control-barrier-functions",
+    "robotics",
+    "dynamical-systems",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "matplotlib>=3.8",
+]
 
 [project.optional-dependencies]
 # python-control: used to cross-check from-scratch implementations. The core
 # library still must not import it at runtime — keep it test-only.
 xcheck = ["control>=0.10"]
-ml = ["torch>=2.2", "gymnasium>=1.0", "stable-baselines3>=2.0"]  # torch: CPU wheel index in CI; sb3 = RL cross-check only
-viz = ["pyvista>=0.44"]   # the 3-D live sandbox renderer (python -m aimct live3d)
-dev = ["pytest>=8.0", "control>=0.10"]
+ml = [
+    "torch>=2.2",
+    "gymnasium>=1.0",
+    "stable-baselines3>=2.0",
+]
+viz = ["pyvista>=0.44"]
+dev = [
+    "pytest>=8.0",
+    "build>=1.0",
+    "twine>=5.0",
+    "control>=0.10",
+]
+
+[project.scripts]
+aimct = "aimct.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/zalihthomas-ui/ai-meets-control-theory"
+Documentation = "https://github.com/zalihthomas-ui/ai-meets-control-theory#readme"
+Repository = "https://github.com/zalihthomas-ui/ai-meets-control-theory.git"
+"Bug Tracker" = "https://github.com/zalihthomas-ui/ai-meets-control-theory/issues"
+Changelog = "https://github.com/zalihthomas-ui/ai-meets-control-theory/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["src"]
