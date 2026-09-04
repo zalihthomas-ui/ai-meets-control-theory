@@ -55,3 +55,18 @@ def test_headless_entrypoint_runs():
     r = subprocess.run([sys.executable, str(_SCRIPT), "--headless"],
                        capture_output=True, text=True)
     assert r.returncode == 0 and "headless check OK" in r.stdout
+
+
+def test_pyvista_renderer_builds_its_meshes():
+    import importlib
+    if importlib.util.find_spec("pyvista") is None:
+        import pytest
+        pytest.skip("pyvista not installed")
+    import pyvista as pv
+    pv_spec = importlib.util.spec_from_file_location(
+        "pv3d", _SCRIPT.parent / "pv3d.py")
+    pv3d = importlib.util.module_from_spec(pv_spec)
+    pv_spec.loader.exec_module(pv3d)
+    body, arms, tips, props = pv3d._drone_meshes(pv, 0.046)
+    assert len(arms) == 4 and len(props) == 4
+    assert pv3d._pose_matrix(np.array([1.0, 2, 3]), np.eye(3)).shape == (4, 4)

@@ -81,8 +81,10 @@ def main(argv=None) -> int:
     pl3 = sub.add_parser("live3d", help="interactive 6-DOF drone-vs-wind sandbox")
     pl3.add_argument("--headless", action="store_true",
                      help="run the physics smoke check without a GUI")
+    pl3.add_argument("--matplotlib", action="store_true",
+                     help="force the lightweight matplotlib-3D renderer")
     pl3.add_argument("--web", action="store_true",
-                     help="launch the interactive WebGL/Three.js visualizer in the browser")
+                     help="serve the experimental WebGL/Three.js visualizer")
 
     args = p.parse_args(argv)
 
@@ -94,13 +96,20 @@ def main(argv=None) -> int:
     if args.cmd in ("live", "live3d"):
         import runpy
         from pathlib import Path
-        root = Path(__file__).resolve().parents[2]
+        d = Path(__file__).resolve().parents[2] / "experiments"
         if args.cmd == "live":
-            script = root / "experiments" / "live_drone" / "live.py"
+            script = d / "live_drone" / "live.py"
         elif getattr(args, "web", False):
-            script = root / "experiments" / "live_drone_3d" / "web.py"
+            script = d / "live_drone_3d" / "web.py"
+        elif getattr(args, "matplotlib", False) or getattr(args, "headless", False):
+            script = d / "live_drone_3d" / "sim3d.py"
         else:
-            script = root / "experiments" / "live_drone_3d" / "sim3d.py"
+            # prefer the PyVista renderer; fall back to matplotlib if not installed
+            try:
+                import pyvista  # noqa: F401
+                script = d / "live_drone_3d" / "pv3d.py"
+            except Exception:
+                script = d / "live_drone_3d" / "sim3d.py"
         sys.argv = [str(script)] + (["--headless"] if getattr(args, "headless", False) else [])
         runpy.run_path(str(script), run_name="__main__")
         return 0

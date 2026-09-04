@@ -5,29 +5,35 @@ The 6-DOF counterpart of [`experiments/live_drone`](../live_drone/). A real-time
 while **you** drive a 3-D wind vector; switch controllers on the fly and watch
 which droop, which recover, and which reject a steady wind outright.
 
-🚁 **[Live Interactive 3D WebGL Sandbox (Claude Artifact)](https://claude.ai/code/artifact/69b12b78-d7b2-4732-a7af-2af14930139b)**
-
 ---
 
-## 🎮 Launching the Visualizer
+## Launching the visualiser
 
-### Option 1: WebGL / Three.js 3-D Renderer (Interactive Web App)
+### Recommended: PyVista (VTK) 3-D renderer
 ```bash
-# Launch the rich 3-D WebGL visualizer in your browser
-python -m aimct live3d --web
-# or open the live Claude artifact: https://claude.ai/code/artifact/69b12b78-d7b2-4732-a7af-2af14930139b
-# or run local server: python experiments/live_drone_3d/web.py
+pip install pyvista           # one-time
+python -m aimct live3d        # auto-selects PyVista when installed
+```
+Real 3-D lighting, a procedural quadrotor, smooth interaction — driving the exact
+physics in `sim3d.py` with no port and no browser.
+
+### Matplotlib 3-D fallback (no extra deps)
+```bash
+python -m aimct live3d --matplotlib
 ```
 
-### Option 2: Standalone Matplotlib 3-D Renderer
-```bash
-python -m aimct live3d
-```
-
-### Option 3: Headless Physics Verification
+### Headless physics check
 ```bash
 python -m aimct live3d --headless
 ```
+
+### Experimental WebGL / Three.js page
+```bash
+python -m aimct live3d --web          # local server
+```
+Also published as a [Claude artifact](https://claude.ai/code/artifact/69b12b78-d7b2-4732-a7af-2af14930139b).
+The WebGL scene does not render reliably in every sandboxed host — prefer the
+PyVista renderer for a guaranteed 3-D view.
 
 ---
 

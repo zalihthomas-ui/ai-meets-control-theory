@@ -16,6 +16,7 @@ dependencies = ["numpy>=1.26", "scipy>=1.11", "matplotlib>=3.8"]
 # library still must not import it at runtime — keep it test-only.
 xcheck = ["control>=0.10"]
 ml = ["torch>=2.2", "gymnasium>=1.0", "stable-baselines3>=2.0"]  # torch: CPU wheel index in CI; sb3 = RL cross-check only
+viz = ["pyvista>=0.44"]   # the 3-D live sandbox renderer (python -m aimct live3d)
 dev = ["pytest>=8.0", "control>=0.10"]
 
 [tool.setuptools.packages.find]
