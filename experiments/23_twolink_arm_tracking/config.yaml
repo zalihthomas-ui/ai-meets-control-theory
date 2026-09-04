@@ -1,0 +1,39 @@
+# Experiment 23 - two-link arm: joint-space trajectory tracking + payload adaptation
+# Companion: aimct.systems.TwoLinkArm, aimct.trajectories.Spline,
+#            aimct.benchmarks.track_trajectory, Experiment 17 (adaptive vs fixed)
+
+question: >
+  Part A - four torque-level controllers track the same joint-space spline on
+  the nominal arm: PD + gravity compensation, computed torque, joint LQR, joint
+  linear MPC. Part B - the true arm picks up an unknown 0.5 kg wrist payload
+  while every controller still uses the nominal model. Which laws are robust to
+  the parametric error, which break, and can a one-parameter adaptive law
+  recover?
+
+system:
+  model: aimct.systems.TwoLinkArm
+  params: {m1: 1.0, l1: 0.5, lc1: 0.25, I1: 0.02083,
+           m2: 0.8, l2: 0.4, lc2: 0.2, I2: 0.01067, b: 0.1, tau_max: [15, 10]}
+  state: "[q1, q2, dq1, dq2]"   # rad, rad/s
+  input: "[tau1, tau2]"          # N.m
+  payload_true: 0.5             # kg point mass at the wrist (Part B); model assumes 0
+
+reference:
+  generator: aimct.trajectories.Spline
+  joint_waypoints: [[0.40, 0.30], [1.15, -0.55], [1.65, 0.45], [0.70, -0.20], [1.30, 0.15]]
+  duration_s: 7.0
+
+controllers:
+  PD + gravity comp:  "tau = Kp e + Kd de + G_nom(q)"
+  Computed torque:    "tau = M(q)(ddq_r + Kp e + Kd de) + C dq + G + b dq  (full model cancellation)"
+  Joint LQR:          "inverse-dynamics feed-forward + LQR on the [q, dq] error, model linearised about q1=1"
+  Joint MPC:          "feedback-linearised: LinearMPC (N=20) picks a virtual accel on the e'' = a double integrator"
+  Adaptive computed torque: "Slotine-Li - computed torque on the nominal model + mhat * Y1(q,dq), mhat' = -gamma Y1.s"
+
+sim: {dt: 2.0e-3, t_final: 7.0, integrator: rk4}
+note: >
+  The tracking harness reports position-style metrics; here 'position' is the
+  joint vector (q1, q2), so 'mm' reads as milliradians and panel (a) is the
+  joint plane, not Cartesian.
+outputs: [tracking.md/.csv/.png (Part A), payload.md/.csv/.png (Part B)]
+run: "python experiments/23_twolink_arm_tracking/run.py"
