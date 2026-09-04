@@ -75,9 +75,12 @@ def main(argv=None) -> int:
 
     sub.add_parser("list", help="list the built-in systems")
 
-    pl = sub.add_parser("live", help="interactive drone-vs-wind sandbox")
+    pl = sub.add_parser("live", help="interactive 2-D drone-vs-wind sandbox")
     pl.add_argument("--headless", action="store_true",
                     help="run the physics smoke check without a GUI")
+    pl3 = sub.add_parser("live3d", help="interactive 6-DOF drone-vs-wind sandbox")
+    pl3.add_argument("--headless", action="store_true",
+                     help="run the physics smoke check without a GUI")
 
     args = p.parse_args(argv)
 
@@ -86,15 +89,13 @@ def main(argv=None) -> int:
             print(name)
         return 0
 
-    if args.cmd == "live":
+    if args.cmd in ("live", "live3d"):
         import runpy
         from pathlib import Path
-        script = (Path(__file__).resolve().parents[2]
-                  / "experiments" / "live_drone" / "live.py")
-        if args.headless:
-            sys.argv = [str(script), "--headless"]
-        else:
-            sys.argv = [str(script)]
+        root = Path(__file__).resolve().parents[2]
+        script = (root / "experiments" / "live_drone" / "live.py" if args.cmd == "live"
+                  else root / "experiments" / "live_drone_3d" / "sim3d.py")
+        sys.argv = [str(script)] + (["--headless"] if args.headless else [])
         runpy.run_path(str(script), run_name="__main__")
         return 0
 

@@ -7,6 +7,7 @@ from .linear import LinearSystem
 from .mass_spring_damper import MassSpringDamper
 from .pendulum import Pendulum
 from .quadrotor import PlanarQuadrotor
+from .quadrotor3d import Quadrotor3D, rotation_matrix
 
 __all__ = [
     "DynamicalSystem",
@@ -15,6 +16,8 @@ __all__ = [
     "Pendulum",
     "CartPole",
     "PlanarQuadrotor",
+    "Quadrotor3D",
+    "rotation_matrix",
     "DCMotor",
     "DCMotor2",
 ]
