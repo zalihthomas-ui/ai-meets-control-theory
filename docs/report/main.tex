@@ -939,7 +939,7 @@ Across 21 empirical benchmarks, six fundamental principles recur consistently:
 \section{Project Status and Roadmap}
 % ===========================================================================
 
-\paragraph{Milestone \milestone{} --- Completed.}
+\paragraph{Phase 1: Foundation, Curriculum \& Capstone --- Completed.}
 All curriculum modules, capstone robotics showcases, deep RL agents, adaptive controllers, and benchmark challenge suites are fully implemented from scratch, tested, and validated across 21 experiments:
 \begin{enumerate}[nosep]
   \item \textbf{Module 01: Mathematical Foundations} --- Linear algebra, matrix exponential, Runge--Kutta integration, numerical optimization.
@@ -954,6 +954,14 @@ All curriculum modules, capstone robotics showcases, deep RL agents, adaptive co
   \item \textbf{Module 10: The Intelligent Control Challenge \& Grand Synthesis} --- Standardized multi-track benchmarking engine, robustness sweeps, cross-paradigm leaderboard, and 5-way capstone grand bake-off (Experiments 19, 21).
 \end{enumerate}
 CI passes on Python 3.10--3.13 with \textbf{323 passing unit tests}.
+
+\paragraph{Phase 2: Post-Capstone Depth, Real Systems \& Packaging --- In Progress.}
+\begin{itemize}[nosep]
+  \item \textbf{Track A (Real Multi-Body Systems):} Differential-drive mobile robot (path tracking through obstacles), 2-link planar manipulator arm (computed torque vs. MRAC with payload step), and bicycle-model ground vehicle (high-speed double lane-change).
+  \item \textbf{Track B (Algorithmic Depth):} Real-time iteration Nonlinear MPC (iLQR / SQP), Soft Actor-Critic (SAC) continuous RL, direct collocation trajectory optimization, and formal Behavioral Cloning + DAgger.
+  \item \textbf{Track C (Harness Infrastructure):} Standardized trajectory-tracking benchmark suite with cross-track / along-track error metrics, and \texttt{aimct.trajectories} reference generator library.
+  \item \textbf{Track D (PyPI Distribution):} Production packaging under \texttt{aimct}, console entry points, automated GitHub Action release pipeline with PyPI OIDC Trusted Publishing, and release runbook.
+\end{itemize}
 
 \paragraph{Reproduction Commands.}
 \begin{lstlisting}[language=bash]

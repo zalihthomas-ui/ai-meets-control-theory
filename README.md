@@ -13,7 +13,7 @@
 
 ---
 
-## Quickstart
+## Quickstart & Installation
 
 ```bash
 # 1. Clone and install in editable mode with development & ML extras
@@ -33,6 +33,8 @@ python -m aimct live3d --web
 python -m aimct live3d
 python -m aimct live
 ```
+
+📦 **Packaging & Releases:** See [`docs/PACKAGING.md`](docs/PACKAGING.md) for the PyPI distribution runbook and [`CHANGELOG.md`](CHANGELOG.md) for the version history.
 
 ---
 
@@ -117,6 +119,19 @@ THEORY → DERIVATION → IMPLEMENTATION → SIMULATION → VISUALISATION → VA
 | **[08](modules/08-ai-plus-control)**          | AI + Control (Hybrid Safety) | Supervisory safety shielding, action filtering, control barrier functions, auditable intervention logging. |
 | **[09](modules/09-robotics-capstones)**       | Robotics Capstones | Full 6-state Crazyflie 2.0 Quadrotor, differential flatness inversion, Bryson scaling, EKF output feedback, MRAC, obstacle NMPC. |
 | **[10](modules/10-intelligent-control-challenge)** | Intelligent Control Challenge | Standardized black-box multi-track benchmark engine and cross-paradigm leaderboard. |
+
+---
+
+## Status: Phase 2 in Progress 🚀
+
+The core curriculum (Modules 01–10), 21 empirical benchmark experiments, living technical report, and 6-DOF live sandboxes are complete with **323 passing unit tests**.
+
+**Phase 2 is actively expanding the library with:**
+- **Track A (Real Systems):** Differential-drive mobile robots, 2-link planar manipulator arms (computed torque vs. adaptive MRAC), and dynamic bicycle ground vehicles.
+- **Track B (Algorithmic Depth):** Real-time iteration Nonlinear MPC (iLQR / SQP), Soft Actor-Critic (SAC) continuous RL, direct trajectory optimization, and formalized Behavior Cloning + DAgger.
+- **Track C & D:** Reusable trajectory generation suite and PyPI distribution packaging (`aimct`).
+
+See [`docs/roadmap.md`](docs/roadmap.md) for detailed deliverables and current priorities.
 
 ---
 
