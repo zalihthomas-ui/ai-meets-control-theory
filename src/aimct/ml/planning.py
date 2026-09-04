@@ -14,7 +14,8 @@ from __future__ import annotations
 
 import numpy as np
 
-from ..systems import CartPole, MassSpringDamper, Pendulum, PlanarQuadrotor
+from ..systems import (CartPole, DifferentialDriveRobot, MassSpringDamper,
+                       Pendulum, PlanarQuadrotor)
 
 __all__ = ["batched_rk4", "system_step"]
 
@@ -77,11 +78,24 @@ def _quadrotor_field(sys: PlanarQuadrotor):
     return f
 
 
+def _diffdrive_field(sys: DifferentialDriveRobot):
+    def f(X, U):
+        theta, v, omega = X[:, 2], X[:, 3], X[:, 4]
+        v_cmd = np.clip(U[:, 0], -sys.v_max, sys.v_max)
+        omega_cmd = np.clip(U[:, 1], -sys.omega_max, sys.omega_max)
+        return np.stack([
+            v * np.cos(theta), v * np.sin(theta), omega,
+            (v_cmd - v) / sys.tau_v, (omega_cmd - omega) / sys.tau_omega,
+        ], axis=1)
+    return f
+
+
 _FIELDS = {
     MassSpringDamper: _msd_field,
     Pendulum: _pendulum_field,
     CartPole: _cartpole_field,
     PlanarQuadrotor: _quadrotor_field,
+    DifferentialDriveRobot: _diffdrive_field,
 }
 
 

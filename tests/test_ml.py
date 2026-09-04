@@ -6,7 +6,8 @@ import pytest
 from aimct.controllers import SamplingMPC
 from aimct.ml import MLP, LearnedDynamics, system_step
 from aimct.simulate import rk4_step, simulate
-from aimct.systems import CartPole, MassSpringDamper, Pendulum, PlanarQuadrotor
+from aimct.systems import (CartPole, DifferentialDriveRobot, MassSpringDamper,
+                          Pendulum, PlanarQuadrotor)
 
 
 # ------------------------------------------------------------------ MLP
@@ -118,7 +119,8 @@ def test_learned_dynamics_batched_step_shapes():
 
 # ------------------------------------------------------------------ batched fields
 
-@pytest.mark.parametrize("sys", [MassSpringDamper(), Pendulum(), CartPole(), PlanarQuadrotor()])
+@pytest.mark.parametrize("sys", [MassSpringDamper(), Pendulum(), CartPole(),
+                                 PlanarQuadrotor(), DifferentialDriveRobot()])
 def test_batched_field_matches_scalar_dynamics(sys):
     rng = np.random.default_rng(0)
     X = rng.standard_normal((6, sys.n_states))

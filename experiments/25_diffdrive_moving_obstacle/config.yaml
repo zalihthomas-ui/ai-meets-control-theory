@@ -1,0 +1,38 @@
+# Experiment 25 - a moving obstacle on the differential-drive path
+# Companion: Experiment 22 (diffdrive path following), Experiment 20/21
+# (the quad's static obstacle penalty pattern), Experiment 26 (iLQR vs CEM
+# on a harder smooth path)
+
+question: >
+  Two Exp-22 blind trackers (pure pursuit, path LQR) and two receding-horizon
+  planners with an obstacle-penalty cost (sampling MPC / CEM, iLQR / RTI-NMPC)
+  follow the same waypoint path through a field of three disks - two static,
+  one MOVING, crossing the path mid-route at a speed comparable to the robot's
+  own cruise speed. Does an obstacle-aware planner need to re-plan against a
+  target that was not there when it started, and does a gradient method cope
+  with a non-convex obstacle cost as well as a derivative-free one does?
+
+system:
+  model: aimct.systems.DifferentialDriveRobot
+  v_ref: 0.15
+  dt: 0.05
+  path: "the Exp-22 waypoint spline, re-timed to the cruise speed"
+
+obstacles:
+  static_1: "offset 0.15 m off the path normal near t~8s (radius 0.18 m)"
+  static_2: "offset 0.15 m off the path normal near t~26.5s (radius 0.18 m)"
+  moving:   "crosses the path near t~18s at speed v_ref, radius 0.18 m - the case where the planner reacts to a target not yet present at plan time"
+  penalty:  "soft quartic barrier W_OBS * max(0, r^2 - d^2)^2 per obstacle, same pattern as Exp 20/21's quad obstacle cost"
+  W_OBS: 1.0e4
+
+controllers:
+  Pure pursuit (blind):              "Exp 22, no obstacle awareness"
+  Path LQR (blind):                  "Exp 22, no obstacle awareness"
+  Sampling MPC (CEM, obstacle-aware): "SamplingMPC, horizon 70 steps (3.5 s), path-tracking + obstacle penalty in running_cost, normalised [-1,1] actions (SamplingMPC only supports a scalar action box)"
+  iLQR / RTI-NMPC (obstacle-aware):   "ILQR, horizon 70 steps, path-tracking + the SAME obstacle penalty supplied as an exact analytic cost (gradient/Hessian derived by hand, finite-difference-verified at import time)"
+
+sim: {t_final: "path.duration (~37 s)", dt: 0.05}
+metrics: [rms_err_mm, max_err_mm, completion_pct, collision_steps, ctrl_energy, lat_median_ms, lat_p95_ms]
+outputs: [table.md, table.csv, figure.png]
+run: "python experiments/25_diffdrive_moving_obstacle/run.py"
+run_full: "AIMCT_EXP_FULL=1 python experiments/25_diffdrive_moving_obstacle/run.py"
