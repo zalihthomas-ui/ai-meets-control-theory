@@ -88,3 +88,77 @@ def test_live_diffdrive_recovers_from_a_shove():
             box.kick([0.25, -0.15, 0, 0, 0])
         box.step()
     assert abs(dd.PATH.frame(box.x[:2])[2]) < 0.05      # back on the line
+
+
+def test_live_diffdrive_lookahead_has_no_teleport_across_the_crossing():
+    # regression: a global-argmin nearest point flips branches at the
+    # figure-8's self-intersection; progress hysteresis must prevent that.
+    box, shared = dd.build()
+    box.set_controller("Pure pursuit")
+    prev = None
+    for _ in range(1200):
+        box.step()
+        la = shared["lookahead"]
+        if la is not None and prev is not None:
+            assert np.linalg.norm(np.asarray(la) - prev) < 0.5, "look-ahead teleported"
+        prev = None if la is None else np.asarray(la).copy()
+
+
+# --------------------------------------------------------- live_arm_balance
+ab = _load("live_arm_balance")
+
+
+def test_live_arm_balance_headless_smoke(capsys):
+    rc = ab._headless()
+    out = capsys.readouterr().out
+    assert rc == 0 and "headless check OK" in out
+
+
+def test_live_arm_balance_upright_is_a_true_equilibrium():
+    # zero torque at x_eq, and dynamics(x_eq, u_eq) == 0 exactly
+    assert np.allclose(ab.UEQ, 0.0, atol=1e-8)
+    xdot = ab.ARM.dynamics(0.0, ab.XEQ, ab.UEQ)
+    assert np.allclose(xdot, 0.0, atol=1e-8)
+
+
+def test_live_arm_balance_is_open_loop_unstable_there():
+    A, _ = ab.ARM.linearize()          # about XEQ by default
+    assert np.any(np.linalg.eigvals(A).real > 0)
+
+
+def test_live_arm_balance_stiff_and_integral_recover_a_poke_soft_does_not():
+    results = {}
+    for name in ("LQR (stiff)", "LQR + integral (wind-adaptive)", "LQR (soft)"):
+        box = ab.build()
+        box.set_controller(name)
+        box.kick([0, 0, 1.5, -1.0])
+        for _ in range(2000):
+            box.step()
+        results[name] = np.degrees(ab._tilt(box.x))
+    assert results["LQR (stiff)"] < 1.0
+    assert results["LQR + integral (wind-adaptive)"] < 1.0
+    assert results["LQR (soft)"] > 10.0        # settles into a wrong offset
+
+
+def test_live_arm_balance_integral_nulls_a_steady_wind_stiff_does_not():
+    tilts = {}
+    for name in ("LQR (stiff)", "LQR + integral (wind-adaptive)"):
+        box = ab.build()
+        box.set_controller(name)
+        box.knobs["wind q1 [N.m]"] = 0.6
+        box.knobs["wind q2 [N.m]"] = 0.4
+        for _ in range(2500):
+            box.step()
+        tilts[name] = np.degrees(ab._tilt(box.x))
+    assert tilts["LQR + integral (wind-adaptive)"] < 0.5
+    assert tilts["LQR (stiff)"] > tilts["LQR + integral (wind-adaptive)"] + 2.0
+
+
+def test_live_arm_balance_autoreset_after_a_fall():
+    box = ab.build()
+    box.set_controller("LQR (soft)")
+    before = ab._falls["count"]
+    box.x[:] = ab.XEQ + np.array([1.35, 0.0, 0.0, 0.0])   # already past FALL_LIMIT
+    box.step()
+    assert ab._falls["count"] == before + 1
+    assert abs(box.x[0] - ab.XEQ[0]) < 0.2                 # respawned near vertical

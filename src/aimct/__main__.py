@@ -79,7 +79,8 @@ def main(argv=None) -> int:
 
     pl = sub.add_parser("live", help="interactive sandbox: drone / arm / diffdrive")
     pl.add_argument("target", nargs="?", default="drone",
-                    choices=["drone", "drone3d", "arm", "diffdrive"],
+                    choices=["drone", "drone3d", "arm", "arm3d", "diffdrive",
+                             "armbalance", "armbalance3d"],
                     help="which sandbox (default: drone)")
     pl.add_argument("--headless", action="store_true",
                     help="run the physics smoke check without a GUI")
@@ -124,10 +125,16 @@ def main(argv=None) -> int:
                 file=sys.stderr,
             )
             return 1
+        headless = getattr(args, "headless", False)
         if target == "drone":
             script = d / "live_drone" / "live.py"
-        elif target == "arm":
-            script = d / "live_arm" / "run.py"
+        elif target in ("arm", "arm3d"):
+            # same physics either way; --headless never needs PyVista
+            sub = "run.py" if (target == "arm" or headless) else "pv_arm.py"
+            script = d / "live_arm" / sub
+        elif target in ("armbalance", "armbalance3d"):
+            sub = "run.py" if (target == "armbalance" or headless) else "pv_arm.py"
+            script = d / "live_arm_balance" / sub
         elif target == "diffdrive":
             script = d / "live_diffdrive" / "run.py"
         elif getattr(args, "web", False):
