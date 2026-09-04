@@ -223,12 +223,70 @@ class Sandbox:
         keymap = {k: fn for (k, _lbl, fn) in self.dist.hotkeys}
         legend = "   ".join(f"{k}:{lbl}" for (k, lbl, _f) in self.dist.hotkeys)
         fig.text(0.06, 0.035, (legend + "   " if legend else "")
-                 + "1..%d:controller   r:reset   " % len(self.names) + hint,
+                 + "1..%d:controller   r:reset   h:help   g:surprise me   "
+                 "c:snapshot   " % len(self.names) + hint,
                  fontsize=8.5, family="monospace", color="#555555")
+
+        # -- help overlay (h) --------------------------------------------
+        help_lines = [self.title or art.label, ""]
+        if self.dist.help_text:
+            help_lines += [self.dist.help_text, ""]
+        help_lines.append("controllers  (keys 1.." + str(len(self.names)) + "):")
+        help_lines += [f"  {i + 1}. {n}" for i, n in enumerate(self.names)]
+        if self.dist.sliders:
+            help_lines += ["", "sliders:"]
+            help_lines += [f"  {n}  [{lo:g} .. {hi:g}]"
+                          for n, lo, hi, _ in self.dist.sliders]
+        if self.dist.hotkeys:
+            help_lines += ["", "hotkeys:"]
+            help_lines += [f"  {k}  {lbl}" for k, lbl, _ in self.dist.hotkeys]
+        help_lines += ["", "r  reset", "h  toggle this help",
+                      "g  surprise me (randomise every disturbance)",
+                      "c  save a snapshot PNG", "", "(press h to close)"]
+        help_box = ax.text(
+            0.5, 0.5, "\n".join(help_lines), transform=ax.transAxes,
+            ha="center", va="center", family="monospace", fontsize=9.5,
+            zorder=50, visible=False,
+            bbox=dict(boxstyle="round,pad=0.8", fc="#FFFFFF", ec="#333333",
+                      alpha=0.96),
+        )
+
+        def _toggle_help():
+            help_box.set_visible(not help_box.get_visible())
+
+        def _surprise_me():
+            """Randomise every slider (and fire a random hotkey, if any) - a
+            one-key way to explore a corner of the sandbox you have not tried."""
+            rng = np.random.default_rng()
+            for s, (name, lo, hi, _init) in zip(self._sliders, self.dist.sliders):
+                s.set_val(float(rng.uniform(lo, hi)))     # triggers on_slider
+            if self.dist.hotkeys:
+                _, _, fn = self.dist.hotkeys[int(rng.integers(len(self.dist.hotkeys)))]
+                fn(self)
+
+        def _snapshot():
+            from datetime import datetime
+            from pathlib import Path as _P
+
+            out = _P("snapshots"); out.mkdir(exist_ok=True)
+            slug = "".join(c if c.isalnum() else "_" for c in (self.title or art.label))
+            path = out / f"{slug}_{datetime.now():%Y%m%d_%H%M%S}.png"
+            fig.savefig(path, dpi=150)
+            print(f"saved {path}")
+
+        # session-best score: closest this run has gotten to its target/ref,
+        # per controller - a light, honest "can you beat your own best?" nudge
+        self._best_mm = {}
 
         def on_key(ev):
             if ev.key == "r":
                 self.reset()
+            elif ev.key == "h":
+                _toggle_help()
+            elif ev.key == "g":
+                _surprise_me()
+            elif ev.key == "c":
+                _snapshot()
             elif ev.key in keymap:
                 keymap[ev.key](self)
             elif ev.key and ev.key.isdigit():
@@ -259,8 +317,16 @@ class Sandbox:
             if self.aux_extra is not None:
                 aux.update(self.aux_extra(self) or {})
             art.draw(self.x, u, self.t, aux)
-            hud.update(art.hud_lines(self.x, u, self.t, aux),
-                       controller=self.active)
+            lines = art.hud_lines(self.x, u, self.t, aux)
+            goal = aux.get("target", aux.get("ref"))
+            if goal is not None:
+                err_mm = float(np.linalg.norm(
+                    art.position(self.x) - np.asarray(goal, float).ravel()[:2])) * 1e3
+                best = self._best_mm.get(self.active)
+                if best is None or err_mm < best:
+                    self._best_mm[self.active] = best = err_mm
+                lines = lines + [f"best  = {best:6.1f} mm  (this session)"]
+            hud.update(lines, controller=self.active)
             return art._artists
 
         self._anim = FuncAnimation(fig, frame, interval=33, blit=False,

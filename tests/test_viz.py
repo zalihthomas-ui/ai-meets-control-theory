@@ -184,6 +184,60 @@ def test_sandbox_disturbance_hooks_fire():
     assert not np.allclose(box.x, x_before)
 
 
+def _press(fig, key):
+    from matplotlib.backend_bases import KeyEvent
+
+    fig.canvas.callbacks.process("key_press_event",
+                                 KeyEvent("key_press_event", fig.canvas, key))
+
+
+def test_sandbox_creative_additives_help_surprise_snapshot(tmp_path, monkeypatch):
+    import matplotlib.pyplot as plt
+
+    from aimct.systems import Pendulum
+
+    monkeypatch.chdir(tmp_path)
+    p = Pendulum()
+
+    class Hold:
+        def reset(self): pass
+        def update(self, x, dt): return 0.0
+
+    seen = []
+    dist = Disturbance(
+        sliders=[("bias", -1.0, 1.0, 0.0)],
+        hotkeys=[("p", "poke", lambda s: seen.append(s.t))],
+        on_slider=lambda s, name, v: None,
+        help_text="test disturbance",
+    )
+    box = Sandbox(p, {"hold": Hold()}, x0=np.array([0.1, 0.0]),
+                  target=np.array([0.0, -1.0]), disturbance=dist)
+    orig_show = plt.show
+    plt.show = lambda *a, **k: None
+    try:
+        box.run()
+    finally:
+        plt.show = orig_show
+    fig = box._anim._fig
+    box._anim._func(0)                                    # populate best_mm
+    assert box._best_mm and np.isfinite(next(iter(box._best_mm.values())))
+
+    _press(fig, "h")                                       # help overlay toggles
+    help_texts = [t for t in fig.axes[0].texts if "controllers" in t.get_text()]
+    assert help_texts and help_texts[0].get_visible()
+    _press(fig, "h")
+    assert not help_texts[0].get_visible()
+
+    before = box.knobs["bias"]
+    _press(fig, "g")                                       # surprise me
+    assert box.knobs["bias"] != before or len(seen) > 0     # slider moved or hotkey fired
+
+    _press(fig, "c")                                        # snapshot
+    saved = list((tmp_path / "snapshots").glob("*.png"))
+    assert len(saved) == 1 and saved[0].stat().st_size > 0
+    plt.close(fig)
+
+
 def _ik(arm, target):
     """crude 2-link inverse kinematics (elbow-down)."""
     x, y = target

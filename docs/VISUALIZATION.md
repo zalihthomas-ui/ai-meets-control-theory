@@ -93,6 +93,14 @@ Sandbox(
   steady external term added to `ẋ` each sub-step), and `on_slider`.
 - **`headless(steps=…)`** runs the same loop with no GUI and returns/prints the
   settled error — every shipped sandbox uses it as a smoke test.
+- **Every sandbox gets three extra keys for free**, on top of whatever it
+  defines: **`h`** toggles a help overlay (controllers, sliders, hotkeys — so
+  you never have to read the source to know what's playable); **`g`** is
+  "surprise me" — randomises every slider and fires a random hotkey, a
+  one-key way to land somewhere you would not have tried; **`c`** saves a
+  timestamped PNG to `./snapshots/`. The HUD also tracks a **session-best**
+  distance to the current target/reference per controller, so switching
+  controllers mid-run turns into a small, honest competition with yourself.
 
 Shipped sandboxes (`python -m aimct live <name>`):
 
@@ -101,6 +109,9 @@ Shipped sandboxes (`python -m aimct live <name>`):
 | `drone` | `PlanarQuadrotor` | which controller holds hover against a wind you steer? (`experiments/live_drone`) |
 | `drone3d` | `Quadrotor3D` | the same, in full 6-DOF (`experiments/live_drone_3d`, PyVista) |
 | `arm` | `TwoLinkArm` | hang an unknown payload — fixed computed-torque breaks, adaptive identifies it (`experiments/live_arm`) |
+| `arm3d` | `TwoLinkArm` | the same sandbox, rendered as a real 3-D PyVista scene (physics unchanged — still one vertical plane) |
+| `armbalance` | `TwoLinkArm` | balance it standing straight up against gravity — a double inverted pendulum (`experiments/live_arm_balance`) |
+| `armbalance3d` | `TwoLinkArm` | the balance sandbox in 3-D |
 | `diffdrive` | `DifferentialDriveRobot` | shove the robot off its path — pure-pursuit vs. Stanley vs. path-LQR recovery (`experiments/live_diffdrive`) |
 
 ## Extending
