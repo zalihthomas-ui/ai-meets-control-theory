@@ -47,6 +47,7 @@ from aimct.benchmarks.metrics import (
     steady_state_error,
 )
 from aimct.benchmarks.sweep import SweepResult, sweep
+from aimct.benchmarks.tracking import TrackingResult, track_trajectory
 
 __all__ = [
     "rise_time",
@@ -67,6 +68,8 @@ __all__ = [
     "ComparisonResult",
     "sweep",
     "SweepResult",
+    "track_trajectory",
+    "TrackingResult",
     # Challenge scoring & wrappers
     "WEIGHTS",
     "NORMALISERS",
