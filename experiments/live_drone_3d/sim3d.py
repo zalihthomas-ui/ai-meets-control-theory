@@ -218,9 +218,9 @@ def _run_matplotlib() -> int:
 
     names = list(eng.controllers)
     plt.subplots_adjust(bottom=0.24)
-    s_wx = Slider(fig.add_axes([0.12, 0.14, 0.3, 0.03]), "wind x", -0.08, 0.08, 0)
-    s_wy = Slider(fig.add_axes([0.12, 0.10, 0.3, 0.03]), "wind y", -0.08, 0.08, 0)
-    s_wz = Slider(fig.add_axes([0.12, 0.06, 0.3, 0.03]), "wind z", -0.06, 0.06, 0)
+    s_wx = Slider(fig.add_axes([0.12, 0.14, 0.3, 0.03]), "wind x", -0.08, 0.08, valinit=0.0)
+    s_wy = Slider(fig.add_axes([0.12, 0.10, 0.3, 0.03]), "wind y", -0.08, 0.08, valinit=0.0)
+    s_wz = Slider(fig.add_axes([0.12, 0.06, 0.3, 0.03]), "wind z", -0.06, 0.06, valinit=0.0)
     radio = RadioButtons(fig.add_axes([0.55, 0.04, 0.28, 0.13]), names, active=1)
     b_gust = Button(fig.add_axes([0.86, 0.11, 0.11, 0.05]), "gust")
     b_reset = Button(fig.add_axes([0.86, 0.04, 0.11, 0.05]), "reset")
