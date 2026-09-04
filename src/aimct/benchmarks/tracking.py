@@ -33,6 +33,8 @@ class TrackingResult:
     trajectory: Trajectory | None = None
     pos_index: tuple = (0, 1)
     title: str = "Trajectory tracking"
+    space: str = "task"          # "task" -> x/y [m]; "joint" -> q1/q2 [rad]
+    axis_labels: tuple | None = None   # explicit ("x [m]", "y [m]") override
 
     _COLS = ("rms_err_mm", "max_err_mm", "rms_cross_track_mm",
              "completion_pct", "ctrl_energy", "status")
@@ -62,6 +64,12 @@ class TrackingResult:
 
         set_aimct_style()
         ix, iy = self.pos_index
+        if self.axis_labels is not None:
+            xlab, ylab, elab = (*self.axis_labels, "mm")
+        elif self.space == "joint":
+            xlab, ylab, elab = "q1 [rad]", "q2 [rad]", "mrad"
+        else:
+            xlab, ylab, elab = "x [m]", "y [m]", "mm"
         fig, ax = plt.subplots(1, 2, figsize=(13, 5.2))
         traj = self.trajectory
         ts = np.linspace(0.0, traj.duration, 400)
@@ -76,9 +84,9 @@ class TrackingResult:
             e = np.array([np.linalg.norm(p - traj.closest(p)[0])
                           for p in tr.x[:, [ix, iy]]]) * 1e3
             ax[1].plot(tr.t, e, color=c, lw=1.3, label=name)
-        ax[0].set(title="(a) path", xlabel="x [m]", ylabel="y [m]")
+        ax[0].set(title="(a) path", xlabel=xlab, ylabel=ylab)
         ax[0].set_aspect("equal", "box"); ax[0].legend(fontsize=8)
-        ax[1].set(title="(b) cross-track error [mm]", xlabel="t [s]", ylabel="mm")
+        ax[1].set(title=f"(b) cross-track error [{elab}]", xlabel="t [s]", ylabel=elab)
         ax[1].legend(fontsize=8)
         fig.suptitle(self.title, fontweight="bold")
         fig.tight_layout()
