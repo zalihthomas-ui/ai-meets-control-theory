@@ -70,3 +70,33 @@ def test_pyvista_renderer_builds_its_meshes():
     body, arms, tips, props = pv3d._drone_meshes(pv, 0.046)
     assert len(arms) == 4 and len(props) == 4
     assert pv3d._pose_matrix(np.array([1.0, 2, 3]), np.eye(3)).shape == (4, 4)
+
+
+def test_pyvista_renderer_main_builds_and_ticks_without_a_window(monkeypatch):
+    # regression: main() used pl.add_callback(), which does not exist on every
+    # PyVista version (it didn't here) - the interactive path raised
+    # AttributeError the moment you actually launched it, silently, because
+    # this test previously only exercised the two pure helper functions above.
+    import importlib
+
+    if importlib.util.find_spec("pyvista") is None:
+        import pytest
+        pytest.skip("pyvista not installed")
+    import pyvista as pv
+
+    captured = {}
+    monkeypatch.setattr(pv.Plotter, "add_timer_event",
+                        lambda self, max_steps, duration, callback:
+                        captured.__setitem__("tick", callback), raising=False)
+    monkeypatch.setattr(pv.Plotter, "show", lambda self, *a, **k: None,
+                        raising=False)
+
+    pv_spec = importlib.util.spec_from_file_location(
+        "pv3d_ticktest", _SCRIPT.parent / "pv3d.py")
+    pv3d = importlib.util.module_from_spec(pv_spec)
+    pv_spec.loader.exec_module(pv3d)
+
+    assert pv3d.main() == 0
+    tick = captured["tick"]
+    for k in range(10):
+        tick(k)                      # must not raise (real AttributeError site)

@@ -6,10 +6,24 @@ hang an unknown payload on it with the slider. Switch controllers on the fly.
 
 ```bash
 python -m aimct live arm            # or:  python experiments/live_arm/run.py
+python -m aimct live arm3d          # the same sandbox as a real 3-D PyVista scene
 python -m aimct live arm --headless # physics + controller smoke check, no GUI
 ```
 
+The 3-D view (`arm3d`, `pv_arm.py`) is the *same* physics and controllers —
+`aimct.viz.pv_arm.run_pyvista_arm` reads the sandbox's own slider/hotkey
+declarations, so both views share one control panel definition. It renders
+real cylinders/spheres with lighting and an orbit camera; the arm still moves
+in one plane, which spinning the camera edge-on makes plain.
+
 ## Controls
+
+Sliders, hotkeys, controller keys, `r` reset, and the `h`/`g`/`c` additives
+(help overlay / surprise-me / snapshot — see
+[docs/VISUALIZATION.md](../../docs/VISUALIZATION.md)) all work the same in
+both views. The one exception: **mouse-click-to-place-target** is 2-D-only —
+PyVista's click coordinates aren't wired to the sandbox in `arm3d`, so use the
+arrow keys there instead.
 
 | input | action |
 | :--- | :--- |

@@ -109,11 +109,11 @@ def main() -> int:
     def set_wx(v): eng.steady_wind[0] = v
     def set_wy(v): eng.steady_wind[1] = v
     def set_wz(v): eng.steady_wind[2] = v
-    pl.add_slider_widget(set_wx, [-0.08, 0.08], 0.0, title="wind x [N]",
+    pl.add_slider_widget(set_wx, [-0.08, 0.08], value=0.0, title="wind x [N]",
                          pointa=(0.03, 0.09), pointb=(0.32, 0.09), style="modern")
-    pl.add_slider_widget(set_wy, [-0.08, 0.08], 0.0, title="wind y [N]",
+    pl.add_slider_widget(set_wy, [-0.08, 0.08], value=0.0, title="wind y [N]",
                          pointa=(0.36, 0.09), pointb=(0.65, 0.09), style="modern")
-    pl.add_slider_widget(set_wz, [-0.06, 0.06], 0.0, title="wind z [N]",
+    pl.add_slider_widget(set_wz, [-0.06, 0.06], value=0.0, title="wind z [N]",
                          pointa=(0.69, 0.09), pointb=(0.98, 0.09), style="modern")
 
     names = list(eng.controllers)
@@ -127,7 +127,7 @@ def main() -> int:
     pl.add_key_event("c", lambda: eng.steady_wind.__setitem__(slice(None), 0.0))
 
     # --- animation ---------------------------------------------------------------
-    def tick():
+    def tick(_step=None):
         fr = eng.step_frame()
         M = _pose_matrix(fr.pos, fr.R)
         body_a.user_matrix = M
@@ -152,7 +152,9 @@ def main() -> int:
         pl.add_text(fr.hud, position="lower_right", font_size=9,
                     color="#cfe3ff", name="hud")
 
-    pl.add_callback(tick, interval=16)
+    # add_callback isn't in every PyVista version; add_timer_event is the
+    # stable public API (its callback takes the step index - tick ignores it).
+    pl.add_timer_event(max_steps=10_000_000, duration=16, callback=tick)
     pl.camera_position = [(3.2, -3.2, 2.6), tuple(HOVER), (0, 0, 1)]
     pl.show()
     return 0

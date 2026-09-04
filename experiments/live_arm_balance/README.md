@@ -9,8 +9,15 @@ genuine double inverted pendulum, not a manipulator holding a pose.
 
 ```bash
 python -m aimct live armbalance            # or: python experiments/live_arm_balance/run.py
+python -m aimct live armbalance3d          # the same sandbox as a real 3-D PyVista scene
 python -m aimct live armbalance --headless
 ```
+
+The 3-D view is the identical physics, gains and controllers, rendered by the
+shared `aimct.viz.pv_arm.run_pyvista_arm` (same driver `live_arm` uses) —
+orbit the camera edge-on and the "double pendulum" collapses back to the line
+it actually is. Every control below, including `h`/`g`/`c` (see
+[docs/VISUALIZATION.md](../../docs/VISUALIZATION.md)), works the same in both.
 
 ## Controls
 
