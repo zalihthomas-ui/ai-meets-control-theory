@@ -9,7 +9,7 @@
 
 **AI Meets Control Theory** is a rigorous, from-scratch experimentation framework that systematically bridges classical control theory, modern state-space methods, constrained Model Predictive Control (MPC), Kalman filtering, adaptive control, and modern machine learning/reinforcement learning on physical dynamical systems. Under the core discipline **"derive it, build it from scratch, simulate it, visualise it, and compare it honestly"**, every controller—from PID and LQR to active-set MPC, EKF/UKF, PPO actor-critic, and safety shields—is evaluated on identical plants, sensor noise profiles, disturbances, and actuator limits.
 
-📄 **[Read the Living Technical Report (PDF)](docs/report/ai-meets-control-theory.pdf)** &nbsp;|&nbsp; 📖 **[User Guide & API Recipes](docs/USAGE.md)** &nbsp;|&nbsp; 📊 **[Master Results & Verdicts Table](docs/RESULTS.md)** &nbsp;|&nbsp; 🧭 **[Engineering Decision Guide](docs/DECISION-GUIDE.md)** &nbsp;|&nbsp; 🚁 **[Live 3D WebGL Sandbox](https://claude.ai/code/artifact/69b12b78-d7b2-4732-a7af-2af14930139b)** &nbsp;|&nbsp; 🎯 **[Project Vision & Manifesto](docs/vision.md)**
+📄 **[Read the Living Technical Report (PDF)](docs/report/ai-meets-control-theory.pdf)** &nbsp;|&nbsp; 📖 **[User Guide & API Recipes](docs/USAGE.md)** &nbsp;|&nbsp; 🎨 **[Unified Visualization](docs/VISUALIZATION.md)** &nbsp;|&nbsp; 📊 **[Master Results & Verdicts Table](docs/RESULTS.md)** &nbsp;|&nbsp; 🧭 **[Engineering Decision Guide](docs/DECISION-GUIDE.md)** &nbsp;|&nbsp; 🚁 **[Live 3D WebGL Sandbox](https://claude.ai/code/artifact/69b12b78-d7b2-4732-a7af-2af14930139b)** &nbsp;|&nbsp; 🎯 **[Project Vision & Manifesto](docs/vision.md)**
 
 ---
 
@@ -21,20 +21,21 @@ git clone https://github.com/zalihthomas-ui/ai-meets-control-theory.git
 cd ai-meets-control-theory
 pip install -e ".[dev,ml]"
 
-# 2. Run the fast test suite (350 passing unit tests from scratch; 355 full)
+# 2. Run the fast test suite (367 passing unit tests from scratch; 373 full)
 pytest -m "not slow"
 
 # 3. Run a canonical multi-controller benchmark comparison
 python -m aimct compare --system quadrotor
 
-# 4. Launch the interactive 3D WebGL physics sandbox (or 2D live sandbox)
-python -m aimct live3d --web
-# or standalone matplotlib 3D / 2D
-python -m aimct live3d
-python -m aimct live
+# 4. Launch interactive physics sandboxes (2D drone, 2-link arm, diff-drive, or 3D 6-DOF WebGL)
+python -m aimct live            # 2D quadrotor vs wind
+python -m aimct live arm        # 2-link manipulator
+python -m aimct live diffdrive  # mobile robot
+python -m aimct live3d --web    # 6-DOF WebGL sandbox
 ```
 
 📖 **Usage & Recipes:** See [`docs/USAGE.md`](docs/USAGE.md) for the 5-axis framework guide (*system × controller × trajectory × disturbance × parameters*) and copy-paste recipes.  
+🎨 **Unified Visualization:** See [`docs/VISUALIZATION.md`](docs/VISUALIZATION.md) for replay animation (`aimct.viz.animate`) and real-time interactive sandboxes (`aimct.viz.Sandbox`).  
 📦 **Packaging & Releases:** See [`docs/PACKAGING.md`](docs/PACKAGING.md) for the PyPI distribution runbook and [`CHANGELOG.md`](CHANGELOG.md) for the version history.
 
 ---
@@ -135,7 +136,7 @@ THEORY → DERIVATION → IMPLEMENTATION → SIMULATION → VISUALISATION → VA
 
 ## Status: Phase 2 in Progress 🚀
 
-The core curriculum (Modules 01–10), 24 empirical benchmark experiments, living technical report, and 6-DOF live sandboxes are complete with **355 passing unit tests** (350 fast / 356 total across Python 3.10–3.13).
+The core curriculum (Modules 01–10), 24 empirical benchmark experiments, living technical report, unified visualization layer (`aimct.viz`), and interactive sandboxes are complete with **373 passing unit tests** (367 fast / 374 total across Python 3.10–3.13).
 
 **Phase 2 is actively expanding the library with:**
 - **Track A (Real Systems):** Differential-drive mobile robots, 2-link planar manipulator arms (computed torque vs. adaptive MRAC), and dynamic bicycle ground vehicles.

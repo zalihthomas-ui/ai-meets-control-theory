@@ -68,7 +68,7 @@
 
 \begin{abstract}
 \noindent This report documents the culmination of the \textbf{AI Meets Control Theory} project.
-Across 10 curriculum modules, 24 rigorous from-scratch benchmark experiments, and 355 verified unit tests,
+Across 10 curriculum modules, 24 rigorous from-scratch benchmark experiments, and 373 verified unit tests,
 we evaluate and compare classical control, modern state-space methods, Kalman filtering, optimal control,
 constrained Model Predictive Control (MPC), real-time iteration nonlinear MPC (iLQR / RTI-NMPC), adaptive control,
 Euler--Lagrange robot manipulators, non-holonomic mobile robotics, deep reinforcement learning, and hybrid
@@ -166,6 +166,8 @@ src/aimct/
   ml/           MLP (backprop + Adam), LearnedDynamics (grey-box / residual)
   rl/           ControlEnv, Discretizer, QLearning, DQN, REINFORCE, PPO, BC
   hybrid/       ShieldedController (switch/filter blends, predicate helpers)
+  viz/          SystemArtist contract (Pendulum, CartPole, TwoLinkArm, DiffDrive,
+                PlanarQuadrotor), animate() replay generator, Sandbox live GUI
   benchmarks/   metrics.py (13 metrics), harness.py, sweep.py, challenge.py (ICC engine),
                 tracking.py (path following benchmark), capstone_scoring.py
   plot_style.py Okabe-Ito palette + publication-ready 4-panel comparison figure
@@ -241,6 +243,9 @@ Table~\ref{tab:capabilities} summarises the implemented components, their mathem
 \addlinespace
 \texttt{aimct.hybrid} & Hybrid AI + control safety shields: \texttt{ShieldedController} (switch and
   filter action blends, predicate helpers \texttt{box\_predicate}, \texttt{barrier\_predicate}, and audit logging). & \checkmark \\
+\addlinespace
+\texttt{aimct.viz} & Unified 2-D visualization layer: \texttt{SystemArtist} contract, \texttt{animate()} replay
+  generator (telemetry HUD, ghost references, breadcrumb trails), and real-time interactive \texttt{Sandbox}. & \checkmark \\
 \addlinespace
 \texttt{aimct.benchmarks} & Comprehensive evaluation: metrics (13 standard indices), trajectory-tracking benchmark
   (\texttt{aimct.benchmarks.track\_trajectory}), Intelligent Control Challenge (ICC), and Grand Capstone rubric. & \checkmark \\
@@ -1070,7 +1075,7 @@ All curriculum modules, capstone robotics showcases, deep RL agents, adaptive co
   \item \textbf{Track C (Harness Infrastructure):} Standardized trajectory-tracking benchmark suite (\texttt{aimct.benchmarks.track\_trajectory}) with cross-track / along-track error metrics, and \texttt{aimct.trajectories} reference generator library.
   \item \textbf{Track D (PyPI Distribution):} Production packaging under \texttt{aimct}, console entry points, automated GitHub Action release pipeline with PyPI OIDC Trusted Publishing, and release runbook.
 \end{itemize}
-CI passes on Python 3.10--3.13 with \textbf{355 passing unit tests}.
+CI passes on Python 3.10--3.13 with \textbf{373 passing unit tests}.
 
 \paragraph{Reproduction Commands.}
 \begin{lstlisting}[language=bash]
