@@ -893,6 +893,49 @@ Experiment~21 conducts the ultimate five-way capstone bake-off on the full Crazy
 \end{figure}
 
 % ===========================================================================
+\section{Engineering Synthesis \& Decision Guide}
+% ===========================================================================
+
+The central mission of this project was never to demonstrate that a neural network can steer a dynamical system, but to build \textbf{grounded engineering judgment}: given physical dynamics, constraints, sensor suites, and operational requirements, which method does empirical evidence justify?
+
+\begin{table}[H]
+\centering
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}p{0.35\textwidth}p{0.35\textwidth}p{0.25\textwidth}@{}}
+\toprule
+\textbf{Operational Situation} & \textbf{Recommended Methodology} & \textbf{Empirical Evidence} \\
+\midrule
+Equations of motion known / linearisable & \textbf{LQR / Pole Placement}, then \textbf{Linear MPC} under constraints & Exp 04, Exp 08 \\
+Hard state/actuator inequality bounds & \textbf{Linear MPC} (active-set condensed QP) & Exp 08, Exp 20 \\
+Smooth reference trajectory tracking & \textbf{LQR + Flatness Feedforward} or \textbf{Preview MPC} & Exp 14 \\
+Constant disturbances / steady-state error & \textbf{Integral Action (LQI)} or \textbf{MRAC} & Exp 03, Exp 17, Live Sandbox \\
+Plant parameters drift over time (wear/load) & \textbf{MRAC} (matched) / \textbf{Gain Scheduling} (measured) & Exp 17 \\
+Noisy / partial sensor measurements & \textbf{Kalman Filter (LQG)}; \textbf{EKF / UKF} if nonlinear & Exp 06, Exp 15, Exp 16 \\
+No equations, but rollout data available & \textbf{Least-Squares / DMDc SysID} $\to$ Model-based design & Exp 09 \\
+No model, nonlinear, simulator available & \textbf{Sampling MPC (CEM)} over learned residual model & Exp 10, Exp 20 \\
+Black-box interaction only (no physics model) & \textbf{Deep RL (DQN / PPO)} --- anticipate high sample bill & Exp 11, Exp 18 \\
+Deploying uncertified learned policies & \textbf{Safety Shield} with certified classical fallback & Exp 12, Exp 21 \\
+\bottomrule
+\end{tabular}%
+}
+\caption{Cross-experiment engineering decision matrix (from \texttt{docs/DECISION-GUIDE.md}).}
+\label{tab:decision_guide}
+\end{table}
+
+\subsection{Recurring Engineering Lessons Across 21 Experiments}
+
+Across 21 empirical benchmarks, six fundamental principles recur consistently:
+\begin{enumerate}
+  \item \textbf{Feedforward Does the Heavy Lifting:} Model-based feedforward (differential flatness, steady-state inversion, reference preview) generates the baseline control trajectory directly, leaving feedback to correct only small modeling residuals and unexpected disturbances (Exp 03, 14, 17).
+  \item \textbf{Integral Action is Mandatory for Constant Disturbances:} No amount of static state-feedback tuning ($K$) eliminates steady-state droop under persistent external loads (wind, gravity bias); explicit integrator augmentation is required (Exp 03, 17).
+  \item \textbf{Cost and Weight Scaling is Load-Bearing:} On ill-conditioned or multi-timescale physical systems (e.g., quadrotor position vs. moment of inertia), naive identity weights ($Q=I, R=I$) fail. Bryson-rule normalization ($Q_{ii} = 1/x_{i,\max}^2, R_{jj} = 1/u_{j,\max}^2$) is essential for well-behaved optimal gains (Exp 14, 18, 19).
+  \item \textbf{Model Error is Survivable within Robustness Margins:} Full-state LQR provides infinite upper gain margin and $[-6\,\text{dB}, +\infty\,\text{dB}]$ lower gain margin, tolerating up to $50\%$ parameter identification error without loss of asymptotic stability (Exp 09).
+  \item \textbf{The Real-Time Computational Deadline is a First-Class Constraint:} An optimal controller that computes the exact trajectory is useless if it exceeds the sampling interval. Constrained MPC ($38.4\,\text{ms}$) violates micro-aerial flight deadlines ($20\,\text{ms}$), whereas linear feedback ($0.05\,\text{ms}$) executes instantaneously (Exp 21).
+  \item \textbf{Reporting Failure Modes is as Essential as Reporting Wins:} Engineering judgment relies on knowing exact breaking points: linearisation breakdown past $23^\circ$ (Exp 02), EKF false basin trapping (Exp 16), closed-loop SysID correlation bias (Exp 09), RL sample inefficiency (Exp 18), and pure RL bootstrap failure on low-inertia plants (Exp 21).
+\end{enumerate}
+
+% ===========================================================================
 \section{Project Status and Roadmap}
 % ===========================================================================
 
