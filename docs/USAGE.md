@@ -55,7 +55,10 @@ default. Building your own plant: subclass `DynamicalSystem`, set
 `n_states` / `n_inputs`, implement `dynamics(t, x, u) -> xdot` — that is the
 whole contract (numeric `linearize()` comes for free). See
 [`pendulum.py`](../src/aimct/systems/pendulum.py) and
-[`twolink_arm.py`](../src/aimct/systems/twolink_arm.py).
+[`twolink_arm.py`](../src/aimct/systems/twolink_arm.py). While you're writing
+one, `python -m aimct.dev mymodule.py:MyPlant --watch` gives a live pole
+map / controllability / Jacobian-residual / response-trace dashboard that
+rebuilds on every save — see [`docs/DEV_PREVIEW.md`](DEV_PREVIEW.md).
 
 ### Controller — `aimct.controllers`
 
