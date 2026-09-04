@@ -21,7 +21,7 @@ git clone https://github.com/zalihthomas-ui/ai-meets-control-theory.git
 cd ai-meets-control-theory
 pip install -e ".[dev,ml]"
 
-# 2. Run the fast test suite (402 passing unit tests from scratch)
+# 2. Run the fast test suite (403 passing unit tests from scratch)
 pytest -m "not slow"
 
 # 3. Run a canonical multi-controller benchmark comparison
@@ -71,6 +71,7 @@ Every experiment is self-contained with its own configuration, runner, Markdown/
 | **22** | [`22_diffdrive_path_following`](experiments/22_diffdrive_path_following/) | TurtleBot3-Burger (Unicycle) | Pure Pursuit vs Stanley vs Path LQR | Path LQR curvature feedforward gives tightest cross-track error ($9.25\,\text{mm}$); pure pursuit cuts corners ($35\,\text{mm}$). |
 | **23** | [`23_twolink_arm_tracking`](experiments/23_twolink_arm_tracking/) | 2-Link Planar Robot Arm | Computed Torque vs Slotine--Li MRAC | Nominal computed torque collapses under $+0.5\,\text{kg}$ load ($394\,\text{mm}$); Slotine--Li adapts to $4.93\,\text{mm}$ ($100\%$). |
 | **24** | [`24_ilqr_vs_sampling_mpc`](experiments/24_ilqr_vs_sampling_mpc/) | Cart-Pole & Crazyflie 2.0 | iLQR / RTI-NMPC vs Sampling MPC | iLQR converges $150\times$ tighter on quad ($1.34\,\text{mm}$ error) and solves in $14.6\,\text{ms}$ (meets $20\,\text{ms}$ flight budget). |
+| **25** | [`25_diffdrive_moving_obstacle`](experiments/25_diffdrive_moving_obstacle/) | TurtleBot3-Burger (Dynamic Disks) | Blind Trackers vs Obstacle-Aware Planners | CEM derivative-free sampling navigates around non-convex obstacle fields ($36$ collision steps) where iLQR gradient fails to clear ($69$ steps). |
 | **26** | [`26_harder_reference_paths`](experiments/26_harder_reference_paths/) | Crazyflie 2.0 (Lissajous, Spiral) | iLQR vs Sampling MPC across Geometries | iLQR beats CEM by $32\times\text{--}840\times$ RMS error; CEM latency ($28\text{--}31\,\text{ms}$) violates $20\,\text{ms}$ flight budget on all paths. |
 
 ---
@@ -136,7 +137,7 @@ THEORY → DERIVATION → IMPLEMENTATION → SIMULATION → VISUALISATION → VA
 
 ## Status: Phase 2 in Progress 🚀
 
-The core curriculum (Modules 01–10), 25 empirical benchmark experiments, living technical report, unified visualization layer (`aimct.viz`), and interactive sandboxes are complete with **402 passing unit tests** across Python 3.10–3.13.
+The core curriculum (Modules 01–10), 26 empirical benchmark experiments, living technical report, unified visualization layer (`aimct.viz`), and interactive sandboxes are complete with **403 passing unit tests** across Python 3.10–3.13.
 
 **Phase 2 is actively expanding the library with:**
 - **Track A (Real Systems):** Differential-drive mobile robots, 2-link planar manipulator arms (computed torque vs. adaptive MRAC), and dynamic bicycle ground vehicles.

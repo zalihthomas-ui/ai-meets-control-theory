@@ -34,8 +34,8 @@ Or watch a file while you edit it — a preview image is rewritten on every
 save, so point an editor's image-preview pane (or just reopen it) at the file:
 
 ```bash
-python -m aimct.dev mymodule.py:MyPlant --watch
-python -m aimct.dev aimct.systems.pendulum:Pendulum          # one-shot, an installed system too
+python -m aimct preview mymodule.py:MyPlant --watch
+python -m aimct preview aimct.systems.pendulum:Pendulum      # one-shot, an installed system too
 ```
 
 `target` is `"module:ClassName"` for an importable module or
@@ -45,8 +45,8 @@ the Python API's `system_kwargs=`) and, for a file target, the source is
 re-read and re-executed on every rebuild (never served from a stale
 `__pycache__`), so the preview always reflects the latest save.
 
-Not wired into `python -m aimct` yet (holding for the `__main__.py` pass) —
-`python -m aimct.dev ...` works today without it.
+Also callable as `python -m aimct.dev ...` directly (same CLI, one module down)
+if you don't want to go through the top-level entry point.
 
 ## What the dashboard shows
 
