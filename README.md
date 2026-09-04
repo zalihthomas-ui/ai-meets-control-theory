@@ -21,7 +21,7 @@ git clone https://github.com/zalihthomas-ui/ai-meets-control-theory.git
 cd ai-meets-control-theory
 pip install -e ".[dev,ml]"
 
-# 2. Run the fast test suite (367 passing unit tests from scratch; 373 full)
+# 2. Run the fast test suite (402 passing unit tests from scratch)
 pytest -m "not slow"
 
 # 3. Run a canonical multi-controller benchmark comparison
@@ -36,6 +36,7 @@ python -m aimct live3d --web    # 6-DOF WebGL sandbox
 
 📖 **Usage & Recipes:** See [`docs/USAGE.md`](docs/USAGE.md) for the 5-axis framework guide (*system × controller × trajectory × disturbance × parameters*) and copy-paste recipes.  
 🎨 **Unified Visualization:** See [`docs/VISUALIZATION.md`](docs/VISUALIZATION.md) for replay animation (`aimct.viz.animate`) and real-time interactive sandboxes (`aimct.viz.Sandbox`).  
+🛠️ **Design-Time Preview:** See [`docs/DEV_PREVIEW.md`](docs/DEV_PREVIEW.md) for model inspection and Jacobian validation (`python -m aimct.dev <Plant> --watch`).  
 📦 **Packaging & Releases:** See [`docs/PACKAGING.md`](docs/PACKAGING.md) for the PyPI distribution runbook and [`CHANGELOG.md`](CHANGELOG.md) for the version history.
 
 ---
@@ -94,6 +95,7 @@ src/aimct/
   rl/             ControlEnv (Gymnasium adapter), Discretizer, QLearning, DQN, REINFORCE, PPO
   hybrid/         ShieldedController (switch/filter blends, predicate helpers)
   viz/            SystemArtist contract, animate() replay engine, Sandbox live GUI
+  dev/            Design-time preview dashboard (poles, controllability, Jacobian residuals)
   benchmarks/     metrics.py (13 metrics), harness.py, sweep.py, challenge.py, tracking.py
   plot_style.py   Okabe-Ito color palette + publication-ready 4-panel comparison figures
 ```
@@ -134,7 +136,7 @@ THEORY → DERIVATION → IMPLEMENTATION → SIMULATION → VISUALISATION → VA
 
 ## Status: Phase 2 in Progress 🚀
 
-The core curriculum (Modules 01–10), 25 empirical benchmark experiments, living technical report, unified visualization layer (`aimct.viz`), and interactive sandboxes are complete with **387 passing unit tests** (380 fast / 390 total across Python 3.10–3.13).
+The core curriculum (Modules 01–10), 25 empirical benchmark experiments, living technical report, unified visualization layer (`aimct.viz`), and interactive sandboxes are complete with **402 passing unit tests** across Python 3.10–3.13.
 
 **Phase 2 is actively expanding the library with:**
 - **Track A (Real Systems):** Differential-drive mobile robots, 2-link planar manipulator arms (computed torque vs. adaptive MRAC), and dynamic bicycle ground vehicles.
