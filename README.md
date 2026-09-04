@@ -21,7 +21,7 @@ git clone https://github.com/zalihthomas-ui/ai-meets-control-theory.git
 cd ai-meets-control-theory
 pip install -e ".[dev,ml]"
 
-# 2. Run the unit test suite (323 passing tests from scratch)
+# 2. Run the unit test suite (348 passing tests from scratch)
 pytest -m "not slow"
 
 # 3. Run a canonical multi-controller benchmark comparison
@@ -124,7 +124,7 @@ THEORY → DERIVATION → IMPLEMENTATION → SIMULATION → VISUALISATION → VA
 
 ## Status: Phase 2 in Progress 🚀
 
-The core curriculum (Modules 01–10), 21 empirical benchmark experiments, living technical report, and 6-DOF live sandboxes are complete with **323 passing unit tests**.
+The core curriculum (Modules 01–10), 21 empirical benchmark experiments, living technical report, and 6-DOF live sandboxes are complete with **348 passing unit tests**.
 
 **Phase 2 is actively expanding the library with:**
 - **Track A (Real Systems):** Differential-drive mobile robots, 2-link planar manipulator arms (computed torque vs. adaptive MRAC), and dynamic bicycle ground vehicles.
