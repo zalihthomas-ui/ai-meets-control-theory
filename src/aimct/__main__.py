@@ -20,8 +20,10 @@ _PRESETS = {
         lambda: _msd(), dict(x0=[1.0, 0.0], dt=0.01, t_final=20.0, output_index=0),
     ),
     "pendulum": (
+        # regulate a disturbed pendulum back to rest (theta = 0 hangs down);
+        # auto_controllers designs the LQR about x = 0, so the reference is 0.
         lambda: _pendulum(),
-        dict(x0=[np.pi - 0.3, 0.0], dt=0.01, t_final=6.0, reference=np.pi,
+        dict(x0=[0.6, 0.0], dt=0.01, t_final=6.0, reference=0.0,
              output_index=0,
              Q=np.diag([10.0, 1.0]), R=np.array([[0.5]]),
              u_bounds=(-8.0, 8.0)),
@@ -75,10 +77,13 @@ def main(argv=None) -> int:
 
     sub.add_parser("list", help="list the built-in systems (* = has a compare preset)")
 
-    pl = sub.add_parser("live", help="interactive 2-D drone-vs-wind sandbox")
+    pl = sub.add_parser("live", help="interactive sandbox: drone / arm / diffdrive")
+    pl.add_argument("target", nargs="?", default="drone",
+                    choices=["drone", "drone3d", "arm", "diffdrive"],
+                    help="which sandbox (default: drone)")
     pl.add_argument("--headless", action="store_true",
                     help="run the physics smoke check without a GUI")
-    pl3 = sub.add_parser("live3d", help="interactive 6-DOF drone-vs-wind sandbox")
+    pl3 = sub.add_parser("live3d", help="alias for `live drone3d` (6-DOF drone sandbox)")
     pl3.add_argument("--headless", action="store_true",
                      help="run the physics smoke check without a GUI")
     pl3.add_argument("--matplotlib", action="store_true",
@@ -105,6 +110,8 @@ def main(argv=None) -> int:
     if args.cmd in ("live", "live3d"):
         import runpy
         from pathlib import Path
+
+        target = "drone3d" if args.cmd == "live3d" else args.target
         d = Path(__file__).resolve().parents[2] / "experiments"
         if not d.is_dir():
             print(
@@ -113,12 +120,16 @@ def main(argv=None) -> int:
                 "repo and run from there:\n"
                 "  git clone https://github.com/zalihthomas-ui/ai-meets-control-theory\n"
                 "  cd ai-meets-control-theory\n"
-                f"  python -m aimct {args.cmd}",
+                f"  python -m aimct live {target}",
                 file=sys.stderr,
             )
             return 1
-        if args.cmd == "live":
+        if target == "drone":
             script = d / "live_drone" / "live.py"
+        elif target == "arm":
+            script = d / "live_arm" / "run.py"
+        elif target == "diffdrive":
+            script = d / "live_diffdrive" / "run.py"
         elif getattr(args, "web", False):
             script = d / "live_drone_3d" / "web.py"
         elif getattr(args, "matplotlib", False) or getattr(args, "headless", False):
