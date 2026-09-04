@@ -5,6 +5,8 @@ The 6-DOF counterpart of [`experiments/live_drone`](../live_drone/). A real-time
 while **you** drive a 3-D wind vector; switch controllers on the fly and watch
 which droop, which recover, and which reject a steady wind outright.
 
+🚁 **[Live Interactive 3D WebGL Sandbox (Claude Artifact)](https://claude.ai/code/artifact/69b12b78-d7b2-4732-a7af-2af14930139b)**
+
 ---
 
 ## 🎮 Launching the Visualizer
@@ -13,8 +15,8 @@ which droop, which recover, and which reject a steady wind outright.
 ```bash
 # Launch the rich 3-D WebGL visualizer in your browser
 python -m aimct live3d --web
-# or
-python experiments/live_drone_3d/web.py
+# or open the live Claude artifact: https://claude.ai/code/artifact/69b12b78-d7b2-4732-a7af-2af14930139b
+# or run local server: python experiments/live_drone_3d/web.py
 ```
 
 ### Option 2: Standalone Matplotlib 3-D Renderer
