@@ -1,5 +1,10 @@
 # Roadmap — Phase 2 (post-capstone depth)
 
+> **Superseded.** This was the Phase-2 planning document. All four tracks
+> below have shipped; see [`docs/roadmap.md`](roadmap.md) for the outcome
+> (with experiment numbers and commits) and for what is genuinely still
+> open. Kept here for history — not maintained further.
+
 The curriculum (modules 01–08), a real drone, the live sandboxes, the
 Intelligent Control Challenge, and the grand bake-off are done. Phase 2 adds
 **breadth** (more real systems), **depth** (methods the capstone showed we were
