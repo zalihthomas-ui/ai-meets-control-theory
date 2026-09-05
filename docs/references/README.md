@@ -56,3 +56,8 @@ This directory contains research foundations, canonical parameter sets, framewor
 
 11. **[Research Papers & Foundations Survey (`research-papers-survey.md`)](file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/research-papers-survey.md)**
     - Comprehensive literature synthesis of 10 foundational open-access papers across RL continuous control foundations, parsimonious data-driven dynamics (SINDy, Neural ODEs, Koopman), and safe control (CBFs, Differentiable MPC, MPPI).
+
+12. **[Ball and Beam Reference Specification (`ball-and-beam-reference.md`)](file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/ball-and-beam-reference.md)**
+    - Canonical Quanser Ball and Beam apparatus standard: underactuated, relative degree 4 nonlinear rolling mechanics ($m = 0.064\text{ kg}, M = 0.20\text{ kg}, L = 0.425\text{ m}, J = 3.010 \times 10^{-3}\text{ kg}\cdot\text{m}^2, \tau_{\max} = 1.50\text{ N}\cdot\text{m}$).
+    - Complete Euler-Lagrange equations of motion, analytical $(A, B)$ state-space linearization about horizontal origin, open-loop instability ($\lambda = +4.123\text{ rad/s}$), and Cascade PID vs. PFL vs. LQR vs. Constrained MPC benchmark formulations.
+

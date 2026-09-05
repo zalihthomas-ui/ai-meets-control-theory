@@ -1,0 +1,46 @@
+experiment:
+  id: 33
+  title: "Ball and Beam Underactuated Regulation & Control Benchmark"
+  date: "2026-09-05"
+  author: "AIMCT Team"
+  system: "BallAndBeam"
+
+plant:
+  m: 0.064       # Solid steel ball mass [kg] (64 g)
+  R_b: 0.0127    # Ball radius [m] (12.7 mm)
+  c_r: 0.002     # Ball rolling resistance [N*s/m]
+  M: 0.20        # Beam mass [kg]
+  L: 0.425       # Beam length [m] (42.5 cm)
+  b: 0.05        # Beam pivot damping [N*m*s/rad]
+  g: 9.81        # Gravitational acceleration [m/s^2]
+  r_max: 0.20    # Track usable half-distance [m] (+/- 20 cm)
+  theta_max: 0.45 # Beam tilt bound [rad] (+/- 25.8 deg)
+  tau_max: 1.50  # Actuator torque saturation limit [N*m]
+
+operating_points:
+  r_initial: -0.10 # Initial ball position [m] (-10 cm)
+  r_target: 0.10   # Target ball setpoint [m] (+10 cm)
+
+simulation:
+  dt: 0.002
+  t_final: 5.0
+
+controllers:
+  cascade_pid:
+    kp_pos: 1.5
+    kd_pos: 0.8
+    kp_ang: 8.0
+    kd_ang: 1.5
+  pfl:
+    kp: 8.0
+    kd: 4.0
+    kp_inner: 15.0
+    kd_inner: 2.0
+  lqr:
+    Q: [20.0, 2.0, 5.0, 0.5]
+    R: [1.0]
+  mpc:
+    Q: [20.0, 2.0, 5.0, 0.5]
+    R: [1.0]
+    horizon: 20
+    u_bounds: [-1.50, 1.50]
