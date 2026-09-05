@@ -7,36 +7,77 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased]
+## [0.2.0] - 2026-09-05
+
+The Phase-2 release: real multi-body systems, the remaining planning and RL
+paradigms, a unified visualization layer, and a design-time authoring tool.
+34 experiments, 460+ passing unit tests.
 
 ### Added
-- **Real systems (Track A):** `DifferentialDriveRobot` (unicycle + first-order
-  actuator lag) and `TwoLinkArm` (planar Euler-Lagrange manipulator with a
-  settable wrist payload), both parameterised on real hardware classes
-  (TurtleBot3-Burger-class mobile robot; Quanser 2-DOF-arm-class manipulator).
-- **`aimct.controllers.ilqr`:** iterative-LQR trajectory optimiser + a
+
+**Systems (Track A).** `DifferentialDriveRobot` (unicycle + first-order
+actuator lag), `TwoLinkArm` (planar Euler-Lagrange, settable wrist payload),
+`BicycleVehicle` (dynamic single-track, linear + Pacejka tyre models),
+`FurutaPendulum` (rotary inverted pendulum), `TwoTank` (coupled-tank process
+control, Torricelli outflow), `BallAndBeam` (relative-degree-4 underactuated).
+Every one is parameterised on a real hardware class (TurtleBot3, Quanser
+2-DOF arm / QUBE-Servo 2 / Coupled Tanks / Ball & Beam) with a datasheet-grade
+reference doc under `docs/references/`.
+
+**Control & planning (Track B).**
+- `aimct.controllers.ilqr` — iterative-LQR trajectory optimiser + a
   real-time-iteration nonlinear-MPC controller.
-- **`aimct.trajectories`:** `Lissajous`, `Rose`, `Spiral` reference paths
-  (alongside the existing `Lemniscate`/`MinimumJerk`/`Spline`/`Dubins`).
-- **`aimct.benchmarks.tracking`:** `track_trajectory` path-following harness
-  (RMS/cross-track error, completion %, energy) and `TrackingResult.animate()`.
-- **`aimct.viz`:** a unified visualization layer — `SystemArtist` (one draw
-  contract per system), `animate()` (replay any simulated run), `Sandbox` +
-  `Disturbance` (real-time interactive sandboxes with sliders/hot-keys), and
-  `aimct.viz.pv_arm` (a shared 3-D PyVista renderer for the arm systems).
-  Every `Sandbox` gets a help overlay, a "surprise me" randomiser, PNG
-  snapshotting, and a session-best score for free.
-- **Interactive sandboxes:** `live_arm` (unknown-payload identification),
-  `live_arm_balance` (double-inverted-pendulum balance under gravity),
-  `live_diffdrive` (path-follower recovery from a shove) — each with a 2-D
-  (matplotlib) and, for the arm sandboxes, a 3-D (PyVista) view. Run via
-  `python -m aimct live {arm,arm3d,diffdrive,armbalance,armbalance3d}`.
-- **`aimct.dev`:** a design-time preview tool for a `DynamicalSystem` under
-  development (pole map, controllability/observability, analytic-vs-numeric
-  Jacobian check, animated replay) — `python -m aimct preview MODULE:Class`.
-- **Experiments 22–26:** differential-drive path following, two-link-arm
-  tracking + adaptive payload rejection, iLQR/RTI-NMPC vs. sampling MPC (CEM),
-  moving-obstacle avoidance, and tracking-robustness on harder reference paths.
+- `aimct.planning.DirectCollocation` — Hermite-Simpson direct transcription of
+  a finite-horizon OCP (SLSQP / trust-constr), with input/state boxes and an
+  optional path-inequality hook; the offline mirror of the online solvers.
+- `aimct.controllers.DisturbanceObserver` + `QFilter` — a 2-DOF DOB wrapping
+  any base controller, with matched cancellation and virtual-tilt reallocation
+  for the unmatched (horizontal-wind) channel on the quadrotor.
+
+**Reinforcement learning & imitation.**
+- `aimct.rl.sac` — from-scratch Soft Actor-Critic (squashed-Gaussian actor,
+  twin critics + Polyak targets, auto-tuned temperature).
+- `aimct.rl.imitation` — `BehaviorCloning` + a `dagger` interactive
+  data-aggregation loop.
+- `aimct.ml.MLP.grad_input` — backprop-to-input (used by the SAC reparam actor).
+
+**Benchmarks & trajectories.**
+- `aimct.benchmarks.tracking` — `track_trajectory` path-following harness (RMS
+  / cross-track error, completion %, energy) and `TrackingResult.animate()`.
+- `aimct.trajectories` — `Lissajous`, `Rose`, `Spiral` (alongside the existing
+  `Lemniscate` / `MinimumJerk` / `Spline` / `Dubins`).
+
+**Visualization — `aimct.viz`.** A `SystemArtist` "draw one state" contract,
+`animate()` (replay any simulated run as video/GIF with a telemetry HUD),
+`Sandbox` + `Disturbance` (real-time interactive sandboxes with sliders /
+hot-keys / a switchable controller), and `aimct.viz.pv_arm` (a shared 3-D
+PyVista renderer). Every `Sandbox` gets a help overlay (`h`), a "surprise me"
+randomiser (`g`), PNG snapshotting (`c`), and a session-best score for free.
+Shipped sandboxes: `live_arm`, `live_arm_balance`, `live_diffdrive` (+ 3-D
+views for the arm ones) — `python -m aimct live {arm,arm3d,diffdrive,
+armbalance,armbalance3d}`.
+
+**Design-time authoring — `aimct.dev`.** `python -m aimct preview MODULE:Class`
+renders a live design dashboard for a system under development — pole map,
+controllability / observability, analytic-vs-numeric Jacobian residual, and
+free / step / impulse / sinusoid response traces — re-rendering on file save
+with `--watch`.
+
+**Experiments 22–34.** Differential-drive path following (22); two-link-arm
+joint tracking + adaptive payload rejection (23); iLQR/RTI-NMPC vs. sampling
+MPC (24); moving-obstacle avoidance (25); tracking robustness on harder
+reference paths (26); dynamic-bicycle double lane change with a Pacejka tyre
+swap (27); Furuta pendulum (28); DAgger recovery vs. plain BC (29); two-tank
+level control (30); SAC vs. PPO sample efficiency (31); direct collocation vs.
+iLQR vs. CEM offline planning (32); ball-and-beam (33); disturbance-observer
+wind rejection (34).
+
+**Docs & packaging.** `docs/GETTING-STARTED.md` (ties the decision guide /
+report / library / reproduce lanes together), `docs/DECISION-GUIDE.md`
+rewritten as a structured decision system (flowchart + master matrix + the
+recurring engineering laws), an `examples/` gallery (7 runnable scripts), a
+`py.typed` marker (the package ships inline type info), and CI now runs the
+full suite with coverage (`--cov-fail-under=80`).
 
 ### Fixed
 - `live_diffdrive`'s path follower could show its look-ahead point teleport
