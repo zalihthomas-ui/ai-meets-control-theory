@@ -3,3 +3,12 @@
 *.png binary
 *.jpg binary
 *.pdf binary
+
+# These two pages inline a full copy of Three.js r128 + OrbitControls (~650 KB
+# each, mostly vendored third-party JS as text) so the WebGL sandbox runs from
+# file:// and under the Artifact CSP. Without this they alone make GitHub's
+# language bar read as ~45% HTML for what is, by actual authored code, a
+# from-scratch Python library. linguist-vendored excludes them from the stats
+# without changing a byte of content.
+experiments/live_drone_3d/index.html linguist-vendored
+experiments/live_drone_3d/artifact.html linguist-vendored

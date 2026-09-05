@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [
-    { name = "AIMCT Contributors", email = "maintainers@aimct.org" }
+    { name = "Zalih Thomas", email = "zalihthomas@gmail.com" }
 ]
 keywords = [
     "control-theory",
