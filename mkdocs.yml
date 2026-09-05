@@ -1,8 +1,8 @@
 site_name: "AIMCT: AI Meets Control Theory"
 site_description: "Unified benchmark, classical and AI-driven control framework with 34 empirical experiments, hardware bridge, and publication-grade docs."
 site_author: "Zalih Thomas"
-repo_url: "https://github.com/zalihthomas/ai-meets-control-theory"
-repo_name: "zalihthomas/ai-meets-control-theory"
+repo_url: "https://github.com/zalihthomas-ui/ai-meets-control-theory"
+repo_name: "zalihthomas-ui/ai-meets-control-theory"
 edit_uri: "edit/main/docs/"
 
 validation:
@@ -110,6 +110,7 @@ nav:
       - Reinforcement Learning: api/rl.md
       - Hybrid Control: api/hybrid.md
       - Hardware-in-the-Loop: api/hil.md
+      - Embedded Deployment: api/deploy.md
       - Visualization: api/viz.md
       - Developer Tools: api/dev.md
       - Benchmarks: api/benchmarks.md
