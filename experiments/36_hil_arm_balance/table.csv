@@ -1,0 +1,4 @@
+Controller,Delay_Margin_ms,Poke_Settling_s,Max_Tip_deg,Wind_Bias_deg,Post_Wind_Ess_deg,Energy_N2m2s,Peak_Torque_Nm,Slew_Sat_pct,Status
+LQR (Stiff),24.0,1.0260,7.734,6.426,0.3484,8.5697,2.939,0.00,Stable
+LQR + Integral (LQI),24.0,0.7900,6.912,5.763,1.0136,7.7948,2.750,0.00,Stable
+LQR (Soft),16.0,1.5000,48.812,28.960,42.2984,87.6878,7.432,0.00,Stable

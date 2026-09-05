@@ -1,0 +1,34 @@
+# Experiment 36: Double-Inverted Pendulum Arm Balance through HIL Emulator Configuration
+
+plant:
+  system: "TwoLinkArm"
+  l1: 0.30              # m (link 1 length)
+  l2: 0.25              # m (link 2 length)
+  m1: 1.20              # kg (link 1 mass)
+  m2: 0.80              # kg (link 2 mass)
+  torque_max: [15.0, 10.0]  # N*m (joint 1, joint 2)
+
+emulator:
+  rate_hz: 1000.0       # 1 kHz real-time control loop (dt = 1 ms)
+  encoder_bits: 12      # 12-bit magnetic encoder (AS5600 standard, 4096 counts/rev)
+  quantize_channels: [0, 1] # joint angles theta1, theta2
+  nominal_delay_ms: 8.0 # 8 ms round-trip transport latency
+  slew_rate_max: 80.0   # N*m/s actuator torque slew rate limit
+  sensor_noise_std: 0.0005 # rad Gaussian angular noise
+
+simulation:
+  duration: 4.0         # s total duration
+  x_eq: [1.5707963267948966, 0.0, 0.0, 0.0]  # [pi/2, 0, 0, 0] rad upright equilibrium
+  x0_perturbation: [0.12, -0.06, 0.0, 0.0]    # [delta_th1, delta_th2, w1, w2] poke
+  wind_pulse_torque: [1.5, 0.8]               # N*m external torque pulse
+  wind_pulse_window: [1.5, 2.5]               # s [t_start, t_end]
+
+controllers:
+  stiff:
+    Q: [8.0, 8.0, 1.0, 1.0]
+    R: [1.0, 1.0]
+  integral:
+    Q_aug: [8.0, 8.0, 1.0, 1.0, 3.0, 3.0]
+    R: [1.0, 1.0]
+  soft:
+    gain_scale: 0.45
