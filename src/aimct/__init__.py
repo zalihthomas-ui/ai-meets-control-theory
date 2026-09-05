@@ -9,6 +9,9 @@ estimation   : observers, Kalman filters
 ml           : learned dynamics, surrogate models
 rl           : agents and environments
 benchmarks   : standardized systems + controller comparison harness
+sysid        : identify linear models / manipulator inertial parameters from logs
+hil          : hardware-in-the-loop harness (real-time loop, plant emulator)
+deploy       : export a static controller to JSON + C / MicroPython
 """
 
 __version__ = "0.2.0"
