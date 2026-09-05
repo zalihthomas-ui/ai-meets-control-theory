@@ -46,6 +46,9 @@ copy_fig "23_twolink_arm_tracking" "payload.png" "exp23_twolink_payload.png"
 copy_fig "24_ilqr_vs_sampling_mpc" "figure.png" "exp24_ilqr_vs_sampling_mpc.png"
 copy_fig "25_diffdrive_moving_obstacle" "figure.png" "exp25_diffdrive_moving_obstacle.png"
 copy_fig "26_harder_reference_paths" "figure.png" "exp26_harder_reference_paths.png"
+copy_fig "27_bicycle_double_lane_change" "figure.png" "exp27_bicycle_double_lane_change.png"
+copy_fig "28_furuta_pendulum_control" "furuta_benchmark.png" "exp28_furuta_benchmark.png"
+copy_fig "28_furuta_pendulum_control" "furuta_swingup.png" "exp28_furuta_swingup.png"
 
 # --- 2. compile (latexmk drives pdflatex, 2-3 passes for the ToC)
 echo "compiling main.tex..."

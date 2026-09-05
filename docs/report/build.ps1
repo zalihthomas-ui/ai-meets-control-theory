@@ -43,6 +43,9 @@ Copy-Fig "23_twolink_arm_tracking" "payload.png" "exp23_twolink_payload.png"
 Copy-Fig "24_ilqr_vs_sampling_mpc" "figure.png" "exp24_ilqr_vs_sampling_mpc.png"
 Copy-Fig "25_diffdrive_moving_obstacle" "figure.png" "exp25_diffdrive_moving_obstacle.png"
 Copy-Fig "26_harder_reference_paths" "figure.png" "exp26_harder_reference_paths.png"
+Copy-Fig "27_bicycle_double_lane_change" "figure.png" "exp27_bicycle_double_lane_change.png"
+Copy-Fig "28_furuta_pendulum_control" "furuta_benchmark.png" "exp28_furuta_benchmark.png"
+Copy-Fig "28_furuta_pendulum_control" "furuta_swingup.png" "exp28_furuta_swingup.png"
 
 Write-Host "compiling main.tex..."
 Push-Location $here

@@ -21,7 +21,7 @@ git clone https://github.com/zalihthomas-ui/ai-meets-control-theory.git
 cd ai-meets-control-theory
 pip install -e ".[dev,ml]"
 
-# 2. Run the fast test suite (403 passing unit tests from scratch)
+# 2. Run the fast test suite (418 passing unit tests from scratch)
 pytest -m "not slow"
 
 # 3. Run a canonical multi-controller benchmark comparison
@@ -41,7 +41,7 @@ python -m aimct live3d --web    # 6-DOF WebGL sandbox
 
 ---
 
-## The Experiments (01–26)
+## The Experiments (01–28)
 
 Every experiment is self-contained with its own configuration, runner, Markdown/CSV benchmark table, and publication-ready 4-panel figure. See [`docs/RESULTS.md`](docs/RESULTS.md) for full metrics.
 
@@ -73,6 +73,8 @@ Every experiment is self-contained with its own configuration, runner, Markdown/
 | **24** | [`24_ilqr_vs_sampling_mpc`](experiments/24_ilqr_vs_sampling_mpc/) | Cart-Pole & Crazyflie 2.0 | iLQR / RTI-NMPC vs Sampling MPC | iLQR converges $150\times$ tighter on quad ($1.34\,\text{mm}$ error) and solves in $14.6\,\text{ms}$ (meets $20\,\text{ms}$ flight budget). |
 | **25** | [`25_diffdrive_moving_obstacle`](experiments/25_diffdrive_moving_obstacle/) | TurtleBot3-Burger (Dynamic Disks) | Blind Trackers vs Obstacle-Aware Planners | CEM derivative-free sampling navigates around non-convex obstacle fields ($36$ collision steps) where iLQR gradient fails to clear ($69$ steps). |
 | **26** | [`26_harder_reference_paths`](experiments/26_harder_reference_paths/) | Crazyflie 2.0 (Lissajous, Spiral) | iLQR vs Sampling MPC across Geometries | iLQR beats CEM by $32\times\text{--}840\times$ RMS error; CEM latency ($28\text{--}31\,\text{ms}$) violates $20\,\text{ms}$ flight budget on all paths. |
+| **27** | [`27_bicycle_double_lane_change`](experiments/27_bicycle_double_lane_change/) | Dynamic Bicycle Sedan | Stanley vs LQR vs Kinematic MPC vs BC RL | Kinematic MPC wins nominal ($52.5\,\text{mm}$); Stanley wins Pacejka $\mu=0.6$ ($734\,\text{mm}$); BC RL fails off-road ($5.22\,\text{m}$ RMS). |
+| **28** | [`28_furuta_pendulum_control`](experiments/28_furuta_pendulum_control/) | Furuta Rotary Pendulum (QUBE-2) | LQR vs Linear MPC vs Energy Swing-Up | Upright stabilization in $40\,\text{ms}$ ($e_{ss} < 6\times 10^{-7}\,\text{rad}$); MPC caps torque ($0.1343\,\text{N}\cdot\text{m}$); Swing-up in $6.0\,\text{s}$. |
 
 ---
 
@@ -82,7 +84,8 @@ Every experiment is self-contained with its own configuration, runner, Markdown/
 src/aimct/
   systems/        DynamicalSystem base + LinearSystem, MassSpringDamper,
                   Pendulum, CartPole, PlanarQuadrotor (Crazyflie 2.0), DCMotor,
-                  DifferentialDriveRobot, TwoLinkArm
+                  DifferentialDriveRobot, TwoLinkArm, BicycleVehicle,
+                  FurutaPendulum
   simulate.py     rk4_step(), simulate() -> Trajectory(t, x, u, y)
   controllers/    PID, StateFeedback, LQR, ObserverFeedback, MRAC, ComputedTorque,
                   EnergyShapingSwingUp, HybridSwingUpLQR,
@@ -137,10 +140,10 @@ THEORY → DERIVATION → IMPLEMENTATION → SIMULATION → VISUALISATION → VA
 
 ## Status: Phase 2 Complete (Phase 3 Planned) 🚀
 
-The core curriculum (Modules 01–10), 26 empirical benchmark experiments, living technical report, unified visualization layer (`aimct.viz`), design-time preview dashboard (`aimct.dev`), and 7 interactive sandboxes are complete with **403 passing unit tests** across Python 3.10–3.13.
+The core curriculum (Modules 01–10), 28 empirical benchmark experiments, living technical report, unified visualization layer (`aimct.viz`), design-time preview dashboard (`aimct.dev`), and 7 interactive sandboxes are complete with **418 passing unit tests** across Python 3.10–3.13.
 
 **Phase 2 Delivered:**
-- **Track A (Real Systems):** Differential-drive mobile robots (Exp 22 path tracking, Exp 25 dynamic obstacle avoidance) and 2-link planar manipulator arms (Exp 23 computed torque & Slotine–Li payload adaptation).
+- **Track A (Real Systems):** Differential-drive mobile robots (Exp 22 path tracking, Exp 25 dynamic obstacle avoidance), 2-link planar manipulator arms (Exp 23 computed torque & Slotine–Li payload adaptation), dynamic bicycle vehicles (Exp 27 ISO-3888 double lane change with linear vs. Pacejka tire models), and Furuta rotary inverted pendulums (Exp 28 Quanser QUBE-Servo 2 benchmark).
 - **Track B (Algorithmic Depth):** Real-time iteration Nonlinear MPC (Exp 24, 26, 25 iLQR / RTI-NMPC vs. Sampling MPC).
 - **Track C & D:** Reusable trajectory generation suite (`aimct.trajectories`), tracking benchmark harness (`aimct.benchmarks.tracking`), unified visualization (`aimct.viz`), design-time preview (`aimct.dev`), and PyPI distribution packaging (`aimct`).
 

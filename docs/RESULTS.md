@@ -1,6 +1,6 @@
 # Empirical Results & Engineering Verdicts
 
-> The comprehensive, honest benchmark summary of all 25 experiments across the project.
+> The comprehensive, honest benchmark summary of all 28 experiments across the project.
 > Every method was built from scratch, simulated, visualised, and compared under identical conditions.
 
 ---
@@ -35,6 +35,8 @@
 | **24** | iLQR / RTI-NMPC vs Sampling MPC | Cart-Pole Swing-Up \& Crazyflie Quad | Gradient-based iLQR / Real-Time Iteration vs Stochastic CEM-MPC | Quad pos err **$1.34\,\text{mm}$** at **$14.59\,\text{ms}$** vs CEM ($202.2\,\text{mm}$, $26.58\,\text{ms}$) | Gradient-based iLQR converges to true KKT stationarity $150\times$ tighter than stochastic sampling and solves inside the $20\,\text{ms}$ real-time flight budget. |
 | **25** | Moving-Obstacle DiffDrive Avoidance | TurtleBot3-Burger (Dynamic Disks) | Blind Trackers (Pure Pursuit, Path LQR) vs Obstacle-Aware Receding-Horizon (CEM, iLQR) | CEM avoids with **$36$** collision steps ($8.25$ energy) vs iLQR ($69$ steps, **$57.6\,\text{mm}$** RMS error, $1.29$ energy) | Non-convex quartic obstacle barrier: CEM derivative-free sampling safely routes around disks ($36$ hits) where iLQR's non-convex barrier Hessian and 1-step RTI cannot clear the obstacle ($69$ hits). Mirror image of Exp 26. |
 | **26** | iLQR vs Sampling MPC on Harder Paths | Planar Quadrotor (Lissajous, Spiral) | iLQR / RTI-NMPC vs CEM-MPC across geometries | iLQR wins by **$32\times$** (Lissajous) to **$840\times$** (Spiral) RMS | Generalised Exp-24/21 finding: iLQR gradient backward pass dominates stochastic sampling by orders of magnitude at lower compute; CEM median latency ($28\text{--}31\,\text{ms}$) violates the $20\,\text{ms}$ real-time budget on all paths. |
+| **27** | Dynamic Bicycle Double Lane Change | BicycleVehicle (Rajamani Sedan) | Stanley vs LQR vs Kinematic MPC vs BC RL on ISO-3888 at $25\,\text{m/s}$ | Kinematic MPC **$52.5\,\text{mm}$** nominal; Stanley **$734\,\text{mm}$** on Pacejka $\mu=0.6$; BC RL fails **$5223\,\text{mm}$** (off-road) | Complete ranking inversion: Kinematic MPC wins nominal linear regime but collapses ($1326\,\text{mm}$) under tire saturation; model-free Stanley wins stressed Pacejka with nothing to unlearn; BC RL policy collapses out-of-distribution ($11.4\,\text{m}$ peak off-road), proving cloned policies lose the self-correcting feedback mechanism. |
+| **28** | Furuta Pendulum Control \& Swing-Up | Quanser QUBE-Servo 2 RIP | LQR vs Linear MPC (Upright Catch) vs Åström-Furuta Energy Swing-Up | Upright settle **$40\,\text{ms}$** ($e_{ss} < 6\times 10^{-7}\,\text{rad}$); MPC caps torque to **$0.1343\,\text{N}\cdot\text{m}$**; Swing-up **$6.0\,\text{s}$** | Analytical linearization provides rapid upright stabilization ($40\,\text{ms}$); Linear MPC proactively moderates torque spikes to respect motor saturation without clipping; Åström-Furuta energy shaping pumps energy monotonically for seamless LQR handoff. |
 
 ---
 

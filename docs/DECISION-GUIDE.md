@@ -2,7 +2,7 @@
 
 The point of this project was never to show that a neural network can control a
 system. It was to build **engineering judgment**: given a problem, which method
-does the evidence support? This document is the synthesis of all 21 experiments
+does the evidence support? This document is the synthesis of all 28 experiments
 into a practical guide. Every claim links to the experiment that earned it.
 
 > **One sentence:** classical and optimal control win whenever you have a usable
@@ -15,12 +15,15 @@ into a practical guide. Every claim links to the experiment that earned it.
 
 | Your situation | Use | Evidence |
 | --- | --- | --- |
-| You have equations of motion (or can get them) | **LQR / pole placement**, then **MPC** if there are constraints | [04](../experiments/04_lqr_vs_pole_placement_cartpole/), [08](../experiments/08_mpc_vs_lqr_constrained_cartpole/) |
-| Hard state/actuator constraints matter | **Linear MPC** (condensed QP) | [08](../experiments/08_mpc_vs_lqr_constrained_cartpole/), [20](../experiments/20_quadrotor_obstacle_nmpc/) |
+| You have equations of motion (or can get them) | **LQR / pole placement**, then **MPC** if there are constraints | [04](../experiments/04_lqr_vs_pole_placement_cartpole/), [08](../experiments/08_mpc_vs_lqr_constrained_cartpole/), [28](../experiments/28_furuta_pendulum_control/) |
+| Hard state/actuator constraints matter | **Linear MPC** (condensed QP) | [08](../experiments/08_mpc_vs_lqr_constrained_cartpole/), [20](../experiments/20_quadrotor_obstacle_nmpc/), [28](../experiments/28_furuta_pendulum_control/) |
 | Moving / non-convex obstacle avoidance | **Sampling MPC (CEM)** (avoids non-convex barriers where gradient methods stall) | [20](../experiments/20_quadrotor_obstacle_nmpc/), [25](../experiments/25_diffdrive_moving_obstacle/) |
 | Nonlinear dynamics with a hard real-time deadline | **iLQR / RTI-NMPC** ($1.3\,\text{mm}$ error at $14.6\,\text{ms}$; beats CEM by $32\times\text{--}840\times$ across arbitrary paths) | [24](../experiments/24_ilqr_vs_sampling_mpc/), [26](../experiments/26_harder_reference_paths/) |
 | Multi-body robot arm trajectory tracking | **Computed torque** / **Joint LQR**; **Slotine--Li MRAC** under unknown payload | [23](../experiments/23_twolink_arm_tracking/) |
 | Wheeled mobile robot path following | **Path LQR** (curvature feedforward) / **Stanley** | [22](../experiments/22_diffdrive_path_following/) |
+| High-speed vehicle steering (linear tire regime) | **Kinematic MPC** ($52.5\,\text{mm}$ RMS) / **LQR** | [27](../experiments/27_bicycle_double_lane_change/) |
+| High-speed vehicle steering near friction limit ($\mu=0.6$) | **Model-free Stanley** ($734\,\text{mm}$) or **Tire-Aware NMPC** | [27](../experiments/27_bicycle_double_lane_change/) |
+| Underactuated pendulum swing-up ($180^\circ \to 0^\circ$) | **Åström-Furuta / Spong Energy Shaping + Upright LQR Catch** | [07](../experiments/07_cartpole_swingup_hybrid/), [28](../experiments/28_furuta_pendulum_control/) |
 | A smooth reference *trajectory* to track | **LQR + differential-flatness feedforward**, or **preview MPC** | [14](../experiments/14_quadrotor_figure8_tracking/) |
 | Constant disturbance / steady-state error unacceptable | add **integral action** (LQI) or **MRAC** | [03](../experiments/03_pid_stabilizes_unstable/), [17](../experiments/17_adaptive_vs_fixed_changing_plant/), live sandbox |
 | The plant *changes* over time (wear, payload) | **MRAC** if the uncertainty is matched; **gain scheduling** if the parameter is measured | [17](../experiments/17_adaptive_vs_fixed_changing_plant/) |
@@ -120,9 +123,34 @@ into a practical guide. Every claim links to the experiment that earned it.
   the Crazyflie (`I_yy = 1.4e-5`) — every early rollout collapses before the
   critic learns ([21](../experiments/21_grand_capstone_bakeoff/) uses a
   behaviour-cloned policy instead).
+- **Behavior-cloned policies are catastrophically brittle out-of-distribution:**
+  Cloning an expert LQR controller on a nominal linear-tire bicycle tracks
+  cleanly ($84.3\,\text{mm}$ vs $96.1\,\text{mm}$), but swapping in an
+  unannounced low-$\mu$ Pacejka tire causes total divergence off the road
+  ($5223\,\text{mm}$ RMS, $11.4\,\text{m}$ peak) ([27](../experiments/27_bicycle_double_lane_change/)).
+  The cloned input-output policy memorizes the training state distribution but
+  loses the self-correcting feedback mechanism of the true expert.
 - **Library defaults are not magic:** Stable-Baselines3 PPO under-performs on a
   non-standard reward/action scale without re-tuning
   ([18](../experiments/18_rl_zoo_vs_lqr/)).
+
+### Vehicle Steering & Tire Dynamics
+- **Kinematic MPC wins in the linear regime:** When tire slip angles stay small
+  ($\alpha < 1.7^\circ$), kinematic MPC achieves $52.5\,\text{mm}$ RMS tracking
+  on high-speed double lane changes ($25\,\text{m/s}$), outperforming LQR
+  ($96.1\,\text{mm}$) and model-free Stanley ($371.4\,\text{mm}$) ([27](../experiments/27_bicycle_double_lane_change/)).
+- **Model-free Stanley wins under friction saturation:** When tires saturate on
+  a low-$\mu$ Pacejka curve ($\mu = 0.6$), Stanley takes first place ($733.7\,\text{mm}$)
+  because its geometry-only law makes no false tire assumptions. Kinematic MPC
+  collapses to $1326\,\text{mm}$ because assuming infinite lateral grip causes
+  severe overshoot ([27](../experiments/27_bicycle_double_lane_change/)).
+
+### Underactuated Swing-Up & Rotary Pendulums
+- **Lyapunov energy shaping pumps reliably to the separatrix:** On both Cart-Pole
+  ([07](../experiments/07_cartpole_swingup_hybrid/)) and the Quanser QUBE-Servo 2
+  Furuta rotary inverted pendulum ([28](../experiments/28_furuta_pendulum_control/)),
+  energy shaping drives mechanical energy $E \to 0$ monotonically from $180^\circ$
+  hanging rest, handing off cleanly to LQR/MPC once inside the capture envelope.
 
 ### Hybrids (safety shield)
 - A **classical shield locks an unreliable RL policy to the goal** with *less*
@@ -140,19 +168,26 @@ into a practical guide. Every claim links to the experiment that earned it.
 
 1. **Feedforward does the heavy lifting.** Model-based feedforward (differential
    flatness, hover thrust, reference preview) means feedback only has to correct
-   error and disturbance, not reconstruct the whole manoeuvre — [03], [14], [17].
+   error and disturbance, not reconstruct the whole manoeuvre — [03], [14], [17], [22].
 2. **Integral action is the only cure for a constant disturbance.** No amount of
    proportional-state-feedback tuning nulls a steady wind — [03], [17], live sandbox.
 3. **Cost/weight scaling is not optional** on any real, ill-conditioned plant —
-   [14] (Bryson rule), [17], [18] (SB3).
+   [14] (Bryson rule), [17], [18] (SB3), [28].
 4. **Model error is survivable; the amount matters.** LQR's `[½, ∞)` gain margin
    absorbs a ~50 % gain error ([09]); a tighter design would not.
 5. **The real-time deadline is a first-class axis.** MPC's optimality is worth
-   nothing if it misses the control step — [21] scores it explicitly.
-6. **Report the failures.** Half of what is useful here is knowing where a method
+   nothing if it misses the control step — [21], [24], [26].
+6. **Imitation learning loses the self-correcting structure of feedback.**
+   Cloning an expert controller memorizes the nominal input-output map but destroys
+   the stabilizing property of feedback when deployed out-of-distribution ([27]).
+7. **Energy shaping unlocks underactuated basins of attraction.** Lyapunov
+   energy pumping lifts hanging pendulums from $\pm 180^\circ$ to the upright
+   separatrix for reliable LQR/MPC catch ([07], [28]).
+8. **Report the failures.** Half of what is useful here is knowing where a method
    breaks: linearisation past 23° [02], EKF basin trapping [16], closed-loop
    SysID bias [09], RL sample cost [18], from-scratch RL failing outright on the
-   quad [21].
+   quad [21], Kinematic MPC overshoot under Pacejka saturation [27], and BC RL
+   collapse [27].
 
 ---
 
@@ -160,12 +195,9 @@ into a practical guide. Every claim links to the experiment that earned it.
 
 - Deep RL is shallow here (DQN, PPO from scratch; no SAC, no distributional
   methods, no real hyper-parameter search).
-- One real system (the planar quadrotor). No ground vehicle, manipulator, or
-  multi-agent case.
-- No hardware-in-the-loop, no real sensor logs, no formal robustness certificate
-  beyond LQR/LQG margins.
-- Nonlinear MPC is only the sampling (CEM) planner — no SQP / real-time-iteration
-  NMPC.
+- Multi-agent collaborative control and decentralized partially observable systems.
+- Hardware-in-the-loop (HIL) physical flight deployment and real sensor logs.
+- Direct collocation trajectory optimization.
 
 See [`docs/roadmap.md`](roadmap.md) and the report's roadmap section for where
 these would go next.
