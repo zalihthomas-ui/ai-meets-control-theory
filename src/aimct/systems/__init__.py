@@ -1,6 +1,7 @@
 """Dynamical-system models with a common interface (see :mod:`aimct.systems.base`)."""
 
 from .base import DynamicalSystem
+from .bicycle import BicycleVehicle
 from .cartpole import CartPole
 from .dc_motor import DCMotor, DCMotor2
 from .diffdrive import DifferentialDriveRobot
@@ -13,6 +14,7 @@ from .twolink_arm import TwoLinkArm
 
 __all__ = [
     "DynamicalSystem",
+    "BicycleVehicle",
     "LinearSystem",
     "MassSpringDamper",
     "Pendulum",
