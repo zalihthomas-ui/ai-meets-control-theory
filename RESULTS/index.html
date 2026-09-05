@@ -1,0 +1,2087 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Unified benchmark, classical and AI-driven control framework with 34 empirical experiments, hardware bridge, and publication-grade docs.">
+      
+      
+        <meta name="author" content="Zalih Thomas">
+      
+      
+      
+        <link rel="prev" href="../DECISION-GUIDE/">
+      
+      
+        <link rel="next" href="../USAGE/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Results & Benchmarks - AIMCT: AI Meets Control Theory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#empirical-results-engineering-verdicts" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="AIMCT: AI Meets Control Theory" class="md-header__button md-logo" aria-label="AIMCT: AI Meets Control Theory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            AIMCT: AI Meets Control Theory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Results & Benchmarks
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zalihthomas/ai-meets-control-theory" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zalihthomas/ai-meets-control-theory
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../GETTING-STARTED/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../DECISION-GUIDE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Decision Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Results & Benchmarks
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../USAGE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Usage Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../VISUALIZATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Visualization
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../DEV_PREVIEW/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Design Preview
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../experiments/" class="md-tabs__link">
+          
+  
+  
+  Experiments
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../hardware/two-link-arm/" class="md-tabs__link">
+          
+  
+  
+  Hardware
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../notebooks/01_tour/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  🚀 AI Meets Control Theory (AIMCT) — Interactive Guided Tour
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../api/" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../PORTAL/" class="md-tabs__link">
+          
+  
+  
+  Project
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="AIMCT: AI Meets Control Theory" class="md-nav__button md-logo" aria-label="AIMCT: AI Meets Control Theory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    AIMCT: AI Meets Control Theory
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zalihthomas/ai-meets-control-theory" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zalihthomas/ai-meets-control-theory
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GETTING-STARTED/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DECISION-GUIDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results & Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results & Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-master-comparison-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Master Comparison Table
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary-of-core-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary of Core Principles
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../USAGE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../VISUALIZATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DEV_PREVIEW/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Preview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experiments
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Experiments
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../experiments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    All 34 Experiments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hardware
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardware/two-link-arm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2-Link Arm Bridge
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/01_tour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🚀 AI Meets Control Theory (AIMCT) — Interactive Guided Tour
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/systems/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/controllers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Controllers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/planning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/trajectories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trajectories
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/sysid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Identification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/ml/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Machine Learning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/rl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reinforcement Learning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/hybrid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hybrid Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/hil/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware-in-the-Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/viz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/dev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PORTAL/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Portal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phase 2 Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../roadmap-phase3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phase 3 Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vision/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vision & Principles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PACKAGING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Packaging & Release
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-master-comparison-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Master Comparison Table
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary-of-core-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary of Core Principles
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="empirical-results-engineering-verdicts">Empirical Results &amp; Engineering Verdicts<a class="headerlink" href="#empirical-results-engineering-verdicts" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>The comprehensive, honest benchmark summary of all 31 experiments across the project.
+Every method was built from scratch, simulated, visualised, and compared under identical conditions.</p>
+</blockquote>
+<hr />
+<h2 id="the-master-comparison-table">The Master Comparison Table<a class="headerlink" href="#the-master-comparison-table" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Exp</th>
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">System</th>
+<th style="text-align: left;">Benchmark Comparison</th>
+<th style="text-align: left;">Key Metric / Result</th>
+<th style="text-align: left;">The Honest Engineering Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>01</strong></td>
+<td style="text-align: left;">RK4 vs Euler Integration</td>
+<td style="text-align: left;">Mass-Spring-Damper</td>
+<td style="text-align: left;">RK4 (<span class="arithmatex">\(O(\Delta t^4)\)</span>) vs Forward Euler (<span class="arithmatex">\(O(\Delta t)\)</span>)</td>
+<td style="text-align: left;">Energy error <span class="arithmatex">\(&lt; 10^{-7}\)</span> vs diverged</td>
+<td style="text-align: left;">Fixed-step RK4 is mandatory for stiff dynamical systems; Euler adds artificial energy and destabilizes conservative systems.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>02</strong></td>
+<td style="text-align: left;">Jacobian Linearisation Domain</td>
+<td style="text-align: left;">Inverted Pendulum</td>
+<td style="text-align: left;">Linear state-space vs true nonlinear ODE</td>
+<td style="text-align: left;">Diverges at $</td>
+<td style="text-align: left;">\theta_0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>03</strong></td>
+<td style="text-align: left;">PID Anti-Windup on Unstable Plant</td>
+<td style="text-align: left;">Inverted Pendulum</td>
+<td style="text-align: left;">PID with clamping vs raw PID vs PD vs P-only</td>
+<td style="text-align: left;">Overshoot <span class="arithmatex">\(39.4\%\)</span> vs <span class="arithmatex">\(53.1\%\)</span>, sat duration <span class="arithmatex">\(-70\%\)</span></td>
+<td style="text-align: left;">Integrator anti-windup is essential under actuator limits; without clamping, windup delays error recovery and can destabilize unstable poles.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>04</strong></td>
+<td style="text-align: left;">LQR vs Pole Placement</td>
+<td style="text-align: left;">Cart-Pole (Balance)</td>
+<td style="text-align: left;">Algebraic LQR (CARE) vs Ackermann pole placement</td>
+<td style="text-align: left;">Golden gain reproduced to <span class="arithmatex">\(10^{-4}\)</span>, energy <span class="arithmatex">\(2.34\,\text{N}^2\text{s}\)</span></td>
+<td style="text-align: left;">LQR eliminates manual pole guessing in <span class="arithmatex">\(\mathbb{C}^n\)</span>; single-loop PID fails on underactuated MIMO systems by allowing unobserved cart drift (<span class="arithmatex">\(0.82\,\text{m}\)</span>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>05</strong></td>
+<td style="text-align: left;">Cart-Pole LQR Basin of Attraction</td>
+<td style="text-align: left;">Cart-Pole (Nonlinear)</td>
+<td style="text-align: left;">Balanced vs Aggressive vs Soft LQR tunings</td>
+<td style="text-align: left;">Recoverable <span class="arithmatex">\(\theta_0 \le 57^\circ\)</span>, <span class="arithmatex">\(\dot\theta_0 \le 5.3\,\text{rad/s}\)</span></td>
+<td style="text-align: left;">Quadratic Lyapunov level sets provide safe conservative bounds; hard actuator saturation actually expands recoverable angle domain by preventing divergence.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>06</strong></td>
+<td style="text-align: left;">LQG vs LQR under Sensor Noise</td>
+<td style="text-align: left;">Cart-Pole (Dual Encoders)</td>
+<td style="text-align: left;">Optimal Kalman filter vs fast Luenberger observer</td>
+<td style="text-align: left;">Smooth force <span class="arithmatex">\(2.21\,\text{N}^2\text{s}\)</span> vs violent chattering <span class="arithmatex">\(16.2\,\text{N}^2\text{s}\)</span></td>
+<td style="text-align: left;">Fast observer poles amplify high-frequency encoder noise into destructive actuator thrashing; LQG trades bandwidth for optimal noise rejection.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>07</strong></td>
+<td style="text-align: left;">Spong Energy Shaping Swing-Up</td>
+<td style="text-align: left;">Cart-Pole (Swing-Up)</td>
+<td style="text-align: left;">Nonlinear energy pump + LQR hysteresis supervisor</td>
+<td style="text-align: left;"><span class="arithmatex">\(100\%\)</span> catch upright in 1 switch, settle <span class="arithmatex">\(3.3\,\text{s}\)</span></td>
+<td style="text-align: left;">Energy shaping reliably lifts hanging pendulums from <span class="arithmatex">\(\theta=\pi\)</span> to the homoclinic orbit; asymmetric hysteresis prevents limit-cycle chattering.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>08</strong></td>
+<td style="text-align: left;">Constrained Linear MPC vs LQR</td>
+<td style="text-align: left;">Cart-Pole (Track Bounds)</td>
+<td style="text-align: left;">Active-set QP MPC vs unconstrained LQR</td>
+<td style="text-align: left;">Max $</td>
+<td style="text-align: left;">x</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>09</strong></td>
+<td style="text-align: left;">System Identification &amp; Control</td>
+<td style="text-align: left;">Cart-Pole (Data-Driven)</td>
+<td style="text-align: left;">Least-squares / DMDc on closed-loop data</td>
+<td style="text-align: left;"><span class="arithmatex">\(100\%\)</span> stable on <span class="arithmatex">\(24\,\text{s}\)</span> data despite <span class="arithmatex">\(20\%\)</span> residual error</td>
+<td style="text-align: left;">LQR gain margins (<span class="arithmatex">\([-6\,\text{dB}, +\infty\,\text{dB}]\)</span>) robustly tolerate moderate model identification residuals; short data (<span class="arithmatex">\(1\,\text{s}\)</span>) causes fatal drift.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>10</strong></td>
+<td style="text-align: left;">Sampling MPC on Learned Dynamics</td>
+<td style="text-align: left;">Cart-Pole (MLP Dynamics)</td>
+<td style="text-align: left;">CEM-MPC on 4,804-param neural MLP vs true model</td>
+<td style="text-align: left;">RMSE <span class="arithmatex">\(0.0462\,\text{rad}\)</span> (learned) vs <span class="arithmatex">\(0.0448\,\text{rad}\)</span> (true physics)</td>
+<td style="text-align: left;">Residual neural dynamics match true physics planning within <span class="arithmatex">\(3\%\)</span>; a terminal Lyapunov CARE kernel is strictly required for short-horizon stability.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>11</strong></td>
+<td style="text-align: left;">Tabular Q-Learning vs Classical</td>
+<td style="text-align: left;">Inverted Pendulum</td>
+<td style="text-align: left;">Q-Learning (<span class="arithmatex">\(450\text{k}\)</span> steps) vs Energy-Shaping / LQR</td>
+<td style="text-align: left;">Final error <span class="arithmatex">\(1.48\,\text{rad}\)</span> (limit cycle) vs <span class="arithmatex">\(0.00\,\text{rad}\)</span> (exact lock)</td>
+<td style="text-align: left;">Model-free RL discovers swing-up from raw reward but chatters near the origin due to discretization bins; classical control requires zero training data.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>12</strong></td>
+<td style="text-align: left;">Shielded Hybrid Control</td>
+<td style="text-align: left;">Inverted Pendulum</td>
+<td style="text-align: left;">Safety-shielded Q-learning vs raw Q-learning</td>
+<td style="text-align: left;">Final error <span class="arithmatex">\(0.000\,\text{rad}\)</span>, energy <span class="arithmatex">\(-35\%\)</span> (<span class="arithmatex">\(68.0\,\text{N}^2\text{s}\)</span>)</td>
+<td style="text-align: left;">A classical supervisory safety shield turns an uncertified, failing RL policy into a provably stable controller while retaining exploration benefits.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>13</strong></td>
+<td style="text-align: left;">Robust Control &amp; <span class="arithmatex">\(\mathcal{H}_\infty\)</span> Loop Shaping</td>
+<td style="text-align: left;">Stiff Mechanical System</td>
+<td style="text-align: left;">Structured singular value / loop shaping vs nominal</td>
+<td style="text-align: left;">Guaranteed stability under <span class="arithmatex">\(\pm 40\%\)</span> parameter uncertainty</td>
+<td style="text-align: left;">Explicitly shaping sensitivity <span class="arithmatex">\(S(s)\)</span> and complementary sensitivity <span class="arithmatex">\(T(s)\)</span> bounds worst-case model uncertainty and high-frequency resonances.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>14</strong></td>
+<td style="text-align: left;">Crazyflie 2.0 Lemniscate Tracking</td>
+<td style="text-align: left;">Planar Quadrotor (<span class="arithmatex">\(28\,\text{g}\)</span>)</td>
+<td style="text-align: left;">LQR + Flatness Feedforward vs Preview MPC vs Feedback</td>
+<td style="text-align: left;">RMS pos err <strong><span class="arithmatex">\(43.5\,\text{mm}\)</span></strong> (flatness) vs <span class="arithmatex">\(47.9\,\text{mm}\)</span> (preview MPC)</td>
+<td style="text-align: left;">Differential flatness inversion eliminates trajectory phase lag; reference-preview MPC closes the corner-cutting gap while enforcing thrust limits.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>15</strong></td>
+<td style="text-align: left;">EKF Output Feedback on Quadrotor</td>
+<td style="text-align: left;">Planar Quadrotor (Noisy)</td>
+<td style="text-align: left;">Extended Kalman Filter vs clean LQR vs finite diff</td>
+<td style="text-align: left;">Velocity reconstruction to <strong><span class="arithmatex">\(8\,\text{mm/s}\)</span></strong>, energy <span class="arithmatex">\(0.0026\)</span> vs <span class="arithmatex">\(0.3580\)</span> (<span class="arithmatex">\(150\times\)</span>)</td>
+<td style="text-align: left;">EKF achieves near-ideal state reconstruction (<span class="arithmatex">\(&lt; 5\%\)</span> tracking penalty); naive differencing injects noise that inflates energy by <span class="arithmatex">\(150\times\)</span>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>16</strong></td>
+<td style="text-align: left;">EKF vs UKF Nonlinear Estimation</td>
+<td style="text-align: left;">Inverted Pendulum (Curved)</td>
+<td style="text-align: left;">Tangent linearisation (EKF) vs <span class="arithmatex">\(2n+1\)</span> sigma points (UKF)</td>
+<td style="text-align: left;">UKF converges to <strong><span class="arithmatex">\(0.07\,\text{rad}\)</span></strong> vs EKF trapped at <strong><span class="arithmatex">\(6.28\,\text{rad}\)</span></strong> (<span class="arithmatex">\(\approx 2\pi\)</span>)</td>
+<td style="text-align: left;">UKF sigma points capture nonlinear manifold curvature under broad priors; on tight localized sensing, EKF matches UKF at <span class="arithmatex">\(1/5\)</span> the compute cost.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>17</strong></td>
+<td style="text-align: left;">Adaptive Control (MRAC)</td>
+<td style="text-align: left;">Mass-Spring-Damper (Drifting)</td>
+<td style="text-align: left;">Lyapunov MRAC vs Fixed LQR vs Gain-Scheduled LQR</td>
+<td style="text-align: left;">Tracking err <strong><span class="arithmatex">\(0.0008\,\text{m}\)</span></strong> vs <span class="arithmatex">\(0.4217\,\text{m}\)</span> under <span class="arithmatex">\(5\times\)</span> parameter shift</td>
+<td style="text-align: left;">MRAC dynamically adjusts feedback gains to cancel continuous plant drift, eliminating the steady-state droop of fixed LQR at the cost of higher effort.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>18</strong></td>
+<td style="text-align: left;">The RL Zoo vs LQR Balance</td>
+<td style="text-align: left;">Cart-Pole (Balance)</td>
+<td style="text-align: left;">LQR vs Tabular Q vs DQN vs PPO-scratch vs PPO-SB3</td>
+<td style="text-align: left;">PPO return <strong><span class="arithmatex">\(-0.3\)</span></strong> (200/200 held) but requires <span class="arithmatex">\(240\text{k}\)</span> steps vs 0 for LQR</td>
+<td style="text-align: left;">From-scratch continuous PPO matches analytical LQR performance exactly, but pays a <span class="arithmatex">\(240,000\)</span>-sample data penalty for discovering the linear gain surface.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>19</strong></td>
+<td style="text-align: left;">Intelligent Control Challenge (ICC)</td>
+<td style="text-align: left;">Multi-Plant Benchmark Suite</td>
+<td style="text-align: left;">Blind black-box evaluation: MPC vs LQR vs Hybrid vs PID</td>
+<td style="text-align: left;">MPC wins precision (DC Motor <strong><span class="arithmatex">\(41.3\)</span></strong>); Hybrid sweeps agility (Pendulum <strong><span class="arithmatex">\(23.8\)</span></strong>, Track 3 <strong><span class="arithmatex">\(29.9\)</span></strong>)</td>
+<td style="text-align: left;">No single controller wins everywhere: model-based MPC dominates constrained precision, while classical energy-shaping dominates non-convex agility.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>20</strong></td>
+<td style="text-align: left;">Obstacle-Aware Nonlinear NMPC</td>
+<td style="text-align: left;">Planar Quadrotor (Keep-Out)</td>
+<td style="text-align: left;">Sampling NMPC (true &amp; learned grey-box) vs Flatness LQR</td>
+<td style="text-align: left;">Clearance <strong><span class="arithmatex">\(+11\,\text{mm}\)</span></strong> (<span class="arithmatex">\(0\)</span> violations) vs <strong><span class="arithmatex">\(-86\,\text{mm}\)</span></strong> (<span class="arithmatex">\(26\)</span> violations)</td>
+<td style="text-align: left;">Blind tracking crashes through obstacles; sampling NMPC routes safely around keep-outs, and a learned residual neural model costs zero planning penalty.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>21</strong></td>
+<td style="text-align: left;">Grand Capstone Bake-Off</td>
+<td style="text-align: left;">Planar Quadrotor (Grand Course)</td>
+<td style="text-align: left;">5-way bake-off: LQR+ff, Preview MPC, NMPC, PPO, Shielded</td>
+<td style="text-align: left;">Sampling NMPC score <strong>8.0</strong> (0 violations); Imitation tracks <strong><span class="arithmatex">\(41.4\,\text{mm}\)</span></strong> but 46 hits (score 0.0); Hybrid <strong>7.9</strong></td>
+<td style="text-align: left;">Hybrid completes cleanly (<span class="arithmatex">\(0\)</span> violations) but barely beats MPC alone (<span class="arithmatex">\(8.0\)</span> vs <span class="arithmatex">\(7.9\)</span>) because imitation policy is too weak to lead. No universal winner.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>22</strong></td>
+<td style="text-align: left;">Differential-Drive Path Following</td>
+<td style="text-align: left;">TurtleBot3-Burger (Unicycle + Lag)</td>
+<td style="text-align: left;">Pure pursuit vs Stanley vs Path LQR vs Kinematic MPC</td>
+<td style="text-align: left;">Path LQR cross-track <strong><span class="arithmatex">\(9.25\,\text{mm}\)</span></strong> (<span class="arithmatex">\(96.2\%\)</span> comp); Pure pursuit <span class="arithmatex">\(69.5\,\text{mm}\)</span> RMS (<span class="arithmatex">\(98.4\%\)</span>)</td>
+<td style="text-align: left;">Pure pursuit cuts corners on curves (<span class="arithmatex">\(35\,\text{mm}\)</span> offset); Path LQR curvature feedforward gives optimal cross-track precision with lowest control energy.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>23</strong></td>
+<td style="text-align: left;">Two-Link Arm Tracking \&amp; Payload</td>
+<td style="text-align: left;">2-Link Planar Robot Arm</td>
+<td style="text-align: left;">Computed Torque / Joint LQR / MPC vs Slotine--Li MRAC with <span class="arithmatex">\(+0.5\,\text{kg}\)</span> load</td>
+<td style="text-align: left;">Joint LQR <strong><span class="arithmatex">\(2.57\,\text{mm}\)</span></strong> nominal; Slotine--Li <strong><span class="arithmatex">\(4.93\,\text{mm}\)</span></strong> (<span class="arithmatex">\(100\%\)</span> comp) vs Nominal collapse (<span class="arithmatex">\(394\,\text{mm}\)</span>, <span class="arithmatex">\(36.9\%\)</span>)</td>
+<td style="text-align: left;">Nominal feedback linearisation collapses under unmodelled payload steps; Slotine--Li parameter adaptation dynamically estimates unknown mass and restores tracking.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>24</strong></td>
+<td style="text-align: left;">iLQR / RTI-NMPC vs Sampling MPC</td>
+<td style="text-align: left;">Cart-Pole Swing-Up \&amp; Crazyflie Quad</td>
+<td style="text-align: left;">Gradient-based iLQR / Real-Time Iteration vs Stochastic CEM-MPC</td>
+<td style="text-align: left;">Quad pos err <strong><span class="arithmatex">\(1.34\,\text{mm}\)</span></strong> at <strong><span class="arithmatex">\(14.59\,\text{ms}\)</span></strong> vs CEM (<span class="arithmatex">\(202.2\,\text{mm}\)</span>, <span class="arithmatex">\(26.58\,\text{ms}\)</span>)</td>
+<td style="text-align: left;">Gradient-based iLQR converges to true KKT stationarity <span class="arithmatex">\(150\times\)</span> tighter than stochastic sampling and solves inside the <span class="arithmatex">\(20\,\text{ms}\)</span> real-time flight budget.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>25</strong></td>
+<td style="text-align: left;">Moving-Obstacle DiffDrive Avoidance</td>
+<td style="text-align: left;">TurtleBot3-Burger (Dynamic Disks)</td>
+<td style="text-align: left;">Blind Trackers (Pure Pursuit, Path LQR) vs Obstacle-Aware Receding-Horizon (CEM, iLQR)</td>
+<td style="text-align: left;">CEM avoids with <strong><span class="arithmatex">\(36\)</span></strong> collision steps (<span class="arithmatex">\(8.25\)</span> energy) vs iLQR (<span class="arithmatex">\(69\)</span> steps, <strong><span class="arithmatex">\(57.6\,\text{mm}\)</span></strong> RMS error, <span class="arithmatex">\(1.29\)</span> energy)</td>
+<td style="text-align: left;">Non-convex quartic obstacle barrier: CEM derivative-free sampling safely routes around disks (<span class="arithmatex">\(36\)</span> hits) where iLQR's non-convex barrier Hessian and 1-step RTI cannot clear the obstacle (<span class="arithmatex">\(69\)</span> hits). Mirror image of Exp 26.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>26</strong></td>
+<td style="text-align: left;">iLQR vs Sampling MPC on Harder Paths</td>
+<td style="text-align: left;">Planar Quadrotor (Lissajous, Spiral)</td>
+<td style="text-align: left;">iLQR / RTI-NMPC vs CEM-MPC across geometries</td>
+<td style="text-align: left;">iLQR wins by <strong><span class="arithmatex">\(32\times\)</span></strong> (Lissajous) to <strong><span class="arithmatex">\(840\times\)</span></strong> (Spiral) RMS</td>
+<td style="text-align: left;">Generalised Exp-24/21 finding: iLQR gradient backward pass dominates stochastic sampling by orders of magnitude at lower compute; CEM median latency (<span class="arithmatex">\(28\text{--}31\,\text{ms}\)</span>) violates the <span class="arithmatex">\(20\,\text{ms}\)</span> real-time budget on all paths.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>27</strong></td>
+<td style="text-align: left;">Dynamic Bicycle Double Lane Change</td>
+<td style="text-align: left;">BicycleVehicle (Rajamani Sedan)</td>
+<td style="text-align: left;">Stanley vs LQR vs Kinematic MPC vs BC RL on ISO-3888 at <span class="arithmatex">\(25\,\text{m/s}\)</span></td>
+<td style="text-align: left;">Kinematic MPC <strong><span class="arithmatex">\(52.5\,\text{mm}\)</span></strong> nominal; Stanley <strong><span class="arithmatex">\(734\,\text{mm}\)</span></strong> on Pacejka <span class="arithmatex">\(\mu=0.6\)</span>; BC RL fails <strong><span class="arithmatex">\(5223\,\text{mm}\)</span></strong> (off-road)</td>
+<td style="text-align: left;">Complete ranking inversion: Kinematic MPC wins nominal linear regime but collapses (<span class="arithmatex">\(1326\,\text{mm}\)</span>) under tire saturation; model-free Stanley wins stressed Pacejka with nothing to unlearn; BC RL policy collapses out-of-distribution (<span class="arithmatex">\(11.4\,\text{m}\)</span> peak off-road), proving cloned policies lose the self-correcting feedback mechanism.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>28</strong></td>
+<td style="text-align: left;">Furuta Pendulum Control \&amp; Swing-Up</td>
+<td style="text-align: left;">Quanser QUBE-Servo 2 RIP</td>
+<td style="text-align: left;">LQR vs Linear MPC (Upright Catch) vs Åström-Furuta Energy Swing-Up</td>
+<td style="text-align: left;">Upright settle <strong><span class="arithmatex">\(40\,\text{ms}\)</span></strong> (<span class="arithmatex">\(e_{ss} &lt; 6\times 10^{-7}\,\text{rad}\)</span>); MPC caps torque to <strong><span class="arithmatex">\(0.1343\,\text{N}\cdot\text{m}\)</span></strong>; Swing-up <strong><span class="arithmatex">\(6.0\,\text{s}\)</span></strong></td>
+<td style="text-align: left;">Analytical linearization provides rapid upright stabilization (<span class="arithmatex">\(40\,\text{ms}\)</span>); Linear MPC proactively moderates torque spikes to respect motor saturation without clipping; Åström-Furuta energy shaping pumps energy monotonically for seamless LQR handoff.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>29</strong></td>
+<td style="text-align: left;">DAgger vs BC Lane-Change Recovery</td>
+<td style="text-align: left;">Dynamic Pacejka Vehicle (<span class="arithmatex">\(\mu=0.6\)</span>)</td>
+<td style="text-align: left;">Plain BC (1 round) vs DAgger (8 rounds LQR expert relabeling)</td>
+<td style="text-align: left;">DAgger RMS <strong><span class="arithmatex">\(768.8\,\text{mm}\)</span></strong> (<span class="arithmatex">\(1708\,\text{mm}\)</span> peak) vs Plain BC <strong><span class="arithmatex">\(6022\,\text{mm}\)</span></strong> (<span class="arithmatex">\(12.4\,\text{m}\)</span> peak off-road)</td>
+<td style="text-align: left;">Plain Behavior Cloning suffers compounding distribution drift and diverges off-road; DAgger aggregates student-visited states relabeled by the expert, recovering expert LQR fidelity (<span class="arithmatex">\(767.8\,\text{mm}\)</span>) but bounded by the expert ceiling.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>30</strong></td>
+<td style="text-align: left;">Coupled Two-Tank Level Regulation</td>
+<td style="text-align: left;">Nonlinear Two-Tank System (Torricelli)</td>
+<td style="text-align: left;">SISO PI vs Multivariable LQR vs Linear MPC (Quanser parameters)</td>
+<td style="text-align: left;">SISO PI zero droop (<span class="arithmatex">\(e_{ss} = 0.0\,\text{cm}\)</span>); LQR/MPC <span class="arithmatex">\(-22\%\)</span> pump energy (<span class="arithmatex">\(6659\,\text{V}^2\text{s}\)</span>) with <span class="arithmatex">\(0\%\)</span> level violation</td>
+<td style="text-align: left;">SISO PI eliminates nonlinear steady-state droop via integration; multivariable LQR/MPC coordinates interaction between both tanks, cutting energy by <span class="arithmatex">\(22\%\)</span> while strictly respecting physical level and voltage bounds.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>31</strong></td>
+<td style="text-align: left;">SAC vs PPO Sample Efficiency</td>
+<td style="text-align: left;">Inverted Pendulum (Swing-Up)</td>
+<td style="text-align: left;">Soft Actor-Critic (off-policy) vs PPO (on-policy) vs Classical Hybrid (60k budget)</td>
+<td style="text-align: left;">SAC return <strong><span class="arithmatex">\(-363.6\)</span></strong> at <span class="arithmatex">\(8\text{k}\)</span> steps vs PPO <strong><span class="arithmatex">\(-1339.9\)</span></strong> (<span class="arithmatex">\(&gt;60\text{k}\)</span> steps)</td>
+<td style="text-align: left;">Off-policy replay buffer reuse provides a <span class="arithmatex">\(15\text{--}20\times\)</span> environment-step sample-efficiency advantage over on-policy PPO; unlike imitation learning, direct RL reward optimization breaks through the hand-crafted classical hybrid ceiling (<span class="arithmatex">\(-815.8\)</span>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>32</strong></td>
+<td style="text-align: left;">Direct Collocation vs Shooting vs Sampling</td>
+<td style="text-align: left;">Cart-Pole Inverted Swing-Up (<span class="arithmatex">\(T=2.0\,\text{s}\)</span>)</td>
+<td style="text-align: left;">Direct Collocation (Hermite-Simpson NLP) vs iLQR vs Sampling (CEM)</td>
+<td style="text-align: left;">Direct Collocation meets hard terminal equality (<span class="arithmatex">\(0.0\)</span> planned, <span class="arithmatex">\(8.1\times 10^{-4}\)</span> re-integrated) in <strong><span class="arithmatex">\(0.71\,\text{s}\)</span></strong>; iLQR and CEM stop <span class="arithmatex">\(0.253\)</span> and <span class="arithmatex">\(0.649\)</span> short because boundary is a soft penalty balanced against effort</td>
+<td style="text-align: left;">Direct collocation treats initial and terminal states as hard constraints in a unified NLP, eliminating terminal constraint relaxation; iLQR/CEM's lower effort is a relaxed problem. Collocation's only error is inter-knot third-order quadrature defect which converges under mesh refinement (<span class="arithmatex">\(8.1\times 10^{-4}\)</span> at 41 knots).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>33</strong></td>
+<td style="text-align: left;">Ball &amp; Beam Underactuated Balance</td>
+<td style="text-align: left;">BallAndBeam (Quanser standard)</td>
+<td style="text-align: left;">Cascade PID vs PFL vs Multivariable LQR vs Linear MPC (<span class="arithmatex">\(20\,\text{cm}\)</span> step)</td>
+<td style="text-align: left;">LQR / MPC settle <strong><span class="arithmatex">\(1.49\,\text{s}\)</span></strong> (<span class="arithmatex">\(1.3\%\)</span> overshoot, <span class="arithmatex">\(e_{ss} &lt; 2\times 10^{-5}\,\text{cm}\)</span>); MPC caps torque to <strong><span class="arithmatex">\(0.784\,\text{N}\cdot\text{m}\)</span></strong> (energy <span class="arithmatex">\(0.0184\)</span>)</td>
+<td style="text-align: left;">Cascaded PID suffers inner-outer loop phase lag (<span class="arithmatex">\(5.0\,\text{s}\)</span> settling) and steady friction droop (<span class="arithmatex">\(0.55\,\text{cm}\)</span>); multivariable LQR/MPC coordinates tilt and roll simultaneously to eliminate lag and droop; constrained MPC achieves lowest actuation energy while strictly respecting actuator limits.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>34</strong></td>
+<td style="text-align: left;">Disturbance Observer Wind Rejection</td>
+<td style="text-align: left;">Planar Quadrotor (Crazyflie 2.0)</td>
+<td style="text-align: left;">Nominal LQR vs LQI vs MRAC vs DOB+LQR under <span class="arithmatex">\(0.05\,\text{N}\)</span> wind step</td>
+<td style="text-align: left;">DOB <span class="arithmatex">\(x\)</span> settle <strong><span class="arithmatex">\(0.58\,\text{s}\)</span></strong> (<span class="arithmatex">\(5\times\)</span> faster), <span class="arithmatex">\(x\)</span> RMSE <strong><span class="arithmatex">\(1.68\,\text{cm}\)</span></strong> (<span class="arithmatex">\(-61\%\)</span>), <span class="arithmatex">\(z\)</span> RMSE <strong><span class="arithmatex">\(0.18\,\text{cm}\)</span></strong></td>
+<td style="text-align: left;">Integral action (LQI) introduces <span class="arithmatex">\(-90^\circ\)</span> phase lag and requires physical downwind drift (<span class="arithmatex">\(9.14\,\text{cm}\)</span>) to build tilt; DOB reconstructs disturbance acceleration instantaneously without position accumulation, feeding forward tilt for <span class="arithmatex">\(5\times\)</span> faster settling; MRAC parameter adaptation diverges on unmatched forces.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="summary-of-core-principles">Summary of Core Principles<a class="headerlink" href="#summary-of-core-principles" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>If you have a physical model, use optimal control (LQR / MPC):</strong> Zero training samples, certifiable stability margins, optimal energy consumption, and explicit constraint satisfaction.</li>
+<li><strong>If the system has unmeasured states or sensor noise, use optimal filtering (Kalman / EKF / UKF):</strong> Naive derivatives destroy actuators; Kalman filtering is the optimal bridge between reality and control.</li>
+<li><strong>If you need non-convex global maneuvers, use energy shaping or RL:</strong> Linearization fails far from equilibrium; energy pumping or policy optimization discovers global swing-ups.</li>
+<li><strong>If you deploy learned models or RL, use safety shields:</strong> Never trust an uncertified neural network near safety boundaries; supervisory shields guarantee forward invariance while retaining learned agility.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

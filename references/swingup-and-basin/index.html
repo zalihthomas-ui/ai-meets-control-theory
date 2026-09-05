@@ -1,0 +1,1965 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Unified benchmark, classical and AI-driven control framework with 34 empirical experiments, hardware bridge, and publication-grade docs.">
+      
+      
+        <meta name="author" content="Zalih Thomas">
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Nonlinear Swing-Up & Basin of Attraction Reference Specification - AIMCT: AI Meets Control Theory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#nonlinear-swing-up-basin-of-attraction-reference-specification" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="AIMCT: AI Meets Control Theory" class="md-header__button md-logo" aria-label="AIMCT: AI Meets Control Theory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            AIMCT: AI Meets Control Theory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Nonlinear Swing-Up &amp; Basin of Attraction Reference Specification
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zalihthomas/ai-meets-control-theory" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zalihthomas/ai-meets-control-theory
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../GETTING-STARTED/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../DECISION-GUIDE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Decision Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../RESULTS/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Results & Benchmarks
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../USAGE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Usage Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../VISUALIZATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Visualization
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../DEV_PREVIEW/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Design Preview
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../experiments/" class="md-tabs__link">
+          
+  
+  
+  Experiments
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../hardware/two-link-arm/" class="md-tabs__link">
+          
+  
+  
+  Hardware
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../notebooks/01_tour/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  🚀 AI Meets Control Theory (AIMCT) — Interactive Guided Tour
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../PORTAL/" class="md-tabs__link">
+          
+  
+  
+  Project
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="AIMCT: AI Meets Control Theory" class="md-nav__button md-logo" aria-label="AIMCT: AI Meets Control Theory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    AIMCT: AI Meets Control Theory
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zalihthomas/ai-meets-control-theory" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zalihthomas/ai-meets-control-theory
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GETTING-STARTED/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DECISION-GUIDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../RESULTS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results & Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../USAGE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VISUALIZATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DEV_PREVIEW/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Preview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experiments
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Experiments
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../experiments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    All 34 Experiments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hardware
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hardware/two-link-arm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2-Link Arm Bridge
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/01_tour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🚀 AI Meets Control Theory (AIMCT) — Interactive Guided Tour
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/systems/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/controllers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Controllers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/planning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/trajectories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trajectories
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/sysid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Identification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ml/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Machine Learning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/rl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reinforcement Learning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/hybrid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hybrid Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/hil/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware-in-the-Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/viz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/dev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PORTAL/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Portal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phase 2 Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap-phase3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phase 3 Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../vision/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vision & Principles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PACKAGING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Packaging & Release
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-energy-based-swing-up-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Energy-Based Swing-Up Control
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Energy-Based Swing-Up Control">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-simple-pendulum-swing-up-astrom-furuta-law" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Simple Pendulum Swing-Up (Åström-Furuta Law)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.1 Simple Pendulum Swing-Up (Åström-Furuta Law)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-dynamics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        System Dynamics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#energy-formulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Energy Formulation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lyapunov-energy-shaping-control-law" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lyapunov Energy-Shaping Control Law
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#saturated-control-law-with-sign-velocity-modulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Saturated Control Law with Sign-Velocity Modulation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-cart-pole-swing-up-spong-energy-shaping-law" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Cart-Pole Swing-Up (Spong Energy-Shaping Law)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.2 Cart-Pole Swing-Up (Spong Energy-Shaping Law)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pendulum-energy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pendulum Energy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#desired-cart-acceleration-ddotx_textdes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Desired Cart Acceleration (\(\ddot{x}_{\text{des}}\))
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#force-mapping-via-partial-feedback-linearization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Force Mapping via Partial Feedback Linearization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-hybrid-switching-architecture-swing-up-to-lqr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Hybrid Switching Architecture (Swing-Up to LQR)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-quantitative-basin-of-attraction-for-cart-pole-lqr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Quantitative Basin of Attraction for Cart-Pole LQR
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Quantitative Basin of Attraction for Cart-Pole LQR">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-initial-condition-recovery-boundaries-x_0-0-0-theta_0-dottheta_0t" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Initial Condition Recovery Boundaries (\(x_0 = [0, 0, \theta_0, \dot{\theta}_0]^T\))
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-ellipsoidal-lyapunov-invariant-sets-vs-true-basin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Ellipsoidal Lyapunov Invariant Sets vs. True Basin
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="nonlinear-swing-up-basin-of-attraction-reference-specification">Nonlinear Swing-Up &amp; Basin of Attraction Reference Specification<a class="headerlink" href="#nonlinear-swing-up-basin-of-attraction-reference-specification" title="Permanent link">&para;</a></h1>
+<p>This document provides analytical formulations, Lyapunov energy-shaping laws, switching conditions, and quantitative basin-of-attraction envelopes for the <strong>Simple Pendulum</strong> (<code>aimct.systems.Pendulum</code>) and <strong>Cart-Pole System</strong> (<code>aimct.systems.CartPole</code>).</p>
+<hr />
+<h2 id="1-energy-based-swing-up-control">1. Energy-Based Swing-Up Control<a class="headerlink" href="#1-energy-based-swing-up-control" title="Permanent link">&para;</a></h2>
+<p>Nonlinear swing-up control steers an underactuated pendulum from the stable downward resting state to the vicinity of the unstable upright equilibrium, where a local linear controller (such as LQR or State Feedback) captures and stabilizes the state.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>       [ Downward Rest: theta = pi ]
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                    |
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                    v
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>       [ Energy-Shaping Swing-Up ]  (Pumps mechanical energy into orbit)
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                    |
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                    v
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>       [ Homoclinic Capture Region ] (|theta| &lt;= 20 deg, |theta_dot| &lt;= 1.5 rad/s)
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                    |
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>                    v
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>       [ Linear LQR Balance Mode ]  (Asymptotic regulation to origin)
+</span></code></pre></div>
+<hr />
+<h3 id="11-simple-pendulum-swing-up-astrom-furuta-law">1.1 Simple Pendulum Swing-Up (Åström-Furuta Law)<a class="headerlink" href="#11-simple-pendulum-swing-up-astrom-furuta-law" title="Permanent link">&para;</a></h3>
+<h4 id="system-dynamics">System Dynamics<a class="headerlink" href="#system-dynamics" title="Permanent link">&para;</a></h4>
+<div class="arithmatex">\[J \ddot{\theta} + b \dot{\theta} + m g l \sin\theta = u\]</div>
+<p>where <span class="arithmatex">\(J = m l^2\)</span>, <span class="arithmatex">\(\theta = 0\)</span> is the upward inverted position, and <span class="arithmatex">\(\theta = \pm \pi\)</span> is the downward rest.</p>
+<h4 id="energy-formulation">Energy Formulation<a class="headerlink" href="#energy-formulation" title="Permanent link">&para;</a></h4>
+<p>Total mechanical energy (with potential zero set at the upright equilibrium <span class="arithmatex">\(\theta = 0\)</span>):
+$<span class="arithmatex">\(E(\theta, \dot{\theta}) = \frac{1}{2} J \dot{\theta}^2 + m g l (\cos\theta - 1)\)</span>$</p>
+<ul>
+<li>At upright equilibrium (<span class="arithmatex">\(\theta = 0, \dot{\theta} = 0\)</span>): <span class="arithmatex">\(E_0 = 0.0\text{ J}\)</span>.</li>
+<li>At downward rest (<span class="arithmatex">\(\theta = \pi, \dot{\theta} = 0\)</span>): <span class="arithmatex">\(E_{\text{bottom}} = -2 m g l\text{ J}\)</span>.</li>
+</ul>
+<h4 id="lyapunov-energy-shaping-control-law">Lyapunov Energy-Shaping Control Law<a class="headerlink" href="#lyapunov-energy-shaping-control-law" title="Permanent link">&para;</a></h4>
+<p>Taking the time derivative of energy along system trajectories:
+$<span class="arithmatex">\(\dot{E} = J \dot{\theta} \ddot{\theta} - m g l \sin\theta \dot{\theta} = \dot{\theta} (u - b \dot{\theta})\)</span>$</p>
+<p>Ignoring friction during swing-up, setting <span class="arithmatex">\(u = -k_E \dot{\theta} (E - E_0)\)</span> yields:
+$<span class="arithmatex">\(\dot{E} = -k_E \dot{\theta}^2 (E - E_0)\)</span>$
+which guarantees <span class="arithmatex">\(\dot{E} &gt; 0\)</span> whenever <span class="arithmatex">\(E &lt; E_0\)</span>, driving the system monotonically toward the target homoclinic orbit <span class="arithmatex">\(E = E_0\)</span>.</p>
+<h4 id="saturated-control-law-with-sign-velocity-modulation">Saturated Control Law with Sign-Velocity Modulation<a class="headerlink" href="#saturated-control-law-with-sign-velocity-modulation" title="Permanent link">&para;</a></h4>
+<div class="arithmatex">\[u(t) = \text{clip}\left( k_E \cdot \text{sign}(\dot{\theta} \cos\theta) \cdot (E_0 - E(\theta, \dot{\theta})), \ -u_{\max}, \ +u_{\max} \right)\]</div>
+<ul>
+<li><strong>Canonical Tuning</strong>: <span class="arithmatex">\(k_E = 1.5 \cdot \frac{1}{m g l} \approx 0.153\text{ J}^{-1}\)</span>, <span class="arithmatex">\(u_{\max} = 2.5\text{ N}\cdot\text{m}\)</span>.</li>
+</ul>
+<hr />
+<h3 id="12-cart-pole-swing-up-spong-energy-shaping-law">1.2 Cart-Pole Swing-Up (Spong Energy-Shaping Law)<a class="headerlink" href="#12-cart-pole-swing-up-spong-energy-shaping-law" title="Permanent link">&para;</a></h3>
+<p>For the inverted pendulum on a cart, actuation acts on the cart position <span class="arithmatex">\(x\)</span>, coupling into the pendulum through inertial reaction force.</p>
+<h4 id="pendulum-energy">Pendulum Energy<a class="headerlink" href="#pendulum-energy" title="Permanent link">&para;</a></h4>
+<p>$<span class="arithmatex">\(E_p(\theta, \dot{\theta}) = \frac{1}{2} (I + m l^2) \dot{\theta}^2 + m g l (\cos\theta - 1)\)</span>$
+Target homoclinic energy: <span class="arithmatex">\(E_0 = 0.0\text{ J}\)</span>.</p>
+<h4 id="desired-cart-acceleration-ddotx_textdes">Desired Cart Acceleration (<span class="arithmatex">\(\ddot{x}_{\text{des}}\)</span>)<a class="headerlink" href="#desired-cart-acceleration-ddotx_textdes" title="Permanent link">&para;</a></h4>
+<p>Following Mark Spong (1995), the cart acceleration is commanded to pump energy into the pendulum while maintaining the cart near the center of the track:</p>
+<div class="arithmatex">\[\ddot{x}_{\text{des}} = k_E \cdot (E_p - E_0) \cdot \text{sign}(\dot{\theta} \cos\theta) - k_{p,x} x - k_{d,x} \dot{x}\]</div>
+<p>where:
+- <span class="arithmatex">\(k_E = 0.8\text{ m}/(\text{s}^2\cdot\text{J})\)</span>: Energy pumping gain.
+- <span class="arithmatex">\(k_{p,x} = 2.0\text{ s}^{-2}\)</span>: Cart centering proportional gain (prevents rail collisions).
+- <span class="arithmatex">\(k_{d,x} = 1.5\text{ s}^{-1}\)</span>: Cart centering derivative damping.</p>
+<h4 id="force-mapping-via-partial-feedback-linearization">Force Mapping via Partial Feedback Linearization<a class="headerlink" href="#force-mapping-via-partial-feedback-linearization" title="Permanent link">&para;</a></h4>
+<p>Given desired cart acceleration <span class="arithmatex">\(\ddot{x}_{\text{des}}\)</span>, the commanded motor force <span class="arithmatex">\(F\)</span> is computed from the coupled equations:</p>
+<div class="arithmatex">\[F = \left( (M + m) - \frac{m^2 l^2 \cos^2\theta}{I + m l^2} \right) \ddot{x}_{\text{des}} - m l \dot{\theta}^2 \sin\theta - \frac{m g l \sin\theta \cos\theta}{I + m l^2}\]</div>
+<hr />
+<h2 id="2-hybrid-switching-architecture-swing-up-to-lqr">2. Hybrid Switching Architecture (Swing-Up to LQR)<a class="headerlink" href="#2-hybrid-switching-architecture-swing-up-to-lqr" title="Permanent link">&para;</a></h2>
+<p>To guarantee smooth transition and avoid high-frequency switching chattering, a <strong>hysteresis state-machine</strong> is employed:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>                  +-----------------------------------+
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>                  |        MODE 1: SWING-UP           |
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>                  |     (Spong Energy Shaping)        |
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>                  +-----------------+-----------------+
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>                                    |
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>          Condition: |theta| &lt;= 0.35 rad (20 deg) AND
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>                     |theta_dot| &lt;= 1.5 rad/s
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>                                    |
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>                                    v
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>                  +-----------------------------------+
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>                  |        MODE 2: LQR BALANCE        |
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>                  |          u = -K (x - x_ref)       |
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>                  +-----------------+-----------------+
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>                                    |
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>          Exit Condition (Escape): |theta| &gt; 0.60 rad (34 deg)
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>                                    |
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>                                    +---&gt; (Fall back to Swing-Up)
+</span></code></pre></div>
+<hr />
+<h2 id="3-quantitative-basin-of-attraction-for-cart-pole-lqr">3. Quantitative Basin of Attraction for Cart-Pole LQR<a class="headerlink" href="#3-quantitative-basin-of-attraction-for-cart-pole-lqr" title="Permanent link">&para;</a></h2>
+<p>When initialized near upright without swing-up assistance, the linear LQR controller <span class="arithmatex">\(u = -K x\)</span> stabilizes the full nonlinear <code>CartPole</code> system within the basin of attraction <span class="arithmatex">\(\mathcal{B}\)</span>.</p>
+<p>We distinguish between two bounds:
+1. <strong>Guaranteed Lyapunov Invariant Sub-Level Set (Inner Certificate)</strong>: <span class="arithmatex">\(\Omega_{c^*} = \{x \in \mathbb{R}^4 \mid x^T P x \le c^*\}\)</span> where <span class="arithmatex">\(\dot{V}(x) &lt; 0\)</span> along unconstrained linear flow.
+2. <strong>Measured Recovery Basin (Empirical Boundary with <span class="arithmatex">\(\pm 20\text{ N}\)</span> Saturation)</strong>: Empirically measured via high-resolution parameter sweeps in Experiment 05.</p>
+<h3 id="31-initial-condition-recovery-boundaries-x_0-0-0-theta_0-dottheta_0t">3.1 Initial Condition Recovery Boundaries (<span class="arithmatex">\(x_0 = [0, 0, \theta_0, \dot{\theta}_0]^T\)</span>)<a class="headerlink" href="#31-initial-condition-recovery-boundaries-x_0-0-0-theta_0-dottheta_0t" title="Permanent link">&para;</a></h3>
+<p>Simulated on <code>CartPole</code> (<span class="arithmatex">\(M=1.0\text{ kg}, m=0.1\text{ kg}, l=0.5\text{ m}\)</span>) under RK4 integration (<span class="arithmatex">\(dt = 0.001\text{ s}\)</span>, <span class="arithmatex">\(T = 6.0\text{ s}\)</span>–<span class="arithmatex">\(8.0\text{ s}\)</span>, <span class="arithmatex">\(|F| \le 20\text{ N}\)</span>):</p>
+<p>| LQR Configuration | Weights <span class="arithmatex">\((Q, R)\)</span> | Lyapunov Inner Bound <span class="arithmatex">\(|\theta_0|_{\text{lyap}}\)</span> | Measured Max Angle <span class="arithmatex">\(|\theta_0|_{\max}\)</span> (<span class="arithmatex">\(\dot{\theta}_0=0\)</span>) | Measured Max Ang. Vel <span class="arithmatex">\(|\dot{\theta}_0|_{\max}\)</span> (<span class="arithmatex">\(\theta_0=0\)</span>) | Settling Time <span class="arithmatex">\(t_s\)</span> (<span class="arithmatex">\(2\%\)</span>) |
+| :--- | :--- | :---: | :---: | :---: | :---: |
+| <strong>Set 1: Standard Balanced</strong> | <span class="arithmatex">\(Q=\text{diag}([10, 1, 100, 10]), R=0.1\)</span> | <span class="arithmatex">\(0.38\text{ rad}\)</span> (<span class="arithmatex">\(21.8^\circ\)</span>) | <strong><span class="arithmatex">\(0.83\text{ rad}\)</span> (<span class="arithmatex">\(47.6^\circ\)</span>)</strong> | <strong><span class="arithmatex">\(4.4\text{ rad/s}\)</span></strong> | <span class="arithmatex">\(2.45\text{ s}\)</span> |
+| <strong>Set 2: Aggressive Angle</strong> | <span class="arithmatex">\(Q=\text{diag}([1, 0.1, 1000, 10]), R=0.01\)</span> | <span class="arithmatex">\(0.45\text{ rad}\)</span> (<span class="arithmatex">\(25.8^\circ\)</span>) | <strong><span class="arithmatex">\(0.92\text{ rad}\)</span> (<span class="arithmatex">\(52.7^\circ\)</span>)</strong> | <strong><span class="arithmatex">\(5.3\text{ rad/s}\)</span></strong> | <span class="arithmatex">\(0.82\text{ s}\)</span> |
+| <strong>Set 3: Soft Energy-Saving</strong> | <span class="arithmatex">\(Q=\text{diag}([1, 0.1, 10, 1]), R=1.0\)</span> | <span class="arithmatex">\(0.22\text{ rad}\)</span> (<span class="arithmatex">\(12.6^\circ\)</span>) | <strong><span class="arithmatex">\(1.00\text{ rad}\)</span> (<span class="arithmatex">\(57.3^\circ\)</span>)</strong> | <strong><span class="arithmatex">\(5.3\text{ rad/s}\)</span></strong> | <span class="arithmatex">\(4.10\text{ s}\)</span> |</p>
+<hr />
+<h3 id="32-ellipsoidal-lyapunov-invariant-sets-vs-true-basin">3.2 Ellipsoidal Lyapunov Invariant Sets vs. True Basin<a class="headerlink" href="#32-ellipsoidal-lyapunov-invariant-sets-vs-true-basin" title="Permanent link">&para;</a></h3>
+<p>The quadratic Lyapunov function <span class="arithmatex">\(V(x) = x^T P x\)</span> provides a conservative analytical certificate <span class="arithmatex">\(\Omega_{c^*} = \{x \in \mathbb{R}^4 \mid x^T P x \le c^*\}\)</span>.</p>
+<ul>
+<li><strong>Why Lyapunov Certificates are Conservative:</strong><br />
+  The sub-level set <span class="arithmatex">\(\Omega_{c^*}\)</span> requires <span class="arithmatex">\(\dot{V}(x) &lt; 0\)</span> for <em>all</em> points in the ellipsoid simultaneously. However, system trajectories that start outside <span class="arithmatex">\(\Omega_{c^*}\)</span> can temporarily increase <span class="arithmatex">\(V(x)\)</span> while still remaining bounded and eventually entering <span class="arithmatex">\(\Omega_{c^*}\)</span> asymptotically.</li>
+<li><strong>Why Saturation Enlarges the Recoverable Basin:</strong><br />
+  On large initial angles (<span class="arithmatex">\(&gt; 45^\circ\)</span>), an unconstrained linear law <span class="arithmatex">\(u = -Kx\)</span> commands massive forces (<span class="arithmatex">\(&gt; 200\text{ N}\)</span>), driving numerical instability in the coupled non-minimum phase dynamics. Clamping to <span class="arithmatex">\(\pm 20\text{ N}\)</span> naturally tempers cart acceleration, allowing the pole's momentum to be smoothly arrested.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

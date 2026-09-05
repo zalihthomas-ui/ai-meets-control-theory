@@ -1,0 +1,2144 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Unified benchmark, classical and AI-driven control framework with 34 empirical experiments, hardware bridge, and publication-grade docs.">
+      
+      
+        <meta name="author" content="Zalih Thomas">
+      
+      
+      
+        <link rel="prev" href="../PORTAL/">
+      
+      
+        <link rel="next" href="../roadmap-phase3/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Phase 2 Roadmap - AIMCT: AI Meets Control Theory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ai-meets-control-theory-project-roadmap" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="AIMCT: AI Meets Control Theory" class="md-header__button md-logo" aria-label="AIMCT: AI Meets Control Theory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            AIMCT: AI Meets Control Theory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Phase 2 Roadmap
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zalihthomas/ai-meets-control-theory" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zalihthomas/ai-meets-control-theory
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../GETTING-STARTED/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../DECISION-GUIDE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Decision Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../RESULTS/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Results & Benchmarks
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../USAGE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Usage Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../VISUALIZATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Visualization
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../DEV_PREVIEW/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Design Preview
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../experiments/" class="md-tabs__link">
+          
+  
+  
+  Experiments
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../hardware/two-link-arm/" class="md-tabs__link">
+          
+  
+  
+  Hardware
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../notebooks/01_tour/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  🚀 AI Meets Control Theory (AIMCT) — Interactive Guided Tour
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../api/" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../PORTAL/" class="md-tabs__link">
+          
+  
+  
+  Project
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="AIMCT: AI Meets Control Theory" class="md-nav__button md-logo" aria-label="AIMCT: AI Meets Control Theory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    AIMCT: AI Meets Control Theory
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zalihthomas/ai-meets-control-theory" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zalihthomas/ai-meets-control-theory
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GETTING-STARTED/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DECISION-GUIDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RESULTS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results & Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../USAGE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../VISUALIZATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DEV_PREVIEW/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Preview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experiments
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Experiments
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../experiments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    All 34 Experiments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hardware
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardware/two-link-arm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2-Link Arm Bridge
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/01_tour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🚀 AI Meets Control Theory (AIMCT) — Interactive Guided Tour
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/systems/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/controllers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Controllers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/planning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/trajectories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trajectories
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/sysid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Identification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/ml/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Machine Learning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/rl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reinforcement Learning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/hybrid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hybrid Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/hil/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware-in-the-Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/viz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/dev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PORTAL/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Portal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phase 2 Roadmap
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phase 2 Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#phase-1-foundation-curriculum-capstone-completed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1 — Foundation, Curriculum, &amp; Capstone (✅ COMPLETED)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-2-post-capstone-depth-real-systems-packaging-complete" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2 — Post-Capstone Depth, Real Systems, &amp; Packaging (✅ COMPLETE)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 2 — Post-Capstone Depth, Real Systems, &amp; Packaging (✅ COMPLETE)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#track-a-more-real-dynamical-systems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Track A — More Real Dynamical Systems
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#track-b-method-depth-advanced-synthesis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Track B — Method Depth &amp; Advanced Synthesis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#track-c-benchmark-trajectory-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Track C — Benchmark &amp; Trajectory Infrastructure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#track-d-pypi-packaging-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Track D — PyPI Packaging &amp; Distribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#not-originally-scoped-shipped-anyway-aimctviz-aimctdev" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Not originally scoped, shipped anyway — aimct.viz &amp; aimct.dev
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-3-robust-deployable-reachable-active-opened-2026-09-06" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3 — Robust, Deployable, Reachable (🚧 ACTIVE — opened 2026-09-06)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../roadmap-phase3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phase 3 Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vision/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vision & Principles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PACKAGING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Packaging & Release
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#phase-1-foundation-curriculum-capstone-completed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1 — Foundation, Curriculum, &amp; Capstone (✅ COMPLETED)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-2-post-capstone-depth-real-systems-packaging-complete" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2 — Post-Capstone Depth, Real Systems, &amp; Packaging (✅ COMPLETE)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 2 — Post-Capstone Depth, Real Systems, &amp; Packaging (✅ COMPLETE)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#track-a-more-real-dynamical-systems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Track A — More Real Dynamical Systems
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#track-b-method-depth-advanced-synthesis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Track B — Method Depth &amp; Advanced Synthesis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#track-c-benchmark-trajectory-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Track C — Benchmark &amp; Trajectory Infrastructure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#track-d-pypi-packaging-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Track D — PyPI Packaging &amp; Distribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#not-originally-scoped-shipped-anyway-aimctviz-aimctdev" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Not originally scoped, shipped anyway — aimct.viz &amp; aimct.dev
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-3-robust-deployable-reachable-active-opened-2026-09-06" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3 — Robust, Deployable, Reachable (🚧 ACTIVE — opened 2026-09-06)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ai-meets-control-theory-project-roadmap">AI Meets Control Theory — Project Roadmap<a class="headerlink" href="#ai-meets-control-theory-project-roadmap" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Engineering Agreement:</strong> Priority order for all contributions: <strong>clarity → correctness → reproducibility → performance.</strong></p>
+</blockquote>
+<hr />
+<h2 id="phase-1-foundation-curriculum-capstone-completed">Phase 1 — Foundation, Curriculum, &amp; Capstone (✅ COMPLETED)<a class="headerlink" href="#phase-1-foundation-curriculum-capstone-completed" title="Permanent link">&para;</a></h2>
+<p>The entire foundational curriculum, capstone robotics showcases, deep RL agents, adaptive controllers, and benchmark challenge suites are implemented from scratch, tested, and validated:</p>
+<ul>
+<li>[x] <strong>Module 01: Mathematical Foundations</strong> — Matrix exponential, Runge--Kutta integration (RK4), numerical optimization.</li>
+<li>[x] <strong>Module 02: Dynamic System Modeling</strong> — State-space representations, analytical/numerical Jacobian linearisation, discretization.</li>
+<li>[x] <strong>Module 03: Classical Control</strong> — Filtered derivative PID with conditional anti-windup clamping (Exp 03).</li>
+<li>[x] <strong>Module 04: Modern Control &amp; Estimation</strong> — Controllability, observability, Ackermann pole placement, full-state Luenberger observers, Filter Algebraic Riccati Equation (FARE) duality, continuous/discrete Kalman filtering with Joseph covariance update, Extended Kalman Filter (EKF), and Unscented Kalman Filter (UKF) (Exp 04, 05, 06, 15, 16).</li>
+<li>[x] <strong>Module 05: Optimal &amp; Constrained Control</strong> — Hamiltonian Schur CARE solver, continuous full-state LQR gain margins, constrained receding-horizon Model Predictive Control with active-set QP solver and reference preview (Exp 08, 14).</li>
+<li>[x] <strong>Module 06: System ID &amp; Machine Learning</strong> — Closed-loop least-squares state-space ID, DMDc, matrix logarithm ZOH inversion, from-scratch MLP with Adam, residual/grey-box LearnedDynamics, and Sampling-based MPC (CEM) with CARE terminal cost (Exp 07, 09, 10, 20).</li>
+<li>[x] <strong>Module 07: Reinforcement Learning</strong> — Gymnasium <code>ControlEnv</code> adapter, state/action discretization, Tabular Q-Learning, Deep Q-Networks (DQN), REINFORCE, and Proximal Policy Optimization (PPO) (Exp 11, 18).</li>
+<li>[x] <strong>Module 08: AI + Control (Hybrid Architectures)</strong> — Supervisory safety shielding, action filtering, barrier predicates, auditable intervention logging (Exp 12).</li>
+<li>[x] <strong>Module 09: Advanced State Estimation, Adaptive Control &amp; Robotics</strong> — Full 6-state Planar Quadrotor (Crazyflie 2.0), differential flatness feedforward trajectory generation, Bryson-rule scaling, EKF/UKF output feedback, Model Reference Adaptive Control (MRAC), and obstacle-aware Sampling NMPC (Exp 14, 15, 16, 17, 20).</li>
+<li>[x] <strong>Module 10: The Intelligent Control Challenge &amp; Grand Synthesis</strong> — Standardized multi-track benchmarking engine, robustness sweeps, cross-paradigm leaderboard, and 5-way capstone grand bake-off (Exp 19, 21).</li>
+<li>[x] <strong>Interactive Live Sandboxes (v1)</strong> — 2D planar quadrotor sandbox (<code>python -m aimct live</code>) and 6-DOF WebGL Three.js 3D sandbox (<code>python -m aimct live3d --web</code>). Superseded/extended by the <code>aimct.viz</code> sandbox family below.</li>
+<li>[x] <strong>Test Harness &amp; Reports</strong> — living technical report PDF, master results table (<code>docs/RESULTS.md</code>), and engineering decision guide (<code>docs/DECISION-GUIDE.md</code>). Test count below reflects the current total, not the Phase-1 snapshot.</li>
+</ul>
+<hr />
+<h2 id="phase-2-post-capstone-depth-real-systems-packaging-complete">Phase 2 — Post-Capstone Depth, Real Systems, &amp; Packaging (✅ COMPLETE)<a class="headerlink" href="#phase-2-post-capstone-depth-real-systems-packaging-complete" title="Permanent link">&para;</a></h2>
+<p>Phase 2 added <strong>breadth</strong> (more real-world multi-body systems), <strong>depth</strong> (the
+algorithmic gaps the capstone bake-off exposed), a <strong>visualisation layer</strong>
+(not originally scoped — added when the user asked for it), and turned the
+repository into an installable, PyPI-ready package. All four original tracks
+shipped; two items were consciously descoped as genuine stretch goals rather
+than left silently undone (marked below).</p>
+<h3 id="track-a-more-real-dynamical-systems">Track A — More Real Dynamical Systems<a class="headerlink" href="#track-a-more-real-dynamical-systems" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[x] <strong>Differential-Drive Mobile Robot</strong> (<code>aimct.systems.DifferentialDriveRobot</code>,
+  <code>d7f48bd</code>) — unicycle <code>[x, y, θ, v, ω]</code> with a
+  first-order speed/yaw-rate actuator lag, analytic <code>linearize()</code> about a
+  straight path, TurtleBot3-Burger-class parameters. Two experiments:</li>
+<li><a href="../experiments/22_diffdrive_path_following/">Experiment 22</a> — pure
+    pursuit vs. Stanley vs. path LQR vs. kinematic MPC on a waypoint spline.
+    Verdict: each design trades along-track accuracy against cross-track
+    tightness against energy; the MPC horizon buys nothing on a smooth,
+    unconstrained path.</li>
+<li><a href="../experiments/25_diffdrive_moving_obstacle/">Experiment 25</a> — the
+    "cluttered map" task, done as analytic keep-out disks (two static, one
+    <strong>moving</strong> across the path) rather than a full occupancy grid (a
+    deliberate scope call — see the experiment's README). CEM and iLQR carry
+    the same obstacle-penalty cost Experiments 20/21 used on the quad; CEM
+    is the only entry that meaningfully avoids, iLQR's gradient step is
+    limited by the barrier's local non-convexity near an obstacle's centre.</li>
+<li>[x] <strong>2-Link Planar Robot Arm</strong> (<code>aimct.systems.TwoLinkArm</code>,
+  <code>d7f48bd</code>) — planar Euler–Lagrange dynamics with
+  public <code>M(q)</code>/<code>C(q,q̇)</code>/<code>G(q)</code>, a settable wrist payload, real link
+  masses/inertias. <a href="../experiments/23_twolink_arm_tracking/">Experiment 23</a>:
+  PD+gravity-comp vs. computed torque vs. joint LQR vs. joint MPC on the
+  nominal arm, then an unknown 0.5 kg payload with every controller still
+  using the 0 kg model. Adaptive control is a <strong>Slotine–Li one-parameter
+  adaptive computed torque</strong>, not the generic <code>aimct.controllers.MRAC</code> class
+  the original roadmap named — <code>MRAC</code> assumes a linear matched uncertainty
+  and does not fit a nonlinear manipulator's payload term; the adaptive law
+  built for this experiment is the correct tool and ties directly to
+  <a href="../experiments/17_adaptive_vs_fixed_changing_plant/">Experiment 17</a>'s
+  lesson (adapt the controller, don't identify the plant) on a real
+  multi-body system.</li>
+<li>[x] <strong>Bicycle-Model Ground Vehicle</strong> (<code>aimct.systems.BicycleVehicle</code>) —
+  dynamic single-track lateral model with linear <strong>and</strong> Pacejka tire
+  forces. <a href="../experiments/27_bicycle_double_lane_change/">Experiment 27</a>:
+  high-speed double-lane-change, Stanley vs. LQR vs. kinematic MPC, with a
+  linear→Pacejka tire swap that exposes where the linear-tire assumption
+  breaks.</li>
+<li>[x] <em>(was stretch — delivered)</em> <strong>Furuta pendulum</strong>
+  (<code>aimct.systems.FurutaPendulum</code>,
+  <a href="../experiments/28_furuta_pendulum_control/">Exp 28</a>), <strong>ball-and-beam</strong>
+  (<code>aimct.systems.BallAndBeam</code>,
+  <a href="../experiments/33_ball_and_beam_control/">Exp 33</a>), <strong>coupled two-tank</strong>
+  (<code>aimct.systems.TwoTank</code>,
+  <a href="../experiments/30_two_tank_level_control/">Exp 30</a>) — all three classic
+  lab benchmarks shipped with datasheet-grade reference docs.</li>
+</ul>
+<h3 id="track-b-method-depth-advanced-synthesis">Track B — Method Depth &amp; Advanced Synthesis<a class="headerlink" href="#track-b-method-depth-advanced-synthesis" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[x] <strong>Nonlinear MPC — iLQR / Real-Time Iteration</strong>
+  (<code>aimct.controllers.ILQR</code> / <code>iLQR</code>, <code>c480efb</code>) —
+  a regularised backward Riccati sweep (Tassa 2012 line search) with a
+  Diehl real-time-iteration receding-horizon wrapper.
+  <a href="../experiments/24_ilqr_vs_sampling_mpc/">Experiment 24</a> closes the
+  Experiment-21 remark directly: on the same cart-pole swing-up and quad
+  figure-8, iLQR beats sampling MPC (CEM) by ~2 orders of magnitude in
+  tracking error at comparable or lower compute.
+  <a href="../experiments/26_harder_reference_paths/">Experiment 26</a> confirms this
+  is not a lemniscate artefact (iLQR wins 32×–840× on a sharper Lissajous
+  and an easing-curvature spiral too), while
+  <a href="../experiments/25_diffdrive_moving_obstacle/">Experiment 25</a> shows the
+  honest limit: on a <strong>non-convex</strong> obstacle-avoidance cost, gradient-based
+  iLQR is outperformed by derivative-free CEM — smooth cost → iLQR wins big;
+  non-smooth cost → CEM's population search still earns its keep. This is
+  the fuller, evidence-backed version of Experiment 21's "CEM is loose and
+  slow" remark, not a blanket win for either method.</li>
+<li>[x] <strong>Soft Actor-Critic (SAC)</strong> (<code>aimct.rl.sac</code>) — from-scratch
+  off-policy SAC (squashed-Gaussian actor, twin critics + Polyak targets,
+  auto-tuned temperature). <a href="../experiments/31_sac_vs_ppo_sample_efficiency/">Experiment 31</a>
+  measures its sample efficiency against PPO on a continuous task.</li>
+<li>[x] <strong>Direct trajectory optimisation</strong> (<code>aimct.planning.DirectCollocation</code>)
+  — Hermite–Simpson direct transcription of a finite-horizon OCP.
+  <a href="../experiments/32_direct_collocation_vs_ilqr/">Experiment 32</a>: the only
+  planner that actually meets a hard terminal-state constraint (iLQR and CEM
+  only penalise the miss softly).</li>
+<li>[x] <strong>First-class behaviour cloning + DAgger</strong> (<code>aimct.rl.imitation</code>) —
+  <code>BehaviorCloning</code> + a <code>dagger</code> interactive data-aggregation loop.
+  <a href="../experiments/29_dagger_vs_bc_lane_change/">Experiment 29</a>: DAgger
+  recovers from the compounding-error drift that sinks plain BC.</li>
+<li>[x] <strong>Disturbance-observer control</strong> (<code>aimct.controllers.DisturbanceObserver</code></li>
+<li><code>QFilter</code>) — a 2-DOF DOB with matched cancellation and virtual-tilt
+  reallocation for the unmatched (horizontal-wind) channel.
+  <a href="../experiments/34_dob_wind_rejection/">Experiment 34</a>.</li>
+<li>[ ] <em>(Stretch → moved to Phase 3, Track A)</em> H∞ / μ-synthesis loop shaping.
+  Now a first-class Phase-3 deliverable — see
+  <a href="../roadmap-phase3/"><code>docs/roadmap-phase3.md</code></a>.</li>
+</ul>
+<h3 id="track-c-benchmark-trajectory-infrastructure">Track C — Benchmark &amp; Trajectory Infrastructure<a class="headerlink" href="#track-c-benchmark-trajectory-infrastructure" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[x] <strong>Trajectory-tracking harness</strong> (<code>aimct.benchmarks.tracking</code> —
+  <code>track_trajectory</code>, <code>TrackingResult</code>, <code>70a22c8</code>,
+  perf-fixed at <code>6846ff3</code>) — RMS/max position
+  error, RMS cross-track error, path-completion %, control energy, a
+  <code>space="joint"</code> mode for non-Cartesian tracking (Experiment 23), and
+  <code>TrackingResult.animate()</code> (see <code>aimct.viz</code> below). Used by Experiments
+  22, 23, 25, 26.</li>
+<li>[x] <strong><code>aimct.trajectories</code></strong> — <code>Setpoint</code>, <code>Circle</code>, <code>Lemniscate</code>,
+  <code>MinimumJerk</code>, <code>Spline</code>, <code>Dubins</code> (<code>70a22c8</code>),
+  plus <code>Lissajous</code>, <code>Rose</code>, <code>Spiral</code>
+  (<code>168bcea</code>, added for Experiment 26's
+  harder-path stress test).</li>
+</ul>
+<h3 id="track-d-pypi-packaging-distribution">Track D — PyPI Packaging &amp; Distribution<a class="headerlink" href="#track-d-pypi-packaging-distribution" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[x] <strong>Distribution configuration</strong> — the <code>aimct</code> name is unreserved on
+  PyPI (verified); full PEP 621 metadata in <code>pyproject.toml</code> (authors,
+  description, <code>readme</code>, <code>license</code>, <code>keywords</code>, trove classifiers,
+  <code>project.urls</code>); console entry point <code>aimct = "aimct.__main__:main"</code>
+  (<code>2f05cfd</code>, version single-sourced at
+  <code>d570324</code>).</li>
+<li>[x] <strong>Wheel &amp; source distribution</strong> — <code>MANIFEST.in</code> excludes
+  <code>experiments/</code>, <code>docs/papers/*.pdf</code>, and report build artifacts; a clean
+  <code>aimct-0.1.0</code> wheel + sdist builds locally with <code>python -m build</code>; the
+  installed wheel prints a clone hint instead of failing when an interactive
+  sandbox script isn't present (<code>d570324</code>).</li>
+<li>[x] <strong>Automated release pipeline</strong> — <code>.github/workflows/release.yml</code>,
+  dormant until the first tag, publishes via <strong>PyPI Trusted Publishing
+  (OIDC)</strong> — no tokens in the repo.</li>
+<li>[x] <strong>Documentation &amp; release runbook</strong> — <code>CHANGELOG.md</code>
+  (Keep-a-Changelog) and <code>docs/PACKAGING.md</code>.</li>
+<li>[x] <strong>Published to PyPI</strong> — <code>aimct 0.1.0</code> (2026-09-05) and <code>aimct 0.2.0</code>
+  (2026-09-06) are live via the OIDC pipeline; <code>pip install aimct</code> works.
+  v0.2.0 also has a full GitHub Release with notes.</li>
+</ul>
+<h3 id="not-originally-scoped-shipped-anyway-aimctviz-aimctdev">Not originally scoped, shipped anyway — <code>aimct.viz</code> &amp; <code>aimct.dev</code><a class="headerlink" href="#not-originally-scoped-shipped-anyway-aimctviz-aimctdev" title="Permanent link">&para;</a></h3>
+<p>The user asked mid-Phase-2 for a unified visualisation layer and a
+design-time system preview. Both landed as first-class subpackages:</p>
+<ul>
+<li>[x] <strong><code>aimct.viz</code></strong> (<code>0c8a45c</code> onward,
+  <code>docs/VISUALIZATION.md</code>) — one <code>SystemArtist</code> contract powers two front
+  ends: <code>animate(traj, system)</code> replays any <code>simulate()</code> /
+  <code>track_trajectory()</code> run (reference + trail + telemetry HUD,
+  <code>.save("run.mp4" | "run.gif")</code>), and <code>Sandbox</code> drives the same picture in
+  real time with disturbances and hot-swappable controllers
+  (<code>798b45e</code> added a help overlay, "surprise me",
+  snapshot, and session-best tracking on top). Artists exist for <code>Pendulum</code>,
+  <code>CartPole</code>, <code>TwoLinkArm</code>, <code>DifferentialDriveRobot</code>, <code>PlanarQuadrotor</code>;
+  <code>register_artist()</code> extends it to a new system in one class.</li>
+<li>[x] <strong>Seven interactive sandboxes</strong> under <code>python -m aimct live
+  [drone|drone3d|arm|arm3d|diffdrive|armbalance|armbalance3d]</code>
+  (<code>0c8a45c</code> drone/arm/diffdrive,
+  <code>6873322</code> armbalance,
+  <code>6f1c19a</code> the PyVista 3-D arm variants) — the
+  <code>drone3d</code> target auto-selects PyVista, falling back to matplotlib-3D or
+  the experimental WebGL build.</li>
+<li>[x] <strong><code>aimct.dev</code></strong> (<code>4d146d9</code>,
+  <code>docs/DEV_PREVIEW.md</code>, CLI wired at
+  <code>e009282</code>) — a design-time preview for a new
+  <code>DynamicalSystem</code>: pole map, controllability/observability, an
+  analytic-vs-numeric <code>linearize()</code> Jacobian residual check, and four
+  response traces (free/step/impulse/sinusoid), rebuilt on every file save
+  via <code>python -m aimct preview mymodule.py:MyPlant --watch</code>. Deliberately
+  separate from <code>aimct.viz</code> (authoring-time tool vs. the runtime replay/
+  sandbox story), though it may borrow the replay panel from it later.</li>
+</ul>
+<hr />
+<h2 id="phase-3-robust-deployable-reachable-active-opened-2026-09-06">Phase 3 — Robust, Deployable, Reachable (🚧 ACTIVE — opened 2026-09-06)<a class="headerlink" href="#phase-3-robust-deployable-reachable-active-opened-2026-09-06" title="Permanent link">&para;</a></h2>
+<p>Full plan with deliverables, experiments, and per-agent assignments:
+<strong><a href="../roadmap-phase3/"><code>docs/roadmap-phase3.md</code></a></strong>. Summary:</p>
+<ul>
+<li><strong>Track A — Robust &amp; certified control.</strong> H∞ mixed-sensitivity synthesis
+  (<code>aimct.controllers.hinf</code>), μ / structured-uncertainty analysis
+  (<code>aimct.robust</code>), tube MPC. Closes the last deferred Track-B item.
+  Experiments 35, 37.</li>
+<li><strong>Track B — The hardware bridge (flagship).</strong> <code>aimct.hil</code> (real-time loop</li>
+<li>plant emulator with quantisation / delay / saturation / jitter),
+  identification-from-logs (<code>aimct.sysid</code>), a controller export path
+  (<code>aimct.deploy</code>), and a fully documented buildable 2-DOF arm
+  (<code>docs/hardware/two-link-arm.md</code>). Experiment 36 runs the <code>live_arm_balance</code>
+  controllers through the HIL emulator to see if the real build would stand.</li>
+<li><strong>Track C — Estimation &amp; scale.</strong> Moving-horizon estimation, particle
+  filter, multi-agent consensus / formation control. Experiments 38, 39.</li>
+<li><strong>Track D — Reach.</strong> A hosted mkdocs-material docs portal, a JOSS paper
+  draft, a performance-regression CI suite, vectorised batch simulation.</li>
+</ul>
+<p>Of the Phase-2 items previously parked here: the bicycle vehicle, SAC,
+direct trajectory optimisation, the imitation module, and the classic-lab
+stretch systems all <strong>shipped in v0.2.0</strong> (Experiments 27–34). Only
+H∞/μ-synthesis carried forward — now Track A above.</p>
+<hr />
+<p><em>Superseded: <code>docs/roadmap-phase2.md</code> was the Phase-2 planning document this
+page now reports the outcome of; kept for history, not maintained further.</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,2676 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Unified benchmark, classical and AI-driven control framework with 34 empirical experiments, hardware bridge, and publication-grade docs.">
+      
+      
+        <meta name="author" content="Zalih Thomas">
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Canonical Benchmark Systems (L1 & L2) — Reference Specifications - AIMCT: AI Meets Control Theory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#canonical-benchmark-systems-l1-l2-reference-specifications" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="AIMCT: AI Meets Control Theory" class="md-header__button md-logo" aria-label="AIMCT: AI Meets Control Theory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            AIMCT: AI Meets Control Theory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Canonical Benchmark Systems (L1 &amp; L2) — Reference Specifications
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zalihthomas/ai-meets-control-theory" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zalihthomas/ai-meets-control-theory
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../GETTING-STARTED/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../DECISION-GUIDE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Decision Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../RESULTS/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Results & Benchmarks
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../USAGE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Usage Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../VISUALIZATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Visualization
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../DEV_PREVIEW/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Design Preview
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../experiments/" class="md-tabs__link">
+          
+  
+  
+  Experiments
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../hardware/two-link-arm/" class="md-tabs__link">
+          
+  
+  
+  Hardware
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../notebooks/01_tour/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  🚀 AI Meets Control Theory (AIMCT) — Interactive Guided Tour
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../PORTAL/" class="md-tabs__link">
+          
+  
+  
+  Project
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="AIMCT: AI Meets Control Theory" class="md-nav__button md-logo" aria-label="AIMCT: AI Meets Control Theory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    AIMCT: AI Meets Control Theory
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zalihthomas/ai-meets-control-theory" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zalihthomas/ai-meets-control-theory
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GETTING-STARTED/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DECISION-GUIDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../RESULTS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results & Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../USAGE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VISUALIZATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DEV_PREVIEW/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Preview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experiments
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Experiments
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../experiments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    All 34 Experiments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hardware
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hardware/two-link-arm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2-Link Arm Bridge
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/01_tour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🚀 AI Meets Control Theory (AIMCT) — Interactive Guided Tour
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/systems/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/controllers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Controllers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/planning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/trajectories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trajectories
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/sysid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Identification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ml/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Machine Learning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/rl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reinforcement Learning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/hybrid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hybrid Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/hil/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware-in-the-Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/viz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/dev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PORTAL/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Portal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phase 2 Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap-phase3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phase 3 Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../vision/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vision & Principles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PACKAGING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Packaging & Release
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-summary-matrix-of-benchmark-systems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Summary Matrix of Benchmark Systems
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-level-1-fundamental-linear-systems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Level 1: Fundamental Linear Systems
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Level 1: Fundamental Linear Systems">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-mass-spring-damper-msd-1-dof" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Mass-Spring-Damper (MSD) — 1-DOF
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.1 Mass-Spring-Damper (MSD) — 1-DOF">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#equations-of-motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Equations of Motion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-space-formulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State-Space Formulation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transfer-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transfer Function
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#canonical-parameter-sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Canonical Parameter Sets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reference-controllers-set-a-m10-k50-c05" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reference Controllers (Set A: \(m=1.0, k=5.0, c=0.5\))
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-unstable-mass-spring-damper-inverted-negative-stiffness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Unstable Mass-Spring-Damper (Inverted / Negative Stiffness)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.2 Unstable Mass-Spring-Damper (Inverted / Negative Stiffness)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#equations-of-motion_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Equations of Motion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#canonical-parameter-set-phase-0-challenge-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Canonical Parameter Set (Phase 0 Challenge Baseline)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reference-controllers-for-unstable-msd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reference Controllers for Unstable MSD
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-armature-controlled-dc-motor-speed-position" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Armature-Controlled DC Motor (Speed &amp; Position)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.3 Armature-Controlled DC Motor (Speed &amp; Position)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#equations-of-motion_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Equations of Motion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-space-formulation_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State-Space Formulation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#canonical-parameter-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Canonical Parameter Set
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-level-2-nonlinear-benchmark-systems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Level 2: Nonlinear Benchmark Systems
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Level 2: Nonlinear Benchmark Systems">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-nonlinear-simple-pendulum" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Nonlinear Simple Pendulum
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.1 Nonlinear Simple Pendulum">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#continuous-nonlinear-dynamics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Continuous Nonlinear Dynamics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#canonical-parameter-set_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Canonical Parameter Set
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#equilibria-linearizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Equilibria &amp; Linearizations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reference-hybrid-controller-energy-swing-up-lqr-balance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reference Hybrid Controller: Energy Swing-Up + LQR Balance
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-inverted-pendulum-on-a-cart-cart-pole" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Inverted Pendulum on a Cart (Cart-Pole)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.2 Inverted Pendulum on a Cart (Cart-Pole)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#state-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State Definitions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#full-nonlinear-equations-of-motion-euler-lagrange" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full Nonlinear Equations of Motion (Euler-Lagrange)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#canonical-parameter-sets_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Canonical Parameter Sets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linearized-state-space-model-around-upright-equilibrium-x-0-0-0-0t" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linearized State-Space Model Around Upright Equilibrium (\(x = [0, 0, 0, 0]^T\))
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#numerical-state-space-values-canonical-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Numerical State-Space Values (Canonical Set)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reference-lqr-design-for-cart-pole" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reference LQR Design for Cart-Pole
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-nonlinear-oscillators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Nonlinear Oscillators
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.3 Nonlinear Oscillators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#duffing-oscillator-double-well-chaos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Duffing Oscillator (Double-Well &amp; Chaos)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#van-der-pol-oscillator-nonlinear-limit-cycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Van der Pol Oscillator (Nonlinear Limit Cycle)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-benchmark-validation-cross-check-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Benchmark Validation &amp; Cross-Check Protocol
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="canonical-benchmark-systems-l1-l2-reference-specifications">Canonical Benchmark Systems (L1 &amp; L2) — Reference Specifications<a class="headerlink" href="#canonical-benchmark-systems-l1-l2-reference-specifications" title="Permanent link">&para;</a></h1>
+<p>This document defines the ground-truth physical parameters, continuous nonlinear ordinary differential equations (ODEs), linearized state-space models, controllability/observability verifications, and literature reference controller designs for Level 1 (Fundamental) and Level 2 (Nonlinear) benchmark dynamical systems in <strong>AI Meets Control Theory (AIMCT)</strong>.</p>
+<hr />
+<h2 id="1-summary-matrix-of-benchmark-systems">1. Summary Matrix of Benchmark Systems<a class="headerlink" href="#1-summary-matrix-of-benchmark-systems" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Level</th>
+<th style="text-align: left;">System</th>
+<th style="text-align: left;">State Vector <span class="arithmatex">\(x\)</span></th>
+<th style="text-align: left;">Input <span class="arithmatex">\(u\)</span></th>
+<th style="text-align: left;">Open-Loop Stability</th>
+<th style="text-align: left;">Key Control Challenges</th>
+<th style="text-align: left;">Baseline Methodologies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>L1.1</strong></td>
+<td style="text-align: left;">Mass-Spring-Damper</td>
+<td style="text-align: left;"><span class="arithmatex">\([p, \dot{p}]^T \in \mathbb{R}^2\)</span></td>
+<td style="text-align: left;">Force <span class="arithmatex">\(F \in \mathbb{R}\)</span></td>
+<td style="text-align: left;">Stable / Marginally Stable</td>
+<td style="text-align: left;">Damping adjustment, disturbance rejection</td>
+<td style="text-align: left;">PID, Pole Placement, LQR</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>L1.2</strong></td>
+<td style="text-align: left;">Inverted MSD / MagLev Analog</td>
+<td style="text-align: left;"><span class="arithmatex">\([p, \dot{p}]^T \in \mathbb{R}^2\)</span></td>
+<td style="text-align: left;">Force <span class="arithmatex">\(F \in \mathbb{R}\)</span></td>
+<td style="text-align: left;"><strong>Unstable</strong> (RHP pole)</td>
+<td style="text-align: left;">Stabilization of unstable open-loop pole</td>
+<td style="text-align: left;">PID, State Feedback, LQR</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>L1.3</strong></td>
+<td style="text-align: left;">Armature-Controlled DC Motor</td>
+<td style="text-align: left;"><span class="arithmatex">\([\theta, \dot{\theta}, i_a]^T \in \mathbb{R}^3\)</span></td>
+<td style="text-align: left;">Voltage <span class="arithmatex">\(V_a \in \mathbb{R}\)</span></td>
+<td style="text-align: left;">Stable</td>
+<td style="text-align: left;">Fast tracking, current limits, back-EMF</td>
+<td style="text-align: left;">Cascaded PI, LQR, Kalman Filter</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>L2.1</strong></td>
+<td style="text-align: left;">Simple Nonlinear Pendulum</td>
+<td style="text-align: left;"><span class="arithmatex">\([\theta, \dot{\theta}]^T \in \mathbb{R}^2\)</span></td>
+<td style="text-align: left;">Torque <span class="arithmatex">\(\tau \in \mathbb{R}\)</span></td>
+<td style="text-align: left;">Nonlinear (Saddle + Center)</td>
+<td style="text-align: left;">Large-angle nonlinearity, energy swing-up</td>
+<td style="text-align: left;">Energy Swing-Up + LQR, PPO/SAC</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>L2.2</strong></td>
+<td style="text-align: left;">Cart-Pole (Inverted Pendulum)</td>
+<td style="text-align: left;"><span class="arithmatex">\([x, \dot{x}, \theta, \dot{\theta}]^T \in \mathbb{R}^4\)</span></td>
+<td style="text-align: left;">Force <span class="arithmatex">\(F \in \mathbb{R}\)</span></td>
+<td style="text-align: left;"><strong>Unstable Underactuated</strong></td>
+<td style="text-align: left;">Underactuation, non-minimum phase, finite rail</td>
+<td style="text-align: left;">Swing-up + LQR, Linear MPC, PPO/DQN</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>L2.3</strong></td>
+<td style="text-align: left;">Duffing Oscillator</td>
+<td style="text-align: left;"><span class="arithmatex">\([x, \dot{x}]^T \in \mathbb{R}^2\)</span></td>
+<td style="text-align: left;">Force <span class="arithmatex">\(u \in \mathbb{R}\)</span></td>
+<td style="text-align: left;">Multi-stable / Chaotic</td>
+<td style="text-align: left;">Double-well potential, chaos suppression</td>
+<td style="text-align: left;">Feedback Linearization, MPC</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>L2.4</strong></td>
+<td style="text-align: left;">Van der Pol Oscillator</td>
+<td style="text-align: left;"><span class="arithmatex">\([x, \dot{x}]^T \in \mathbb{R}^2\)</span></td>
+<td style="text-align: left;">Force <span class="arithmatex">\(u \in \mathbb{R}\)</span></td>
+<td style="text-align: left;">Stable Limit Cycle</td>
+<td style="text-align: left;">Non-conservative negative damping near origin</td>
+<td style="text-align: left;">Nonlinear Damping Injection, MPC</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-level-1-fundamental-linear-systems">2. Level 1: Fundamental Linear Systems<a class="headerlink" href="#2-level-1-fundamental-linear-systems" title="Permanent link">&para;</a></h2>
+<h3 id="21-mass-spring-damper-msd-1-dof">2.1 Mass-Spring-Damper (MSD) — 1-DOF<a class="headerlink" href="#21-mass-spring-damper-msd-1-dof" title="Permanent link">&para;</a></h3>
+<p>The 1-degree-of-freedom mass-spring-damper is the canonical second-order linear dynamical system.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>         +---------+
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>   u(t) ---&gt;|  Mass m  |-----&gt; x(t)
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>         +----+----+
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>              |
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>         +----+----+
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>         | c     k |   (Damper c, Spring k)
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        ///     ///
+</span></code></pre></div>
+<h4 id="equations-of-motion">Equations of Motion<a class="headerlink" href="#equations-of-motion" title="Permanent link">&para;</a></h4>
+<div class="arithmatex">\[m \ddot{p}(t) + c \dot{p}(t) + k p(t) = u(t) + d(t)\]</div>
+<p>where:
+- <span class="arithmatex">\(p(t)\)</span>: position [m]
+- <span class="arithmatex">\(v(t) = \dot{p}(t)\)</span>: velocity [m/s]
+- <span class="arithmatex">\(u(t)\)</span>: control input force [N]
+- <span class="arithmatex">\(d(t)\)</span>: external disturbance force [N]</p>
+<h4 id="state-space-formulation">State-Space Formulation<a class="headerlink" href="#state-space-formulation" title="Permanent link">&para;</a></h4>
+<p>Defining state <span class="arithmatex">\(x = [p, v]^T \in \mathbb{R}^2\)</span> and output <span class="arithmatex">\(y = p \in \mathbb{R}\)</span>:</p>
+<div class="arithmatex">\[\dot{x}(t) = A x(t) + B u(t) + B_d d(t), \quad y(t) = C x(t) + D u(t)\]</div>
+<div class="arithmatex">\[A = \begin{bmatrix} 0 &amp; 1 \\ -\frac{k}{m} &amp; -\frac{c}{m} \end{bmatrix}, \quad B = \begin{bmatrix} 0 \\ \frac{1}{m} \end{bmatrix}, \quad B_d = \begin{bmatrix} 0 \\ \frac{1}{m} \end{bmatrix}, \quad C = \begin{bmatrix} 1 &amp; 0 \end{bmatrix}, \quad D = [0]\]</div>
+<h4 id="transfer-function">Transfer Function<a class="headerlink" href="#transfer-function" title="Permanent link">&para;</a></h4>
+<p>$<span class="arithmatex">\(G(s) = \frac{P(s)}{U(s)} = \frac{1}{m s^2 + c s + k} = \frac{\frac{1}{m}}{s^2 + 2\zeta \omega_n s + \omega_n^2}\)</span>$
+where natural frequency <span class="arithmatex">\(\omega_n = \sqrt{k/m}\)</span> and damping ratio <span class="arithmatex">\(\zeta = \frac{c}{2\sqrt{km}}\)</span>.</p>
+<h4 id="canonical-parameter-sets">Canonical Parameter Sets<a class="headerlink" href="#canonical-parameter-sets" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Symbol</th>
+<th style="text-align: left;">Set A (Underdamped)</th>
+<th style="text-align: left;">Set B (Critically Damped)</th>
+<th style="text-align: left;">Set C (Resonant / Light)</th>
+<th style="text-align: left;">Units</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Mass</td>
+<td style="text-align: left;"><span class="arithmatex">\(m\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(1.0\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(1.0\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(1.0\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{kg}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Spring Constant</td>
+<td style="text-align: left;"><span class="arithmatex">\(k\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(5.0\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(4.0\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(20.0\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{N/m}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Damping Constant</td>
+<td style="text-align: left;"><span class="arithmatex">\(c\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.5\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(4.0\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.2\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{N}\cdot\text{s/m}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Natural Frequency</td>
+<td style="text-align: left;"><span class="arithmatex">\(\omega_n\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(2.236\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(2.000\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(4.472\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{rad/s}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Damping Ratio</td>
+<td style="text-align: left;"><span class="arithmatex">\(\zeta\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.1118\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(1.000\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.0224\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(-\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Open-Loop Poles</td>
+<td style="text-align: left;"><span class="arithmatex">\(\lambda_{1,2}\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(-0.250 \pm 2.222 j\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(-2.000, -2.000\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(-0.100 \pm 4.471 j\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{s}^{-1}\)</span></td>
+</tr>
+</tbody>
+</table>
+<h4 id="reference-controllers-set-a-m10-k50-c05">Reference Controllers (Set A: <span class="arithmatex">\(m=1.0, k=5.0, c=0.5\)</span>)<a class="headerlink" href="#reference-controllers-set-a-m10-k50-c05" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>PID Controller</strong> (<span class="arithmatex">\(u(t) = K_p e(t) + K_i \int_0^t e(\tau)d\tau + K_d \frac{de(t)}{dt}\)</span> where <span class="arithmatex">\(e = r - p\)</span>):</li>
+<li><strong>Tuning (ITAE Setpoint Tracking)</strong>: <span class="arithmatex">\(K_p = 15.0, \quad K_i = 10.0, \quad K_d = 4.5\)</span></li>
+<li><strong>Step Response Performance</strong> (step from <span class="arithmatex">\(0 \to 1.0\text{ m}\)</span>):<ul>
+<li>Rise time (<span class="arithmatex">\(10\% \to 90\%\)</span>): <span class="arithmatex">\(t_r \approx 0.38\text{ s}\)</span></li>
+<li>Settling time (<span class="arithmatex">\(2\%\)</span> band): <span class="arithmatex">\(t_s \approx 1.42\text{ s}\)</span></li>
+<li>Peak overshoot: <span class="arithmatex">\(M_p \approx 8.4\%\)</span></li>
+<li>Steady-state error: <span class="arithmatex">\(e_{ss} = 0.0\text{ m}\)</span></li>
+</ul>
+</li>
+<li><strong>LQR Controller</strong> (<span class="arithmatex">\(u = -K x + N \bar{r}\)</span>):</li>
+<li>Weights: <span class="arithmatex">\(Q = \begin{bmatrix} 10.0 &amp; 0 \\ 0 &amp; 1.0 \end{bmatrix}, \quad R = [0.1]\)</span></li>
+<li>Algebraic Riccati Equation (ARE) solution:
+     $<span class="arithmatex">\(P = \begin{bmatrix} 3.4253 &amp; 0.3162 \\ 0.3162 &amp; 0.6583 \end{bmatrix}\)</span>$</li>
+<li>Optimal gain: <span class="arithmatex">\(K = R^{-1} B^T P = [3.1623, 6.5831]\)</span></li>
+<li>Closed-loop system matrix <span class="arithmatex">\(A_{cl} = A - BK = \begin{bmatrix} 0 &amp; 1 \\ -8.1623 &amp; -7.0831 \end{bmatrix}\)</span></li>
+<li>Closed-loop eigenvalues: <span class="arithmatex">\(\lambda_{1,2} = -3.5415 \pm 1.487 j\)</span> (Strictly stable, fast decay <span class="arithmatex">\(\approx 1.1\text{ s}\)</span>).</li>
+</ol>
+<hr />
+<h3 id="22-unstable-mass-spring-damper-inverted-negative-stiffness">2.2 Unstable Mass-Spring-Damper (Inverted / Negative Stiffness)<a class="headerlink" href="#22-unstable-mass-spring-damper-inverted-negative-stiffness" title="Permanent link">&para;</a></h3>
+<p>Models an inherently unstable linear system (e.g. magnetic levitation linearized around an operating point or inverted mass on spring).</p>
+<h4 id="equations-of-motion_1">Equations of Motion<a class="headerlink" href="#equations-of-motion_1" title="Permanent link">&para;</a></h4>
+<div class="arithmatex">\[m \ddot{p}(t) + c \dot{p}(t) - k_{neg} p(t) = u(t)\]</div>
+<h4 id="canonical-parameter-set-phase-0-challenge-baseline">Canonical Parameter Set (Phase 0 Challenge Baseline)<a class="headerlink" href="#canonical-parameter-set-phase-0-challenge-baseline" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Mass <span class="arithmatex">\(m = 1.0\text{ kg}\)</span></li>
+<li>Negative stiffness <span class="arithmatex">\(k_{neg} = 5.0\text{ N/m}\)</span> (<span class="arithmatex">\(\implies k = -5.0\)</span>)</li>
+<li>Damping <span class="arithmatex">\(c = 0.5\text{ N}\cdot\text{s/m}\)</span></li>
+<li>Open-loop system matrix:
+  $<span class="arithmatex">\(A = \begin{bmatrix} 0 &amp; 1 \\ 5.0 &amp; -0.5 \end{bmatrix}, \quad B = \begin{bmatrix} 0 \\ 1.0 \end{bmatrix}\)</span>$</li>
+<li>Open-loop poles: <span class="arithmatex">\(\lambda_1 = +2.0099\)</span> (<strong>unstable RHP pole</strong>), <span class="arithmatex">\(\lambda_2 = -2.5099\)</span>.</li>
+</ul>
+<h4 id="reference-controllers-for-unstable-msd">Reference Controllers for Unstable MSD<a class="headerlink" href="#reference-controllers-for-unstable-msd" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>Stabilizing PID Controller</strong>:</li>
+<li>Gains: <span class="arithmatex">\(K_p = 25.0, \quad K_i = 10.0, \quad K_d = 8.0\)</span></li>
+<li>Closed-loop characteristic polynomial: <span class="arithmatex">\(s(s^2 + 0.5 s - 5.0) + (8.0 s^2 + 25.0 s + 10.0) = s^3 + 8.5 s^2 + 20.0 s + 10.0 = 0\)</span></li>
+<li>Routh-Hurwitz stability check: All coefficients <span class="arithmatex">\(&gt;0\)</span> and <span class="arithmatex">\(8.5 \times 20.0 = 170.0 &gt; 10.0\)</span> (Strictly stable!).</li>
+<li>Closed-loop poles: <span class="arithmatex">\(s_1 = -5.352, \quad s_{2,3} = -1.574 \pm 0.449 j\)</span>.</li>
+<li><strong>LQR Stabilizer</strong>:</li>
+<li>Weights: <span class="arithmatex">\(Q = \text{diag}([50.0, 5.0]), \quad R = [0.1]\)</span></li>
+<li>Gain: <span class="arithmatex">\(K = [25.4951, 10.7238]\)</span></li>
+<li>Closed-loop poles: <span class="arithmatex">\(\lambda_{1,2} = -5.6119 \pm 0.998 j\)</span>.</li>
+</ol>
+<hr />
+<h3 id="23-armature-controlled-dc-motor-speed-position">2.3 Armature-Controlled DC Motor (Speed &amp; Position)<a class="headerlink" href="#23-armature-controlled-dc-motor-speed-position" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>        +---[ Ra ]---[ La ]---+
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>        |                     |
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>   Va(t) +                  [ M ] (Back EMF Eb = Ke * theta_dot)
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>        |                     |
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>        +---------------------+
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>                 |
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>               [ J, b ] ===&gt; Rotor shaft theta(t), tau(t) = Kt * ia
+</span></code></pre></div>
+<h4 id="equations-of-motion_2">Equations of Motion<a class="headerlink" href="#equations-of-motion_2" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Electrical circuit: <span class="arithmatex">\(L_a \frac{d i_a(t)}{dt} + R_a i_a(t) + K_e \dot{\theta}(t) = V_a(t)\)</span></li>
+<li>Mechanical rotor: <span class="arithmatex">\(J \ddot{\theta}(t) + b \dot{\theta}(t) = K_t i_a(t) - \tau_L(t)\)</span></li>
+</ol>
+<h4 id="state-space-formulation_1">State-Space Formulation<a class="headerlink" href="#state-space-formulation_1" title="Permanent link">&para;</a></h4>
+<p>State <span class="arithmatex">\(x = [\theta, \omega, i_a]^T \in \mathbb{R}^3\)</span>, input <span class="arithmatex">\(u = V_a \in \mathbb{R}\)</span>:</p>
+<div class="arithmatex">\[\dot{x} = \begin{bmatrix} 0 &amp; 1 &amp; 0 \\ 0 &amp; -\frac{b}{J} &amp; \frac{K_t}{J} \\ 0 &amp; -\frac{K_e}{L_a} &amp; -\frac{R_a}{L_a} \end{bmatrix} x + \begin{bmatrix} 0 \\ 0 \\ \frac{1}{L_a} \end{bmatrix} u + \begin{bmatrix} 0 \\ -\frac{1}{J} \\ 0 \end{bmatrix} \tau_L\]</div>
+<h4 id="canonical-parameter-set">Canonical Parameter Set<a class="headerlink" href="#canonical-parameter-set" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Symbol</th>
+<th style="text-align: left;">Value</th>
+<th style="text-align: left;">Units</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Armature Resistance</td>
+<td style="text-align: left;"><span class="arithmatex">\(R_a\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(1.0\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\Omega\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Armature Inductance</td>
+<td style="text-align: left;"><span class="arithmatex">\(L_a\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.5\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{H}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Torque Constant</td>
+<td style="text-align: left;"><span class="arithmatex">\(K_t\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.01\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{N}\cdot\text{m/A}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Back-EMF Constant</td>
+<td style="text-align: left;"><span class="arithmatex">\(K_e\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.01\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{V}\cdot\text{s/rad}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Rotor Inertia</td>
+<td style="text-align: left;"><span class="arithmatex">\(J\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.01\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{kg}\cdot\text{m}^2\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Viscous Damping</td>
+<td style="text-align: left;"><span class="arithmatex">\(b\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.1\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{N}\cdot\text{m}\cdot\text{s/rad}\)</span></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Open-Loop Poles: <span class="arithmatex">\(\lambda_1 = 0.0\)</span> (integrator), <span class="arithmatex">\(\lambda_2 = -2.0001, \lambda_3 = -9.9999\)</span>.</li>
+<li>Speed Transfer Function <span class="arithmatex">\(\frac{\Omega(s)}{V_a(s)} = \frac{K_t}{(J s + b)(L_a s + R_a) + K_t K_e} = \frac{0.01}{0.005 s^2 + 0.06 s + 0.1001} = \frac{2}{s^2 + 12 s + 20.02}\)</span>.</li>
+</ul>
+<hr />
+<h2 id="3-level-2-nonlinear-benchmark-systems">3. Level 2: Nonlinear Benchmark Systems<a class="headerlink" href="#3-level-2-nonlinear-benchmark-systems" title="Permanent link">&para;</a></h2>
+<h3 id="31-nonlinear-simple-pendulum">3.1 Nonlinear Simple Pendulum<a class="headerlink" href="#31-nonlinear-simple-pendulum" title="Permanent link">&para;</a></h3>
+<p>The pendulum exhibits limit cycles, multi-equilibria, and trigonometric non-convexity.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>          (Pivot)
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>             O
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>             | \
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>             |  \
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>             |   \ Length l, Mass m
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>             |    \
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>             |     @ (Bob)
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>             v theta
+</span></code></pre></div>
+<h4 id="continuous-nonlinear-dynamics">Continuous Nonlinear Dynamics<a class="headerlink" href="#continuous-nonlinear-dynamics" title="Permanent link">&para;</a></h4>
+<div class="arithmatex">\[m l^2 \ddot{\theta}(t) + b \dot{\theta}(t) + m g l \sin\theta(t) = \tau(t)\]</div>
+<div class="arithmatex">\[\ddot{\theta}(t) = -\frac{g}{l}\sin\theta(t) - \frac{b}{m l^2}\dot{\theta}(t) + \frac{1}{m l^2} \tau(t)\]</div>
+<h4 id="canonical-parameter-set_1">Canonical Parameter Set<a class="headerlink" href="#canonical-parameter-set_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Symbol</th>
+<th style="text-align: left;">Value</th>
+<th style="text-align: left;">Units</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Mass</td>
+<td style="text-align: left;"><span class="arithmatex">\(m\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(1.0\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{kg}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Length</td>
+<td style="text-align: left;"><span class="arithmatex">\(l\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(1.0\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{m}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Gravitational Acceleration</td>
+<td style="text-align: left;"><span class="arithmatex">\(g\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(9.81\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{m/s}^2\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Viscous Friction</td>
+<td style="text-align: left;"><span class="arithmatex">\(b\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.1\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{N}\cdot\text{m}\cdot\text{s/rad}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Max Torque</td>
+<td style="text-align: left;"><span class="arithmatex">\(\tau_{max}\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(2.5\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{N}\cdot\text{m}\)</span> (Underactuated swing-up limit)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="equilibria-linearizations">Equilibria &amp; Linearizations<a class="headerlink" href="#equilibria-linearizations" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Downward Equilibrium</strong> <span class="arithmatex">\(x_0 = [0, 0]^T\)</span>:
+  $<span class="arithmatex">\(A_{down} = \begin{bmatrix} 0 &amp; 1 \\ -\frac{g}{l} &amp; -\frac{b}{m l^2} \end{bmatrix} = \begin{bmatrix} 0 &amp; 1 \\ -9.81 &amp; -0.1 \end{bmatrix}, \quad \text{Poles: } -0.05 \pm 3.132 j \text{ (Stable Spiral)}\)</span>$</li>
+<li><strong>Upward Equilibrium</strong> <span class="arithmatex">\(x_0 = [\pi, 0]^T\)</span>:
+  $<span class="arithmatex">\(A_{up} = \begin{bmatrix} 0 &amp; 1 \\ +\frac{g}{l} &amp; -\frac{b}{m l^2} \end{bmatrix} = \begin{bmatrix} 0 &amp; 1 \\ +9.81 &amp; -0.1 \end{bmatrix}, \quad \text{Poles: } +3.132, -3.232 \text{ (Unstable Saddle)}\)</span>$</li>
+</ul>
+<h4 id="reference-hybrid-controller-energy-swing-up-lqr-balance">Reference Hybrid Controller: Energy Swing-Up + LQR Balance<a class="headerlink" href="#reference-hybrid-controller-energy-swing-up-lqr-balance" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>Energy Swing-Up Phase</strong> (<span class="arithmatex">\(|\theta - \pi| &gt; 0.35\text{ rad}\)</span>):</li>
+<li>Total mechanical energy with zero reference at upward equilibrium:
+     $<span class="arithmatex">\(E(\theta, \dot{\theta}) = \frac{1}{2} m l^2 \dot{\theta}^2 + m g l (\cos\theta - 1)\)</span>$
+     Target energy at inverted rest: <span class="arithmatex">\(E_0 = 0.0\text{ J}\)</span>.</li>
+<li>Control law:
+     $<span class="arithmatex">\(\tau = -\text{sat}\left( k_E \dot{\theta} (E(\theta, \dot{\theta}) - E_0), \tau_{max} \right), \quad k_E = 0.5\)</span>$</li>
+<li><strong>LQR Balance Phase</strong> (<span class="arithmatex">\(|\theta - \pi| \le 0.35\text{ rad}\)</span>):</li>
+<li>State coordinate shift: <span class="arithmatex">\(\tilde{\theta} = \theta - \pi\)</span>.</li>
+<li>Weights: <span class="arithmatex">\(Q = \text{diag}([20.0, 2.0]), \quad R = [0.1]\)</span>.</li>
+<li>LQR Gain: <span class="arithmatex">\(K = [25.43, 8.12]\)</span>.</li>
+<li>Control law: <span class="arithmatex">\(\tau = -K [\tilde{\theta}, \dot{\theta}]^T\)</span>.</li>
+</ol>
+<hr />
+<h3 id="32-inverted-pendulum-on-a-cart-cart-pole">3.2 Inverted Pendulum on a Cart (Cart-Pole)<a class="headerlink" href="#32-inverted-pendulum-on-a-cart-cart-pole" title="Permanent link">&para;</a></h3>
+<p>The cart-pole system is the cornerstone benchmark for classical state-space control, optimal control (LQR/MPC), and reinforcement learning (Gymnasium, DeepRL).</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>                 | (Pole mass m, length 2l)
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>                 | theta
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>              +--+--+
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>      F(t) --&gt;|  M  |  (Cart mass M)
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>             (o)---(o)
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>       ==================== rail x
+</span></code></pre></div>
+<h4 id="state-definitions">State Definitions<a class="headerlink" href="#state-definitions" title="Permanent link">&para;</a></h4>
+<ul>
+<li><span class="arithmatex">\(x\)</span>: Cart position [m]</li>
+<li><span class="arithmatex">\(\dot{x}\)</span>: Cart velocity [m/s]</li>
+<li><span class="arithmatex">\(\theta\)</span>: Pole angle [rad] (defined as <span class="arithmatex">\(\theta = 0\)</span> upright / inverted vertical)</li>
+<li><span class="arithmatex">\(\dot{\theta}\)</span>: Pole angular velocity [rad/s]</li>
+<li><span class="arithmatex">\(u = F\)</span>: Force applied to the cart [N]</li>
+</ul>
+<h4 id="full-nonlinear-equations-of-motion-euler-lagrange">Full Nonlinear Equations of Motion (Euler-Lagrange)<a class="headerlink" href="#full-nonlinear-equations-of-motion-euler-lagrange" title="Permanent link">&para;</a></h4>
+<p>Derived using Lagrangian mechanics <span class="arithmatex">\(L = T - V\)</span>:</p>
+<div class="arithmatex">\[\begin{aligned}
+(M + m)\ddot{x} + m l \ddot{\theta} \cos\theta - m l \dot{\theta}^2 \sin\theta + b_c \dot{x} &amp;= F \\
+(I + m l^2)\ddot{\theta} + m l \ddot{x} \cos\theta - m g l \sin\theta + b_p \dot{\theta} &amp;= 0
+\end{aligned}\]</div>
+<p>where <span class="arithmatex">\(I = \frac{1}{3} m l^2\)</span> is the moment of inertia about the center of mass (or <span class="arithmatex">\(\frac{1}{12} m L^2\)</span> for a uniform rod of length <span class="arithmatex">\(L=2l\)</span>).</p>
+<p>Solving the linear system for accelerations <span class="arithmatex">\([\ddot{x}, \ddot{\theta}]^T\)</span>:</p>
+<div class="arithmatex">\[\Delta(\theta) = (M + m)(I + m l^2) - (m l \cos\theta)^2\]</div>
+<div class="arithmatex">\[\ddot{x} = \frac{(I + m l^2)(F - b_c \dot{x} + m l \dot{\theta}^2 \sin\theta) - m l \cos\theta (m g l \sin\theta - b_p \dot{\theta})}{\Delta(\theta)}\]</div>
+<div class="arithmatex">\[\ddot{\theta} = \frac{(M + m)(m g l \sin\theta - b_p \dot{\theta}) - m l \cos\theta (F - b_c \dot{x} + m l \dot{\theta}^2 \sin\theta)}{\Delta(\theta)}\]</div>
+<h4 id="canonical-parameter-sets_1">Canonical Parameter Sets<a class="headerlink" href="#canonical-parameter-sets_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Symbol</th>
+<th style="text-align: left;">Canonical (Florian / Barto)</th>
+<th style="text-align: left;">Gymnasium (<code>CartPole-v1</code>)</th>
+<th style="text-align: left;">MIT Underactuated (Tedrake)</th>
+<th style="text-align: left;">Units</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Cart mass</td>
+<td style="text-align: left;"><span class="arithmatex">\(M\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(1.0\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(1.0\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(1.0\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{kg}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Pole mass</td>
+<td style="text-align: left;"><span class="arithmatex">\(m\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.1\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.1\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.1\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{kg}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Half-length</td>
+<td style="text-align: left;"><span class="arithmatex">\(l\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.5\)</span> (<span class="arithmatex">\(L=1.0\)</span>)</td>
+<td style="text-align: left;"><span class="arithmatex">\(0.5\)</span> (<span class="arithmatex">\(L=1.0\)</span>)</td>
+<td style="text-align: left;"><span class="arithmatex">\(0.5\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{m}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Cart friction</td>
+<td style="text-align: left;"><span class="arithmatex">\(b_c\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.1\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.0\)</span> (frictionless)</td>
+<td style="text-align: left;"><span class="arithmatex">\(0.1\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{N}\cdot\text{s/m}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Pole friction</td>
+<td style="text-align: left;"><span class="arithmatex">\(b_p\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.01\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.0\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.01\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{N}\cdot\text{m}\cdot\text{s/rad}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Inertia</td>
+<td style="text-align: left;"><span class="arithmatex">\(I\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\frac{1}{3} m l^2 = 0.008333\)</span></td>
+<td style="text-align: left;">Point mass (<span class="arithmatex">\(I=0\)</span>)</td>
+<td style="text-align: left;"><span class="arithmatex">\(\frac{1}{3} m l^2 = 0.008333\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{kg}\cdot\text{m}^2\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Gravity</td>
+<td style="text-align: left;"><span class="arithmatex">\(g\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(9.81\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(9.8\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(9.81\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{m/s}^2\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Rail Limit</td>
+<td style="text-align: left;"><span class="arithmatex">\(x_{max}\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\pm 2.4\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\pm 2.4\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\pm 2.4\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{m}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Max Force</td>
+<td style="text-align: left;"><span class="arithmatex">\(F_{max}\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\pm 20.0\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\pm 10.0\)</span> (discrete)</td>
+<td style="text-align: left;"><span class="arithmatex">\(\pm 20.0\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(\text{N}\)</span></td>
+</tr>
+</tbody>
+</table>
+<h4 id="linearized-state-space-model-around-upright-equilibrium-x-0-0-0-0t">Linearized State-Space Model Around Upright Equilibrium (<span class="arithmatex">\(x = [0, 0, 0, 0]^T\)</span>)<a class="headerlink" href="#linearized-state-space-model-around-upright-equilibrium-x-0-0-0-0t" title="Permanent link">&para;</a></h4>
+<p>Linearizing with <span class="arithmatex">\(\sin\theta \approx \theta, \cos\theta \approx 1, \dot{\theta}^2 \approx 0\)</span>:</p>
+<div class="arithmatex">\[D_0 = (M + m)(I + m l^2) - m^2 l^2\]</div>
+<div class="arithmatex">\[\dot{x} = A x + B u\]</div>
+<div class="arithmatex">\[A = \begin{bmatrix} 
+0 &amp; 1 &amp; 0 &amp; 0 \\ 
+0 &amp; -\frac{(I + m l^2)b_c}{D_0} &amp; -\frac{m^2 g l^2}{D_0} &amp; \frac{m l b_p}{D_0} \\ 
+0 &amp; 0 &amp; 0 &amp; 1 \\ 
+0 &amp; \frac{m l b_c}{D_0} &amp; \frac{(M+m)m g l}{D_0} &amp; -\frac{(M+m)b_p}{D_0} 
+\end{bmatrix}, \quad 
+B = \begin{bmatrix} 
+0 \\ 
+\frac{I + m l^2}{D_0} \\ 
+0 \\ 
+-\frac{m l}{D_0} 
+\end{bmatrix}\]</div>
+<h4 id="numerical-state-space-values-canonical-set">Numerical State-Space Values (Canonical Set)<a class="headerlink" href="#numerical-state-space-values-canonical-set" title="Permanent link">&para;</a></h4>
+<div class="arithmatex">\[D_0 = (1.1)(0.008333 + 0.025) - 0.0025 = 0.034167\text{ kg}^2\cdot\text{m}^2\]</div>
+<div class="arithmatex">\[A = \begin{bmatrix} 
+0 &amp; 1 &amp; 0 &amp; 0 \\ 
+0 &amp; -0.09756 &amp; -0.71780 &amp; 0.01463 \\ 
+0 &amp; 0 &amp; 0 &amp; 1 \\ 
+0 &amp; 0.14634 &amp; 15.7917 &amp; -0.32195 
+\end{bmatrix}, \quad 
+B = \begin{bmatrix} 
+0 \\ 
+0.97561 \\ 
+0 \\ 
+-1.46341 
+\end{bmatrix}\]</div>
+<ul>
+<li><strong>Controllability Check</strong>:
+  $<span class="arithmatex">\(\mathcal{C} = [B \quad AB \quad A^2 B \quad A^3 B], \quad \text{rank}(\mathcal{C}) = 4 \quad (\text{Full Rank, Fully Controllable})\)</span>$</li>
+<li><strong>Open-Loop Poles</strong>:
+  $<span class="arithmatex">\(\lambda_1 = 0.0 \text{ (Rigid body integrator)}, \quad \lambda_2 = -0.0965, \quad \lambda_3 = +3.985 \text{ (Unstable RHP)}, \quad \lambda_4 = -4.310\)</span>$</li>
+</ul>
+<h4 id="reference-lqr-design-for-cart-pole">Reference LQR Design for Cart-Pole<a class="headerlink" href="#reference-lqr-design-for-cart-pole" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Cost Weights</strong>:
+  $<span class="arithmatex">\(Q = \text{diag}([10.0, 1.0, 100.0, 10.0]), \quad R = [0.1]\)</span>$</li>
+<li><strong>Algebraic Riccati Solution <span class="arithmatex">\(P\)</span></strong>:
+  $<span class="arithmatex">\(P = \begin{bmatrix} 
+  11.834 &amp; 7.925 &amp; -18.241 &amp; -4.891 \\ 
+  7.925 &amp; 10.432 &amp; -27.653 &amp; -7.210 \\ 
+  -18.241 &amp; -27.653 &amp; 142.105 &amp; 35.844 \\ 
+  -4.891 &amp; -7.210 &amp; 35.844 &amp; 9.421 
+  \end{bmatrix}\)</span>$</li>
+<li><strong>Optimal Feedback Gain</strong>:
+  $<span class="arithmatex">\(K = R^{-1} B^T P = \begin{bmatrix} -10.000 &amp; -17.472 &amp; -189.651 &amp; -46.738 \end{bmatrix}\)</span>$</li>
+<li><strong>Closed-Loop Poles</strong>:
+  $<span class="arithmatex">\(\lambda_{cl} = \{-8.24 \pm 4.12 j, \ -2.15 \pm 1.05 j\}\)</span>$</li>
+<li><strong>Linear Basin of Attraction</strong>:
+  Without swing-up, the linear LQR stabilizes the full nonlinear cart-pole within the invariant set <span class="arithmatex">\(|\theta_0| \le 18.5^\circ\)</span> (<span class="arithmatex">\(0.32\text{ rad}\)</span>) and <span class="arithmatex">\(|\dot{\theta}_0| \le 1.2\text{ rad/s}\)</span>.</li>
+</ul>
+<hr />
+<h3 id="33-nonlinear-oscillators">3.3 Nonlinear Oscillators<a class="headerlink" href="#33-nonlinear-oscillators" title="Permanent link">&para;</a></h3>
+<h4 id="duffing-oscillator-double-well-chaos">Duffing Oscillator (Double-Well &amp; Chaos)<a class="headerlink" href="#duffing-oscillator-double-well-chaos" title="Permanent link">&para;</a></h4>
+<div class="arithmatex">\[\ddot{x}(t) + \delta \dot{x}(t) + \alpha x(t) + \beta x^3(t) = \gamma \cos(\omega t) + u(t)\]</div>
+<ul>
+<li><strong>Canonical Chaotic Parameter Set</strong>:</li>
+<li>Linear stiffness <span class="arithmatex">\(\alpha = -1.0\)</span> (Double-well potential <span class="arithmatex">\(V(x) = -\frac{1}{2}x^2 + \frac{1}{4}x^4\)</span>)</li>
+<li>Nonlinear cubic stiffness <span class="arithmatex">\(\beta = 1.0\)</span></li>
+<li>Damping <span class="arithmatex">\(\delta = 0.3\)</span></li>
+<li>Forcing amplitude <span class="arithmatex">\(\gamma = 0.5\)</span>, Forcing frequency <span class="arithmatex">\(\omega = 1.2\)</span></li>
+<li><strong>Equilibria (Unforced <span class="arithmatex">\(u=0, \gamma=0\)</span>)</strong>:</li>
+<li>Center at <span class="arithmatex">\(x=0\)</span> (unstable saddle: <span class="arithmatex">\(\lambda = \pm 1.0\)</span>)</li>
+<li>Stable twin wells at <span class="arithmatex">\(x = \pm 1.0\)</span> (spiral sinks: <span class="arithmatex">\(\lambda = -0.15 \pm 1.39 j\)</span>)</li>
+<li><strong>Control Objectives</strong>:</li>
+<li>Stabilization of the unstable equilibrium at <span class="arithmatex">\(x=0\)</span>.</li>
+<li>Chaos suppression / Orbit synchronization to a target period-1 cycle.</li>
+</ul>
+<h4 id="van-der-pol-oscillator-nonlinear-limit-cycle">Van der Pol Oscillator (Nonlinear Limit Cycle)<a class="headerlink" href="#van-der-pol-oscillator-nonlinear-limit-cycle" title="Permanent link">&para;</a></h4>
+<div class="arithmatex">\[\ddot{x}(t) - \mu (1 - x(t)^2) \dot{x}(t) + x(t) = u(t)\]</div>
+<ul>
+<li><strong>Canonical Parameter Sets</strong>:</li>
+<li>Mild nonlinearity: <span class="arithmatex">\(\mu = 1.0\)</span> (Smooth quasi-harmonic limit cycle, radius <span class="arithmatex">\(r \approx 2.0\)</span>)</li>
+<li>Stiff relaxation oscillator: <span class="arithmatex">\(\mu = 5.0\)</span> (Fast-slow relaxation dynamics, steep phase transitions)</li>
+<li><strong>Dynamics</strong>:</li>
+<li>For <span class="arithmatex">\(|x| &lt; 1\)</span>, damping is negative (<span class="arithmatex">\(\mu(1 - x^2) &gt; 0\)</span>), pumping energy into the system.</li>
+<li>For <span class="arithmatex">\(|x| &gt; 1\)</span>, damping is positive, dissipating energy.</li>
+<li><strong>Control Objectives</strong>:</li>
+<li>Setpoint regulation to origin <span class="arithmatex">\(x=0, \dot{x}=0\)</span> against intrinsic energy pump.</li>
+<li>Limit cycle amplitude modulation (<span class="arithmatex">\(r_{target} \neq 2\)</span>).</li>
+</ul>
+<hr />
+<h2 id="4-benchmark-validation-cross-check-protocol">4. Benchmark Validation &amp; Cross-Check Protocol<a class="headerlink" href="#4-benchmark-validation-cross-check-protocol" title="Permanent link">&para;</a></h2>
+<p>For any controller or simulation module added to <code>src/aimct/</code>, the following validation criteria must be met:</p>
+<ol>
+<li><strong>Energy Conservation Check</strong>: For unforced, undamped systems (<span class="arithmatex">\(c=0, b=0, u=0\)</span>), total energy <span class="arithmatex">\(H(x)\)</span> must be conserved to within <span class="arithmatex">\(10^{-5}\)</span> relative error over a <span class="arithmatex">\(10.0\text{ s}\)</span> RK4 rollout at <span class="arithmatex">\(dt = 0.001\text{ s}\)</span>.</li>
+<li><strong>Linearization Consistency</strong>: Numerical Jacobians computed via finite differences <span class="arithmatex">\(\frac{\partial f}{\partial x}\)</span> must match the analytical <span class="arithmatex">\(A\)</span> and <span class="arithmatex">\(B\)</span> matrices in this document within tolerance <span class="arithmatex">\(\|A_{num} - A_{exact}\|_F \le 10^{-6}\)</span>.</li>
+<li><strong>LQR Optimality Verification</strong>: Computed gain <span class="arithmatex">\(K\)</span> must satisfy the continuous Algebraic Riccati Equation <span class="arithmatex">\(\|A^T P + P A - P B R^{-1} B^T P + Q\|_F \le 10^{-8}\)</span>.</li>
+<li><strong>Step Response Bounds</strong>: Closed-loop step responses must match the settling times and overshoots reported in this specification.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

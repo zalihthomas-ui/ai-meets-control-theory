@@ -1,0 +1,2125 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Unified benchmark, classical and AI-driven control framework with 34 empirical experiments, hardware bridge, and publication-grade docs.">
+      
+      
+        <meta name="author" content="Zalih Thomas">
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Annotated Research Papers Survey — AI Meets Control Theory - AIMCT: AI Meets Control Theory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#annotated-research-papers-survey-ai-meets-control-theory" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="AIMCT: AI Meets Control Theory" class="md-header__button md-logo" aria-label="AIMCT: AI Meets Control Theory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            AIMCT: AI Meets Control Theory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Annotated Research Papers Survey — AI Meets Control Theory
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zalihthomas/ai-meets-control-theory" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zalihthomas/ai-meets-control-theory
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../GETTING-STARTED/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../DECISION-GUIDE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Decision Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../RESULTS/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Results & Benchmarks
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../USAGE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Usage Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../VISUALIZATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Visualization
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../DEV_PREVIEW/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Design Preview
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../experiments/" class="md-tabs__link">
+          
+  
+  
+  Experiments
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../hardware/two-link-arm/" class="md-tabs__link">
+          
+  
+  
+  Hardware
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../notebooks/01_tour/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  🚀 AI Meets Control Theory (AIMCT) — Interactive Guided Tour
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../PORTAL/" class="md-tabs__link">
+          
+  
+  
+  Project
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="AIMCT: AI Meets Control Theory" class="md-nav__button md-logo" aria-label="AIMCT: AI Meets Control Theory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    AIMCT: AI Meets Control Theory
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zalihthomas/ai-meets-control-theory" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zalihthomas/ai-meets-control-theory
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GETTING-STARTED/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DECISION-GUIDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../RESULTS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results & Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../USAGE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VISUALIZATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DEV_PREVIEW/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Preview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experiments
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Experiments
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../experiments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    All 34 Experiments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hardware
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hardware/two-link-arm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2-Link Arm Bridge
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/01_tour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🚀 AI Meets Control Theory (AIMCT) — Interactive Guided Tour
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/systems/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/controllers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Controllers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/planning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/estimation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Estimation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/trajectories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trajectories
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/sysid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Identification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ml/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Machine Learning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/rl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reinforcement Learning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/hybrid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hybrid Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/hil/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware-in-the-Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/viz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/dev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PORTAL/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Portal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phase 2 Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap-phase3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phase 3 Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../vision/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vision & Principles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PACKAGING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Packaging & Release
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#roadmap-module-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🗺️ Roadmap &amp; Module Mapping
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-classical-control-vs-reinforcement-learning-foundations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Classical Control vs. Reinforcement Learning Foundations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Classical Control vs. Reinforcement Learning Foundations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-a-tour-of-reinforcement-learning-the-view-from-continuous-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 A Tour of Reinforcement Learning: The View from Continuous Control
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-the-gap-between-model-based-and-model-free-methods-on-the-linear-quadratic-regulator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 The Gap Between Model-Based and Model-Free Methods on the Linear Quadratic Regulator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-simple-random-search-provides-a-competitive-approach-to-reinforcement-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 Simple Random Search Provides a Competitive Approach to Reinforcement Learning
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-data-driven-system-identification-physics-informed-ml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Data-Driven System Identification &amp; Physics-Informed ML
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Data-Driven System Identification &amp; Physics-Informed ML">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-discovering-governing-equations-from-data-sindy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Discovering Governing Equations from Data: SINDy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-neural-ordinary-differential-equations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Neural Ordinary Differential Equations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-modern-koopman-theory-for-dynamical-systems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Modern Koopman Theory for Dynamical Systems
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-safe-control-barrier-functions-differentiable-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Safe Control, Barrier Functions &amp; Differentiable Optimization
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Safe Control, Barrier Functions &amp; Differentiable Optimization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-control-barrier-functions-theory-and-applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Control Barrier Functions: Theory and Applications
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-learning-for-safety-critical-control-with-control-barrier-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Learning for Safety-Critical Control with Control Barrier Functions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-differentiable-mpc-for-end-to-end-planning-and-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Differentiable MPC for End-to-End Planning and Control
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-information-theoretic-model-predictive-control-mppi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Information-Theoretic Model Predictive Control: MPPI
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-synthesis-cross-comparison-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Synthesis &amp; Cross-Comparison Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="annotated-research-papers-survey-ai-meets-control-theory">Annotated Research Papers Survey — AI Meets Control Theory<a class="headerlink" href="#annotated-research-papers-survey-ai-meets-control-theory" title="Permanent link">&para;</a></h1>
+<p>This survey synthesizes 10 foundational and frontier research papers bridging <strong>Classical Control Theory, Optimal Control, Reinforcement Learning, Physics-Informed ML, Operator Theory, and Safe Control</strong>. All full-text PDFs are archived in <a href="../../papers/"><code>docs/papers/</code></a>.</p>
+<hr />
+<h2 id="roadmap-module-mapping">🗺️ Roadmap &amp; Module Mapping<a class="headerlink" href="#roadmap-module-mapping" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>                                [ THE FOUNDATIONS ]
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>       Linear Systems, LQR, Riccati Solvers, Frequency Margins (Modules 01-05)
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                                        |
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>     +----------------------------------+----------------------------------+
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>     |                                  |                                  |
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>     v                                  v                                  v
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>[ DATA-DRIVEN DYNAMICS ]     [ REINFORCEMENT LEARNING ]     [ SAFE &amp; HYBRID CONTROL ]
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  - SINDy (Brunton 2016)       - RL Tour (Recht 2019)         - CBF Theory (Ames 2019)
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>  - Neural ODEs (Chen 2018)    - ARS Baseline (Mania 2018)    - Safe Learn (Taylor 2020)
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>  - Koopman (Brunton 2022)     - MB vs MF LQR (Tu 2019)       - Diff MPC (Amos 2018)
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  (Module 06)                  (Module 07)                    - MPPI (Williams 2017)
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>                                                              (Module 08 &amp; Capstones)
+</span></code></pre></div>
+<hr />
+<h2 id="1-classical-control-vs-reinforcement-learning-foundations">1. Classical Control vs. Reinforcement Learning Foundations<a class="headerlink" href="#1-classical-control-vs-reinforcement-learning-foundations" title="Permanent link">&para;</a></h2>
+<h3 id="11-a-tour-of-reinforcement-learning-the-view-from-continuous-control">1.1 <em>A Tour of Reinforcement Learning: The View from Continuous Control</em><a class="headerlink" href="#11-a-tour-of-reinforcement-learning-the-view-from-continuous-control" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Author</strong>: Benjamin Recht (2019)</li>
+<li><strong>Venue</strong>: <em>Annual Review of Control, Robotics, and Autonomous Systems</em>, 2:253–279</li>
+<li><strong>arXiv</strong>: <a href="https://arxiv.org/abs/1806.09460"><code>1806.09460</code></a> | <strong>PDF</strong>: <code>recht_2019_tour_of_rl_continuous_control.pdf</code></li>
+<li><strong>Core Insights</strong>:</li>
+<li>Unifies the language of MDPs (states <span class="arithmatex">\(s\)</span>, actions <span class="arithmatex">\(a\)</span>, rewards <span class="arithmatex">\(r\)</span>, value functions <span class="arithmatex">\(V\)</span>) with dynamical systems (states <span class="arithmatex">\(x\)</span>, controls <span class="arithmatex">\(u\)</span>, costs <span class="arithmatex">\(c\)</span>, Hamilton-Jacobi-Bellman <span class="arithmatex">\(V\)</span>).</li>
+<li>Explores the trade-off between <strong>Nominal Control</strong> (certainty equivalence: system ID <span class="arithmatex">\(\to\)</span> Riccati solver) vs. <strong>Robust Control</strong> (<span class="arithmatex">\(H_\infty\)</span> / min-max) vs. <strong>Direct Policy Search</strong> (model-free policy gradient).</li>
+<li>Demonstrates that on linear quadratic problems, coarse system identification followed by standard Riccati control achieves <span class="arithmatex">\(\mathcal{O}(\sqrt{d/N})\)</span> parameter error, vastly outperforming model-free policy gradients in sample efficiency.</li>
+<li><strong>AIMCT Takeaway</strong>: Always compare RL against a system identification + LQR baseline. Do not claim RL "solves" a control problem without benchmarking against certainty-equivalent linear control.</li>
+</ul>
+<hr />
+<h3 id="12-the-gap-between-model-based-and-model-free-methods-on-the-linear-quadratic-regulator">1.2 <em>The Gap Between Model-Based and Model-Free Methods on the Linear Quadratic Regulator</em><a class="headerlink" href="#12-the-gap-between-model-based-and-model-free-methods-on-the-linear-quadratic-regulator" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Authors</strong>: Stephen Tu, Benjamin Recht (2019)</li>
+<li><strong>Venue</strong>: <em>International Conference on Machine Learning (ICML 2019)</em></li>
+<li><strong>arXiv</strong>: <a href="https://arxiv.org/abs/1812.03565"><code>1812.03565</code></a> | <strong>PDF</strong>: <code>tu_2019_model_based_vs_model_free_lqr.pdf</code></li>
+<li><strong>Core Insights</strong>:</li>
+<li>Rigorously bounds the sample complexity of learning an <span class="arithmatex">\(\epsilon\)</span>-suboptimal policy for continuous-time/discrete-time LQR.</li>
+<li><strong>Model-Based (Plugin / Certainty Equivalence)</strong>: Requires <span class="arithmatex">\(\tilde{\mathcal{O}}((n + m)/\epsilon)\)</span> trajectory samples (where <span class="arithmatex">\(n\)</span> is state dimension and <span class="arithmatex">\(m\)</span> is input dimension).</li>
+<li><strong>Model-Free (Policy Gradient / REINFORCE)</strong>: Requires <span class="arithmatex">\(\tilde{\mathcal{O}}((n + m)^3/\epsilon^2)\)</span> or worse trajectory samples.</li>
+<li>Proves an intrinsic dimensional gap: model-free policy gradients waste samples estimating gradients that can be derived directly from plant matrix estimates.</li>
+<li><strong>AIMCT Takeaway</strong>: In Module 07, our benchmark comparison between model-based (Least-Squares System ID + LQR) and model-free (PPO/DQN) will verify this <span class="arithmatex">\(\mathcal{O}(n^2)\)</span> sample-efficiency gap empirically on Cart-Pole.</li>
+</ul>
+<hr />
+<h3 id="13-simple-random-search-provides-a-competitive-approach-to-reinforcement-learning">1.3 <em>Simple Random Search Provides a Competitive Approach to Reinforcement Learning</em><a class="headerlink" href="#13-simple-random-search-provides-a-competitive-approach-to-reinforcement-learning" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Authors</strong>: Horia Mania, Aurelia Guy, Benjamin Recht (2018)</li>
+<li><strong>Venue</strong>: <em>NeurIPS 2018</em></li>
+<li><strong>arXiv</strong>: <a href="https://arxiv.org/abs/1803.07055"><code>1803.07055</code></a> | <strong>PDF</strong>: <code>mania_2018_augmented_random_search.pdf</code></li>
+<li><strong>Core Insights</strong>:</li>
+<li>Proposes <strong>Augmented Random Search (ARS)</strong>: a derivative-free optimization algorithm that perturbs static linear policies <span class="arithmatex">\(\pi(x) = W x\)</span> along random Gaussian directions, updates weights via finite differences, and normalizes state inputs.</li>
+<li>Outperforms or matches complex deep RL actor-critic methods (TRPO, PPO, DDPG) on standard MuJoCo continuous control benchmarks (HalfCheetah, Hopper, Walker2d) while being <strong>15x faster to compute</strong>.</li>
+<li><strong>AIMCT Takeaway</strong>: Linear state-feedback policies <span class="arithmatex">\(\pi(x) = K x\)</span> have immense expressive power for continuous locomotion when properly scaled; deep networks are often unnecessarily complex for basic stabilization.</li>
+</ul>
+<hr />
+<h2 id="2-data-driven-system-identification-physics-informed-ml">2. Data-Driven System Identification &amp; Physics-Informed ML<a class="headerlink" href="#2-data-driven-system-identification-physics-informed-ml" title="Permanent link">&para;</a></h2>
+<h3 id="21-discovering-governing-equations-from-data-sindy">2.1 <em>Discovering Governing Equations from Data: SINDy</em><a class="headerlink" href="#21-discovering-governing-equations-from-data-sindy" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Authors</strong>: Steven L. Brunton, Joshua L. Proctor, J. Nathan Kutz (2016)</li>
+<li><strong>Venue</strong>: <em>Proceedings of the National Academy of Sciences (PNAS)</em>, 113(15):3932–3937</li>
+<li><strong>arXiv</strong>: <a href="https://arxiv.org/abs/1509.03580"><code>1509.03580</code></a> | <strong>PDF</strong>: <code>brunton_2016_sindy_governing_equations.pdf</code></li>
+<li><strong>Core Insights</strong>:</li>
+<li>Formulates <strong>Sparse Identification of Nonlinear Dynamics (SINDy)</strong>:
+    $<span class="arithmatex">\(\dot{X} = \Theta(X, U) \Xi\)</span>$
+    where <span class="arithmatex">\(\Theta(X, U)\)</span> is a library of candidate nonlinear functions (polynomials, trigonometric terms <span class="arithmatex">\(1, x, x^2, \sin x, \cos x, u, x u\)</span>), and <span class="arithmatex">\(\Xi\)</span> is a sparse coefficient matrix determined via Sequential Thresholded Least Squares (STLSQ) or LASSO.</li>
+<li>Accurately recovers the exact governing ODEs for chaotic Lorenz systems, non-linear pendulums, and fluid flows from noisy trajectories.</li>
+<li>Highly interpretable, parsimonious, and prevents overfitting by finding the simplest physical model consistent with data (Occam's razor).</li>
+<li><strong>AIMCT Takeaway</strong>: Module 06 will implement from-scratch STLSQ to discover the nonlinear pendulum ODE <span class="arithmatex">\(\ddot{\theta} = -\frac{g}{l}\sin\theta - \frac{b}{m l^2}\dot{\theta}\)</span> from raw trajectory data.</li>
+</ul>
+<hr />
+<h3 id="22-neural-ordinary-differential-equations">2.2 <em>Neural Ordinary Differential Equations</em><a class="headerlink" href="#22-neural-ordinary-differential-equations" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Authors</strong>: Ricky T. Q. Chen, Yulia Rubanova, Jesse Bettencourt, David Duvenaud (2018)</li>
+<li><strong>Venue</strong>: <em>NeurIPS 2018 (Best Paper Award)</em></li>
+<li><strong>arXiv</strong>: <a href="https://arxiv.org/abs/1806.07366"><code>1806.07366</code></a> | <strong>PDF</strong>: <code>chen_2018_neural_odes.pdf</code></li>
+<li><strong>Core Insights</strong>:</li>
+<li>Replaces discrete neural network layers with continuous hidden state evolution:
+    $<span class="arithmatex">\(\frac{dz(t)}{dt} = f_\theta(z(t), t), \quad z(t_1) = z(t_0) + \int_{t_0}^{t_1} f_\theta(z(t), t) dt\)</span>$</li>
+<li>Trains parameters <span class="arithmatex">\(\theta\)</span> in <span class="arithmatex">\(\mathcal{O}(1)\)</span> memory via the continuous <strong>Adjoint Sensitivity Method</strong> (solving a reverse-time adjoint ODE <span class="arithmatex">\(a(t) = \frac{\partial L}{\partial z(t)}\)</span> derived from Pontryagin's Minimum Principle).</li>
+<li>Handles irregularly sampled time-series data seamlessly and allows adaptive trade-offs between numerical precision and compute cost.</li>
+<li><strong>AIMCT Takeaway</strong>: Connects deep learning directly to classical continuous-time ODE integration (our <code>aimct.simulate.rk4_step</code>).</li>
+</ul>
+<hr />
+<h3 id="23-modern-koopman-theory-for-dynamical-systems">2.3 <em>Modern Koopman Theory for Dynamical Systems</em><a class="headerlink" href="#23-modern-koopman-theory-for-dynamical-systems" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Authors</strong>: Steven L. Brunton, Marko Budišić, Eurika Kaiser, J. Nathan Kutz (2022)</li>
+<li><strong>Venue</strong>: <em>SIAM Review</em>, 64(2):229–340</li>
+<li><strong>arXiv</strong>: <a href="https://arxiv.org/abs/2102.12086"><code>2102.12086</code></a> | <strong>PDF</strong>: <code>brunton_2022_modern_koopman_theory.pdf</code></li>
+<li><strong>Core Insights</strong>:</li>
+<li>The <strong>Koopman Operator <span class="arithmatex">\(\mathcal{K}\)</span></strong> is an infinite-dimensional linear operator that advances observable functions <span class="arithmatex">\(g(x)\)</span> forward in time along nonlinear dynamics:
+    $<span class="arithmatex">\(\mathcal{K}_t g(x_0) = g(F_t(x_0))\)</span>$</li>
+<li>Transforms nonlinear finite-dimensional dynamics <span class="arithmatex">\(\dot{x} = f(x)\)</span> into linear infinite-dimensional dynamics <span class="arithmatex">\(\dot{g} = \mathcal{A} g\)</span>.</li>
+<li>Uses Dynamic Mode Decomposition (DMD / Extended DMD) to find finite-dimensional invariant subspaces, allowing linear control techniques (LQR, Pole Placement, Kalman Filters) to control global nonlinear systems without Taylor linearization.</li>
+<li><strong>AIMCT Takeaway</strong>: Enables global linear optimal control for nonlinear systems (e.g. large-angle pendulum) by lifting states into Koopman observable coordinates.</li>
+</ul>
+<hr />
+<h2 id="3-safe-control-barrier-functions-differentiable-optimization">3. Safe Control, Barrier Functions &amp; Differentiable Optimization<a class="headerlink" href="#3-safe-control-barrier-functions-differentiable-optimization" title="Permanent link">&para;</a></h2>
+<h3 id="31-control-barrier-functions-theory-and-applications">3.1 <em>Control Barrier Functions: Theory and Applications</em><a class="headerlink" href="#31-control-barrier-functions-theory-and-applications" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Authors</strong>: Aaron D. Ames, Samuel Coogan, Magnus Egerstedt, Gennaro Notomista, Koushil Sreenath, Paulo Tabuada (2019)</li>
+<li><strong>Venue</strong>: <em>European Control Conference (ECC 2019)</em>, pp. 3420–3431</li>
+<li><strong>arXiv</strong>: <a href="https://arxiv.org/abs/1903.11199"><code>1903.11199</code></a> | <strong>PDF</strong>: <code>ames_2019_control_barrier_functions.pdf</code></li>
+<li><strong>Core Insights</strong>:</li>
+<li>Formulates <strong>Control Barrier Functions (CBFs)</strong> <span class="arithmatex">\(h(x) \ge 0\)</span> that guarantee forward invariance of safe sets <span class="arithmatex">\(\mathcal{C} = \{x \in \mathbb{R}^n \mid h(x) \ge 0\}\)</span>.</li>
+<li>Nagumo's theorem &amp; safety condition:
+    $<span class="arithmatex">\(\sup_{u \in U} \left[ L_f h(x) + L_g h(x) u + \alpha(h(x)) \right] \ge 0\)</span>$</li>
+<li><strong>CBF-QP Safety Filter</strong>: Given any nominal controller (untrusted RL policy, neural network, or aggressive human driver) <span class="arithmatex">\(u_{\text{nom}}(x)\)</span>, filters the action in real time via a convex Quadratic Program:
+    $<span class="arithmatex">\(\min_{u \in U} \frac{1}{2} \|u - u_{\text{nom}}(x)\|^2 \quad \text{s.t.} \quad L_f h(x) + L_g h(x) u + \alpha(h(x)) \ge 0\)</span>$</li>
+<li><strong>AIMCT Takeaway</strong>: The gold standard for safe AI control: wrap black-box neural/RL agents inside a real-time CBF-QP safety filter to provide mathematical guarantees against state constraint violations (rail limits, obstacle collisions).</li>
+</ul>
+<hr />
+<h3 id="32-learning-for-safety-critical-control-with-control-barrier-functions">3.2 <em>Learning for Safety-Critical Control with Control Barrier Functions</em><a class="headerlink" href="#32-learning-for-safety-critical-control-with-control-barrier-functions" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Authors</strong>: Andrew J. Taylor, Andrew K. Singletary, Yisong Yue, Aaron D. Ames (2020)</li>
+<li><strong>Venue</strong>: <em>Learning for Dynamics &amp; Control (L4DC 2020)</em></li>
+<li><strong>arXiv</strong>: <a href="https://arxiv.org/abs/2004.09559"><code>2004.09559</code></a> | <strong>PDF</strong>: <code>taylor_2020_learning_safety_critical_cbf.pdf</code></li>
+<li><strong>Core Insights</strong>:</li>
+<li>Addresses the fundamental flaw in standard CBFs: model mismatch (<span class="arithmatex">\(\dot{x} = f(x) + g(x)u + d(x)\)</span> where <span class="arithmatex">\(d(x)\)</span> is unmodeled).</li>
+<li>Uses machine learning (Gaussian Processes / Neural Networks) to estimate the model error <span class="arithmatex">\(d(x)\)</span> while maintaining a robustified CBF-QP constraint that prevents safety violations during the learning process.</li>
+<li><strong>AIMCT Takeaway</strong>: Directly applicable to Track 4 of our Intelligent Control Challenge (Safe Black-Box Adaptive Control).</li>
+</ul>
+<hr />
+<h3 id="33-differentiable-mpc-for-end-to-end-planning-and-control">3.3 <em>Differentiable MPC for End-to-End Planning and Control</em><a class="headerlink" href="#33-differentiable-mpc-for-end-to-end-planning-and-control" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Authors</strong>: Brandon Amos, Ivan Jimenez, Jacob Sacks, Byron Boots, J. Zico Kolter (2018)</li>
+<li><strong>Venue</strong>: <em>NeurIPS 2018</em></li>
+<li><strong>arXiv</strong>: <a href="https://arxiv.org/abs/1810.13400"><code>1810.13400</code></a> | <strong>PDF</strong>: <code>amos_2018_differentiable_mpc.pdf</code></li>
+<li><strong>Core Insights</strong>:</li>
+<li>Implements Model Predictive Control (MPC) as a differentiable layer in deep neural networks (DiffMPC).</li>
+<li>Backpropagates analytical gradients through the Karush-Kuhn-Tucker (KKT) optimality conditions of the quadratic program using implicit differentiation.</li>
+<li>Allows end-to-end learning of cost matrices (<span class="arithmatex">\(Q, R\)</span>) and transition models directly from expert demonstrations or reinforcement signals.</li>
+<li><strong>AIMCT Takeaway</strong>: Solves the long-standing "cost design" problem in optimal control by learning cost functions that optimize downstream tracking metrics.</li>
+</ul>
+<hr />
+<h3 id="34-information-theoretic-model-predictive-control-mppi">3.4 <em>Information-Theoretic Model Predictive Control: MPPI</em><a class="headerlink" href="#34-information-theoretic-model-predictive-control-mppi" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Authors</strong>: Grady Williams, Paul Drews, Brian Goldfain, James M. Rehg, Evangelos A. Theodorou (2017)</li>
+<li><strong>Venue</strong>: <em>IEEE Transactions on Robotics</em>, 34(6):1603–1619</li>
+<li><strong>arXiv</strong>: <a href="https://arxiv.org/abs/1707.02342"><code>1707.02342</code></a> | <strong>PDF</strong>: <code>williams_2017_mppi_autonomous_driving.pdf</code></li>
+<li><strong>Core Insights</strong>:</li>
+<li>Formulates <strong>Model Predictive Path Integral (MPPI)</strong> control using information-theoretic free energy and Feynman-Kac path integrals.</li>
+<li>Samples thousands of noisy control trajectories in parallel on GPUs, computes their costs, and computes the optimal control update as an importance-weighted average:
+    $<span class="arithmatex">\(u^*(t) = u_{\text{base}}(t) + \sum_{k=1}^K w_k \delta u_k(t), \quad w_k = \frac{\exp(-\frac{1}{\lambda} S(\tau_k))}{\sum_j \exp(-\frac{1}{\lambda} S(\tau_j))}\)</span>$</li>
+<li>Operates on arbitrary non-convex, discontinuous, non-differentiable physics engines without requiring gradient computations or linearizations.</li>
+<li><strong>AIMCT Takeaway</strong>: Enables aggressive autonomous vehicle drifting, obstacle avoidance, and extreme maneuver control for our Phase 4 Capstone projects.</li>
+</ul>
+<hr />
+<h2 id="4-synthesis-cross-comparison-matrix">4. Synthesis &amp; Cross-Comparison Matrix<a class="headerlink" href="#4-synthesis-cross-comparison-matrix" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Paper</th>
+<th style="text-align: left;">Primary Paradigm</th>
+<th style="text-align: left;">Model Requirement</th>
+<th style="text-align: left;">Stability / Safety Certificate</th>
+<th style="text-align: left;">Compute Cost</th>
+<th style="text-align: left;">Sample Efficiency</th>
+<th style="text-align: left;">Key Role in AIMCT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Recht (2019)</strong></td>
+<td style="text-align: left;">Survey / LTI Analysis</td>
+<td style="text-align: left;">Known / Estimated <span class="arithmatex">\(A, B\)</span></td>
+<td style="text-align: left;">Lyapunov / Riccati</td>
+<td style="text-align: left;">Low (<span class="arithmatex">\(\mathcal{O}(n^3)\)</span> ARE)</td>
+<td style="text-align: left;"><span class="arithmatex">\(\mathcal{O}(\sqrt{d/N})\)</span> (Optimal)</td>
+<td style="text-align: left;">Foundational philosophy &amp; baseline guide</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Tu &amp; Recht (2019)</strong></td>
+<td style="text-align: left;">Sample Complexity</td>
+<td style="text-align: left;">Linear <span class="arithmatex">\(A, B\)</span></td>
+<td style="text-align: left;">ARE Hurwitz stability</td>
+<td style="text-align: left;">Low</td>
+<td style="text-align: left;">Proof: Model-Based <span class="arithmatex">\(\gg\)</span> Model-Free</td>
+<td style="text-align: left;">Theoretical foundation for Mod 05 vs 07</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Mania et al. (2018)</strong></td>
+<td style="text-align: left;">Derivative-Free RL</td>
+<td style="text-align: left;">Black-Box <span class="arithmatex">\(f(x, u)\)</span></td>
+<td style="text-align: left;">None (Empirical)</td>
+<td style="text-align: left;">Low (Linear policy)</td>
+<td style="text-align: left;">High for model-free</td>
+<td style="text-align: left;">Linear baseline against deep RL</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Brunton et al. (2016)</strong></td>
+<td style="text-align: left;">Sparse System ID</td>
+<td style="text-align: left;">Data Trajectories</td>
+<td style="text-align: left;">Identifies ODEs</td>
+<td style="text-align: left;">Low (STLSQ)</td>
+<td style="text-align: left;">High (Sparse regression)</td>
+<td style="text-align: left;">Module 06 data-driven modeling engine</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Chen et al. (2018)</strong></td>
+<td style="text-align: left;">Continuous Deep ML</td>
+<td style="text-align: left;">Neural ODE <span class="arithmatex">\(f_\theta\)</span></td>
+<td style="text-align: left;">Empirical</td>
+<td style="text-align: left;">Medium (ODE Solver)</td>
+<td style="text-align: left;">Medium</td>
+<td style="text-align: left;">Module 06 learned dynamics representations</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Brunton et al. (2022)</strong></td>
+<td style="text-align: left;">Operator Theory</td>
+<td style="text-align: left;">Data / Functions</td>
+<td style="text-align: left;">Linearized Invariance</td>
+<td style="text-align: left;">Medium (DMD / SVD)</td>
+<td style="text-align: left;">High</td>
+<td style="text-align: left;">Module 08 global nonlinear linearizer</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Ames et al. (2019)</strong></td>
+<td style="text-align: left;">Safe Optimization</td>
+<td style="text-align: left;">Control-Affine <span class="arithmatex">\(f(x)+g(x)u\)</span></td>
+<td style="text-align: left;"><strong>Rigorous Forward Invariance</strong></td>
+<td style="text-align: left;">Low (Real-time QP)</td>
+<td style="text-align: left;">Infinite (Zero-shot safety)</td>
+<td style="text-align: left;">Module 08 safety filter for RL &amp; MPC</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Taylor et al. (2020)</strong></td>
+<td style="text-align: left;">Adaptive Safe ML</td>
+<td style="text-align: left;">Learned <span class="arithmatex">\(f(x) + d(x)\)</span></td>
+<td style="text-align: left;"><strong>Robust CBF Invariance</strong></td>
+<td style="text-align: left;">Medium (QP + GP/NN)</td>
+<td style="text-align: left;">Zero safety violations online</td>
+<td style="text-align: left;">Capstone safe exploration</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Amos et al. (2018)</strong></td>
+<td style="text-align: left;">Differentiable MPC</td>
+<td style="text-align: left;">Linear / Convex QP</td>
+<td style="text-align: left;">KKT Optimality</td>
+<td style="text-align: left;">Medium (Implicit QP)</td>
+<td style="text-align: left;">High</td>
+<td style="text-align: left;">Module 08 end-to-end tuning</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Williams et al. (2017)</strong></td>
+<td style="text-align: left;">Path Integral MPC</td>
+<td style="text-align: left;">Any Simulator (GPU)</td>
+<td style="text-align: left;">Statistical (Softmax)</td>
+<td style="text-align: left;">High (Parallel GPU)</td>
+<td style="text-align: left;">Real-time sampling</td>
+<td style="text-align: left;">Capstone autonomous racing / drifting</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
