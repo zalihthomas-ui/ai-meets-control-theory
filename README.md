@@ -148,6 +148,12 @@ See [`docs/roadmap.md`](docs/roadmap.md) for detailed deliverables and current p
 
 ---
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow and engineering
+agreement, and the [Code of Conduct](CODE_OF_CONDUCT.md). Found a security
+issue? See [SECURITY.md](SECURITY.md) for how to report it privately.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).

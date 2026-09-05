@@ -7,6 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Added
+- **Real systems (Track A):** `DifferentialDriveRobot` (unicycle + first-order
+  actuator lag) and `TwoLinkArm` (planar Euler-Lagrange manipulator with a
+  settable wrist payload), both parameterised on real hardware classes
+  (TurtleBot3-Burger-class mobile robot; Quanser 2-DOF-arm-class manipulator).
+- **`aimct.controllers.ilqr`:** iterative-LQR trajectory optimiser + a
+  real-time-iteration nonlinear-MPC controller.
+- **`aimct.trajectories`:** `Lissajous`, `Rose`, `Spiral` reference paths
+  (alongside the existing `Lemniscate`/`MinimumJerk`/`Spline`/`Dubins`).
+- **`aimct.benchmarks.tracking`:** `track_trajectory` path-following harness
+  (RMS/cross-track error, completion %, energy) and `TrackingResult.animate()`.
+- **`aimct.viz`:** a unified visualization layer — `SystemArtist` (one draw
+  contract per system), `animate()` (replay any simulated run), `Sandbox` +
+  `Disturbance` (real-time interactive sandboxes with sliders/hot-keys), and
+  `aimct.viz.pv_arm` (a shared 3-D PyVista renderer for the arm systems).
+  Every `Sandbox` gets a help overlay, a "surprise me" randomiser, PNG
+  snapshotting, and a session-best score for free.
+- **Interactive sandboxes:** `live_arm` (unknown-payload identification),
+  `live_arm_balance` (double-inverted-pendulum balance under gravity),
+  `live_diffdrive` (path-follower recovery from a shove) — each with a 2-D
+  (matplotlib) and, for the arm sandboxes, a 3-D (PyVista) view. Run via
+  `python -m aimct live {arm,arm3d,diffdrive,armbalance,armbalance3d}`.
+- **`aimct.dev`:** a design-time preview tool for a `DynamicalSystem` under
+  development (pole map, controllability/observability, analytic-vs-numeric
+  Jacobian check, animated replay) — `python -m aimct preview MODULE:Class`.
+- **Experiments 22–26:** differential-drive path following, two-link-arm
+  tracking + adaptive payload rejection, iLQR/RTI-NMPC vs. sampling MPC (CEM),
+  moving-obstacle avoidance, and tracking-robustness on harder reference paths.
+
+### Fixed
+- `live_diffdrive`'s path follower could show its look-ahead point teleport
+  across the figure-8's self-intersection (a global nearest-point search
+  flipping branches); replaced with progress-hysteresis search.
+- CI's install step was missing the `ml` extra, so `pytest` failed to even
+  collect (`aimct.rl` imports `gymnasium` unconditionally) on every push.
+- `live_drone_3d/pv3d.py`'s interactive path called a PyVista method
+  (`add_callback`) absent from the installed PyVista version — switched to
+  `add_timer_event`.
+- Packaging: `aimct.__version__` and the built distribution's version had
+  drifted (`0.0.1` vs. `0.1.0`); `pyproject.toml` now takes its version from
+  `aimct.__version__` (single source of truth).
+
 ## [0.1.0] - 2026-09-04
 
 ### Added
