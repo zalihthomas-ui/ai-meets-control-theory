@@ -54,8 +54,8 @@ Every constructor argument is a real physical parameter with a documented
 default. Building your own plant: subclass `DynamicalSystem`, set
 `n_states` / `n_inputs`, implement `dynamics(t, x, u) -> xdot` — that is the
 whole contract (numeric `linearize()` comes for free). See
-[`pendulum.py`](../src/aimct/systems/pendulum.py) and
-[`twolink_arm.py`](../src/aimct/systems/twolink_arm.py). While you're writing
+`pendulum.py` and
+`twolink_arm.py`. While you're writing
 one, `python -m aimct preview mymodule.py:MyPlant --watch` gives a live pole
 map / controllability / Jacobian-residual / response-trace dashboard that
 rebuilds on every save — see [`docs/DEV_PREVIEW.md`](DEV_PREVIEW.md).
@@ -233,5 +233,5 @@ sandbox.
 The 24 studies in [`experiments/`](../experiments/) are the canonical usage
 reference — each is one `run.py` with a `config.yaml`, a table, a figure and a
 `README.md` stating the question and the verdict. Pick the one closest to your
-problem from the matrix in the top-level [`README`](../README.md) /
+problem from the matrix in the top-level [`README`](index.md) /
 [`docs/RESULTS.md`](RESULTS.md) and start from its `run.py`.

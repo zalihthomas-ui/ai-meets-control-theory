@@ -9,8 +9,8 @@ matches what you're here to do.
 | I want to… | Start here |
 | --- | --- |
 | **decide** what controller/estimator to use for a real problem | [`docs/DECISION-GUIDE.md`](DECISION-GUIDE.md) → [`docs/RESULTS.md`](RESULTS.md) |
-| **learn** the material | [the report PDF](report/ai-meets-control-theory.pdf) + [`notebooks/01_tour.ipynb`](../notebooks/01_tour.ipynb) |
-| **build** something with the library | `pip install aimct` + [`examples/`](../examples/) + [`docs/USAGE.md`](USAGE.md) |
+| **learn** the material | the report PDF + [`notebooks/01_tour.ipynb`](notebooks/01_tour.ipynb) |
+| **build** something with the library | `pip install aimct` + `examples/` + [`docs/USAGE.md`](USAGE.md) |
 | **reproduce or extend** an experiment | `python experiments/NN_name/run.py` + `python -m aimct preview` |
 
 ---
@@ -42,12 +42,12 @@ Then apply the recommendation with the library (lane 3).
 
 ## 2. Use it to learn
 
-- **[The living technical report](report/ai-meets-control-theory.pdf)** (~36
+- **The living technical report** (~36
   pages) has a worked write-up per experiment, organised as Modules 01–10:
   foundations → classical → modern/estimation → optimal/constrained →
   system-ID/ML → RL → hybrid AI+control → robotics → the Intelligent Control
   Challenge → grand synthesis.
-- **[`notebooks/01_tour.ipynb`](../notebooks/01_tour.ipynb)** is a 2-minute
+- **[`notebooks/01_tour.ipynb`](notebooks/01_tour.ipynb)** is a 2-minute
   guided run: model a system from first principles, design an LQR, do a hybrid
   swing-up, compare PID/LQR/MPC — all executing live.
 - The **[`docs/references/`](references/)** folder has a datasheet-grade spec
@@ -73,7 +73,7 @@ from aimct.trajectories  import MinimumJerk, Lemniscate, Dubins, Spline
 from aimct.viz           import animate, Sandbox
 ```
 
-The **[`examples/`](../examples/)** gallery is the on-ramp — each script is
+The **`examples/`** gallery is the on-ramp — each script is
 ~20 lines:
 
 | script | shows |
@@ -113,7 +113,7 @@ copy-paste recipes.
 
 ## Worked example — the whole loop on one hard problem
 
-**[`examples/07_full_workflow_gantry_crane.py`](../examples/07_full_workflow_gantry_crane.py)**
+**`examples/07_full_workflow_gantry_crane.py`**
 runs the entire pipeline end-to-end on a problem the library does **not**
 ship: **gantry-crane anti-sway** — move a payload on a rigid cable 3 m and
 stop it dead, under a force limit, without residual swing. (It's the opposite

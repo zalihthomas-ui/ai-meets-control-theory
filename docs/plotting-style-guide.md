@@ -137,7 +137,7 @@ set_aimct_style()
 color_lqr = get_controller_color("lqr")
 ```
 
-See [`src/aimct/plot_style.py`](../src/aimct/plot_style.py) for the complete implementation.
+See `src/aimct/plot_style.py` for the complete implementation.
 
 ---
 

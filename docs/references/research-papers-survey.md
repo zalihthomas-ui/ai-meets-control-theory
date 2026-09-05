@@ -28,7 +28,7 @@ This survey synthesizes 10 foundational and frontier research papers bridging **
 ### 1.1 *A Tour of Reinforcement Learning: The View from Continuous Control*
 - **Author**: Benjamin Recht (2019)
 - **Venue**: *Annual Review of Control, Robotics, and Autonomous Systems*, 2:253–279
-- **arXiv**: [`1806.09460`](https://arxiv.org/abs/1806.09460) | **PDF**: [`recht_2019_tour_of_rl_continuous_control.pdf`](../papers/recht_2019_tour_of_rl_continuous_control.pdf)
+- **arXiv**: [`1806.09460`](https://arxiv.org/abs/1806.09460) | **PDF**: `recht_2019_tour_of_rl_continuous_control.pdf`
 - **Core Insights**:
   - Unifies the language of MDPs (states $s$, actions $a$, rewards $r$, value functions $V$) with dynamical systems (states $x$, controls $u$, costs $c$, Hamilton-Jacobi-Bellman $V$).
   - Explores the trade-off between **Nominal Control** (certainty equivalence: system ID $\to$ Riccati solver) vs. **Robust Control** ($H_\infty$ / min-max) vs. **Direct Policy Search** (model-free policy gradient).
@@ -40,7 +40,7 @@ This survey synthesizes 10 foundational and frontier research papers bridging **
 ### 1.2 *The Gap Between Model-Based and Model-Free Methods on the Linear Quadratic Regulator*
 - **Authors**: Stephen Tu, Benjamin Recht (2019)
 - **Venue**: *International Conference on Machine Learning (ICML 2019)*
-- **arXiv**: [`1812.03565`](https://arxiv.org/abs/1812.03565) | **PDF**: [`tu_2019_model_based_vs_model_free_lqr.pdf`](../papers/tu_2019_model_based_vs_model_free_lqr.pdf)
+- **arXiv**: [`1812.03565`](https://arxiv.org/abs/1812.03565) | **PDF**: `tu_2019_model_based_vs_model_free_lqr.pdf`
 - **Core Insights**:
   - Rigorously bounds the sample complexity of learning an $\epsilon$-suboptimal policy for continuous-time/discrete-time LQR.
   - **Model-Based (Plugin / Certainty Equivalence)**: Requires $\tilde{\mathcal{O}}((n + m)/\epsilon)$ trajectory samples (where $n$ is state dimension and $m$ is input dimension).
@@ -53,7 +53,7 @@ This survey synthesizes 10 foundational and frontier research papers bridging **
 ### 1.3 *Simple Random Search Provides a Competitive Approach to Reinforcement Learning*
 - **Authors**: Horia Mania, Aurelia Guy, Benjamin Recht (2018)
 - **Venue**: *NeurIPS 2018*
-- **arXiv**: [`1803.07055`](https://arxiv.org/abs/1803.07055) | **PDF**: [`mania_2018_augmented_random_search.pdf`](../papers/mania_2018_augmented_random_search.pdf)
+- **arXiv**: [`1803.07055`](https://arxiv.org/abs/1803.07055) | **PDF**: `mania_2018_augmented_random_search.pdf`
 - **Core Insights**:
   - Proposes **Augmented Random Search (ARS)**: a derivative-free optimization algorithm that perturbs static linear policies $\pi(x) = W x$ along random Gaussian directions, updates weights via finite differences, and normalizes state inputs.
   - Outperforms or matches complex deep RL actor-critic methods (TRPO, PPO, DDPG) on standard MuJoCo continuous control benchmarks (HalfCheetah, Hopper, Walker2d) while being **15x faster to compute**.
@@ -66,7 +66,7 @@ This survey synthesizes 10 foundational and frontier research papers bridging **
 ### 2.1 *Discovering Governing Equations from Data: SINDy*
 - **Authors**: Steven L. Brunton, Joshua L. Proctor, J. Nathan Kutz (2016)
 - **Venue**: *Proceedings of the National Academy of Sciences (PNAS)*, 113(15):3932–3937
-- **arXiv**: [`1509.03580`](https://arxiv.org/abs/1509.03580) | **PDF**: [`brunton_2016_sindy_governing_equations.pdf`](../papers/brunton_2016_sindy_governing_equations.pdf)
+- **arXiv**: [`1509.03580`](https://arxiv.org/abs/1509.03580) | **PDF**: `brunton_2016_sindy_governing_equations.pdf`
 - **Core Insights**:
   - Formulates **Sparse Identification of Nonlinear Dynamics (SINDy)**:
     $$\dot{X} = \Theta(X, U) \Xi$$
@@ -80,7 +80,7 @@ This survey synthesizes 10 foundational and frontier research papers bridging **
 ### 2.2 *Neural Ordinary Differential Equations*
 - **Authors**: Ricky T. Q. Chen, Yulia Rubanova, Jesse Bettencourt, David Duvenaud (2018)
 - **Venue**: *NeurIPS 2018 (Best Paper Award)*
-- **arXiv**: [`1806.07366`](https://arxiv.org/abs/1806.07366) | **PDF**: [`chen_2018_neural_odes.pdf`](../papers/chen_2018_neural_odes.pdf)
+- **arXiv**: [`1806.07366`](https://arxiv.org/abs/1806.07366) | **PDF**: `chen_2018_neural_odes.pdf`
 - **Core Insights**:
   - Replaces discrete neural network layers with continuous hidden state evolution:
     $$\frac{dz(t)}{dt} = f_\theta(z(t), t), \quad z(t_1) = z(t_0) + \int_{t_0}^{t_1} f_\theta(z(t), t) dt$$
@@ -93,7 +93,7 @@ This survey synthesizes 10 foundational and frontier research papers bridging **
 ### 2.3 *Modern Koopman Theory for Dynamical Systems*
 - **Authors**: Steven L. Brunton, Marko Budišić, Eurika Kaiser, J. Nathan Kutz (2022)
 - **Venue**: *SIAM Review*, 64(2):229–340
-- **arXiv**: [`2102.12086`](https://arxiv.org/abs/2102.12086) | **PDF**: [`brunton_2022_modern_koopman_theory.pdf`](../papers/brunton_2022_modern_koopman_theory.pdf)
+- **arXiv**: [`2102.12086`](https://arxiv.org/abs/2102.12086) | **PDF**: `brunton_2022_modern_koopman_theory.pdf`
 - **Core Insights**:
   - The **Koopman Operator $\mathcal{K}$** is an infinite-dimensional linear operator that advances observable functions $g(x)$ forward in time along nonlinear dynamics:
     $$\mathcal{K}_t g(x_0) = g(F_t(x_0))$$
@@ -108,7 +108,7 @@ This survey synthesizes 10 foundational and frontier research papers bridging **
 ### 3.1 *Control Barrier Functions: Theory and Applications*
 - **Authors**: Aaron D. Ames, Samuel Coogan, Magnus Egerstedt, Gennaro Notomista, Koushil Sreenath, Paulo Tabuada (2019)
 - **Venue**: *European Control Conference (ECC 2019)*, pp. 3420–3431
-- **arXiv**: [`1903.11199`](https://arxiv.org/abs/1903.11199) | **PDF**: [`ames_2019_control_barrier_functions.pdf`](../papers/ames_2019_control_barrier_functions.pdf)
+- **arXiv**: [`1903.11199`](https://arxiv.org/abs/1903.11199) | **PDF**: `ames_2019_control_barrier_functions.pdf`
 - **Core Insights**:
   - Formulates **Control Barrier Functions (CBFs)** $h(x) \ge 0$ that guarantee forward invariance of safe sets $\mathcal{C} = \{x \in \mathbb{R}^n \mid h(x) \ge 0\}$.
   - Nagumo's theorem & safety condition:
@@ -122,7 +122,7 @@ This survey synthesizes 10 foundational and frontier research papers bridging **
 ### 3.2 *Learning for Safety-Critical Control with Control Barrier Functions*
 - **Authors**: Andrew J. Taylor, Andrew K. Singletary, Yisong Yue, Aaron D. Ames (2020)
 - **Venue**: *Learning for Dynamics & Control (L4DC 2020)*
-- **arXiv**: [`2004.09559`](https://arxiv.org/abs/2004.09559) | **PDF**: [`taylor_2020_learning_safety_critical_cbf.pdf`](../papers/taylor_2020_learning_safety_critical_cbf.pdf)
+- **arXiv**: [`2004.09559`](https://arxiv.org/abs/2004.09559) | **PDF**: `taylor_2020_learning_safety_critical_cbf.pdf`
 - **Core Insights**:
   - Addresses the fundamental flaw in standard CBFs: model mismatch ($\dot{x} = f(x) + g(x)u + d(x)$ where $d(x)$ is unmodeled).
   - Uses machine learning (Gaussian Processes / Neural Networks) to estimate the model error $d(x)$ while maintaining a robustified CBF-QP constraint that prevents safety violations during the learning process.
@@ -133,7 +133,7 @@ This survey synthesizes 10 foundational and frontier research papers bridging **
 ### 3.3 *Differentiable MPC for End-to-End Planning and Control*
 - **Authors**: Brandon Amos, Ivan Jimenez, Jacob Sacks, Byron Boots, J. Zico Kolter (2018)
 - **Venue**: *NeurIPS 2018*
-- **arXiv**: [`1810.13400`](https://arxiv.org/abs/1810.13400) | **PDF**: [`amos_2018_differentiable_mpc.pdf`](../papers/amos_2018_differentiable_mpc.pdf)
+- **arXiv**: [`1810.13400`](https://arxiv.org/abs/1810.13400) | **PDF**: `amos_2018_differentiable_mpc.pdf`
 - **Core Insights**:
   - Implements Model Predictive Control (MPC) as a differentiable layer in deep neural networks (DiffMPC).
   - Backpropagates analytical gradients through the Karush-Kuhn-Tucker (KKT) optimality conditions of the quadratic program using implicit differentiation.
@@ -145,7 +145,7 @@ This survey synthesizes 10 foundational and frontier research papers bridging **
 ### 3.4 *Information-Theoretic Model Predictive Control: MPPI*
 - **Authors**: Grady Williams, Paul Drews, Brian Goldfain, James M. Rehg, Evangelos A. Theodorou (2017)
 - **Venue**: *IEEE Transactions on Robotics*, 34(6):1603–1619
-- **arXiv**: [`1707.02342`](https://arxiv.org/abs/1707.02342) | **PDF**: [`williams_2017_mppi_autonomous_driving.pdf`](../papers/williams_2017_mppi_autonomous_driving.pdf)
+- **arXiv**: [`1707.02342`](https://arxiv.org/abs/1707.02342) | **PDF**: `williams_2017_mppi_autonomous_driving.pdf`
 - **Core Insights**:
   - Formulates **Model Predictive Path Integral (MPPI)** control using information-theoretic free energy and Feynman-Kac path integrals.
   - Samples thousands of noisy control trajectories in parallel on GPUs, computes their costs, and computes the optimal control update as an importance-weighted average:

@@ -109,7 +109,7 @@ When initialized near upright without swing-up assistance, the linear LQR contro
 
 We distinguish between two bounds:
 1. **Guaranteed Lyapunov Invariant Sub-Level Set (Inner Certificate)**: $\Omega_{c^*} = \{x \in \mathbb{R}^4 \mid x^T P x \le c^*\}$ where $\dot{V}(x) < 0$ along unconstrained linear flow.
-2. **Measured Recovery Basin (Empirical Boundary with $\pm 20\text{ N}$ Saturation)**: Empirically measured via high-resolution parameter sweeps in [Experiment 05](../../experiments/05_cartpole_basin_of_attraction/README.md).
+2. **Measured Recovery Basin (Empirical Boundary with $\pm 20\text{ N}$ Saturation)**: Empirically measured via high-resolution parameter sweeps in Experiment 05.
 
 ### 3.1 Initial Condition Recovery Boundaries ($x_0 = [0, 0, \theta_0, \dot{\theta}_0]^T$)
 

@@ -102,7 +102,7 @@ When applied to the true nonlinear `CartPole` dynamics without swing-up logic, t
 
 We distinguish between two bounds:
 1. **Lyapunov Invariant Ellipsoid (Guaranteed Inner Certificate)**: Certified via $x_0^T P x_0 \le c^*$ where $\dot{V}(x) < 0$.
-2. **Empirical Recovery Boundary (Measured Basin with $\pm 20\text{ N}$ Actuator)**: Measured in [Experiment 05](../../experiments/05_cartpole_basin_of_attraction/README.md).
+2. **Empirical Recovery Boundary (Measured Basin with $\pm 20\text{ N}$ Actuator)**: Measured in Experiment 05.
 
 | Metric | Tuning Set 1 (Standard, $R=0.1$) | Tuning Set 2 (Aggressive, $R=0.01$) | Tuning Set 3 (Soft Energy-Saving, $R=1.0$) |
 | :--- | :--- | :--- | :--- |

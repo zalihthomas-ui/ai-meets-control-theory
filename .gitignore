@@ -40,3 +40,7 @@ docs/papers/*.pdf
 
 # example 07 regenerates these on each run
 examples/_out/
+
+# Documentation build output
+site/
+.cache/

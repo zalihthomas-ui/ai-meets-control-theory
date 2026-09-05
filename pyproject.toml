@@ -54,6 +54,11 @@ ml = [
     "stable-baselines3>=2.0",
 ]
 viz = ["pyvista>=0.44"]
+docs = [
+    "mkdocs-material>=9.5",
+    "mkdocstrings[python]>=0.25",
+    "mkdocs-jupyter>=0.24",
+]
 dev = [
     "pytest>=8.0",
     "pytest-cov>=5.0",
