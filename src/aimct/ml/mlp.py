@@ -74,6 +74,19 @@ class MLP:
                 delta = (delta @ self.W[i].T) * self._df(acts[i])
         return gW, gb
 
+    def grad_input(self, acts, delta):
+        """``dL/d(input)`` for an output-layer gradient ``delta`` (shape
+        ``(B, out)``), through the cached forward ``acts``. Complements
+        :meth:`backprop` (parameter gradients for the same ``delta``); used
+        where a downstream loss must flow back through this net into whatever
+        produced its input -- e.g. an actor's reparameterised gradient through
+        a critic w.r.t. the action."""
+        for i in reversed(range(len(self.W))):
+            delta = delta @ self.W[i].T
+            if i > 0:
+                delta = delta * self._df(acts[i])
+        return delta
+
     def _loss_grad(self, X, Y):
         Y = np.atleast_2d(np.asarray(Y, dtype=float))
         yhat, acts = self.forward(X, cache=True)

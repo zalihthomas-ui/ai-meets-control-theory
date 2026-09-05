@@ -1,0 +1,31 @@
+# Experiment 31 - SAC vs PPO: the sample-efficiency axis
+# Companion: aimct.rl.sac (from-scratch SAC), aimct.rl.ppo, Experiments 07/11
+# (the energy-shaping + LQR swing-up hybrid, the zero-training reference)
+
+question: >
+  PPO is on-policy - it discards its rollouts after each update. SAC is
+  off-policy - a replay buffer lets it reuse every transition. That is
+  supposed to buy a large factor in ENVIRONMENT STEPS (the quantity that
+  costs money on real hardware) to reach a given return. How large, on the
+  pendulum swing-up, and where does each land relative to a classical
+  controller that needs zero environment steps?
+
+task:
+  env: "aimct.rl.make('pendulum-swingup')  - Pendulum, torque +/-4, 250 steps/episode"
+  reward: "-(angle_error^2 + 1e-3 * torque^2) per step"
+  x_axis: "environment steps (NOT wall-clock or gradient steps)"
+
+methods:
+  SAC:
+    module: aimct.rl.sac
+    config: {hidden: [128, 128], gamma: 0.99, tau: 0.005, batch: 128, buffer: 50000, warmup: 1000, alpha: auto}
+  PPO:
+    module: aimct.rl.ppo
+    config: {hidden: [64, 64], rollout_steps: 2048, ent_coef: 1.0e-3, lr_pi: 3.0e-4}
+  Energy + LQR hybrid:
+    what: "Astrom energy pump to the upright separatrix + an LQR catch near the top - the Exp 07/11 classical swing-up, zero training"
+
+budget: {env_steps: "20000 (quick) / 60000 (full)", eval_every: "2000 / 4000", eval_episodes: "5 / 10"}
+outputs: [table.md, table.csv, figure.png]
+run: "python experiments/31_sac_vs_ppo_sample_efficiency/run.py"
+run_full: "AIMCT_EXP_FULL=1 python experiments/31_sac_vs_ppo_sample_efficiency/run.py"
