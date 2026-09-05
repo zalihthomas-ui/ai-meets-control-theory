@@ -13,6 +13,7 @@ Available
 
 from .adaptive import MRAC, GainScheduledLQR, solve_lyapunov
 from .base import Controller
+from .disturbance_observer import DisturbanceObserver, QFilter
 from .ilqr import ILQR, iLQR, iLQRResult
 from .lqr import LQR, solve_care
 from .mpc import LinearMPC, dare
@@ -33,6 +34,8 @@ __all__ = [
     "StateFeedback",
     "LQR",
     "ObserverFeedback",
+    "DisturbanceObserver",
+    "QFilter",
     "EnergyShapingSwingUp",
     "HybridSwingUpLQR",
     "wrap_angle",
@@ -50,3 +53,4 @@ __all__ = [
     "controllability_matrix",
     "is_controllable",
 ]
+

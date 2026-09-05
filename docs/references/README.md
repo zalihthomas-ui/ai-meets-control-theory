@@ -61,3 +61,8 @@ This directory contains research foundations, canonical parameter sets, framewor
     - Canonical Quanser Ball and Beam apparatus standard: underactuated, relative degree 4 nonlinear rolling mechanics ($m = 0.064\text{ kg}, M = 0.20\text{ kg}, L = 0.425\text{ m}, J = 3.010 \times 10^{-3}\text{ kg}\cdot\text{m}^2, \tau_{\max} = 1.50\text{ N}\cdot\text{m}$).
     - Complete Euler-Lagrange equations of motion, analytical $(A, B)$ state-space linearization about horizontal origin, open-loop instability ($\lambda = +4.123\text{ rad/s}$), and Cascade PID vs. PFL vs. LQR vs. Constrained MPC benchmark formulations.
 
+13. **[Disturbance-Observer (DOB) Control Reference Specification (`disturbance-observer-reference.md`)](file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/disturbance-observer-reference.md)**
+    - Disturbance Observer (DOB) two-degree-of-freedom architecture, causal rational Q-filter design, relative degree matching, and Small-Gain robust stability conditions ($\|W_m(s)Q(s)\|_\infty < 1$).
+    - Matched vs. unmatched disturbance mechanics on underactuated quadrotors, direct feedforward cancellation vs. virtual tilt reallocation ($\theta_{\text{virtual}} = \hat{d}_x / g$), and proof of DOB superiority over classical integral action lag.
+
+
