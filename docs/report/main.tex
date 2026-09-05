@@ -50,7 +50,7 @@
 \lhead{\small\textsc{Living Technical Report}}
 \rfoot{\thepage}
 
-\newcommand{\milestone}{M17 --- Soft Actor-Critic (SAC) Sample-Efficiency \& Off-Policy Reinforcement Learning}
+\newcommand{\milestone}{M18 --- Ball and Beam Underactuated Balance \& Position Control}
 \newcommand{\reportdate}{\today}
 
 \title{\textbf{\LARGE AI Meets Control Theory}\\[0.35em]
@@ -68,11 +68,12 @@
 
 \begin{abstract}
 \noindent This report documents the culmination of the \textbf{AI Meets Control Theory} project.
-Across 10 curriculum modules, 31 rigorous from-scratch benchmark experiments, and 439 verified unit tests,
+Across 10 curriculum modules, 33 rigorous from-scratch benchmark experiments, and 445 verified unit tests,
 we evaluate and compare classical control, modern state-space methods, Kalman filtering, optimal control,
 constrained Model Predictive Control (MPC), real-time iteration nonlinear MPC (iLQR / RTI-NMPC), adaptive control,
 Euler--Lagrange robot manipulators, non-holonomic mobile robotics, underactuated rotary inverted pendulums,
-coupled two-tank non-linear process systems, high-speed dynamic vehicle handling with tire saturation,
+coupled two-tank non-linear process systems, underactuated ball and beam rolling balance and position control,
+high-speed dynamic vehicle handling with tire saturation,
 behavior cloning with DAgger interactive imitation learning, sample-efficient off-policy Soft Actor-Critic (SAC)
 versus on-policy PPO reinforcement learning, and hybrid AI + control safety shields on physical dynamical systems,
 under the core principle: \textit{build every method from scratch, simulate it, visualise it, and compare it honestly}.
@@ -1376,6 +1377,68 @@ where $\alpha > 0$ is the dynamic entropy temperature. The from-scratch implemen
 \label{fig:exp31}
 \end{figure}
 
+% ---------------------------------------------------------------------------
+\subsection{Worked Example: Ball and Beam Underactuated Balance \& Position Control (Experiment 33)}
+\label{sec:exp33_ball_and_beam}
+% ---------------------------------------------------------------------------
+
+Experiment 33 implements the canonical \textbf{Ball and Beam} benchmark (\texttt{aimct.systems.BallAndBeam}) using hardware parameters from the Quanser standard laboratory apparatus. The system comprises a solid steel ball of mass $m = 0.064\,\text{kg}$ and radius $r_b = 1.27\,\text{cm}$ rolling without slipping along a grooved rigid beam of mass $M = 0.20\,\text{kg}$ and length $L = 0.425\,\text{m}$ tilted by a DC motor applying torque $\tau$ with limits $|\tau| \le 1.50\,\text{N}\cdot\text{m}$.
+
+The Euler--Lagrange equations of motion are given by:
+\begin{equation}
+\ddot{r} = \frac{5}{7}\left(r\dot\theta^2 - g\sin\theta\right) - \frac{c_r}{m_{\text{eff}}}\dot{r}, \qquad \ddot\theta = \frac{\tau - 2mr\dot{r}\dot\theta - mgr\cos\theta - b\dot\theta}{J + mr^2},
+\end{equation}
+where $m_{\text{eff}} = \frac{7}{5}m = 0.0896\,\text{kg}$, $J = \frac{1}{12}ML^2 = 3.010\times 10^{-3}\,\text{kg}\cdot\text{m}^2$, rolling resistance $c_r = 0.002\,\text{N}\cdot\text{s/m}$, and bearing damping $b = 0.05\,\text{N}\cdot\text{m}\cdot\text{s/rad}$.
+
+Linearizing about the horizontal balance equilibrium $x_0 = [0, 0, 0, 0]^\top, u_0 = 0$ yields the continuous state-space realization:
+\begin{equation}
+A = \begin{bmatrix} 0 & 1 & 0 & 0 \\ 0 & -0.02232 & -7.0071 & 0 \\ 0 & 0 & 0 & 1 \\ -208.56 & 0 & 0 & -16.61 \end{bmatrix}, \qquad B = \begin{bmatrix} 0 \\ 0 \\ 0 \\ 332.18 \end{bmatrix},
+\end{equation}
+with open-loop eigenvalues $\lambda = \{-16.91, -1.92 \pm 4.16j, \mathbf{+4.123}\}\,\text{rad/s}$, relative degree 4 from torque $\tau$ to ball position $r$, and full controllability rank $\operatorname{rank}(\mathcal{C}) = 4$.
+
+We benchmark four control strategies across a $20\,\text{cm}$ point-to-point setpoint step (from $r = -10\,\text{cm} \to +10\,\text{cm}$ over $5.0\,\text{s}$):
+\begin{enumerate}[nosep]
+  \item \textbf{Cascade PID (Inner-Outer Loop):} Outer loop $e_r = r^* - r \implies \theta_{\text{cmd}} = \operatorname{PID}_r(e_r)$ commanding beam angle; inner loop $e_\theta = \theta_{\text{cmd}} - \theta \implies \tau = \operatorname{PD}_\theta(e_\theta)$ commanding motor torque.
+  \item \textbf{Partial Feedback Linearization (PFL):} Nonlinear state transformation linearizing the actuated beam angle coordinate, coupled with outer-loop PD ball positioning.
+  \item \textbf{Multivariable LQR:} Optimal Bryson-weighted full-state feedback $u = -K(x - x_{\text{ref}})$ with $Q = \operatorname{diag}([50, 5, 10, 1])$ and $R = [0.1]$, placing closed-loop poles at $\{-1050.6, -2.80 \pm 2.80j, -3.16\}$.
+  \item \textbf{Constrained Linear MPC:} Condensed active-set QP receding-horizon controller enforcing hard beam angle ($|\theta| \le 0.45\,\text{rad}$) and torque ($|\tau| \le 1.50\,\text{N}\cdot\text{m}$) bounds.
+\end{enumerate}
+
+\begin{table}[H]
+\centering
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lcccccccc@{}}
+\toprule
+\textbf{Controller} & \textbf{Rise $t_r$ [s]} & \textbf{Settling $t_s$ [s]} & \textbf{Overshoot $M_p$ [\%]} & \textbf{Steady Err $e_{ss}$ [cm]} & \textbf{RMSE [cm]} & \textbf{Energy $E_u$ [N$^2$m$^2$s]} & \textbf{Peak Torque [N$\cdot$m]} & \textbf{Status} \\
+\midrule
+\textbf{Cascade PID} & \textbf{0.284} & 5.000 & 10.5\% & 0.551 & \textbf{5.81} & 0.0243 & 1.500 & Stable \\
+\textbf{PFL (Nonlinear)} & 0.302 & 2.404 & 18.3\% & 0.0025 & 5.88 & 0.0249 & 1.500 & Stable \\
+\textbf{Multivariable LQR} & 0.576 & \textbf{1.492} & \textbf{1.3\%} & \textbf{0.00002} & 6.46 & 0.0187 & 0.966 & \textbf{Optimal} \\
+\textbf{Linear MPC} & 0.576 & 1.494 & \textbf{1.3\%} & \textbf{0.00002} & 6.47 & \textbf{0.0184} & \textbf{0.784 (Capped)} & \textbf{Optimal} \\
+\bottomrule
+\end{tabular}%
+}
+\caption{Benchmark results for Experiment 33: Ball and beam underactuated balance and setpoint regulation (from \texttt{experiments/33\_ball\_and\_beam\_control/table.md}).}
+\label{tab:exp33}
+\end{table}
+
+\paragraph{Key Takeaways:}
+\begin{enumerate}[nosep]
+  \item \textbf{Cascade Loop Bandwidth Separation Bottleneck:} Cascaded PID relies on time-scale separation between the inner beam angle loop and outer ball position loop. This separation introduces dynamic phase lag, resulting in an extended $5.0\,\text{s}$ settling tail and steady-state droop ($e_{ss} = 0.55\,\text{cm}$) due to unmodeled rolling friction.
+  \item \textbf{Multivariable State Coordination Eliminates Phase Lag:} By simultaneously closing feedback loops on $[r, \dot{r}, \theta, \dot\theta]$, Multivariable LQR and Linear MPC eliminate outer-inner phase lag, cutting settling time by $70\%$ ($1.49\,\text{s}$ vs. $5.0\,\text{s}$) with virtually zero overshoot ($1.3\%$) and zero droop ($e_{ss} = 2\times 10^{-5}\,\text{cm}$).
+  \item \textbf{Receding-Horizon Peak Torque Moderation:} Constrained Linear MPC optimizes control inputs across the prediction horizon, reducing peak torque demand to $0.784\,\text{N}\cdot\text{m}$ (compared to $0.966\,\text{N}\cdot\text{m}$ for LQR and $1.500\,\text{N}\cdot\text{m}$ hard saturation clipping for Cascade PID and PFL) with the lowest total actuation energy ($0.0184\,\text{N}^2\text{m}^2\text{s}$).
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.48\textwidth]{figures/exp33_ball_and_beam_benchmark.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{figures/exp33_ball_and_beam_setpoint.png}
+\caption{Experiment 33 Ball and Beam: (Left) Step response balance comparison across Cascade PID, PFL, LQR, and Linear MPC; (Right) Multi-step setpoint tracking trajectory ($0\,\text{cm} \to +10\,\text{cm} \to -10\,\text{cm} \to 0\,\text{cm}$).}
+\label{fig:exp33}
+\end{figure}
+
 % ===========================================================================
 \section{Engineering Synthesis \& Decision Guide}
 % ===========================================================================
@@ -1390,8 +1453,9 @@ The central mission of this project was never to demonstrate that a neural netwo
 \toprule
 \textbf{Operational Situation} & \textbf{Recommended Methodology} & \textbf{Empirical Evidence} \\
 \midrule
-Equations of motion known / linearisable & \textbf{LQR / Pole Placement}, then \textbf{Linear MPC} under constraints & Exp 04, Exp 08, Exp 28 \\
-Hard state/actuator inequality bounds & \textbf{Linear MPC} (active-set condensed QP) & Exp 08, Exp 20, Exp 28, Exp 30 \\
+Equations of motion known / linearisable & \textbf{LQR / Pole Placement}, then \textbf{Linear MPC} under constraints & Exp 04, Exp 08, Exp 28, Exp 33 \\
+Hard state/actuator inequality bounds & \textbf{Linear MPC} (active-set condensed QP) & Exp 08, Exp 20, Exp 28, Exp 30, Exp 33 \\
+Underactuated ball and beam balance & \textbf{Multivariable LQR / Linear MPC} ($1.49\,\text{s}$ settling, $0.0184$ energy) & Exp 33 \\
 Coupled non-linear process hydraulics & \textbf{PI with Anti-Windup} (zero droop) or \textbf{Multivariable MPC} & Exp 30 \\
 Moving / non-convex obstacle avoidance & \textbf{Sampling MPC (CEM)} (avoids non-convex barriers where gradient methods stall) & Exp 20, Exp 25 \\
 Nonlinear dynamics with real-time deadline & \textbf{iLQR / RTI-NMPC} ($1.3\,\text{mm}$ error, $14.6\,\text{ms}$ solve; generalizes across paths) & Exp 24, Exp 26 \\
@@ -1417,19 +1481,20 @@ Deploying uncertified learned policies & \textbf{Safety Shield} with certified c
 \label{tab:decision_guide}
 \end{table}
 
-\subsection{Recurring Engineering Lessons Across 31 Experiments}
+\subsection{Recurring Engineering Lessons Across 33 Experiments}
 
-Across 31 empirical benchmarks, ten fundamental principles recur consistently:
+Across 33 empirical benchmarks, eleven fundamental principles recur consistently:
 \begin{enumerate}
   \item \textbf{Feedforward Does the Heavy Lifting:} Model-based feedforward (differential flatness, steady-state inversion, curvature feedforward, reference preview) generates the baseline control trajectory directly, leaving feedback to correct only small modeling residuals and unexpected disturbances (Exp 03, 14, 17, 22).
   \item \textbf{Integral Action is Mandatory for Constant Disturbances \& Non-Linear Drains:} No amount of static state-feedback tuning ($K$) eliminates steady-state droop under persistent external loads (wind, gravity bias, or square-root drain losses); explicit integrator augmentation or parameter adaptation is required (Exp 03, 17, 23, 30).
-  \item \textbf{Cost and Weight Scaling is Load-Bearing:} On ill-conditioned or multi-timescale physical systems (e.g., quadrotor position vs. moment of inertia), naive identity weights ($Q=I, R=I$) fail. Bryson-rule normalization ($Q_{ii} = 1/x_{i,\max}^2, R_{jj} = 1/u_{j,\max}^2$) is essential for well-behaved optimal gains (Exp 14, 18, 19).
+  \item \textbf{Cost and Weight Scaling is Load-Bearing:} On ill-conditioned or multi-timescale physical systems (e.g., quadrotor position vs. moment of inertia), naive identity weights ($Q=I, R=I$) fail. Bryson-rule normalization ($Q_{ii} = 1/x_{i,\max}^2, R_{jj} = 1/u_{j,\max}^2$) is essential for well-behaved optimal gains (Exp 14, 18, 19, 33).
   \item \textbf{Model Error is Survivable within Robustness Margins:} Full-state LQR provides infinite upper gain margin and $[-6\,\text{dB}, +\infty\,\text{dB}]$ lower gain margin, tolerating up to $50\%$ parameter identification error without loss of asymptotic stability (Exp 09).
   \item \textbf{Convexity Dictates Planner Selection (The Duality of Gradient vs. Sampling MPC):} On smooth dynamical models and quadratic tracking costs, gradient-based iLQR / RTI-NMPC dominates stochastic sampling by $32\times\text{--}840\times$ at lower compute across arbitrary geometries (Exp 24, 26). Conversely, on non-convex geometric keep-out fields and dynamic obstacles, derivative-free sampling (CEM) is mandatory to discover obstacle-clearing paths where single-iteration gradient Riccati sweeps stall on non-convex barrier Hessians (Exp 20, 25).
   \item \textbf{Imitation Learning Loses the Self-Correcting Feedback Structure (Sim-to-Real Brittleness):} Behavior-cloning an expert controller memorizes the nominal state-action distribution. When deployed out-of-distribution (e.g., unannounced low-$\mu$ surface or tire saturation), the model-based expert degrades gracefully via live closed-loop error feedback, while the frozen neural policy diverges catastrophically off the road (Exp 27).
   \item \textbf{DAgger Repairs Distribution Shift but Inherits Expert Ceilings:} Interactive expert relabeling on visited student states (DAgger) completely bridges the compounding error gap, matching expert performance to sub-millimeter precision, but cannot exceed the expert's intrinsic capability (Exp 29).
   \item \textbf{Off-Policy Replay Slashes Interaction Costs by $15\text{--}20\times$ and Breaks the Expert Ceiling:} While on-policy PPO discards rollouts every update ($O(1)$ sample reuse), off-policy SAC's continuous experience replay buffer reuses transitions dozens of times, reaching threshold return $15\text{--}20\times$ faster in environment steps. Crucially, while imitation learning (Exp 29) is bounded by the teacher's policy envelope, direct RL reward optimization discovers non-convex trajectory shortcuts that outperform the hand-crafted classical hybrid (Exp 31).
-  \item \textbf{Reporting Failure Modes is as Essential as Reporting Wins:} Engineering judgment relies on knowing exact breaking points: linearisation breakdown past $23^\circ$ (Exp 02), EKF false basin trapping (Exp 16), closed-loop SysID correlation bias (Exp 09), nominal computed torque collapse under payload step (Exp 23), pure RL bootstrap failure on low-inertia plants (Exp 21), and Kinematic MPC overshoot under Pacejka tire saturation (Exp 27).
+  \item \textbf{Multivariable State Feedback Outperforms Cascaded Loops on High Relative-Degree Underactuation:} Cascaded loop architectures (inner-outer PID) depend on artificial time-scale separation, introducing severe dynamic phase lag and long settling tails ($5.0\,\text{s}$) on relative degree 4 systems like Ball and Beam; simultaneous multivariable state feedback (LQR/MPC) coordinates tilt and roll dynamics directly to slash settling time by $70\%$ ($1.49\,\text{s}$) without overshoot (Exp 33).
+  \item \textbf{Reporting Failure Modes is as Essential as Reporting Wins:} Engineering judgment relies on knowing exact breaking points: linearisation breakdown past $23^\circ$ (Exp 02), EKF false basin trapping (Exp 16), closed-loop SysID correlation bias (Exp 09), nominal computed torque collapse under payload step (Exp 23), pure RL bootstrap failure on low-inertia plants (Exp 21), Kinematic MPC overshoot under Pacejka tire saturation (Exp 27), Plain BC lane departure under high slip (Exp 29), and cascaded PID droop on rolling ball friction (Exp 33).
   \item \textbf{Energy Pumping Unlocks Underactuated Basins of Attraction:} For underactuated pendulums (Cart-Pole, Furuta RIP), linear controllers cannot stabilize inverted hanging states ($\pm 180^\circ$); Lyapunov energy shaping drives mechanical energy monotonically to the homoclinic orbit, enabling reliable handoff to LQR / MPC (Exp 07, 28).
 \end{enumerate}
 
@@ -1441,9 +1506,9 @@ Across 31 empirical benchmarks, ten fundamental principles recur consistently:
 All curriculum modules, capstone robotics showcases, deep RL agents, adaptive controllers, and benchmark challenge suites are fully implemented from scratch, tested, and validated across 21 experiments (Modules 01--10).
 
 \paragraph{Phase 2: Post-Capstone Depth, Real Systems \& Packaging --- Completed.}
-All four Phase 2 tracks, physical robotic benchmarks, imitation algorithms, and major tooling extensions are fully shipped and verified across Experiments 22--31:
+All four Phase 2 tracks, physical robotic benchmarks, imitation algorithms, and major tooling extensions are fully shipped and verified across Experiments 22--33:
 \begin{itemize}[nosep]
-  \item \textbf{Track A (Real Multi-Body, Process \& Vehicle Systems):} Differential-drive mobile robot (Exp 22: path tracking; Exp 25: dynamic moving-obstacle avoidance), 2-link planar manipulator arm (Exp 23: nominal tracking and Slotine--Li adaptive computed torque under unknown $0.5\,\text{kg}$ payload step), dynamic single-track ground vehicle (Exp 27: ISO-3888 double lane change with linear vs. Pacejka tire forces at $25\,\text{m/s}$), Furuta rotary inverted pendulum (Exp 28: Quanser QUBE-Servo 2 standard LQR upright catch, constrained MPC, and Åström-Furuta swing-up), and Coupled Two-Tank liquid level regulation (Exp 30: non-linear Torricelli hydraulics, SISO PI vs. LQR vs. Linear MPC).
+  \item \textbf{Track A (Real Multi-Body, Process \& Vehicle Systems):} Differential-drive mobile robot (Exp 22: path tracking; Exp 25: dynamic moving-obstacle avoidance), 2-link planar manipulator arm (Exp 23: nominal tracking and Slotine--Li adaptive computed torque under unknown $0.5\,\text{kg}$ payload step), dynamic single-track ground vehicle (Exp 27: ISO-3888 double lane change with linear vs. Pacejka tire forces at $25\,\text{m/s}$), Furuta rotary inverted pendulum (Exp 28: Quanser QUBE-Servo 2 standard LQR upright catch, constrained MPC, and Åström-Furuta swing-up), Coupled Two-Tank liquid level regulation (Exp 30: non-linear Torricelli hydraulics, SISO PI vs. LQR vs. Linear MPC), and Ball and Beam underactuated balance control (Exp 33: Quanser apparatus, Cascade PID vs. PFL vs. LQR vs. Linear MPC).
   \item \textbf{Track B (Algorithmic Depth, Imitation \& Sample-Efficient RL):} Gradient-based real-time iteration Nonlinear MPC (Exp 24: iLQR / RTI-NMPC vs. Sampling MPC; Exp 26: generalized trajectory geometries on Lissajous 3:2 and Archimedean Spiral; Exp 25: non-convex obstacle barriers), imitation learning suite (Exp 29: Behavior Cloning vs. DAgger interactive relabeling under distribution shift via \texttt{aimct.rl.imitation}), and continuous off-policy Soft Actor-Critic (Exp 31: SAC vs. PPO sample efficiency on Inverted Pendulum swing-up via \texttt{aimct.rl.sac}).
   \item \textbf{Track C (Harness \& Trajectory Infrastructure):} Standardized trajectory-tracking benchmark suite (\texttt{aimct.benchmarks.track\_trajectory}) with cross-track / along-track error metrics, and \texttt{aimct.trajectories} reference generator library (Setpoint, Circle, Lemniscate, Minimum-Jerk, Spline, Dubins, Lissajous, Spiral, Rose).
   \item \textbf{Track D (PyPI Distribution):} Production packaging under \texttt{aimct}, console entry points, clean wheel/sdist builds, automated GitHub Action release pipeline with PyPI OIDC Trusted Publishing, and release runbook.
@@ -1455,9 +1520,10 @@ All four Phase 2 tracks, physical robotic benchmarks, imitation algorithms, and 
   \item Hardware-in-the-loop (HIL) testing interfaces and physical micro-quadrotor flight deployment.
   \item Flight log ingestion and telemetry playback (Crazyflie CFclient / ROS2 rosbag).
   \item Direct collocation trajectory optimization and multi-agent collaborative control.
+  \item Disturbance observer (DOB) and composite control architectures.
   \item Partially observable decentralized systems and sim-to-real domain randomization.
 \end{itemize}
-CI passes on Python 3.10--3.13 with \textbf{439 passing unit tests}.
+CI passes on Python 3.10--3.13 with \textbf{445 passing unit tests}.
 
 \paragraph{Reproduction Commands.}
 \begin{lstlisting}[language=bash]
@@ -1493,6 +1559,7 @@ python experiments/28_furuta_pendulum_control/run.py
 python experiments/29_dagger_vs_bc_lane_change/run.py
 python experiments/30_two_tank_level_control/run.py
 python experiments/31_sac_vs_ppo_sample_efficiency/run.py
+python experiments/33_ball_and_beam_control/run.py
 \end{lstlisting}
 
 \end{document}

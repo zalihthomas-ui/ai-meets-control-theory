@@ -50,6 +50,8 @@ Copy-Fig "29_dagger_vs_bc_lane_change" "figure.png" "exp29_dagger_recovery.png"
 Copy-Fig "30_two_tank_level_control" "two_tank_benchmark.png" "exp30_two_tank_benchmark.png"
 Copy-Fig "30_two_tank_level_control" "two_tank_setpoint.png" "exp30_two_tank_setpoint.png"
 Copy-Fig "31_sac_vs_ppo_sample_efficiency" "figure.png" "exp31_sac_vs_ppo.png"
+Copy-Fig "33_ball_and_beam_control" "ball_and_beam_benchmark.png" "exp33_ball_and_beam_benchmark.png"
+Copy-Fig "33_ball_and_beam_control" "ball_and_beam_setpoint.png" "exp33_ball_and_beam_setpoint.png"
 
 
 Write-Host "compiling main.tex..."

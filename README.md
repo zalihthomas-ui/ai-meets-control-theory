@@ -21,7 +21,7 @@ git clone https://github.com/zalihthomas-ui/ai-meets-control-theory.git
 cd ai-meets-control-theory
 pip install -e ".[dev,ml]"
 
-# 2. Run the fast test suite (431 fast / 439 total passing unit tests from scratch)
+# 2. Run the fast test suite (437 fast / 445 total passing unit tests from scratch)
 pytest -m "not slow"
 
 # 3. Run a canonical multi-controller benchmark comparison
@@ -42,7 +42,7 @@ python -m aimct live3d --web    # 6-DOF WebGL sandbox
 
 ---
 
-## The Experiments (01–31)
+## The Experiments (01–33)
 
 Every experiment is self-contained with its own configuration, runner, Markdown/CSV benchmark table, and publication-ready 4-panel figure. See [`docs/RESULTS.md`](docs/RESULTS.md) for full metrics.
 
@@ -79,6 +79,7 @@ Every experiment is self-contained with its own configuration, runner, Markdown/
 | **29** | [`29_dagger_vs_bc_lane_change`](experiments/29_dagger_vs_bc_lane_change/) | Dynamic Bicycle (Pacejka $\mu=0.6$) | Plain BC vs DAgger (8 rounds) | Plain BC drifts off-road ($6.02\,\text{m}$ RMS); DAgger relabeling matches expert LQR ($768.8\,\text{mm}$ RMS) but inherits expert ceiling. |
 | **30** | [`30_two_tank_level_control`](experiments/30_two_tank_level_control/) | Coupled Nonlinear Two-Tank | SISO PI vs Multivariable LQR vs Linear MPC | SISO PI eliminates nonlinear steady-state droop ($0.0\,\text{cm}$); LQR/MPC cuts pump energy by $22\%$ ($6659\,\text{V}^2\text{s}$) with $0\%$ level violation. |
 | **31** | [`31_sac_vs_ppo_sample_efficiency`](experiments/31_sac_vs_ppo_sample_efficiency/) | Inverted Pendulum (Swing-Up) | SAC (off-policy) vs PPO (on-policy) vs Hybrid | Off-policy SAC reaches $-966$ threshold in $8\text{k}$ steps ($15\text{--}20\times$ faster than PPO) and beats classical hybrid ($-364$ vs $-816$). |
+| **33** | [`33_ball_and_beam_control`](experiments/33_ball_and_beam_control/) | Ball & Beam (Quanser standard) | Cascade PID vs PFL vs Multivariable LQR vs Linear MPC | LQR / MPC settle in $1.49\,\text{s}$ ($1.3\%$ overshoot, zero droop); MPC caps torque to $0.784\,\text{N}\cdot\text{m}$ (energy $0.0184$). |
 
 ---
 
@@ -89,7 +90,7 @@ src/aimct/
   systems/        DynamicalSystem base + LinearSystem, MassSpringDamper,
                   Pendulum, CartPole, PlanarQuadrotor (Crazyflie 2.0), DCMotor,
                   DifferentialDriveRobot, TwoLinkArm, BicycleVehicle,
-                  FurutaPendulum, TwoTank
+                  FurutaPendulum, TwoTank, BallAndBeam
   simulate.py     rk4_step(), simulate() -> Trajectory(t, x, u, y)
   controllers/    PID, StateFeedback, LQR, ObserverFeedback, MRAC, ComputedTorque,
                   EnergyShapingSwingUp, HybridSwingUpLQR,
