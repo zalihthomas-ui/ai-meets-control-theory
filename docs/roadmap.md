@@ -64,12 +64,20 @@ than left silently undone (marked below).
   [Experiment 17](../experiments/17_adaptive_vs_fixed_changing_plant/)'s
   lesson (adapt the controller, don't identify the plant) on a real
   multi-body system.
-- [ ] **Bicycle-Model Ground Vehicle** — dynamic lateral tire-force model
-  (Pacejka / linear), high-speed double-lane-change, Stanley vs. LQR vs.
-  kinematic MPC vs. an RL policy. **Not started** — open for Phase 3 or a
-  future pass.
-- [ ] *(Stretch, explicitly deferred)* Furuta pendulum, ball-and-beam,
-  coupled two-tank classic lab benchmarks.
+- [x] **Bicycle-Model Ground Vehicle** (`aimct.systems.BicycleVehicle`) —
+  dynamic single-track lateral model with linear **and** Pacejka tire
+  forces. [Experiment 27](../experiments/27_bicycle_double_lane_change/):
+  high-speed double-lane-change, Stanley vs. LQR vs. kinematic MPC, with a
+  linear→Pacejka tire swap that exposes where the linear-tire assumption
+  breaks.
+- [x] *(was stretch — delivered)* **Furuta pendulum**
+  (`aimct.systems.FurutaPendulum`,
+  [Exp 28](../experiments/28_furuta_pendulum_control/)), **ball-and-beam**
+  (`aimct.systems.BallAndBeam`,
+  [Exp 33](../experiments/33_ball_and_beam_control/)), **coupled two-tank**
+  (`aimct.systems.TwoTank`,
+  [Exp 30](../experiments/30_two_tank_level_control/)) — all three classic
+  lab benchmarks shipped with datasheet-grade reference docs.
 
 ### Track B — Method Depth & Advanced Synthesis
 
@@ -90,19 +98,26 @@ than left silently undone (marked below).
   non-smooth cost → CEM's population search still earns its keep. This is
   the fuller, evidence-backed version of Experiment 21's "CEM is loose and
   slow" remark, not a blanket win for either method.
-- [ ] **Soft Actor-Critic (SAC)** and a proper PPO hyperparameter search —
-  **not started**. Experiment 21's from-scratch on-policy PPO did not
-  bootstrap on the quad (behaviour-cloned from the LQR+flatness expert
-  instead — see the experiment's README); SAC as a genuinely sample-efficient
-  off-policy alternative remains open.
-- [ ] **Direct trajectory optimisation** (collocation / multiple shooting) —
-  **not started**.
-- [ ] **First-class behaviour cloning + DAgger** (`aimct.rl.imitation`) —
-  **not started as a module.** Experiment 21 hand-rolled a one-off behaviour
-  clone of the LQR+flatness expert (documented, not reusable); formalising
-  it into a tested module is still open.
-- [ ] *(Stretch, explicitly deferred)* H∞ / μ-synthesis loop shaping and
-  disturbance-observer control for unmatched wind rejection.
+- [x] **Soft Actor-Critic (SAC)** (`aimct.rl.sac`) — from-scratch
+  off-policy SAC (squashed-Gaussian actor, twin critics + Polyak targets,
+  auto-tuned temperature). [Experiment 31](../experiments/31_sac_vs_ppo_sample_efficiency/)
+  measures its sample efficiency against PPO on a continuous task.
+- [x] **Direct trajectory optimisation** (`aimct.planning.DirectCollocation`)
+  — Hermite–Simpson direct transcription of a finite-horizon OCP.
+  [Experiment 32](../experiments/32_direct_collocation_vs_ilqr/): the only
+  planner that actually meets a hard terminal-state constraint (iLQR and CEM
+  only penalise the miss softly).
+- [x] **First-class behaviour cloning + DAgger** (`aimct.rl.imitation`) —
+  `BehaviorCloning` + a `dagger` interactive data-aggregation loop.
+  [Experiment 29](../experiments/29_dagger_vs_bc_lane_change/): DAgger
+  recovers from the compounding-error drift that sinks plain BC.
+- [x] **Disturbance-observer control** (`aimct.controllers.DisturbanceObserver`
+  + `QFilter`) — a 2-DOF DOB with matched cancellation and virtual-tilt
+  reallocation for the unmatched (horizontal-wind) channel.
+  [Experiment 34](../experiments/34_dob_wind_rejection/).
+- [ ] *(Stretch → moved to Phase 3, Track A)* H∞ / μ-synthesis loop shaping.
+  Now a first-class Phase-3 deliverable — see
+  [`docs/roadmap-phase3.md`](roadmap-phase3.md).
 
 ### Track C — Benchmark & Trajectory Infrastructure
 
@@ -137,8 +152,9 @@ than left silently undone (marked below).
   (OIDC)** — no tokens in the repo.
 - [x] **Documentation & release runbook** — `CHANGELOG.md`
   (Keep-a-Changelog) and `docs/PACKAGING.md`.
-- [ ] **Actually publishing to PyPI** — deliberately not done; the runbook
-  above is ready whenever that decision is made.
+- [x] **Published to PyPI** — `aimct 0.1.0` (2026-09-05) and `aimct 0.2.0`
+  (2026-09-06) are live via the OIDC pipeline; `pip install aimct` works.
+  v0.2.0 also has a full GitHub Release with notes.
 
 ### Not originally scoped, shipped anyway — `aimct.viz` & `aimct.dev`
 
@@ -174,17 +190,30 @@ design-time system preview. Both landed as first-class subpackages:
 
 ---
 
-## Phase 3 — Hardware & Physical Deployment (🔮 PLANNED, not started)
+## Phase 3 — Robust, Deployable, Reachable (🚧 ACTIVE — opened 2026-09-06)
 
-- [ ] Hardware-in-the-loop (HIL) testing interfaces.
-- [ ] Flight log ingestion and telemetry playback (Crazyflie CFclient / ROS2 rosbag).
-- [ ] Hosted interactive documentation portal.
-- [ ] Multi-agent collaborative control and partially-observable decentralized systems.
-- [ ] The Track A/B items explicitly deferred above (bicycle-model vehicle,
-  SAC, direct trajectory optimisation, a first-class imitation-learning
-  module, H∞/μ-synthesis, and the classic-lab-benchmark stretch systems)
-  remain open and are natural Phase 3 (or an earlier revisit) candidates
-  ahead of anything in this list.
+Full plan with deliverables, experiments, and per-agent assignments:
+**[`docs/roadmap-phase3.md`](roadmap-phase3.md)**. Summary:
+
+- **Track A — Robust & certified control.** H∞ mixed-sensitivity synthesis
+  (`aimct.controllers.hinf`), μ / structured-uncertainty analysis
+  (`aimct.robust`), tube MPC. Closes the last deferred Track-B item.
+  Experiments 35, 37.
+- **Track B — The hardware bridge (flagship).** `aimct.hil` (real-time loop
+  + plant emulator with quantisation / delay / saturation / jitter),
+  identification-from-logs (`aimct.sysid`), a controller export path
+  (`aimct.deploy`), and a fully documented buildable 2-DOF arm
+  (`docs/hardware/two-link-arm.md`). Experiment 36 runs the `live_arm_balance`
+  controllers through the HIL emulator to see if the real build would stand.
+- **Track C — Estimation & scale.** Moving-horizon estimation, particle
+  filter, multi-agent consensus / formation control. Experiments 38, 39.
+- **Track D — Reach.** A hosted mkdocs-material docs portal, a JOSS paper
+  draft, a performance-regression CI suite, vectorised batch simulation.
+
+Of the Phase-2 items previously parked here: the bicycle vehicle, SAC,
+direct trajectory optimisation, the imitation module, and the classic-lab
+stretch systems all **shipped in v0.2.0** (Experiments 27–34). Only
+H∞/μ-synthesis carried forward — now Track A above.
 
 ---
 
