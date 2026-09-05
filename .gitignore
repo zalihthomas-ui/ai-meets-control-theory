@@ -37,3 +37,6 @@ assets/figures/_generated/
 
 # Research paper binary PDFs (downloadable via docs/papers/download_papers.py)
 docs/papers/*.pdf
+
+# example 07 regenerates these on each run
+examples/_out/
