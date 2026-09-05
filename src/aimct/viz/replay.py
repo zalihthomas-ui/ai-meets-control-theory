@@ -54,12 +54,16 @@ class Replay:
         return path
 
     def show(self):
+        """Open the animation in an interactive Matplotlib window (blocks until
+        closed). Returns ``self``."""
         import matplotlib.pyplot as plt
 
         plt.show()
         return self
 
     def to_html(self) -> str:
+        """The animation as a self-contained JS/HTML string (for embedding).
+        Notebooks display it automatically via ``_repr_html_``."""
         return self.anim.to_jshtml()
 
     def _repr_html_(self):                      # notebook display

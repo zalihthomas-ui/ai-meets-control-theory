@@ -92,12 +92,19 @@ class SystemArtist:
 
     # -- geometry / lifecycle -------------------------------------------
     def bounds(self, states: np.ndarray | None = None):
+        """World extent as ``((xmin, xmax), (ymin, ymax))``.  ``states`` is the
+        whole run's ``(N, n_states)`` array when available, so the frame can be
+        sized to the actual motion."""
         raise NotImplementedError
 
     def build(self, ax) -> list:
+        """Create the persistent Matplotlib artists on ``ax`` once; return them
+        (the animator keeps the list to redraw each frame)."""
         raise NotImplementedError
 
     def draw(self, x, u=None, t: float = 0.0, aux: dict | None = None) -> None:
+        """Move the artists built by :meth:`build` to match state ``x`` (input
+        ``u``, time ``t``, optional per-frame ``aux`` dict)."""
         raise NotImplementedError
 
     def position(self, x) -> np.ndarray:
@@ -107,6 +114,9 @@ class SystemArtist:
 
     # -- telemetry ----------------------------------------------------------
     def hud_lines(self, x, u=None, t: float = 0.0, aux: dict | None = None):
+        """Lines for the telemetry overlay, in the system's own units.  The
+        default is time + raw state + ``|u|``; subclasses override with
+        labelled, unit-bearing rows."""
         x = np.asarray(x, float)
         rows = [f"t   = {t:6.2f} s",
                 "x   = [" + ", ".join(f"{v:+.3f}" for v in x) + "]"]

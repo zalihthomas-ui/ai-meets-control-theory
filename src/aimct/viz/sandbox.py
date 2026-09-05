@@ -112,19 +112,25 @@ class Sandbox:
         self.x = self.x + np.asarray(delta, float)
 
     def nudge_target(self, delta) -> None:
+        """Add ``delta`` to the goal in place (arrow-key style relative move)."""
         if self.target is not None:
             self.target += np.asarray(delta, float)
 
     def set_target(self, xy) -> None:
+        """Move the goal to ``xy`` in place (mouse-click style absolute set)."""
         if self.target is not None:
             self.target[:len(xy)] = np.asarray(xy, float)[:len(self.target)]
 
     def set_controller(self, name: str) -> None:
+        """Switch the active controller and :meth:`reset` it (no-op if already
+        active or the name is unknown)."""
         if name in self.controllers and name != self.active:
             self.active = name
             self.controllers[name].reset()
 
     def reset(self) -> None:
+        """Restore the initial state, clock, trail, and target, and reset the
+        active controller."""
         self.x = self.x0.copy()
         self.t = 0.0
         self._trail.clear()
@@ -139,6 +145,9 @@ class Sandbox:
         return self.target
 
     def step(self):
+        """Advance one control period: ``on_step`` hook, one controller
+        ``update``, then ``substeps`` RK4 steps of the dynamics (plus any
+        ``disturbance.xdot_extra``).  Returns the applied input ``u``."""
         if self.on_step is not None:
             self.on_step(self)
         ctrl = self.controllers[self.active]
@@ -180,6 +189,10 @@ class Sandbox:
 
     # -- interactive --------------------------------------------------------
     def run(self):                                       # pragma: no cover (GUI)
+        """Open the interactive window: the system animating in real time with
+        the controller radio, disturbance sliders, hot-keys, and the
+        ``h``/``g``/``c`` help/randomise/snapshot bindings.  Blocks until the
+        window is closed."""
         import matplotlib.pyplot as plt
         from matplotlib.animation import FuncAnimation
         from matplotlib.widgets import RadioButtons, Slider
