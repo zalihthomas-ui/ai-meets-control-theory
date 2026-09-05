@@ -1,0 +1,35 @@
+# Experiment 27 - double lane change on the dynamic bicycle model
+# Companion: aimct.systems.BicycleVehicle, Experiment 02 (linearisation validity),
+# Experiment 21/C9.3 (behaviour-cloned RL policy pattern)
+
+question: >
+  Four controllers - Stanley, LQR, a kinematic-model MPC, and a from-scratch
+  RL policy - steer the same dynamic (lateral-tire-force) vehicle through an
+  ISO-3888-style double lane change at 25 m/s. Part A is the gentle nominal
+  manoeuvre on the linear tire every controller's design/training assumed.
+  Part B swaps in a sharper lane change and a low-mu Pacejka tire - the same
+  controller instances, unaware anything changed. Who degrades gracefully,
+  and who does not?
+
+system:
+  model: aimct.systems.BicycleVehicle
+  params: {m: 1600, Iz: 2500, a: 1.2, b: 1.6, Caf: 80000, Car: 80000}
+  state: "[X, Y, psi, vx, vy, r]"
+  input: "[delta, ax]"
+  cruise_speed_ms: 25.0
+
+manoeuvre:
+  part_a: {tire: linear, wc_sharpness_m: 15, lane_shift_m: 3.5}
+  part_b: {tire: pacejka, mu: 0.6, wc_sharpness_m: 6, lane_shift_m: 3.5}
+
+controllers:
+  Stanley:       "heading + cross-track steering law, model-free"
+  LQR:           "linearised about the (linear-tire) cruise equilibrium"
+  Kinematic MPC: "LinearMPC on the kinematic (no-slip) bicycle model, steering the true dynamic vehicle"
+  RL (PPO):      "behaviour-cloned from the LQR expert + a light PPO fine-tune (kept only if it does not regress) - from-scratch PPO alone plateaus on this task the same way it did on the Exp-21/C9.3 quad policy"
+
+sim: {t_final: 8.0, dt: 0.01}
+outputs: [table.md, table.csv, figure.png]
+run: "python experiments/27_bicycle_double_lane_change/run.py"
+run_full: "AIMCT_EXP_FULL=1 python experiments/27_bicycle_double_lane_change/run.py"
+train_policy: "python experiments/27_bicycle_double_lane_change/train_policy.py"
