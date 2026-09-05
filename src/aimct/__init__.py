@@ -4,6 +4,7 @@ Subpackages
 -----------
 systems      : dynamical-system models with a common interface
 controllers  : PID, state feedback, LQR, MPC, neural, RL policies
+planning     : direct trajectory optimisation (Hermite-Simpson collocation)
 estimation   : observers, Kalman filters
 ml           : learned dynamics, surrogate models
 rl           : agents and environments

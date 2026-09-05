@@ -1,0 +1,75 @@
+# Experiment 32 - direct collocation vs shooting vs sampling (OFFLINE)
+# Companion: aimct.planning.DirectCollocation (new - Hermite-Simpson),
+# aimct.controllers.iLQR, aimct.controllers.SamplingMPC.
+# Closes the planning arc of Experiments 24 / 25 / 26 (those raced iLQR vs CEM
+# as ONLINE receding-horizon controllers; this one compares the OFFLINE
+# open-loop trajectory each paradigm produces).
+
+question: >
+  Every receding-horizon controller in the repo rests on solving one
+  finite-horizon optimal-control problem. Three paradigms do that: indirect /
+  single shooting (iLQR - a Riccati sweep over the true rollout), sampling
+  (CEM - cross-entropy over action sequences), and direct transcription
+  (collocation - make the state AND input at every knot decision variables and
+  enforce the discretised dynamics as equality constraints). Given the SAME
+  minimum-effort cart-pole swing-up, what does each actually deliver:
+  the achieved objective, whether the boundary condition is met, whether the
+  plan survives being re-integrated through the true dynamics, and how long the
+  solve takes?
+
+ocp:
+  plant: aimct.systems.CartPole
+  objective: "min integral_0^T u(t)^2 dt"
+  x0: "[0, 0, pi, 0]   (hanging, at rest, cart at origin)"
+  x_goal: "[0, 0, 0, 0]   (upright, at rest, cart at origin)"
+  t_final_s: 2.0
+  input_box: "|u| <= 20 N"
+
+planners:
+  - name: Direct collocation (HS)
+    impl: aimct.planning.DirectCollocation
+    transcription: >
+      Hermite-Simpson defects over N knots (41 full / 21 quick), decision vector
+      (X[0..N-1], U[0..N-1]); x0 / x_goal as explicit linear equalities; input
+      box as variable bounds. scipy.optimize.minimize(method="SLSQP") with an
+      analytic constraint Jacobian (FD dynamics Jacobian). Terminal condition:
+      HARD constraint.
+  - name: iLQR / single shooting
+    impl: aimct.controllers.iLQR (one full solve, offline)
+    note: >
+      No hard terminal constraint in shooting - the boundary condition enters as
+      a large terminal penalty Qf = diag([400, 40, 800, 40]); Q ~ 0 keeps the
+      running cost effort-only. dt = 0.02, horizon 100.
+  - name: CEM / sampling
+    impl: aimct.controllers.SamplingMPC, run open-loop over the whole horizon
+    note: >
+      Same terminal penalty Qf as iLQR. 2000 samples / 120 elite / 6 CEM iters,
+      40 outer refinements (full). Terminal condition: penalty, not constraint.
+
+scoring:
+  effort: "integral(u^2 dt), trapezoidal"
+  term_err_planned: "||x(T) - goal|| from the planner's own knots (pole angle wrapped)"
+  term_err_rolled: >
+    same, after re-integrating the returned u through the TRUE dynamics with a
+    fine RK4 - FOH for collocation, ZOH for iLQR / CEM (the input model each
+    planner assumes). The honest "does the plan fly" check.
+  max_dyn_drift: "worst knot mismatch between the plan and that re-integration"
+  box_ok: "peak |u| <= 20 N"
+  solve_ms: "wall-clock for the single offline solve"
+
+outputs: [table.md, table.csv, figure.png]   # committed = AIMCT_EXP_FULL=1
+run: "python experiments/32_direct_collocation_vs_ilqr/run.py"
+run_full: "AIMCT_EXP_FULL=1 python experiments/32_direct_collocation_vs_ilqr/run.py"
+
+headline: >
+  Direct collocation is the only one of the three that meets the terminal
+  condition exactly (it is a constraint, not a penalty): planned terminal error
+  0, and 8e-4 after re-integration at 41 knots (pure inter-knot quadrature
+  error, shrinks with the mesh). iLQR and CEM leave the pole 0.25 and 0.65 short
+  of upright because Qf only trades against effort - and their lower "effort"
+  numbers are not comparable, they are solving a relaxed problem. Collocation
+  also solved fastest here (~0.7 s vs 1.4 s iLQR vs 8.5 s CEM). The catch:
+  collocation's dynamics only hold to quadrature order BETWEEN knots, so a plan
+  that is defect-perfect still needs a tracking controller or a fine mesh to fly
+  open-loop; iLQR and CEM roll the true dynamics and are internally consistent
+  to ~1e-5 - just to the wrong endpoint.
