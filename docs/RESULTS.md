@@ -1,6 +1,6 @@
 # Empirical Results & Engineering Verdicts
 
-> The comprehensive, honest benchmark summary of all 28 experiments across the project.
+> The comprehensive, honest benchmark summary of all 30 experiments across the project.
 > Every method was built from scratch, simulated, visualised, and compared under identical conditions.
 
 ---
@@ -37,6 +37,8 @@
 | **26** | iLQR vs Sampling MPC on Harder Paths | Planar Quadrotor (Lissajous, Spiral) | iLQR / RTI-NMPC vs CEM-MPC across geometries | iLQR wins by **$32\times$** (Lissajous) to **$840\times$** (Spiral) RMS | Generalised Exp-24/21 finding: iLQR gradient backward pass dominates stochastic sampling by orders of magnitude at lower compute; CEM median latency ($28\text{--}31\,\text{ms}$) violates the $20\,\text{ms}$ real-time budget on all paths. |
 | **27** | Dynamic Bicycle Double Lane Change | BicycleVehicle (Rajamani Sedan) | Stanley vs LQR vs Kinematic MPC vs BC RL on ISO-3888 at $25\,\text{m/s}$ | Kinematic MPC **$52.5\,\text{mm}$** nominal; Stanley **$734\,\text{mm}$** on Pacejka $\mu=0.6$; BC RL fails **$5223\,\text{mm}$** (off-road) | Complete ranking inversion: Kinematic MPC wins nominal linear regime but collapses ($1326\,\text{mm}$) under tire saturation; model-free Stanley wins stressed Pacejka with nothing to unlearn; BC RL policy collapses out-of-distribution ($11.4\,\text{m}$ peak off-road), proving cloned policies lose the self-correcting feedback mechanism. |
 | **28** | Furuta Pendulum Control \& Swing-Up | Quanser QUBE-Servo 2 RIP | LQR vs Linear MPC (Upright Catch) vs Åström-Furuta Energy Swing-Up | Upright settle **$40\,\text{ms}$** ($e_{ss} < 6\times 10^{-7}\,\text{rad}$); MPC caps torque to **$0.1343\,\text{N}\cdot\text{m}$**; Swing-up **$6.0\,\text{s}$** | Analytical linearization provides rapid upright stabilization ($40\,\text{ms}$); Linear MPC proactively moderates torque spikes to respect motor saturation without clipping; Åström-Furuta energy shaping pumps energy monotonically for seamless LQR handoff. |
+| **29** | DAgger vs BC Lane-Change Recovery | Dynamic Pacejka Vehicle ($\mu=0.6$) | Plain BC (1 round) vs DAgger (8 rounds LQR expert relabeling) | DAgger RMS **$768.8\,\text{mm}$** ($1708\,\text{mm}$ peak) vs Plain BC **$6022\,\text{mm}$** ($12.4\,\text{m}$ peak off-road) | Plain Behavior Cloning suffers compounding distribution drift and diverges off-road; DAgger aggregates student-visited states relabeled by the expert, recovering expert LQR fidelity ($767.8\,\text{mm}$) but bounded by the expert ceiling. |
+| **30** | Coupled Two-Tank Level Regulation | Nonlinear Two-Tank System (Torricelli) | SISO PI vs Multivariable LQR vs Linear MPC (Quanser parameters) | SISO PI zero droop ($e_{ss} = 0.0\,\text{cm}$); LQR/MPC $-22\%$ pump energy ($6659\,\text{V}^2\text{s}$) with $0\%$ level violation | SISO PI eliminates nonlinear steady-state droop via integration; multivariable LQR/MPC coordinates interaction between both tanks, cutting energy by $22\%$ while strictly respecting physical level and voltage bounds. |
 
 ---
 

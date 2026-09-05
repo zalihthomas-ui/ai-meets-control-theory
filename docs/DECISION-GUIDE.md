@@ -2,7 +2,7 @@
 
 > **The Central Thesis:** Classical and optimal control dominate whenever a usable physical model is available; machine learning and sampling earn their keep only where models are unavailable, non-smooth, or unmodeled—and even then, classical feedback or supervisory shields are what make deployment certified and safe.
 
-This document synthesizes the empirical verdicts of all **28 experiments** across the `aimct` framework into an actionable, structured decision system.
+This document synthesizes the empirical verdicts of all **30 experiments** across the `aimct` framework into an actionable, structured decision system.
 
 ---
 
@@ -18,11 +18,11 @@ flowchart TD
     ModelQ -- Yes --> LinearQ{"Is system operating near<br/>a fixed equilibrium?"}
 
     LinearQ -- Yes --> ConstrQ{"Are there hard state /<br/>actuator inequality bounds?"}
-    ConstrQ -- Yes --> MPC["<b>Constrained Linear MPC</b><br/>(Active-Set Condensed QP)<br/><i>[Exp 08, Exp 28]</i>"]
+    ConstrQ -- Yes --> MPC["<b>Constrained Linear MPC</b><br/>(Active-Set Condensed QP)<br/><i>[Exp 08, Exp 28, Exp 30]</i>"]
     ConstrQ -- No --> NoiseQ{"Is full state measurable<br/>without sensor noise?"}
-    NoiseQ -- Clean State --> LQR["<b>LQR / CARE Gain Design</b><br/>(Infinite upper gain margin)<br/><i>[Exp 04, Exp 18]</i>"]
+    NoiseQ -- Clean State --> LQR["<b>LQR / CARE Gain Design</b><br/>(Infinite upper gain margin)<br/><i>[Exp 04, Exp 18, Exp 30]</i>"]
     NoiseQ -- Sensor Noise --> LQG["<b>LQG / Kalman Filtering</b><br/>(Optimal noise-bandwidth trade)<br/><i>[Exp 06, Exp 15]</i>"]
-    NoiseQ -- Steady Bias / Wind --> LQI["<b>Integral LQR (LQI) / MRAC</b><br/>(Eliminates steady-state droop)<br/><i>[Exp 03, Exp 17]</i>"]
+    NoiseQ -- Steady Bias / Wind --> LQI["<b>Integral LQR (LQI) / MRAC / SISO PI</b><br/>(Eliminates steady-state droop)<br/><i>[Exp 03, Exp 17, Exp 30]</i>"]
 
     LinearQ -- No (Nonlinear / Global) --> TaskQ{"What is the primary<br/>operational objective?"}
     TaskQ -- Trajectory Tracking (Smooth Dynamics) --> iLQR["<b>iLQR / RTI-NMPC</b> or <b>Flatness LQR</b><br/>(150x tighter than sampling; real-time budget)<br/><i>[Exp 14, Exp 24, Exp 26]</i>"]
@@ -32,18 +32,24 @@ flowchart TD
     ArmQ -- Known Model --> CT["<b>Computed Torque / Joint LQR</b><br/>(Millimeter trajectory tracking)<br/><i>[Exp 23]</i>"]
     ArmQ -- Unknown Payload --> AdaptiveCT["<b>Slotine-Li Adaptive CT (MRAC)</b><br/>(Dynamic mass estimation)<br/><i>[Exp 23]</i>"]
     TaskQ -- Wheeled Mobile Robot (Unicycle) --> Mobile["<b>Path LQR (Curvature Feedforward)</b><br/>(Sub-10mm cross-track precision)<br/><i>[Exp 22]</i>"]
+    TaskQ -- Coupled Process Hydraulics --> Tanks["<b>Multivariable LQR / Linear MPC</b><br/>(-22% pump energy; zero level violations)<br/><i>[Exp 30]</i>"]
     TaskQ -- High-Speed Vehicle Steering --> TireQ{"Is tire operating in<br/>linear slip regime?"}
     TireQ -- Gentle Maneuver (alpha < 1.7°) --> KinMPC["<b>Kinematic MPC / LQR</b><br/>(52.5mm RMS tracking)<br/><i>[Exp 27]</i>"]
-    TireQ -- Low-mu / Friction Saturation --> Stanley["<b>Model-Free Stanley</b><br/>(Geometry-only law; nothing to unlearn)<br/><i>[Exp 27]</i>"]
+    TireQ -- Low-mu / Friction Saturation --> Stanley["<b>Model-Free Stanley</b> or <b>DAgger</b><br/>(DAgger relabels high-slip states to recover expert)<br/><i>[Exp 27, Exp 29]</i>"]
 
     %% Data-driven / Black-box branch
     ModelQ -- No (Data-Driven) --> DataQ{"Can you collect offline /<br/>online transition rollouts?"}
     DataQ -- Rollout Data Available --> SysID["<b>Least-Squares / DMDc SysID</b><br/>&rarr; Design Model-Based LQR / MPC<br/><i>[Exp 09, Exp 10]</i>"]
     DataQ -- Simulator Interaction Only --> RL["<b>Deep RL (DQN / PPO)</b><br/>(Anticipate 10^5 sample bill)<br/><i>[Exp 11, Exp 18]</i>"]
+    DataQ -- Expert Demonstrations Available --> ImitationQ{"Is training data free<br/>of distribution shift?"}
+    ImitationQ -- Gentle Maneuvers Only --> DAgger["<b>DAgger (Dataset Aggregation)</b><br/>(Iterative expert relabeling closes drift)<br/><i>[Exp 29]</i>"]
+    ImitationQ -- Uniform State Coverage --> BC["<b>Behavioral Cloning (Plain BC)</b><br/>(Caution: fragile out-of-distribution)<br/><i>[Exp 27, Exp 29]</i>"]
 
     %% Safety Wrapping
     RL --> ShieldQ{"Deploying learned policy<br/>near physical boundaries?"}
     SysID --> ShieldQ
+    DAgger --> ShieldQ
+    BC --> ShieldQ
     ShieldQ -- Yes --> Shield["<b>Supervisory Safety Shield</b><br/>(Guarantees forward invariance)<br/><i>[Exp 12, Exp 21]</i>"]
 ```
 
@@ -51,7 +57,7 @@ flowchart TD
 
 ## 2. Master Decision Matrix by Problem Class
 
-The table below catalogs the concrete recommendations, alternatives, failure modes, and proving experiments for every operational regime in the 28-experiment benchmark suite:
+The table below catalogs the concrete recommendations, alternatives, failure modes, and proving experiments for every operational regime in the 30-experiment benchmark suite:
 
 | Operational Situation | Recommended Method | Fallback / Alternative | Known Failure Mode & Boundary | Proving Experiment |
 | :--- | :--- | :--- | :--- | :--- |
@@ -63,6 +69,7 @@ The table below catalogs the concrete recommendations, alternatives, failure mod
 | **High Nonlinearity / Broad Priors** | **Unscented Kalman Filter (UKF)** | Extended Kalman Filter (EKF) | EKF tangent linearization gets trapped in false $2\pi$-shifted basin ($6.28\,\text{rad}$ error); UKF sigma points escape ($0.07\,\text{rad}$) | [Exp 16](../experiments/16_ekf_vs_ukf/) |
 | **Hard State / Track Constraints** | **Linear MPC (Condensed QP)** | Soft Barrier Penalty LQR | Unconstrained LQR violates physical rail boundary by $+23\%$; MPC enforces $|x| \le 0.5\,\text{m}$ by previewing constraints | [Exp 08](../experiments/08_mpc_vs_lqr_constrained_cartpole/) |
 | **Actuator Torque Saturation** | **Constrained Linear MPC** | Upright LQR | LQR saturates peak torque at $0.15\,\text{N}\cdot\text{m}$; Linear MPC proactively caps torque at $0.1343\,\text{N}\cdot\text{m}$ with zero clipping | [Exp 28](../experiments/28_furuta_pendulum_control/) |
+| **Coupled Process Hydraulics** | **Multivariable LQR / Linear MPC** | SISO PI Control | SISO PI regulates level ($e_{ss}=0.0\,\text{cm}$) but burns $+28\%$ pump voltage ($8546\,\text{V}^2\text{s}$); multivariable LQR/MPC coordinates cross-coupling and cuts energy to $6659\,\text{V}^2\text{s}$ | [Exp 30](../experiments/30_two_tank_level_control/) |
 | **Underactuated Global Swing-Up** | **Lyapunov Energy Shaping + LQR** | Hybrid Reinforcement Learning | Linear controllers cannot stabilize hanging equilibrium ($\pm 180^\circ$); Tabular Q-learning chatters ($1.48\,\text{rad}$ limit cycle) | [Exp 07](../experiments/07_cartpole_swingup_hybrid/), [Exp 11](../experiments/11_qlearning_vs_classical/), [Exp 28](../experiments/28_furuta_pendulum_control/) |
 | **Smooth Trajectory Tracking** | **iLQR / RTI-NMPC** or **Flatness LQR** | Preview MPC | Stochastic sampling (CEM) takes $28\text{--}31\,\text{ms}$ (violating real-time budget) and tracks loosely ($202\,\text{mm}$ vs $1.34\,\text{mm}$) | [Exp 14](../experiments/14_quadrotor_figure8_tracking/), [Exp 24](../experiments/24_ilqr_vs_sampling_mpc/), [Exp 26](../experiments/26_harder_reference_paths/) |
 | **Non-Convex Dynamic Obstacles** | **Sampling MPC (CEM)** | Gradient iLQR / RTI-NMPC | Quartic barrier Hessians lose convexity near obstacle centers; single-step gradient iLQR stalls on saddle points ($69$ hits vs CEM $36$ hits) | [Exp 20](../experiments/20_quadrotor_obstacle_nmpc/), [Exp 25](../experiments/25_diffdrive_moving_obstacle/) |
@@ -71,6 +78,7 @@ The table below catalogs the concrete recommendations, alternatives, failure mod
 | **Wheeled Mobile Robot Tracking** | **Path LQR (Curvature Feedforward)** | Pure Pursuit / Stanley | Pure Pursuit geometrically cuts corners on curves ($35\,\text{mm}$ offset); Path LQR curvature feedforward achieves $9.25\,\text{mm}$ cross-track error | [Exp 22](../experiments/22_diffdrive_path_following/) |
 | **Vehicle Steering (Linear Tire)** | **Kinematic MPC / LQR** | Model-Free Stanley | Model-free Stanley is $4\text{--}7\times$ looser ($371\,\text{mm}$ vs $52.5\,\text{mm}$) when tire slip is small ($\alpha < 1.7^\circ$) | [Exp 27](../experiments/27_bicycle_double_lane_change/) |
 | **Vehicle Steering (Low-$\mu$ Pacejka)** | **Model-Free Stanley** | Robust / Tire-Aware NMPC | Kinematic MPC collapses ($1326\,\text{mm}$) due to false zero-slip assumption; Behavior-Cloned RL completely drives off the road ($5223\,\text{mm}$ RMS) | [Exp 27](../experiments/27_bicycle_double_lane_change/) |
+| **Imitation Distribution Shift** | **DAgger (Dataset Aggregation)** | Plain Behavior Cloning | Plain BC drifts into unvisited states and diverges off-road ($6022\,\text{mm}$ RMS); DAgger relabels student states with expert LQR, restoring expert tracking ($768.8\,\text{mm}$) | [Exp 29](../experiments/29_dagger_vs_bc_lane_change/) |
 | **Plant Parameter Drift (Stiffness)** | **Lyapunov MRAC** | Fixed / Gain-Scheduled LQR | Fixed LQR droops to $0.42\,\text{m}$ error under $5\times$ stiffness change; MRAC holds $< 1\,\text{mm}$ tracking error | [Exp 17](../experiments/17_adaptive_vs_fixed_changing_plant/) |
 | **Data-Driven Model Identification** | **Least-Squares / DMDc SysID** | Black-Box Neural Network | Closed-loop SysID on short data ($1\,\text{s}$) causes fatal drift; $24\,\text{s}$ data gives robust LQR stability despite $20\%$ residual | [Exp 09](../experiments/09_control_on_identified_model/) |
 | **Learned Residual Dynamics** | **Grey-Box MLP + Sampling MPC** | Pure Black-Box Network | Pure black-box models require massive datasets and fail to generalize; grey-box residual over physics matches true model within $3\%$ | [Exp 10](../experiments/10_planning_learned_vs_true_model/), [Exp 20](../experiments/20_quadrotor_obstacle_nmpc/) |
@@ -91,7 +99,7 @@ The table below catalogs the concrete recommendations, alternatives, failure mod
 - **Critical Failure Mode:** No native constraint awareness (violates track limit by $+23\%$, [Exp 08](../experiments/08_mpc_vs_lqr_constrained_cartpole/)); validity envelope is strictly local ($|\theta| \le 23^\circ$, [Exp 02](../experiments/02_linearization_validity/)); requires Bryson-rule normalization on ill-conditioned systems ([Exp 14](../experiments/14_quadrotor_figure8_tracking/)).
 
 ### 3.3 Constrained Linear Model Predictive Control (Linear MPC)
-- **Strengths:** Explicit multi-variable inequality constraint handling ($u_{\min} \le u \le u_{\max}$, $x_{\min} \le x \le x_{\max}$) via active-set condensed QP. Reference preview eliminates trajectory corner-cutting ([Exp 08](../experiments/08_mpc_vs_lqr_constrained_cartpole/), [Exp 14](../experiments/14_quadrotor_figure8_tracking/), [Exp 28](../experiments/28_furuta_pendulum_control/)).
+- **Strengths:** Explicit multi-variable inequality constraint handling ($u_{\min} \le u \le u_{\max}$, $x_{\min} \le x \le x_{\max}$) via active-set condensed QP. Reference preview eliminates trajectory corner-cutting ([Exp 08](../experiments/08_mpc_vs_lqr_constrained_cartpole/), [Exp 14](../experiments/14_quadrotor_figure8_tracking/), [Exp 28](../experiments/28_furuta_pendulum_control/), [Exp 30](../experiments/30_two_tank_level_control/)).
 - **Critical Failure Mode:** Computational latency ($\sim 12\text{--}40\,\text{ms}$ on CPU). Tiled single setpoints exhibit corner-cutting without explicit trajectory preview.
 
 ### 3.4 Gradient iLQR / Real-Time Iteration NMPC vs. Stochastic Sampling MPC (CEM)
@@ -112,15 +120,26 @@ The table below catalogs the concrete recommendations, alternatives, failure mod
 - **Friction Saturation (Pacejka $\mu=0.6$):** Complete ranking inversion. Model-free Stanley wins ($733.7\,\text{mm}$) because it makes no false tire assumptions. Kinematic MPC collapses ($1326\,\text{mm}$) because assuming infinite lateral grip causes severe overshoot ([Exp 27](../experiments/27_bicycle_double_lane_change/)).
 - **Behavior-Cloned RL Brittleness:** A policy trained via behavioral cloning matches LQR in nominal conditions ($84.3\,\text{mm}$) but fails catastrophically out-of-distribution ($5223\,\text{mm}$ RMS, $11.4\,\text{m}$ peak error off-road). Cloning an input-output map destroys the self-correcting feedback mechanism of the true expert ([Exp 27](../experiments/27_bicycle_double_lane_change/)).
 
+### 3.8 Imitation Learning: DAgger Distribution-Shift Recovery
+- **Plain Behavior Cloning (BC) Failure:** When trained on a nominal gentle dataset, Plain BC cannot correct compounding lateral drift on sharp maneuvers, careening $12.4\,\text{m}$ off-road ($6022\,\text{mm}$ RMS) ([Exp 29](../experiments/29_dagger_vs_bc_lane_change/)).
+- **DAgger Iterative Aggregation:** By iteratively relabeling student-visited states with the expert LQR across 8 rounds, DAgger pulls the training distribution onto the high-slip Pacejka boundary, slashing tracking error to $768.8\,\text{mm}$ RMS ($1708\,\text{mm}$ peak) and matching expert LQR ($767.8\,\text{mm}$) ([Exp 29](../experiments/29_dagger_vs_bc_lane_change/)).
+- **The Imitation Ceiling:** DAgger inherits the performance envelope of the supervising expert; it cannot transcend the structural limitations of the teacher policy.
+
+### 3.9 Coupled Process Hydraulics (Two-Tank Level Control)
+- **SISO PI vs. Square-Root Torricelli Loss:** SISO PI achieves exact zero steady-state droop ($e_{ss} = 0.00\,\text{cm}$) by integrating residual flow error against nonlinear Torricelli outflow ($Q \propto \sqrt{h}$) ([Exp 30](../experiments/30_two_tank_level_control/)).
+- **Multivariable Coordination (LQR / MPC):** Accounting for inter-tank cross-coupling $[h_1, h_2]$ coordinates pump voltage proactively, reducing total voltage actuation energy by $22\%$ ($6659\,\text{V}^2\text{s}$ vs $8546\,\text{V}^2\text{s}$) while strictly respecting physical level ($h_1 \le 30\,\text{cm}$) and pump saturation ($V_p \le 12\,\text{V}$) bounds ([Exp 30](../experiments/30_two_tank_level_control/)).
+
 ---
 
-## 4. The 8 Invariant Engineering Laws Across 28 Experiments
+## 4. The 9 Invariant Engineering Laws Across 30 Experiments
 
 1. **Feedforward Does the Heavy Lifting:** Model-based feedforward (differential flatness, steady-state inversion, curvature feedforward, reference preview) generates the nominal trajectory directly, leaving feedback to correct only residual errors and unexpected disturbances ([Exp 03], [Exp 14], [Exp 17], [Exp 22]).
-2. **Integral Action is Mandatory for Persistent Loads:** No amount of proportional gain tuning eliminates steady-state droop under persistent external loads (wind, gravity bias); explicit integrator augmentation or parameter adaptation is required ([Exp 03], [Exp 17], [Exp 23]).
-3. **Bryson Normalization is Load-Bearing:** On ill-conditioned or multi-timescale physical systems (e.g., quadrotor attitude vs. position), naive identity weights ($Q=I, R=I$) produce nonsensical high-frequency gains. Normalizing by maximum allowable states and controls ($Q_{ii} = 1/x_{i,\max}^2, R_{jj} = 1/u_{j,\max}^2$) is essential ([Exp 14], [Exp 18], [Exp 19]).
+2. **Integral Action is Mandatory for Persistent Loads:** No amount of proportional gain tuning eliminates steady-state droop under persistent external loads (wind, gravity bias, non-linear Torricelli leakage); explicit integrator augmentation or parameter adaptation is required ([Exp 03], [Exp 17], [Exp 23], [Exp 30]).
+3. **Bryson Normalization is Load-Bearing:** On ill-conditioned or multi-timescale physical systems (e.g., quadrotor attitude vs. position, tank levels vs. pump voltages), naive identity weights ($Q=I, R=I$) produce nonsensical high-frequency gains. Normalizing by maximum allowable states and controls ($Q_{ii} = 1/x_{i,\max}^2, R_{jj} = 1/u_{j,\max}^2$) is essential ([Exp 14], [Exp 18], [Exp 19], [Exp 30]).
 4. **Model Error is Survivable within Robustness Margins:** Full-state LQR provides infinite upper gain margin and $[-6\,\text{dB}, +\infty\,\text{dB}]$ lower gain margin, tolerating up to $50\%$ parameter identification error without loss of asymptotic stability ([Exp 09]).
 5. **Convexity Dictates Planner Selection (The Duality of Gradient vs. Sampling MPC):** On smooth dynamical models and quadratic tracking costs, gradient-based iLQR / RTI-NMPC dominates stochastic sampling by $32\times\text{--}840\times$ at lower compute across arbitrary geometries ([Exp 24], [Exp 26]). Conversely, on non-convex geometric keep-out fields and dynamic obstacles, derivative-free sampling (CEM) is mandatory to discover obstacle-clearing paths where single-iteration gradient Riccati sweeps stall on non-convex barrier Hessians ([Exp 20], [Exp 25]).
 6. **Imitation Learning Loses the Self-Correcting Feedback Structure (Sim-to-Real Brittleness):** Behavior-cloning an expert controller memorizes the nominal state-action distribution. When deployed out-of-distribution (e.g., unannounced low-$\mu$ surface or tire saturation), the model-based expert degrades gracefully via live closed-loop error feedback, while the frozen neural policy diverges catastrophically off the road ([Exp 27]).
-7. **Underactuated Energy Pumping Unlocks Global Basins:** For underactuated pendulums (Cart-Pole, Furuta RIP), linear controllers cannot stabilize inverted hanging states ($\pm 180^\circ$); Lyapunov energy shaping drives mechanical energy monotonically to the homoclinic orbit, enabling reliable handoff to LQR / MPC ([Exp 07], [Exp 28]).
-8. **Reporting Failure Modes is as Essential as Reporting Wins:** Engineering judgment relies on knowing exact breaking points: linearisation breakdown past $23^\circ$ ([Exp 02]), EKF false basin trapping ([Exp 16]), closed-loop SysID correlation bias ([Exp 09]), nominal computed torque collapse under payload step ([Exp 23]), pure RL bootstrap failure on low-inertia plants ([Exp 21]), and Kinematic MPC overshoot under Pacejka tire saturation ([Exp 27]).
+7. **DAgger Closes Distribution Shift but Inherits the Teacher's Ceiling:** Iteratively aggregating student-visited rollouts relabeled by an expert supervisor pulls the training dataset onto off-nominal recovery trajectories, resolving compounding distribution drift and restoring closed-loop fidelity ($768.8\,\text{mm}$ vs $6022\,\text{mm}$ Plain BC) ([Exp 29]). However, the cloned policy is strictly bounded by the teacher's capability and cannot surpass model-free geometric tracking ([Exp 27], [Exp 29]).
+8. **Underactuated Energy Pumping Unlocks Global Basins:** For underactuated pendulums (Cart-Pole, Furuta RIP), linear controllers cannot stabilize inverted hanging states ($\pm 180^\circ$); Lyapunov energy shaping drives mechanical energy monotonically to the homoclinic orbit, enabling reliable handoff to LQR / MPC ([Exp 07], [Exp 28]).
+9. **Reporting Failure Modes is as Essential as Reporting Wins:** Engineering judgment relies on knowing exact breaking points: linearisation breakdown past $23^\circ$ ([Exp 02]), EKF false basin trapping ([Exp 16]), closed-loop SysID correlation bias ([Exp 09]), nominal computed torque collapse under payload step ([Exp 23]), pure RL bootstrap failure on low-inertia plants ([Exp 21]), Kinematic MPC overshoot under Pacejka tire saturation ([Exp 27]), and Plain BC lane departure under high slip ([Exp 29]).
+

@@ -46,6 +46,9 @@ Copy-Fig "26_harder_reference_paths" "figure.png" "exp26_harder_reference_paths.
 Copy-Fig "27_bicycle_double_lane_change" "figure.png" "exp27_bicycle_double_lane_change.png"
 Copy-Fig "28_furuta_pendulum_control" "furuta_benchmark.png" "exp28_furuta_benchmark.png"
 Copy-Fig "28_furuta_pendulum_control" "furuta_swingup.png" "exp28_furuta_swingup.png"
+Copy-Fig "29_dagger_vs_bc_lane_change" "figure.png" "exp29_dagger_recovery.png"
+Copy-Fig "30_two_tank_level_control" "two_tank_benchmark.png" "exp30_two_tank_benchmark.png"
+Copy-Fig "30_two_tank_level_control" "two_tank_setpoint.png" "exp30_two_tank_setpoint.png"
 
 Write-Host "compiling main.tex..."
 Push-Location $here
