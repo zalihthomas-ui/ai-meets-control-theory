@@ -208,3 +208,27 @@ def test_hil_closed_loop_pendulum_stabilization():
     assert not res.diverged
     # Final angle should settle to near zero (< 0.01 rad)
     assert abs(res.x[-1, 0]) < 0.025
+
+
+def test_deploy_to_hil_bridge_end_to_end(tmp_path):
+    """Verify full loop: export_controller -> load_controller (PortableController) -> RealTimeLoop."""
+    import pathlib
+    from aimct.deploy import export_controller, load_controller
+
+    msd = MassSpringDamper(m=1.0, k=4.0, c=0.5)
+    A, B = msd.linearize()
+    lqr = LQR(A, B, np.diag([10.0, 1.0]), np.eye(1))
+
+    target_json = tmp_path / "lqr_msd.json"
+    export_controller(lqr, target_json)
+
+    portable_ctl = load_controller(target_json)
+
+    emu = PlantEmulator(msd, quantization_bits=12, delay_s=0.005)
+    loop = RealTimeLoop(rate_hz=500.0, controller=portable_ctl, plant=emu, simulated_time=True)
+    res = loop.run(duration=1.0, x0=np.array([0.5, 0.0]))
+
+    assert len(res) == 500
+    assert not res.diverged
+    assert abs(res.x[-1, 0]) < 0.02
+

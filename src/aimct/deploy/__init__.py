@@ -24,6 +24,8 @@ from __future__ import annotations
 
 import datetime as _dt
 import json
+import os
+import pathlib
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
@@ -98,10 +100,11 @@ class ControllerSpec:
         if isinstance(spec_or_path, dict):
             d = dict(spec_or_path)
         else:
-            txt = spec_or_path
-            if "\n" not in txt and txt.rstrip().endswith(".json"):
-                with open(txt, encoding="utf-8") as fh:
+            if isinstance(spec_or_path, (os.PathLike, pathlib.Path)) or (isinstance(spec_or_path, str) and "\n" not in spec_or_path and spec_or_path.rstrip().endswith(".json")):
+                with open(spec_or_path, encoding="utf-8") as fh:
                     txt = fh.read()
+            else:
+                txt = spec_or_path
             d = json.loads(txt)
         if d.get("schema") != SCHEMA:
             raise ValueError(f"unknown spec schema {d.get('schema')!r}; expected {SCHEMA!r}")
