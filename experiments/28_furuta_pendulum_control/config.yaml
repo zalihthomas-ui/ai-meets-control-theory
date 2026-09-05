@@ -1,0 +1,40 @@
+experiment:
+  id: 28
+  title: "Furuta Pendulum Underactuated Control & Swing-Up Benchmark"
+  date: "2026-09-05"
+  author: "AIMCT Team"
+  system: "FurutaPendulum"
+
+plant:
+  mr: 0.095     # Rotary base arm mass [kg]
+  Lr: 0.085     # Rotary base arm length [m]
+  Dr: 0.0005    # Base rotary bearing viscous friction [N*m*s/rad]
+  mp: 0.024     # Pendulum rod mass [kg]
+  Lp: 0.129     # Pendulum total length [m]
+  lp: 0.0645    # Pendulum COM offset [m]
+  Dp: 0.0001    # Pendulum pivot viscous friction [N*m*s/rad]
+  g: 9.81       # Gravity [m/s^2]
+  tau_max: 0.15 # Max peak motor torque [N*m]
+
+simulation:
+  dt: 0.001
+  t_final_reg: 4.0
+  t_final_swing: 8.0
+
+controllers:
+  lqr:
+    Q: [2.0, 10.0, 0.2, 0.5]
+    R: [20.0]
+  mpc:
+    Q: [2.0, 10.0, 0.2, 0.5]
+    R: [20.0]
+    horizon: 20
+    dt: 0.002
+    u_bounds: [-0.15, 0.15]
+  hybrid_swingup:
+    k_energy: 250.0
+    kp_arm: 4.0
+    kd_arm: 1.2
+    capture_angle: 0.30
+    capture_rate: 2.5
+    release_angle: 0.55

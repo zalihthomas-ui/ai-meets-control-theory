@@ -1,0 +1,5 @@
+| Controller | Task | Rise $t_r$ [s] | Settling $t_s$ [s] | Overshoot $M_p$ [%] | Steady error $e_{ss}$ [rad] | RMSE [rad] | Energy $E_u$ [N²m²s] | Peak Torque [N·m] | Saturation [%] | Status |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| LQR | Upright Regulation | 0.000 | 0.040 | 0.0 | 5.90e-07 | 0.0052 | 0.0000 | 0.1500 | 0.0 | Stable |
+| Linear MPC | Upright Regulation | 0.000 | 0.040 | 0.0 | 5.93e-07 | 0.0052 | 0.0000 | 0.1343 | 0.0 | Stable |
+| Hybrid Swing-Up + LQR | Full Swing-Up (180° -> 0°) | 0.000 | 6.000 | 0.0 | 2.76e+00 | 2.7881 | 0.0001 | 0.0043 | 0.0 | Stable |
