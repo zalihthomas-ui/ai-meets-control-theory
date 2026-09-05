@@ -11,6 +11,7 @@ from .mass_spring_damper import MassSpringDamper
 from .pendulum import Pendulum
 from .quadrotor import PlanarQuadrotor
 from .quadrotor3d import Quadrotor3D, rotation_matrix
+from .two_tank import TwoTank
 from .twolink_arm import TwoLinkArm
 
 __all__ = [
@@ -28,4 +29,5 @@ __all__ = [
     "DCMotor2",
     "DifferentialDriveRobot",
     "TwoLinkArm",
+    "TwoTank",
 ]

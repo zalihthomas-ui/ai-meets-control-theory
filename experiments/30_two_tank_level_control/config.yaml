@@ -1,0 +1,39 @@
+experiment:
+  id: 30
+  title: "Coupled Two-Tank Level Regulation & Interactive Capacity Benchmark"
+  date: "2026-09-05"
+  author: "AIMCT Team"
+  system: "TwoTank"
+
+plant:
+  A1: 0.001555   # Tank 1 area [m^2] (D = 4.45 cm)
+  A2: 0.001555   # Tank 2 area [m^2] (D = 4.45 cm)
+  a12: 0.0000181 # Inter-tank coupling orifice [m^2] (d = 4.8 mm)
+  a2: 0.0000181  # Tank 2 drain orifice [m^2] (d = 4.8 mm)
+  Kp: 0.0000033  # Pump flow coefficient [m^3/(s*V)]
+  g: 9.81        # Gravity [m/s^2]
+  h_max: 0.30    # Maximum liquid level [m]
+  v_max: 12.0    # Peak pump supply voltage [V]
+
+operating_points:
+  h2_initial: 0.10 # Initial equilibrium level [m] (Tank 1 = 0.20 m, Vp = 7.68 V)
+  h2_target: 0.15  # Target level [m] (Tank 1 = 0.30 m, Vp = 9.41 V)
+
+simulation:
+  dt: 0.05
+  t_final: 80.0
+
+controllers:
+  pi:
+    kp: 40.0
+    ki: 1.2
+    u_min: 0.0
+    u_max: 12.0
+  lqr:
+    Q: [2.0, 50.0]
+    R: [1.0]
+  mpc:
+    Q: [2.0, 50.0]
+    R: [1.0]
+    horizon: 25
+    u_bounds: [0.0, 12.0]

@@ -1,0 +1,4 @@
+Controller,Rise $t_r$ [s],Settling $t_s$ [s],Overshoot $M_p$ [%],Steady error $e_{ss}$ [cm],RMSE [cm],Energy $E_u$ [$\text{V}^2\cdot\text{s}$],Peak Voltage $V_{\max}$ [V],Saturation [%],Status
+SISO PI,20.30,32.70,0.0,0.00,1.90,8546.4,11.50,0.0,Stable
+Multivariable LQR,49.60,75.00,0.0,0.80,2.73,6667.7,9.45,0.0,Stable
+Linear MPC,49.90,75.00,0.0,0.82,2.74,6659.0,9.45,0.0,Stable
