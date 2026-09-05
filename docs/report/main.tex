@@ -50,7 +50,7 @@
 \lhead{\small\textsc{Living Technical Report}}
 \rfoot{\thepage}
 
-\newcommand{\milestone}{M19 --- Disturbance Observer (DOB) Fast Wind Rejection}
+\newcommand{\milestone}{M20 --- Direct Collocation Trajectory Optimisation \& v0.2.0 Release}
 \newcommand{\reportdate}{\today}
 
 \title{\textbf{\LARGE AI Meets Control Theory}\\[0.35em]
@@ -67,10 +67,11 @@
 \thispagestyle{fancy}
 
 \begin{abstract}
-\noindent This report documents the culmination of the \textbf{AI Meets Control Theory} project.
-Across 10 curriculum modules, 34 rigorous from-scratch benchmark experiments, and 451 verified unit tests,
+\noindent This report documents the culmination of the \textbf{AI Meets Control Theory} project at the \textbf{v0.2.0} release milestone.
+Across 10 curriculum modules, 34 rigorous from-scratch benchmark experiments, and 472 verified unit tests,
 we evaluate and compare classical control, modern state-space methods, Kalman filtering, optimal control,
-constrained Model Predictive Control (MPC), real-time iteration nonlinear MPC (iLQR / RTI-NMPC), adaptive control,
+constrained Model Predictive Control (MPC), real-time iteration nonlinear MPC (iLQR / RTI-NMPC), direct trajectory
+optimization via Hermite--Simpson direct collocation nonlinear programming (NLP), adaptive control (MRAC, Slotine--Li),
 Euler--Lagrange robot manipulators, non-holonomic mobile robotics, underactuated rotary inverted pendulums,
 coupled two-tank non-linear process systems, underactuated ball and beam rolling balance and position control,
 high-speed dynamic vehicle handling with tire saturation, two-degree-of-freedom Disturbance Observers (DOB)
@@ -1508,6 +1509,70 @@ A fundamental structural property of quadrotor mechanics is channel underactuati
 \label{fig:exp34}
 \end{figure}
 
+% ---------------------------------------------------------------------------
+\subsection{Case Study XIII: Direct Collocation vs. Single Shooting vs. Sampling Trajectory Optimization}
+% ---------------------------------------------------------------------------
+
+In Experiment 32 (\texttt{experiments/32\_direct\_collocation\_vs\_ilqr}), we evaluate \textbf{Direct Collocation} (\texttt{aimct.planning.DirectCollocation}) against \textbf{iLQR / Single Shooting} (\texttt{aimct.controllers.iLQR}) and \textbf{Sampling MPC (CEM)} (\texttt{aimct.controllers.SamplingMPC}) on an offline minimum-effort Cart-Pole swing-up problem:
+\begin{equation}
+\min_{u(t)} \int_0^T u(t)^2 \, dt \quad \text{s.t.} \quad \dot{x} = f(x, u), \quad x(0) = [0, 0, \pi, 0]^T, \quad x(T) = [0, 0, 0, 0]^T, \quad |u| \le 20\,\text{N}, \quad T = 2.0\,\text{s}
+\end{equation}
+
+\paragraph{Hermite--Simpson Direct Collocation Transcription:}
+Unlike single shooting which treats controls $U$ alone as decision variables, direct transcription parametrizes both states and controls simultaneously at $N+1$ discrete grid points (knots) $t_0 < t_1 < \dots < t_N$:
+\begin{equation}
+z = \left[ x_0^T, u_0^T, x_1^T, u_1^T, \dots, x_N^T, u_N^T \right]^T \in \mathbb{R}^{(N+1)(n+m)}
+\end{equation}
+Across each sub-interval $[t_k, t_{k+1}]$ with step $h_k = t_{k+1} - t_k$, a cubic Hermite interpolant defines the state trajectory. The midpoint state and control are:
+\begin{equation}
+\bar{x}_k = \frac{1}{2}(x_k + x_{k+1}) + \frac{h_k}{8}\left[ f(x_k, u_k) - f(x_{k+1}, u_{k+1}) \right], \qquad \bar{u}_k = \frac{1}{2}(u_k + u_{k+1})
+\end{equation}
+Dynamics are enforced via Hermite--Simpson Simpson quadrature defect equality constraints $\Delta_k = 0$:
+\begin{equation}
+\Delta_k = x_{k+1} - x_k - \frac{h_k}{6}\left[ f(x_k, u_k) + 4 f(\bar{x}_k, \bar{u}_k) + f(x_{k+1}, u_{k+1}) \right] = 0, \quad k = 0, \dots, N-1
+\end{equation}
+Initial and terminal boundary conditions are enforced as hard equality constraints $x_0 = x_{\text{init}}$ and $x_N = x_{\text{goal}}$, with bound constraints $u_{\min} \le u_k \le u_{\max}$. The resulting large sparse NLP is solved via SLSQP with analytic objective gradients and analytic defect Jacobians.
+
+\paragraph{Hard Constraints vs. Soft Penalty Relaxation:}
+In single shooting (iLQR) and sampling (CEM), state trajectories are eliminated via forward rollout $x_{k+1} = f_{\text{RK4}}(x_k, u_k)$. Because unconstrained shooting cannot natively impose terminal state equalities, the goal must be relaxed into a soft quadratic penalty:
+\begin{equation}
+J_{\text{shooting}} = \frac{1}{2} (x_N - x_{\text{goal}})^T Q_f (x_N - x_{\text{goal}}) + \sum_{k=0}^{N-1} \frac{1}{2} u_k^T R u_k
+\end{equation}
+Consequently, shooting and sampling trade off terminal accuracy against actuation effort.
+
+\begin{table}[H]
+\centering
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lcccccccc@{}}
+\toprule
+\textbf{Planner} & \textbf{Effort $\int u^2 dt$} & \textbf{Term Err (Planned)} & \textbf{Term Err (Re-integrated)} & \textbf{Max Dyn. Drift} & \textbf{Peak $|u|$ [N]} & \textbf{Box OK} & \textbf{Solve Time [s]} & \textbf{Status} \\
+\midrule
+\textbf{Direct Collocation (HS)} & 74.95 & \textbf{0.000} & \textbf{8.1e-4} & 8.1e-4 & 12.9 & Yes & \textbf{0.71} & \textbf{Exact Arrival} \\
+\textbf{iLQR / Single Shooting} & 65.03 & 0.253 & 0.253 & \textbf{3.5e-5} & \textbf{12.7} & Yes & 1.41 & Relaxed Goal \\
+\textbf{CEM / Sampling} & 88.02 & 0.649 & 0.649 & \textbf{1.3e-5} & 13.1 & Yes & 8.55 & Loose Search \\
+\bottomrule
+\end{tabular}%
+}
+\caption{Benchmark results for Experiment 32: Direct Collocation vs. iLQR vs. CEM offline cart-pole swing-up (from \texttt{experiments/32\_direct\_collocation\_vs\_ilqr/table.md}).}
+\label{tab:exp32}
+\end{table}
+
+\paragraph{Key Takeaways:}
+\begin{enumerate}[nosep]
+  \item \textbf{Direct Collocation Alone Enforces Exact Boundaries:} Direct collocation achieves exact zero planned terminal error ($\|\Delta\| = 2.1\times 10^{-12}$) and $8.1\times 10^{-4}$ re-integrated error at 41 knots. In contrast, iLQR and CEM stop $0.253$ and $0.649$ short of the upright equilibrium because the penalty $Q_f$ is balanced against control effort.
+  \item \textbf{Effort Comparisons Require Equal Constraint Satisfaction:} iLQR reports apparent lower effort ($65.03$ vs. $74.95$), but only because it solves a relaxed problem that fails to reach the target. Collocation's $74.95$ is the true minimum effort subject to exact arrival.
+  \item \textbf{Inter-Knot Quadrature Drift Converges with Mesh Refinement:} Collocation satisfies the NLP at knot points, but Simpson quadrature holds only to 3rd order across sub-intervals, leading to $8.1\times 10^{-4}$ RK4 re-integration drift (which converges from $1.7\times 10^{-2}$ at 21 knots). Conversely, shooting methods maintain internal RK4 consistency ($3.5\times 10^{-5}$) to the wrong destination.
+  \item \textbf{Fast Offline NLP Convergence:} Collocation solves the 247-variable NLP in $0.71\,\text{s}$ via SLSQP, outperforming full-horizon iLQR ($1.41\,\text{s}$) and CEM ($8.55\,\text{s}$).
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/exp32_collocation_vs_ilqr.png}
+\caption{Experiment 32 Direct Collocation vs. iLQR vs. Sampling MPC for Cart-Pole Swing-Up: (Top-Left) Pole angle $\theta(t)$ showing exact $\theta(T)=0$ arrival for Direct Collocation; (Top-Right) Cart position $x(t)$; (Bottom-Left) Control force $u(t)$ respecting $|u|\le 20\,\text{N}$; (Bottom-Right) Re-integration trajectory phase portrait.}
+\label{fig:exp32}
+\end{figure}
+
 % ===========================================================================
 \section{Engineering Synthesis \& Decision Guide}
 % ===========================================================================
@@ -1527,6 +1592,7 @@ Hard state/actuator inequality bounds & \textbf{Linear MPC} (active-set condense
 Underactuated ball and beam balance & \textbf{Multivariable LQR / Linear MPC} ($1.49\,\text{s}$ settling, $0.0184$ energy) & Exp 33 \\
 Coupled non-linear process hydraulics & \textbf{PI with Anti-Windup} (zero droop) or \textbf{Multivariable MPC} & Exp 30 \\
 Unmeasured wind gusts / force disturbances & \textbf{Disturbance Observer (DOB)} (instant acceleration mismatch feedforward) & Exp 34 \\
+Offline trajectory optimization (hard endpoints) & \textbf{Direct Collocation (Hermite--Simpson NLP)} (exact endpoint equality) & Exp 32 \\
 Moving / non-convex obstacle avoidance & \textbf{Sampling MPC (CEM)} (avoids non-convex barriers where gradient methods stall) & Exp 20, Exp 25 \\
 Nonlinear dynamics with real-time deadline & \textbf{iLQR / RTI-NMPC} ($1.3\,\text{mm}$ error, $14.6\,\text{ms}$ solve; generalizes across paths) & Exp 24, Exp 26 \\
 Multi-body robot arm trajectory tracking & \textbf{Computed Torque} / \textbf{Joint LQR}; \textbf{Slotine--Li MRAC} under payload & Exp 23 \\
@@ -1553,19 +1619,20 @@ Deploying uncertified learned policies & \textbf{Safety Shield} with certified c
 
 \subsection{Recurring Engineering Lessons Across 34 Experiments}
 
-Across 34 empirical benchmarks, twelve fundamental principles recur consistently:
+Across 34 empirical benchmarks, thirteen fundamental principles recur consistently:
 \begin{enumerate}
   \item \textbf{Feedforward Does the Heavy Lifting:} Model-based feedforward (differential flatness, steady-state inversion, curvature feedforward, reference preview) generates the baseline control trajectory directly, leaving feedback to correct only small modeling residuals and unexpected disturbances (Exp 03, 14, 17, 22).
   \item \textbf{Integral Action is Mandatory for Constant Disturbances \& Non-Linear Drains:} No amount of static state-feedback tuning ($K$) eliminates steady-state droop under persistent external loads (wind, gravity bias, or square-root drain losses); explicit integrator augmentation or parameter adaptation is required (Exp 03, 17, 23, 30).
   \item \textbf{Disturbance Observers Replace Integrator Lag on Unmatched Physical Channels:} While classical integral action ($\int e(t) dt$) requires substantial downwind drift to accumulate tilt authority (adding a $-90^\circ$ phase lag and $2.91\,\text{s}$ settling), a two-degree-of-freedom Disturbance Observer (DOB) reconstructs aerodynamic forces directly from acceleration mismatch, feeding forward pitch tilt instantaneously to slash settling time by $5\times$ ($0.58\,\text{s}$) with $61\%$ lower position error (Exp 34).
   \item \textbf{Cost and Weight Scaling is Load-Bearing:} On ill-conditioned or multi-timescale physical systems (e.g., quadrotor position vs. moment of inertia), naive identity weights ($Q=I, R=I$) fail. Bryson-rule normalization ($Q_{ii} = 1/x_{i,\max}^2, R_{jj} = 1/u_{j,\max}^2$) is essential for well-behaved optimal gains (Exp 14, 18, 19, 33).
   \item \textbf{Model Error is Survivable within Robustness Margins:} Full-state LQR provides infinite upper gain margin and $[-6\,\text{dB}, +\infty\,\text{dB}]$ lower gain margin, tolerating up to $50\%$ parameter identification error without loss of asymptotic stability (Exp 09).
+  \item \textbf{Check Constraint Residuals Before Comparing Objective Effort (The Transcription Principle):} When evaluating optimal trajectory planners, objective values (such as control effort $\int u^2 dt$) are meaningful only at identical terminal constraint satisfaction. Shooting methods and sampling MPC using soft quadratic terminal penalties $Q_f$ appear to save effort only by stopping short of the goal (leaving $0.25\text{--}0.65$ angle error); direct collocation treats terminal targets as hard equality constraints, delivering true minimum-effort trajectories subject to exact arrival (Exp 32).
   \item \textbf{Convexity Dictates Planner Selection (The Duality of Gradient vs. Sampling MPC):} On smooth dynamical models and quadratic tracking costs, gradient-based iLQR / RTI-NMPC dominates stochastic sampling by $32\times\text{--}840\times$ at lower compute across arbitrary geometries (Exp 24, 26). Conversely, on non-convex geometric keep-out fields and dynamic obstacles, derivative-free sampling (CEM) is mandatory to discover obstacle-clearing paths where single-iteration gradient Riccati sweeps stall on non-convex barrier Hessians (Exp 20, 25).
   \item \textbf{Imitation Learning Loses the Self-Correcting Feedback Structure (Sim-to-Real Brittleness):} Behavior-cloning an expert controller memorizes the nominal state-action distribution. When deployed out-of-distribution (e.g., unannounced low-$\mu$ surface or tire saturation), the model-based expert degrades gracefully via live closed-loop error feedback, while the frozen neural policy diverges catastrophically off the road (Exp 27).
   \item \textbf{DAgger Repairs Distribution Shift but Inherits Expert Ceilings:} Interactive expert relabeling on visited student states (DAgger) completely bridges the compounding error gap, matching expert performance to sub-millimeter precision, but cannot exceed the expert's intrinsic capability (Exp 29).
   \item \textbf{Off-Policy Replay Slashes Interaction Costs by $15\text{--}20\times$ and Breaks the Expert Ceiling:} While on-policy PPO discards rollouts every update ($O(1)$ sample reuse), off-policy SAC's continuous experience replay buffer reuses transitions dozens of times, reaching threshold return $15\text{--}20\times$ faster in environment steps. Crucially, while imitation learning (Exp 29) is bounded by the teacher's policy envelope, direct RL reward optimization discovers non-convex trajectory shortcuts that outperform the hand-crafted classical hybrid (Exp 31).
   \item \textbf{Multivariable State Feedback Outperforms Cascaded Loops on High Relative-Degree Underactuation:} Cascaded loop architectures (inner-outer PID) depend on artificial time-scale separation, introducing severe dynamic phase lag and long settling tails ($5.0\,\text{s}$) on relative degree 4 systems like Ball and Beam; simultaneous multivariable state feedback (LQR/MPC) coordinates tilt and roll dynamics directly to slash settling time by $70\%$ ($1.49\,\text{s}$) without overshoot (Exp 33).
-  \item \textbf{Reporting Failure Modes is as Essential as Reporting Wins:} Engineering judgment relies on knowing exact breaking points: linearisation breakdown past $23^\circ$ (Exp 02), EKF false basin trapping (Exp 16), closed-loop SysID correlation bias (Exp 09), nominal computed torque collapse under payload step (Exp 23), pure RL bootstrap failure on low-inertia plants (Exp 21), Kinematic MPC overshoot under Pacejka tire saturation (Exp 27), Plain BC lane departure under high slip (Exp 29), and MRAC divergence under unmatched wind forces (Exp 34).
+  \item \textbf{Reporting Failure Modes is as Essential as Reporting Wins:} Engineering judgment relies on knowing exact breaking points: linearisation breakdown past $23^\circ$ (Exp 02), EKF false basin trapping (Exp 16), closed-loop SysID correlation bias (Exp 09), nominal computed torque collapse under payload step (Exp 23), pure RL bootstrap failure on low-inertia plants (Exp 21), Kinematic MPC overshoot under Pacejka tire saturation (Exp 27), Plain BC lane departure under high slip (Exp 29), cascaded PID droop on rolling ball friction (Exp 33), and MRAC divergence under unmatched wind forces (Exp 34).
   \item \textbf{Energy Pumping Unlocks Underactuated Basins of Attraction:} For underactuated pendulums (Cart-Pole, Furuta RIP), linear controllers cannot stabilize inverted hanging states ($\pm 180^\circ$); Lyapunov energy shaping drives mechanical energy monotonically to the homoclinic orbit, enabling reliable handoff to LQR / MPC (Exp 07, 28).
 \end{enumerate}
 
@@ -1576,11 +1643,11 @@ Across 34 empirical benchmarks, twelve fundamental principles recur consistently
 \paragraph{Phase 1: Foundation, Curriculum \& Capstone --- Completed.}
 All curriculum modules, capstone robotics showcases, deep RL agents, adaptive controllers, and benchmark challenge suites are fully implemented from scratch, tested, and validated across 21 experiments (Modules 01--10).
 
-\paragraph{Phase 2: Post-Capstone Depth, Real Systems \& Packaging --- Completed.}
-All four Phase 2 tracks, physical robotic benchmarks, imitation algorithms, and major tooling extensions are fully shipped and verified across Experiments 22--34:
+\paragraph{Phase 2: Post-Capstone Depth, Real Systems, Trajectory Optimisation \& Packaging --- Completed (v0.2.0 Release).}
+All four Phase 2 tracks, physical robotic benchmarks, direct trajectory optimization, imitation algorithms, and major tooling extensions are fully shipped and verified across Experiments 22--34:
 \begin{itemize}[nosep]
   \item \textbf{Track A (Real Multi-Body, Process, Vehicle \& Disturbance Systems):} Differential-drive mobile robot (Exp 22: path tracking; Exp 25: dynamic moving-obstacle avoidance), 2-link planar manipulator arm (Exp 23: nominal tracking and Slotine--Li adaptive computed torque under unknown $0.5\,\text{kg}$ payload step), dynamic single-track ground vehicle (Exp 27: ISO-3888 double lane change with linear vs. Pacejka tire forces at $25\,\text{m/s}$), Furuta rotary inverted pendulum (Exp 28: Quanser QUBE-Servo 2 standard LQR upright catch, constrained MPC, and Åström-Furuta swing-up), Coupled Two-Tank liquid level regulation (Exp 30: non-linear Torricelli hydraulics, SISO PI vs. LQR vs. Linear MPC), Ball and Beam underactuated balance control (Exp 33: Quanser apparatus, Cascade PID vs. PFL vs. LQR vs. Linear MPC), and Disturbance-Observer (DOB) robust aerodynamic wind rejection on Planar Quadrotor (Exp 34: 2-DOF Q-filter with instantaneous tilt feedforward).
-  \item \textbf{Track B (Algorithmic Depth, Imitation \& Sample-Efficient RL):} Gradient-based real-time iteration Nonlinear MPC (Exp 24: iLQR / RTI-NMPC vs. Sampling MPC; Exp 26: generalized trajectory geometries on Lissajous 3:2 and Archimedean Spiral; Exp 25: non-convex obstacle barriers), imitation learning suite (Exp 29: Behavior Cloning vs. DAgger interactive relabeling under distribution shift via \texttt{aimct.rl.imitation}), and continuous off-policy Soft Actor-Critic (Exp 31: SAC vs. PPO sample efficiency on Inverted Pendulum swing-up via \texttt{aimct.rl.sac}).
+  \item \textbf{Track B (Algorithmic Depth, Imitation, Direct Trajectory Optimization \& Sample-Efficient RL):} Gradient-based real-time iteration Nonlinear MPC (Exp 24: iLQR / RTI-NMPC vs. Sampling MPC; Exp 26: generalized trajectory geometries on Lissajous 3:2 and Archimedean Spiral; Exp 25: non-convex obstacle barriers), direct trajectory optimization via Hermite--Simpson direct collocation NLP (Exp 32: Direct Collocation vs. iLQR vs. CEM via \texttt{aimct.planning.DirectCollocation}), imitation learning suite (Exp 29: Behavior Cloning vs. DAgger interactive relabeling under distribution shift via \texttt{aimct.rl.imitation}), and continuous off-policy Soft Actor-Critic (Exp 31: SAC vs. PPO sample efficiency on Inverted Pendulum swing-up via \texttt{aimct.rl.sac}).
   \item \textbf{Track C (Harness \& Trajectory Infrastructure):} Standardized trajectory-tracking benchmark suite (\texttt{aimct.benchmarks.track\_trajectory}) with cross-track / along-track error metrics, and \texttt{aimct.trajectories} reference generator library (Setpoint, Circle, Lemniscate, Minimum-Jerk, Spline, Dubins, Lissajous, Spiral, Rose).
   \item \textbf{Track D (PyPI Distribution):} Production packaging under \texttt{aimct}, console entry points, clean wheel/sdist builds, automated GitHub Action release pipeline with PyPI OIDC Trusted Publishing, and release runbook.
   \item \textbf{Unified Visualization \& Design-Time Tooling:} Shipped \texttt{aimct.viz} (\texttt{SystemArtist} contract, \texttt{animate()} replay generator, and 7 interactive real-time sandboxes under \texttt{python -m aimct live}) and \texttt{aimct.dev} (design-time preview dashboard with pole maps, controllability/observability, and Jacobian residual verification via \texttt{python -m aimct preview}).
@@ -1590,10 +1657,10 @@ All four Phase 2 tracks, physical robotic benchmarks, imitation algorithms, and 
 \begin{itemize}[nosep]
   \item Hardware-in-the-loop (HIL) testing interfaces and physical micro-quadrotor flight deployment.
   \item Flight log ingestion and telemetry playback (Crazyflie CFclient / ROS2 rosbag).
-  \item Direct collocation trajectory optimization and multi-agent collaborative control.
+  \item Multi-agent collaborative control and distributed consensus filters.
   \item Partially observable decentralized systems and sim-to-real domain randomization.
 \end{itemize}
-CI passes on Python 3.10--3.13 with \textbf{451 passing unit tests}.
+CI passes on Python 3.10--3.13 with \textbf{472 passing unit tests}.
 
 \paragraph{Reproduction Commands.}
 \begin{lstlisting}[language=bash]
@@ -1629,9 +1696,11 @@ python experiments/28_furuta_pendulum_control/run.py
 python experiments/29_dagger_vs_bc_lane_change/run.py
 python experiments/30_two_tank_level_control/run.py
 python experiments/31_sac_vs_ppo_sample_efficiency/run.py
+python experiments/32_direct_collocation_vs_ilqr/run.py
 python experiments/33_ball_and_beam_control/run.py
 python experiments/34_dob_wind_rejection/run.py
 \end{lstlisting}
 
 \end{document}
+
 

@@ -9,7 +9,7 @@
 
 **AI Meets Control Theory** is a rigorous, from-scratch experimentation framework that systematically bridges classical control theory, modern state-space methods, constrained Model Predictive Control (MPC), Kalman filtering, adaptive control, and modern machine learning/reinforcement learning on physical dynamical systems. Under the core discipline **"derive it, build it from scratch, simulate it, visualise it, and compare it honestly"**, every controller—from PID and LQR to active-set MPC, EKF/UKF, PPO actor-critic, and safety shields—is evaluated on identical plants, sensor noise profiles, disturbances, and actuator limits.
 
-📄 **[Read the Living Technical Report (PDF)](docs/report/ai-meets-control-theory.pdf)** &nbsp;|&nbsp; 📖 **[User Guide & API Recipes](docs/USAGE.md)** &nbsp;|&nbsp; 💡 **[Examples Gallery](examples/README.md)** &nbsp;|&nbsp; 🎨 **[Unified Visualization](docs/VISUALIZATION.md)** &nbsp;|&nbsp; 📊 **[Master Results & Verdicts Table](docs/RESULTS.md)** &nbsp;|&nbsp; 🧭 **[Engineering Decision Guide](docs/DECISION-GUIDE.md)** &nbsp;|&nbsp; 🚁 **[Live 3D WebGL Sandbox](https://claude.ai/code/artifact/69b12b78-d7b2-4732-a7af-2af14930139b)** &nbsp;|&nbsp; 🎯 **[Project Vision & Manifesto](docs/vision.md)**
+📄 **[Read the Living Technical Report (PDF)](docs/report/ai-meets-control-theory.pdf)** &nbsp;|&nbsp; 🚀 **[Getting Started Guide](docs/GETTING-STARTED.md)** &nbsp;|&nbsp; 📖 **[User Guide & API Recipes](docs/USAGE.md)** &nbsp;|&nbsp; 💡 **[Examples Gallery](examples/README.md)** &nbsp;|&nbsp; 🎨 **[Unified Visualization](docs/VISUALIZATION.md)** &nbsp;|&nbsp; 📊 **[Master Results & Verdicts Table](docs/RESULTS.md)** &nbsp;|&nbsp; 🧭 **[Engineering Decision Guide](docs/DECISION-GUIDE.md)** &nbsp;|&nbsp; 🚁 **[Live 3D WebGL Sandbox](https://claude.ai/code/artifact/69b12b78-d7b2-4732-a7af-2af14930139b)** &nbsp;|&nbsp; 🎯 **[Project Vision & Manifesto](docs/vision.md)**
 
 ---
 
@@ -21,7 +21,7 @@ git clone https://github.com/zalihthomas-ui/ai-meets-control-theory.git
 cd ai-meets-control-theory
 pip install -e ".[dev,ml]"
 
-# 2. Run the fast test suite (443 fast / 451 total passing unit tests from scratch)
+# 2. Run the fast test suite (456 fast / 465 total passing unit tests from scratch)
 pytest -m "not slow"
 
 # 3. Run a canonical multi-controller benchmark comparison
@@ -79,6 +79,7 @@ Every experiment is self-contained with its own configuration, runner, Markdown/
 | **29** | [`29_dagger_vs_bc_lane_change`](experiments/29_dagger_vs_bc_lane_change/) | Dynamic Bicycle (Pacejka $\mu=0.6$) | Plain BC vs DAgger (8 rounds) | Plain BC drifts off-road ($6.02\,\text{m}$ RMS); DAgger relabeling matches expert LQR ($768.8\,\text{mm}$ RMS) but inherits expert ceiling. |
 | **30** | [`30_two_tank_level_control`](experiments/30_two_tank_level_control/) | Coupled Nonlinear Two-Tank | SISO PI vs Multivariable LQR vs Linear MPC | SISO PI eliminates nonlinear steady-state droop ($0.0\,\text{cm}$); LQR/MPC cuts pump energy by $22\%$ ($6659\,\text{V}^2\text{s}$) with $0\%$ level violation. |
 | **31** | [`31_sac_vs_ppo_sample_efficiency`](experiments/31_sac_vs_ppo_sample_efficiency/) | Inverted Pendulum (Swing-Up) | SAC (off-policy) vs PPO (on-policy) vs Hybrid | Off-policy SAC reaches $-966$ threshold in $8\text{k}$ steps ($15\text{--}20\times$ faster than PPO) and beats classical hybrid ($-364$ vs $-816$). |
+| **32** | [`32_direct_collocation_vs_ilqr`](experiments/32_direct_collocation_vs_ilqr/) | Cart-Pole ($T=2.0\,\text{s}$ Swing-Up) | Direct Collocation (HS) vs iLQR vs Sampling (CEM) | Direct Collocation meets exact terminal equality in $0.71\,\text{s}$; iLQR/CEM stop $0.25\text{--}0.65$ short under soft penalty $Q_f$. |
 | **33** | [`33_ball_and_beam_control`](experiments/33_ball_and_beam_control/) | Ball & Beam (Quanser standard) | Cascade PID vs PFL vs Multivariable LQR vs Linear MPC | LQR / MPC settle in $1.49\,\text{s}$ ($1.3\%$ overshoot, zero droop); MPC caps torque to $0.784\,\text{N}\cdot\text{m}$ (energy $0.0184$). |
 | **34** | [`34_dob_wind_rejection`](experiments/34_dob_wind_rejection/) | Planar Quadrotor (Crazyflie 2.0) | Nominal LQR vs LQI vs MRAC vs DOB+LQR | DOB settles $5\times$ faster ($0.58\,\text{s}$) with $-61\%$ lateral drift; MRAC drifts on unmatched forces. |
 
@@ -97,6 +98,7 @@ src/aimct/
                   DisturbanceObserver, QFilter, EnergyShapingSwingUp, HybridSwingUpLQR,
                   LinearMPC (with preview), SamplingMPC (CEM + obstacles),
                   ILQR (trajectory optimiser + real-time-iteration NMPC)
+  planning/       DirectCollocation (Hermite-Simpson OCP transcription to NLP, SLSQP)
   estimation/     LuenbergerObserver, KalmanFilter (LQE/FARE), DiscreteKalmanFilter,
                   ExtendedKalmanFilter, UnscentedKalmanFilter, observability_matrix
   trajectories/   Lemniscate, Spline, Minimum-Jerk Polynomials, Dubins, Lissajous, Spiral, Rose
@@ -147,15 +149,15 @@ THEORY → DERIVATION → IMPLEMENTATION → SIMULATION → VISUALISATION → VA
 
 ## Status: Phase 2 Complete (Phase 3 Planned) 🚀
 
-The core curriculum (Modules 01–10), 32 empirical benchmark experiments, living technical report, unified visualization layer (`aimct.viz`), design-time preview dashboard (`aimct.dev`), and 7 interactive sandboxes are complete with **451 passing unit tests** across Python 3.10–3.13.
+The core curriculum (Modules 01–10), 33 empirical benchmark experiments (01–34), living technical report, unified visualization layer (`aimct.viz`), design-time preview dashboard (`aimct.dev`), and 7 interactive sandboxes are complete with **465 passing unit tests** across Python 3.10–3.13.
 
 **Phase 2 Delivered:**
 - **Track A (Real Systems):** Differential-drive mobile robots (Exp 22 path tracking, Exp 25 dynamic obstacle avoidance), 2-link planar manipulator arms (Exp 23 computed torque & Slotine–Li payload adaptation), dynamic bicycle vehicles (Exp 27 ISO-3888 double lane change with linear vs. Pacejka tire models), Furuta rotary inverted pendulums (Exp 28 Quanser QUBE-Servo 2 benchmark), coupled nonlinear process tanks (Exp 30 Quanser Coupled Two-Tank level control), ball and beam balance (Exp 33), and disturbance observer aerodynamic wind rejection (Exp 34).
-- **Track B (Algorithmic Depth, Imitation & Continuous RL):** Real-time iteration Nonlinear MPC (Exp 24, 26, 25 iLQR / RTI-NMPC vs. Sampling MPC), interactive imitation learning (Exp 29 DAgger vs. Behavior Cloning lane-change recovery), and continuous off-policy Soft Actor-Critic (Exp 31 SAC vs. PPO sample efficiency).
+- **Track B (Algorithmic Depth, Imitation, Trajectory Optimization & Continuous RL):** Real-time iteration Nonlinear MPC (Exp 24, 26, 25 iLQR / RTI-NMPC vs. Sampling MPC), interactive imitation learning (Exp 29 DAgger vs. Behavior Cloning lane-change recovery), continuous off-policy Soft Actor-Critic (Exp 31 SAC vs. PPO sample efficiency), and direct trajectory optimization via Hermite-Simpson direct collocation (Exp 32 Direct Collocation vs. iLQR vs. CEM).
 - **Track C & D:** Reusable trajectory generation suite (`aimct.trajectories`), tracking benchmark harness (`aimct.benchmarks.tracking`), unified visualization (`aimct.viz`), design-time preview (`aimct.dev`), and PyPI distribution packaging (`aimct`).
 
 **Phase 3 (Planned):**
-Hardware-in-the-loop (HIL) physical deployment, flight log telemetry ingestion (CFclient/ROS2), dynamic bicycle vehicle model, Soft Actor-Critic (SAC), and direct collocation trajectory optimization.
+Hardware-in-the-loop (HIL) physical deployment, flight log telemetry ingestion (CFclient/ROS2), dynamic bicycle vehicle model, and real-time C-code generation for embedded targets.
 
 See [`docs/roadmap.md`](docs/roadmap.md) for detailed deliverables and development history.
 
