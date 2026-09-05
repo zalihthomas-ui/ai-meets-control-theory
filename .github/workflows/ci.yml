@@ -28,8 +28,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev,xcheck,ml]"
 
-      - name: Run test suite
-        run: pytest -q
+      - name: Run test suite (with coverage)
+        run: pytest -q --cov=aimct --cov-report=term-missing --cov-fail-under=80
 
       - name: Smoke-run experiments
         run: |
@@ -48,3 +48,16 @@ jobs:
                 ;;
             esac
           done
+
+      - name: Guard against stray junk files
+        run: |
+          # 0-byte, extension-less files at the repo root have leaked in from
+          # shell redirect typos more than once ((pos, FALL_LIMIT, Xdot`, ...).
+          # None should ever be committed.
+          junk=$(git ls-files -- ':(top)*' | while read -r f; do
+            case "$f" in */*) continue;; esac       # root only
+            [ -f "$f" ] && [ ! -s "$f" ] && case "$f" in *.*) ;; *) echo "$f";; esac
+          done)
+          if [ -n "$junk" ]; then
+            echo "::error::committed stray 0-byte root file(s):"; echo "$junk"; exit 1
+          fi

@@ -56,6 +56,7 @@ ml = [
 viz = ["pyvista>=0.44"]
 dev = [
     "pytest>=8.0",
+    "pytest-cov>=5.0",
     "build>=1.0",
     "twine>=5.0",
     "control>=0.10",
@@ -77,8 +78,36 @@ version = { attr = "aimct.__version__" }
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+aimct = ["py.typed"]                 # PEP 561 - ship inline type information
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = [
     "slow: heavy RL / learned-model training tests (minutes). Skip with -m 'not slow'.",
+]
+filterwarnings = [
+    # tests that build a FuncAnimation and drive frames by hand (never .save/.show)
+    # trip this at GC - benign in a test, the real code paths always render.
+    "ignore:Animation was deleted without rendering anything:UserWarning",
+]
+
+[tool.coverage.run]
+source = ["aimct"]
+branch = true
+omit = ["*/aimct/__main__.py", "*/aimct/dev/__main__.py"]
+
+[tool.coverage.report]
+# The 80% floor is enforced in CI only (`--cov-fail-under=80` on the full
+# suite) so ad-hoc partial `--cov` runs during development don't "fail".
+# Fast-lane coverage sits ~87%, the full suite higher.
+show_missing = true
+skip_covered = true
+exclude_also = [
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "def __repr__",
+    "\\.\\.\\.",                     # ... stubs / Protocol bodies
+    "except ImportError",
+    "pragma: no cover",
 ]

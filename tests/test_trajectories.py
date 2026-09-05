@@ -75,7 +75,7 @@ def test_closest_point_and_completion():
     assert 0.0 <= frac <= 0.05
 
 
-def test_track_trajectory_scores_a_quad_following_a_lemniscate():
+def test_track_trajectory_scores_a_quad_following_a_lemniscate(tmp_path):
     quad = PlanarQuadrotor()
     A, B = quad.linearize()
     K = LQR(A, B, np.diag(1 / np.array([.1, .1, .2, .5, .5, 3.]) ** 2),
@@ -111,3 +111,40 @@ def test_track_trajectory_scores_a_quad_following_a_lemniscate():
     assert 30.0 < m["completion_pct"] <= 100.0
     assert set(res.trajectories) == {"lqr+ff"}
     assert "cross-track" in res.to_markdown() or "cross_track" in res.to_markdown()
+
+    # -- the reporting surface: markdown / csv / figure / save -----------
+    import csv
+    import io
+
+    csv_text = res.to_csv()
+    rows = list(csv.reader(io.StringIO(csv_text)))
+    assert rows[0][0] == "controller" and rows[1][0] == "lqr+ff"
+    assert len(rows) == 2 and "OK" in rows[1]
+
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    fig, ax = res.figure()
+    assert len(ax) == 2                                # path panel + error panel
+    plt.close(fig)
+
+    res.save(tmp_path)
+    for f in ("tracking.md", "tracking.csv", "tracking.png"):
+        assert (tmp_path / f).exists() and (tmp_path / f).stat().st_size > 0
+
+
+def test_track_trajectory_result_animates(tmp_path):
+    quad = PlanarQuadrotor()
+    traj = Circle(0.6, 6.0)
+
+    class Hold:
+        def reset(self): pass
+        def update(self, x, dt): return quad.u_hover
+
+    res = track_trajectory(quad, {"hold": Hold()}, traj,
+                           np.array([0.6, 1.0, 0, 0, 0, 0]), dt=0.05, t_final=3.0,
+                           pos_index=(0, 1))
+    rep = res.animate(quad, controller="hold", fps=10)
+    out = rep.save(tmp_path / "track.gif")
+    assert out.exists() and out.stat().st_size > 0
