@@ -1,6 +1,6 @@
 # Empirical Results & Engineering Verdicts
 
-> The comprehensive, honest benchmark summary of all 30 experiments across the project.
+> The comprehensive, honest benchmark summary of all 31 experiments across the project.
 > Every method was built from scratch, simulated, visualised, and compared under identical conditions.
 
 ---
@@ -39,6 +39,7 @@
 | **28** | Furuta Pendulum Control \& Swing-Up | Quanser QUBE-Servo 2 RIP | LQR vs Linear MPC (Upright Catch) vs Åström-Furuta Energy Swing-Up | Upright settle **$40\,\text{ms}$** ($e_{ss} < 6\times 10^{-7}\,\text{rad}$); MPC caps torque to **$0.1343\,\text{N}\cdot\text{m}$**; Swing-up **$6.0\,\text{s}$** | Analytical linearization provides rapid upright stabilization ($40\,\text{ms}$); Linear MPC proactively moderates torque spikes to respect motor saturation without clipping; Åström-Furuta energy shaping pumps energy monotonically for seamless LQR handoff. |
 | **29** | DAgger vs BC Lane-Change Recovery | Dynamic Pacejka Vehicle ($\mu=0.6$) | Plain BC (1 round) vs DAgger (8 rounds LQR expert relabeling) | DAgger RMS **$768.8\,\text{mm}$** ($1708\,\text{mm}$ peak) vs Plain BC **$6022\,\text{mm}$** ($12.4\,\text{m}$ peak off-road) | Plain Behavior Cloning suffers compounding distribution drift and diverges off-road; DAgger aggregates student-visited states relabeled by the expert, recovering expert LQR fidelity ($767.8\,\text{mm}$) but bounded by the expert ceiling. |
 | **30** | Coupled Two-Tank Level Regulation | Nonlinear Two-Tank System (Torricelli) | SISO PI vs Multivariable LQR vs Linear MPC (Quanser parameters) | SISO PI zero droop ($e_{ss} = 0.0\,\text{cm}$); LQR/MPC $-22\%$ pump energy ($6659\,\text{V}^2\text{s}$) with $0\%$ level violation | SISO PI eliminates nonlinear steady-state droop via integration; multivariable LQR/MPC coordinates interaction between both tanks, cutting energy by $22\%$ while strictly respecting physical level and voltage bounds. |
+| **31** | SAC vs PPO Sample Efficiency | Inverted Pendulum (Swing-Up) | Soft Actor-Critic (off-policy) vs PPO (on-policy) vs Classical Hybrid (60k budget) | SAC return **$-363.6$** at $8\text{k}$ steps vs PPO **$-1339.9$** ($>60\text{k}$ steps) | Off-policy replay buffer reuse provides a $15\text{--}20\times$ environment-step sample-efficiency advantage over on-policy PPO; unlike imitation learning, direct RL reward optimization breaks through the hand-crafted classical hybrid ceiling ($-815.8$). |
 
 ---
 

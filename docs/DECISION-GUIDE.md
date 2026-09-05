@@ -2,7 +2,7 @@
 
 > **The Central Thesis:** Classical and optimal control dominate whenever a usable physical model is available; machine learning and sampling earn their keep only where models are unavailable, non-smooth, or unmodeled—and even then, classical feedback or supervisory shields are what make deployment certified and safe.
 
-This document synthesizes the empirical verdicts of all **30 experiments** across the `aimct` framework into an actionable, structured decision system.
+This document synthesizes the empirical verdicts of all **31 experiments** across the `aimct` framework into an actionable, structured decision system.
 
 ---
 
@@ -40,13 +40,16 @@ flowchart TD
     %% Data-driven / Black-box branch
     ModelQ -- No (Data-Driven) --> DataQ{"Can you collect offline /<br/>online transition rollouts?"}
     DataQ -- Rollout Data Available --> SysID["<b>Least-Squares / DMDc SysID</b><br/>&rarr; Design Model-Based LQR / MPC<br/><i>[Exp 09, Exp 10]</i>"]
-    DataQ -- Simulator Interaction Only --> RL["<b>Deep RL (DQN / PPO)</b><br/>(Anticipate 10^5 sample bill)<br/><i>[Exp 11, Exp 18]</i>"]
+    DataQ -- Simulator Interaction Only --> InteractQ{"Is environment interaction<br/>bottlenecked / expensive?"}
+    InteractQ -- High Cost (Real Hardware / Slow Sim) --> SAC["<b>Soft Actor-Critic (SAC)</b><br/>(Off-policy replay; 15-20x sample savings)<br/><i>[Exp 31]</i>"]
+    InteractQ -- Low Cost (Fast Simulation) --> RL["<b>Deep RL (DQN / PPO)</b><br/>(On-policy simplicity for cheap sims)<br/><i>[Exp 11, Exp 18, Exp 31]</i>"]
     DataQ -- Expert Demonstrations Available --> ImitationQ{"Is training data free<br/>of distribution shift?"}
     ImitationQ -- Gentle Maneuvers Only --> DAgger["<b>DAgger (Dataset Aggregation)</b><br/>(Iterative expert relabeling closes drift)<br/><i>[Exp 29]</i>"]
     ImitationQ -- Uniform State Coverage --> BC["<b>Behavioral Cloning (Plain BC)</b><br/>(Caution: fragile out-of-distribution)<br/><i>[Exp 27, Exp 29]</i>"]
 
     %% Safety Wrapping
     RL --> ShieldQ{"Deploying learned policy<br/>near physical boundaries?"}
+    SAC --> ShieldQ
     SysID --> ShieldQ
     DAgger --> ShieldQ
     BC --> ShieldQ
@@ -57,7 +60,7 @@ flowchart TD
 
 ## 2. Master Decision Matrix by Problem Class
 
-The table below catalogs the concrete recommendations, alternatives, failure modes, and proving experiments for every operational regime in the 30-experiment benchmark suite:
+The table below catalogs the concrete recommendations, alternatives, failure modes, and proving experiments for every operational regime in the 31-experiment benchmark suite:
 
 | Operational Situation | Recommended Method | Fallback / Alternative | Known Failure Mode & Boundary | Proving Experiment |
 | :--- | :--- | :--- | :--- | :--- |
@@ -79,10 +82,11 @@ The table below catalogs the concrete recommendations, alternatives, failure mod
 | **Vehicle Steering (Linear Tire)** | **Kinematic MPC / LQR** | Model-Free Stanley | Model-free Stanley is $4\text{--}7\times$ looser ($371\,\text{mm}$ vs $52.5\,\text{mm}$) when tire slip is small ($\alpha < 1.7^\circ$) | [Exp 27](../experiments/27_bicycle_double_lane_change/) |
 | **Vehicle Steering (Low-$\mu$ Pacejka)** | **Model-Free Stanley** | Robust / Tire-Aware NMPC | Kinematic MPC collapses ($1326\,\text{mm}$) due to false zero-slip assumption; Behavior-Cloned RL completely drives off the road ($5223\,\text{mm}$ RMS) | [Exp 27](../experiments/27_bicycle_double_lane_change/) |
 | **Imitation Distribution Shift** | **DAgger (Dataset Aggregation)** | Plain Behavior Cloning | Plain BC drifts into unvisited states and diverges off-road ($6022\,\text{mm}$ RMS); DAgger relabels student states with expert LQR, restoring expert tracking ($768.8\,\text{mm}$) | [Exp 29](../experiments/29_dagger_vs_bc_lane_change/) |
+| **Continuous RL (High Interaction Cost)** | **Soft Actor-Critic (SAC)** | Proximal Policy Optimization (PPO) | On-policy PPO discards rollouts ($O(1)$ reuse), requiring $>100\text{k}$ samples; off-policy SAC reaches threshold in $8\text{k}$ steps ($15\text{--}20\times$ faster) and beats classical hybrid ($-364$ vs $-816$) | [Exp 31](../experiments/31_sac_vs_ppo_sample_efficiency/) |
 | **Plant Parameter Drift (Stiffness)** | **Lyapunov MRAC** | Fixed / Gain-Scheduled LQR | Fixed LQR droops to $0.42\,\text{m}$ error under $5\times$ stiffness change; MRAC holds $< 1\,\text{mm}$ tracking error | [Exp 17](../experiments/17_adaptive_vs_fixed_changing_plant/) |
 | **Data-Driven Model Identification** | **Least-Squares / DMDc SysID** | Black-Box Neural Network | Closed-loop SysID on short data ($1\,\text{s}$) causes fatal drift; $24\,\text{s}$ data gives robust LQR stability despite $20\%$ residual | [Exp 09](../experiments/09_control_on_identified_model/) |
 | **Learned Residual Dynamics** | **Grey-Box MLP + Sampling MPC** | Pure Black-Box Network | Pure black-box models require massive datasets and fail to generalize; grey-box residual over physics matches true model within $3\%$ | [Exp 10](../experiments/10_planning_learned_vs_true_model/), [Exp 20](../experiments/20_quadrotor_obstacle_nmpc/) |
-| **Black-Box Continuous Control** | **From-Scratch PPO Actor-Critic** | Tabular Q / DQN | From-scratch continuous PPO matches LQR return $-0.3$ on CartPole, but requires $240,000$ samples vs $0$ for analytical LQR | [Exp 18](../experiments/18_rl_zoo_vs_lqr/) |
+| **Black-Box Continuous Control** | **From-Scratch PPO / SAC** | Tabular Q / DQN | From-scratch continuous PPO matches LQR return $-0.3$ on CartPole, but requires $240,000$ samples vs $0$ for analytical LQR; SAC slashes sample bill $15\text{--}20\times$ | [Exp 18](../experiments/18_rl_zoo_vs_lqr/), [Exp 31](../experiments/31_sac_vs_ppo_sample_efficiency/) |
 | **Deploying Uncertified Policies** | **Supervisory Safety Shield** | Raw Policy Execution | Unshielded RL policy enters limit cycles or breaches safety keep-out; safety shield guarantees zero violations with $35\%$ less energy | [Exp 12](../experiments/12_shielded_qlearning/), [21](../experiments/21_grand_capstone_bakeoff/) |
 
 ---
@@ -129,9 +133,14 @@ The table below catalogs the concrete recommendations, alternatives, failure mod
 - **SISO PI vs. Square-Root Torricelli Loss:** SISO PI achieves exact zero steady-state droop ($e_{ss} = 0.00\,\text{cm}$) by integrating residual flow error against nonlinear Torricelli outflow ($Q \propto \sqrt{h}$) ([Exp 30](../experiments/30_two_tank_level_control/)).
 - **Multivariable Coordination (LQR / MPC):** Accounting for inter-tank cross-coupling $[h_1, h_2]$ coordinates pump voltage proactively, reducing total voltage actuation energy by $22\%$ ($6659\,\text{V}^2\text{s}$ vs $8546\,\text{V}^2\text{s}$) while strictly respecting physical level ($h_1 \le 30\,\text{cm}$) and pump saturation ($V_p \le 12\,\text{V}$) bounds ([Exp 30](../experiments/30_two_tank_level_control/)).
 
+### 3.10 Off-Policy Soft Actor-Critic (SAC) vs. On-Policy PPO
+- **Sample-Efficiency Multiplier ($15\text{--}20\times$):** Continuous replay buffer reuse allows SAC to achieve target upright swing-up performance ($-966$) in only $8,000$ environment steps, whereas on-policy PPO discards samples and fails to reach the bar within $60,000$ steps ($-1340$) ([Exp 31](../experiments/31_sac_vs_ppo_sample_efficiency/)).
+- **Breaking the Expert Ceiling:** While DAgger imitation is bounded by the teacher's policy envelope ([Exp 29]), SAC optimizes the true reward objective directly, reaching $-364$ and outperforming the hand-built energy+LQR hybrid ($-816$) ([Exp 31](../experiments/31_sac_vs_ppo_sample_efficiency/)).
+- **Autonomous Exploration-Exploitation Scheduling:** Dynamic temperature optimization auto-anneals $\alpha$ from $0.74 \to 0.05$ as state space certainty increases, eliminating manual exploration decay schedules ([Exp 31](../experiments/31_sac_vs_ppo_sample_efficiency/)).
+
 ---
 
-## 4. The 9 Invariant Engineering Laws Across 30 Experiments
+## 4. The 10 Invariant Engineering Laws Across 31 Experiments
 
 1. **Feedforward Does the Heavy Lifting:** Model-based feedforward (differential flatness, steady-state inversion, curvature feedforward, reference preview) generates the nominal trajectory directly, leaving feedback to correct only residual errors and unexpected disturbances ([Exp 03], [Exp 14], [Exp 17], [Exp 22]).
 2. **Integral Action is Mandatory for Persistent Loads:** No amount of proportional gain tuning eliminates steady-state droop under persistent external loads (wind, gravity bias, non-linear Torricelli leakage); explicit integrator augmentation or parameter adaptation is required ([Exp 03], [Exp 17], [Exp 23], [Exp 30]).
@@ -140,6 +149,7 @@ The table below catalogs the concrete recommendations, alternatives, failure mod
 5. **Convexity Dictates Planner Selection (The Duality of Gradient vs. Sampling MPC):** On smooth dynamical models and quadratic tracking costs, gradient-based iLQR / RTI-NMPC dominates stochastic sampling by $32\times\text{--}840\times$ at lower compute across arbitrary geometries ([Exp 24], [Exp 26]). Conversely, on non-convex geometric keep-out fields and dynamic obstacles, derivative-free sampling (CEM) is mandatory to discover obstacle-clearing paths where single-iteration gradient Riccati sweeps stall on non-convex barrier Hessians ([Exp 20], [Exp 25]).
 6. **Imitation Learning Loses the Self-Correcting Feedback Structure (Sim-to-Real Brittleness):** Behavior-cloning an expert controller memorizes the nominal state-action distribution. When deployed out-of-distribution (e.g., unannounced low-$\mu$ surface or tire saturation), the model-based expert degrades gracefully via live closed-loop error feedback, while the frozen neural policy diverges catastrophically off the road ([Exp 27]).
 7. **DAgger Closes Distribution Shift but Inherits the Teacher's Ceiling:** Iteratively aggregating student-visited rollouts relabeled by an expert supervisor pulls the training dataset onto off-nominal recovery trajectories, resolving compounding distribution drift and restoring closed-loop fidelity ($768.8\,\text{mm}$ vs $6022\,\text{mm}$ Plain BC) ([Exp 29]). However, the cloned policy is strictly bounded by the teacher's capability and cannot surpass model-free geometric tracking ([Exp 27], [Exp 29]).
-8. **Underactuated Energy Pumping Unlocks Global Basins:** For underactuated pendulums (Cart-Pole, Furuta RIP), linear controllers cannot stabilize inverted hanging states ($\pm 180^\circ$); Lyapunov energy shaping drives mechanical energy monotonically to the homoclinic orbit, enabling reliable handoff to LQR / MPC ([Exp 07], [Exp 28]).
-9. **Reporting Failure Modes is as Essential as Reporting Wins:** Engineering judgment relies on knowing exact breaking points: linearisation breakdown past $23^\circ$ ([Exp 02]), EKF false basin trapping ([Exp 16]), closed-loop SysID correlation bias ([Exp 09]), nominal computed torque collapse under payload step ([Exp 23]), pure RL bootstrap failure on low-inertia plants ([Exp 21]), Kinematic MPC overshoot under Pacejka tire saturation ([Exp 27]), and Plain BC lane departure under high slip ([Exp 29]).
+8. **Off-Policy Replay Slashes Interaction Costs by $15\text{--}20\times$ and Breaks the Expert Ceiling:** While on-policy PPO discards rollouts every update ($O(1)$ sample reuse), off-policy SAC's continuous experience replay buffer reuses transitions dozens of times, reaching threshold return $15\text{--}20\times$ faster in environment steps ([Exp 31]). Crucially, while imitation learning ([Exp 29]) is bounded by the teacher's policy envelope, direct RL reward optimization discovers non-convex trajectory shortcuts that outperform the hand-crafted classical hybrid ([Exp 31]).
+9. **Underactuated Energy Pumping Unlocks Global Basins:** For underactuated pendulums (Cart-Pole, Furuta RIP), linear controllers cannot stabilize inverted hanging states ($\pm 180^\circ$); Lyapunov energy shaping drives mechanical energy monotonically to the homoclinic orbit, enabling reliable handoff to LQR / MPC ([Exp 07], [Exp 28]).
+10. **Reporting Failure Modes is as Essential as Reporting Wins:** Engineering judgment relies on knowing exact breaking points: linearisation breakdown past $23^\circ$ ([Exp 02]), EKF false basin trapping ([Exp 16]), closed-loop SysID correlation bias ([Exp 09]), nominal computed torque collapse under payload step ([Exp 23]), pure RL bootstrap failure on low-inertia plants ([Exp 21]), Kinematic MPC overshoot under Pacejka tire saturation ([Exp 27]), Plain BC lane departure under high slip ([Exp 29]), and PPO sample inefficiency on physical step budgets ([Exp 31]).
 

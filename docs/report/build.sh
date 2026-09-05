@@ -52,6 +52,8 @@ copy_fig "28_furuta_pendulum_control" "furuta_swingup.png" "exp28_furuta_swingup
 copy_fig "29_dagger_vs_bc_lane_change" "figure.png" "exp29_dagger_recovery.png"
 copy_fig "30_two_tank_level_control" "two_tank_benchmark.png" "exp30_two_tank_benchmark.png"
 copy_fig "30_two_tank_level_control" "two_tank_setpoint.png" "exp30_two_tank_setpoint.png"
+copy_fig "31_sac_vs_ppo_sample_efficiency" "figure.png" "exp31_sac_vs_ppo.png"
+
 
 # --- 2. compile (latexmk drives pdflatex, 2-3 passes for the ToC)
 echo "compiling main.tex..."
