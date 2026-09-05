@@ -1158,12 +1158,22 @@ Across 26 empirical benchmarks, seven fundamental principles recur consistently:
 \paragraph{Phase 1: Foundation, Curriculum \& Capstone --- Completed.}
 All curriculum modules, capstone robotics showcases, deep RL agents, adaptive controllers, and benchmark challenge suites are fully implemented from scratch, tested, and validated across 21 experiments (Modules 01--10).
 
-\paragraph{Phase 2: Post-Capstone Depth, Real Systems \& Packaging --- In Progress.}
+\paragraph{Phase 2: Post-Capstone Depth, Real Systems \& Packaging --- Completed.}
+All four Phase 2 tracks and major tooling extensions are fully shipped and verified across Experiments 22--26:
 \begin{itemize}[nosep]
-  \item \textbf{Track A (Real Multi-Body Systems):} Differential-drive mobile robot (Exp 22: path tracking; Exp 25: dynamic moving-obstacle avoidance), 2-link planar manipulator arm (Exp 23: computed torque vs. Slotine--Li MRAC with payload step), and bicycle-model ground vehicle.
-  \item \textbf{Track B (Algorithmic Depth):} Real-time iteration Nonlinear MPC (Exp 24: iLQR / RTI-NMPC vs. Sampling MPC; Exp 26: generalized trajectory geometries), Soft Actor-Critic (SAC) continuous RL, direct collocation trajectory optimization, and formal Behavioral Cloning + DAgger.
-  \item \textbf{Track C (Harness Infrastructure):} Standardized trajectory-tracking benchmark suite (\texttt{aimct.benchmarks.track\_trajectory}) with cross-track / along-track error metrics, and \texttt{aimct.trajectories} reference generator library (including Lissajous, Spiral, Rose).
-  \item \textbf{Track D (PyPI Distribution):} Production packaging under \texttt{aimct}, console entry points, automated GitHub Action release pipeline with PyPI OIDC Trusted Publishing, and release runbook.
+  \item \textbf{Track A (Real Multi-Body Systems):} Differential-drive mobile robot (Exp 22: path tracking; Exp 25: dynamic moving-obstacle avoidance), and 2-link planar manipulator arm (Exp 23: nominal tracking and Slotine--Li adaptive computed torque under unknown $0.5\,\text{kg}$ payload step).
+  \item \textbf{Track B (Algorithmic Depth):} Gradient-based real-time iteration Nonlinear MPC (Exp 24: iLQR / RTI-NMPC vs. Sampling MPC; Exp 26: generalized trajectory geometries on Lissajous 3:2 and Archimedean Spiral; Exp 25: non-convex obstacle barriers).
+  \item \textbf{Track C (Harness \& Trajectory Infrastructure):} Standardized trajectory-tracking benchmark suite (\texttt{aimct.benchmarks.track\_trajectory}) with cross-track / along-track error metrics, and \texttt{aimct.trajectories} reference generator library (Setpoint, Circle, Lemniscate, Minimum-Jerk, Spline, Dubins, Lissajous, Spiral, Rose).
+  \item \textbf{Track D (PyPI Distribution):} Production packaging under \texttt{aimct}, console entry points, clean wheel/sdist builds, automated GitHub Action release pipeline with PyPI OIDC Trusted Publishing, and release runbook.
+  \item \textbf{Unified Visualization \& Design-Time Tooling:} Shipped \texttt{aimct.viz} (\texttt{SystemArtist} contract, \texttt{animate()} replay generator, and 7 interactive real-time sandboxes under \texttt{python -m aimct live}) and \texttt{aimct.dev} (design-time preview dashboard with pole maps, controllability/observability, and Jacobian residual verification via \texttt{python -m aimct preview}).
+\end{itemize}
+
+\paragraph{Phase 3: Hardware Deployment \& Advanced Control --- Planned.}
+\begin{itemize}[nosep]
+  \item Hardware-in-the-loop (HIL) testing interfaces and physical micro-quadrotor flight deployment.
+  \item Flight log ingestion and telemetry playback (Crazyflie CFclient / ROS2 rosbag).
+  \item Deferred algorithmic \& system extensions: dynamic bicycle ground vehicle model, Soft Actor-Critic (SAC) continuous RL, direct collocation trajectory optimization, and formal imitation learning module (\texttt{aimct.rl.imitation}).
+  \item Multi-agent collaborative control and partially observable decentralized systems.
 \end{itemize}
 CI passes on Python 3.10--3.13 with \textbf{403 passing unit tests}.
 

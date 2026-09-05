@@ -135,16 +135,19 @@ THEORY → DERIVATION → IMPLEMENTATION → SIMULATION → VISUALISATION → VA
 
 ---
 
-## Status: Phase 2 in Progress 🚀
+## Status: Phase 2 Complete (Phase 3 Planned) 🚀
 
-The core curriculum (Modules 01–10), 26 empirical benchmark experiments, living technical report, unified visualization layer (`aimct.viz`), and interactive sandboxes are complete with **403 passing unit tests** across Python 3.10–3.13.
+The core curriculum (Modules 01–10), 26 empirical benchmark experiments, living technical report, unified visualization layer (`aimct.viz`), design-time preview dashboard (`aimct.dev`), and 7 interactive sandboxes are complete with **403 passing unit tests** across Python 3.10–3.13.
 
-**Phase 2 is actively expanding the library with:**
-- **Track A (Real Systems):** Differential-drive mobile robots, 2-link planar manipulator arms (computed torque vs. adaptive MRAC), and dynamic bicycle ground vehicles.
-- **Track B (Algorithmic Depth):** Real-time iteration Nonlinear MPC (iLQR / SQP), Soft Actor-Critic (SAC) continuous RL, direct trajectory optimization, and formalized Behavior Cloning + DAgger.
-- **Track C & D:** Reusable trajectory generation suite and PyPI distribution packaging (`aimct`).
+**Phase 2 Delivered:**
+- **Track A (Real Systems):** Differential-drive mobile robots (Exp 22 path tracking, Exp 25 dynamic obstacle avoidance) and 2-link planar manipulator arms (Exp 23 computed torque & Slotine–Li payload adaptation).
+- **Track B (Algorithmic Depth):** Real-time iteration Nonlinear MPC (Exp 24, 26, 25 iLQR / RTI-NMPC vs. Sampling MPC).
+- **Track C & D:** Reusable trajectory generation suite (`aimct.trajectories`), tracking benchmark harness (`aimct.benchmarks.tracking`), unified visualization (`aimct.viz`), design-time preview (`aimct.dev`), and PyPI distribution packaging (`aimct`).
 
-See [`docs/roadmap.md`](docs/roadmap.md) for detailed deliverables and current priorities.
+**Phase 3 (Planned):**
+Hardware-in-the-loop (HIL) physical deployment, flight log telemetry ingestion (CFclient/ROS2), dynamic bicycle vehicle model, Soft Actor-Critic (SAC), and direct collocation trajectory optimization.
+
+See [`docs/roadmap.md`](docs/roadmap.md) for detailed deliverables and development history.
 
 ---
 
