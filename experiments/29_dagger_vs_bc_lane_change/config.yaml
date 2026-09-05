@@ -1,0 +1,30 @@
+# Experiment 29 - DAgger vs behaviour cloning under a plant shift
+# Companion: aimct.rl.imitation (BehaviorCloning, dagger), Experiment 27
+# (the failure this experiment tries to repair)
+
+question: >
+  Experiment 27 Part B showed a behaviour-cloned LQR lane-keeper failing
+  catastrophically the moment the tyre model changed under it. DAgger (Ross,
+  Gordon & Bagnell 2011) is the textbook fix - roll the learner, have the
+  expert relabel every state the learner actually visits under deployment
+  conditions, aggregate, refit, repeat. Does it recover the failure, or is
+  the shift too far outside "fixable by more expert labels"?
+
+setup:
+  plant_eval: "BicycleVehicle(tire_model=pacejka, mu=0.6), sharp lane change (6 m sharpness) - Exp 27 Part B"
+  bc_training: "LQR expert rolled on the NOMINAL linear-tyre plant, GENTLE lane change (15 m) only - the clone never sees a hard steer"
+  expert: "the Experiment-27 LQR lane-keeper (aimct.controllers.LQR on the linear-tyre linearisation)"
+  observation: "[Y_err, psi_err, vx_err, vy, r] scaled to O(1), same as Exp 27's policy"
+
+controllers:
+  Stanley:       "Exp 27, unchanged"
+  LQR:           "Exp 27, unchanged - the DAgger expert"
+  Kinematic MPC: "Exp 27, unchanged"
+  Plain BC:      "aimct.rl.imitation.BehaviorCloning, fit once on the gentle-manoeuvre expert dataset"
+  DAgger:        "the same clone, then N rounds of aimct.rl.imitation.dagger - LQR relabels the states the student visits on the aggressive Pacejka plant"
+
+dagger: {iterations: "5 (quick) / 8 (full)", beta_schedule: "1.0 at iter 0, then 0.0 (pure learner rollouts)"}
+sim: {vx0: 25.0, t_final: 8.0, dt: 0.01}
+outputs: [table.md, table.csv, figure.png]
+run: "python experiments/29_dagger_vs_bc_lane_change/run.py"
+run_full: "AIMCT_EXP_FULL=1 python experiments/29_dagger_vs_bc_lane_change/run.py"

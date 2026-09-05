@@ -4,11 +4,13 @@
 ``tabular``         : :class:`Discretizer`, :class:`QLearning`, :func:`train`.
 ``policy_gradient`` : :class:`GaussianPolicy`, :func:`reinforce` (REINFORCE).
 ``dqn``             : :class:`DQN` (deep Q-network with replay + target net).
+``imitation``       : :class:`BehaviorCloning`, :func:`dagger`.
 """
 
 from .dqn import DQN, QNetwork, ReplayBuffer, dqn
 from .env import (FIGURE8_PERIOD, TASKS, ControlEnv, figure8_obs,
                   figure8_reference, make, wrap_to_pi)
+from .imitation import BehaviorCloning, aggregate, dagger
 from .policy_gradient import GaussianPolicy, evaluate_policy, reinforce
 from .ppo import PPO, ppo
 from .tabular import Discretizer, GreedyPolicy, QLearning, evaluate, train
@@ -29,6 +31,9 @@ __all__ = [
     "GaussianPolicy",
     "reinforce",
     "evaluate_policy",
+    "BehaviorCloning",
+    "aggregate",
+    "dagger",
     "DQN",
     "QNetwork",
     "ReplayBuffer",
