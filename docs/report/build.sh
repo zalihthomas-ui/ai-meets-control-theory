@@ -55,6 +55,7 @@ copy_fig "30_two_tank_level_control" "two_tank_setpoint.png" "exp30_two_tank_set
 copy_fig "31_sac_vs_ppo_sample_efficiency" "figure.png" "exp31_sac_vs_ppo.png"
 copy_fig "33_ball_and_beam_control" "ball_and_beam_benchmark.png" "exp33_ball_and_beam_benchmark.png"
 copy_fig "33_ball_and_beam_control" "ball_and_beam_setpoint.png" "exp33_ball_and_beam_setpoint.png"
+copy_fig "34_dob_wind_rejection" "dob_wind_rejection.png" "exp34_dob_wind_rejection.png"
 
 
 # --- 2. compile (latexmk drives pdflatex, 2-3 passes for the ToC)

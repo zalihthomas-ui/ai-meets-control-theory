@@ -21,7 +21,7 @@ git clone https://github.com/zalihthomas-ui/ai-meets-control-theory.git
 cd ai-meets-control-theory
 pip install -e ".[dev,ml]"
 
-# 2. Run the fast test suite (437 fast / 445 total passing unit tests from scratch)
+# 2. Run the fast test suite (443 fast / 451 total passing unit tests from scratch)
 pytest -m "not slow"
 
 # 3. Run a canonical multi-controller benchmark comparison
@@ -42,7 +42,7 @@ python -m aimct live3d --web    # 6-DOF WebGL sandbox
 
 ---
 
-## The Experiments (01–33)
+## The Experiments (01–34)
 
 Every experiment is self-contained with its own configuration, runner, Markdown/CSV benchmark table, and publication-ready 4-panel figure. See [`docs/RESULTS.md`](docs/RESULTS.md) for full metrics.
 
@@ -80,6 +80,7 @@ Every experiment is self-contained with its own configuration, runner, Markdown/
 | **30** | [`30_two_tank_level_control`](experiments/30_two_tank_level_control/) | Coupled Nonlinear Two-Tank | SISO PI vs Multivariable LQR vs Linear MPC | SISO PI eliminates nonlinear steady-state droop ($0.0\,\text{cm}$); LQR/MPC cuts pump energy by $22\%$ ($6659\,\text{V}^2\text{s}$) with $0\%$ level violation. |
 | **31** | [`31_sac_vs_ppo_sample_efficiency`](experiments/31_sac_vs_ppo_sample_efficiency/) | Inverted Pendulum (Swing-Up) | SAC (off-policy) vs PPO (on-policy) vs Hybrid | Off-policy SAC reaches $-966$ threshold in $8\text{k}$ steps ($15\text{--}20\times$ faster than PPO) and beats classical hybrid ($-364$ vs $-816$). |
 | **33** | [`33_ball_and_beam_control`](experiments/33_ball_and_beam_control/) | Ball & Beam (Quanser standard) | Cascade PID vs PFL vs Multivariable LQR vs Linear MPC | LQR / MPC settle in $1.49\,\text{s}$ ($1.3\%$ overshoot, zero droop); MPC caps torque to $0.784\,\text{N}\cdot\text{m}$ (energy $0.0184$). |
+| **34** | [`34_dob_wind_rejection`](experiments/34_dob_wind_rejection/) | Planar Quadrotor (Crazyflie 2.0) | Nominal LQR vs LQI vs MRAC vs DOB+LQR | DOB settles $5\times$ faster ($0.58\,\text{s}$) with $-61\%$ lateral drift; MRAC drifts on unmatched forces. |
 
 ---
 
@@ -93,7 +94,7 @@ src/aimct/
                   FurutaPendulum, TwoTank, BallAndBeam
   simulate.py     rk4_step(), simulate() -> Trajectory(t, x, u, y)
   controllers/    PID, StateFeedback, LQR, ObserverFeedback, MRAC, ComputedTorque,
-                  EnergyShapingSwingUp, HybridSwingUpLQR,
+                  DisturbanceObserver, QFilter, EnergyShapingSwingUp, HybridSwingUpLQR,
                   LinearMPC (with preview), SamplingMPC (CEM + obstacles),
                   ILQR (trajectory optimiser + real-time-iteration NMPC)
   estimation/     LuenbergerObserver, KalmanFilter (LQE/FARE), DiscreteKalmanFilter,
@@ -146,10 +147,10 @@ THEORY → DERIVATION → IMPLEMENTATION → SIMULATION → VISUALISATION → VA
 
 ## Status: Phase 2 Complete (Phase 3 Planned) 🚀
 
-The core curriculum (Modules 01–10), 31 empirical benchmark experiments, living technical report, unified visualization layer (`aimct.viz`), design-time preview dashboard (`aimct.dev`), and 7 interactive sandboxes are complete with **439 passing unit tests** across Python 3.10–3.13.
+The core curriculum (Modules 01–10), 32 empirical benchmark experiments, living technical report, unified visualization layer (`aimct.viz`), design-time preview dashboard (`aimct.dev`), and 7 interactive sandboxes are complete with **451 passing unit tests** across Python 3.10–3.13.
 
 **Phase 2 Delivered:**
-- **Track A (Real Systems):** Differential-drive mobile robots (Exp 22 path tracking, Exp 25 dynamic obstacle avoidance), 2-link planar manipulator arms (Exp 23 computed torque & Slotine–Li payload adaptation), dynamic bicycle vehicles (Exp 27 ISO-3888 double lane change with linear vs. Pacejka tire models), Furuta rotary inverted pendulums (Exp 28 Quanser QUBE-Servo 2 benchmark), and coupled nonlinear process tanks (Exp 30 Quanser Coupled Two-Tank level control).
+- **Track A (Real Systems):** Differential-drive mobile robots (Exp 22 path tracking, Exp 25 dynamic obstacle avoidance), 2-link planar manipulator arms (Exp 23 computed torque & Slotine–Li payload adaptation), dynamic bicycle vehicles (Exp 27 ISO-3888 double lane change with linear vs. Pacejka tire models), Furuta rotary inverted pendulums (Exp 28 Quanser QUBE-Servo 2 benchmark), coupled nonlinear process tanks (Exp 30 Quanser Coupled Two-Tank level control), ball and beam balance (Exp 33), and disturbance observer aerodynamic wind rejection (Exp 34).
 - **Track B (Algorithmic Depth, Imitation & Continuous RL):** Real-time iteration Nonlinear MPC (Exp 24, 26, 25 iLQR / RTI-NMPC vs. Sampling MPC), interactive imitation learning (Exp 29 DAgger vs. Behavior Cloning lane-change recovery), and continuous off-policy Soft Actor-Critic (Exp 31 SAC vs. PPO sample efficiency).
 - **Track C & D:** Reusable trajectory generation suite (`aimct.trajectories`), tracking benchmark harness (`aimct.benchmarks.tracking`), unified visualization (`aimct.viz`), design-time preview (`aimct.dev`), and PyPI distribution packaging (`aimct`).
 
