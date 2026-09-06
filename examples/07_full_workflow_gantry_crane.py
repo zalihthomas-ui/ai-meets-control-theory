@@ -299,6 +299,7 @@ def register_crane_artist():
             return (-0.6, TARGET + 1.2), (-CRANE.L - 0.6, 0.9)
 
         def build(self, ax):
+            self._ax = ax
             self.rail = Line2D([-1e3, 1e3], [0, 0], lw=2, color="#999")
             self.trolley = Rectangle((-0.15, -0.06), 0.3, 0.12, fc="#2b2b2b")
             self.cable = Line2D([], [], lw=1.6, color="#555")
@@ -306,13 +307,20 @@ def register_crane_artist():
                                      ec="#2b2b2b")
             self.goal = Line2D([TARGET], [-CRANE.L], marker="x", ms=13, mew=2.5,
                                color="#56b4e9", ls="none")
+            # a wind indicator that only shows while a gust is blowing
+            self.wind = ax.annotate(
+                "", xy=(0, 0), xytext=(0, 0), annotation_clip=False,
+                arrowprops=dict(arrowstyle="-|>", lw=3, color="#d55e00"))
+            self.wind_txt = ax.text(0, 0, "", color="#d55e00", fontweight="bold",
+                                    fontsize=11, ha="center", va="bottom")
             self.trail = self._new_trail(ax)
             for ln in (self.rail, self.cable, self.goal):
                 ax.add_line(ln)
             ax.add_patch(self.trolley)
             ax.add_patch(self.payload)
             return self._remember(self.trail, self.rail, self.cable, self.goal,
-                                  self.trolley, self.payload)
+                                  self.trolley, self.payload, self.wind,
+                                  self.wind_txt)
 
         def position(self, x):
             return np.array([x[0] + CRANE.L * np.sin(x[1]),
@@ -325,6 +333,19 @@ def register_crane_artist():
             self.cable.set_data([p, pay[0]], [0, pay[1]])
             self.payload.set_xy((pay[0] - 0.12, pay[1] - 0.12))
             self._set_trail(self.trail, (aux or {}).get("trail"))
+            # wind gust indicator: an arrow blowing toward the payload
+            w = float((aux or {}).get("wind", 0.0))
+            if abs(w) > 1e-6:
+                yb = pay[1] + 0.35
+                x0 = pay[0] - np.sign(w) * 1.1
+                self.wind.set_position((x0, yb))
+                self.wind.xy = (pay[0] - np.sign(w) * 0.28, yb)
+                self.wind_txt.set_position((x0, yb + 0.06))
+                self.wind_txt.set_text("WIND GUST")
+            else:
+                self.wind.set_position((0, -50))
+                self.wind.xy = (0, -50)
+                self.wind_txt.set_text("")
 
         def hud_lines(self, x, u=None, t=0.0, aux=None):
             px = x[0] + CRANE.L * np.sin(x[1])
@@ -344,9 +365,12 @@ def make_animation(trajs):
     from aimct.viz import animate
 
     tr = trajs[("wind gust", "iLQR / RTI-NMPC")]
+    # the payload's mid-flight swing is the 25 N gust at t=6 s, not a glitch -
+    # aux_fn surfaces it so the animation shows *why* it sways.
     animate(tr, CRANE, target=np.array([TARGET, -CRANE.L]),
             title="Gantry crane - iLQR/RTI rejecting a wind gust", fps=25,
-            speed=1.4).save(OUT / "crane_animation.gif")
+            speed=1.0, aux_fn=lambda ti: {"wind": float(gust(ti)[0])}
+            ).save(OUT / "crane_animation.gif")
     print(f"\nsaved {OUT / 'crane_animation.gif'}")
 
 

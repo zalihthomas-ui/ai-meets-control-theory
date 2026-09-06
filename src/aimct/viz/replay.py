@@ -121,7 +121,7 @@ def _ref_at(ref, ts, T):
 def animate(traj, system, *, ref=None, target=None, path=None, controller=None,
             trail=True, fps: int = 30, speed: float = 1.0, title: str | None = None,
             hud: bool = True, figsize=(7.2, 7.2), accent: str | None = None,
-            interval_ms: int | None = None) -> Replay:
+            interval_ms: int | None = None, aux_fn=None) -> Replay:
     """Animate ``traj`` (a run on ``system``).
 
     Parameters
@@ -138,6 +138,9 @@ def animate(traj, system, *, ref=None, target=None, path=None, controller=None,
     path : an ``(N, 2)`` polyline to trace under a robot / arm.
     trail : draw the fading breadcrumb trail.
     fps, speed : playback frame rate and time multiplier (``speed=2`` → 2×).
+    aux_fn : optional ``t -> dict`` merged into the per-frame ``aux`` the artist
+        receives — for time-varying context the trajectory alone doesn't carry
+        (an active disturbance, a mode label, a phase name).
     """
     import matplotlib
     if matplotlib.get_backend().lower() == "agg":
@@ -195,6 +198,10 @@ def animate(traj, system, *, ref=None, target=None, path=None, controller=None,
         if trail:
             pos_hist.append(_pos(x_i))
             aux["trail"] = np.array(pos_hist[-240:])
+        if aux_fn is not None:
+            extra = aux_fn(float(frame_t[i]))
+            if extra:
+                aux.update(extra)
         art.draw(x_i, u_i, float(frame_t[i]), aux)
         if overlay is not None:
             overlay.update(art.hud_lines(x_i, u_i, float(frame_t[i]), aux),
