@@ -9,11 +9,16 @@ Available
 ``LQR``           : infinite-horizon continuous-time linear-quadratic regulator;
                     CARE solved from scratch via the Hamiltonian stable
                     eigenspace (:func:`solve_care`).
+``mixsyn``        : H-infinity mixed-sensitivity (S/KS/T) loop shaping -- a
+                    :class:`StateSpace` LTI toolkit, first-order shaping weights,
+                    and DGKF gamma-iteration synthesis (:func:`hinf_syn`).
 """
 
 from .adaptive import MRAC, GainScheduledLQR, solve_lyapunov
 from .base import Controller
 from .disturbance_observer import DisturbanceObserver, QFilter
+from .hinf import (HinfController, HinfSynResult, StateSpace, augment_plant,
+                   hinf_syn, lft_lower, mixsyn, weight_KS, weight_S, weight_T)
 from .ilqr import ILQR, iLQR, iLQRResult
 from .lqr import LQR, solve_care
 from .mpc import LinearMPC, dare
@@ -47,6 +52,16 @@ __all__ = [
     "GainScheduledLQR",
     "MRAC",
     "solve_lyapunov",
+    "StateSpace",
+    "weight_S",
+    "weight_KS",
+    "weight_T",
+    "augment_plant",
+    "lft_lower",
+    "hinf_syn",
+    "mixsyn",
+    "HinfSynResult",
+    "HinfController",
     "dare",
     "place_poles",
     "solve_care",

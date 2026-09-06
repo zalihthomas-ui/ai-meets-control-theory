@@ -65,4 +65,9 @@ This directory contains research foundations, canonical parameter sets, framewor
     - Disturbance Observer (DOB) two-degree-of-freedom architecture, causal rational Q-filter design, relative degree matching, and Small-Gain robust stability conditions ($\|W_m(s)Q(s)\|_\infty < 1$).
     - Matched vs. unmatched disturbance mechanics on underactuated quadrotors, direct feedforward cancellation vs. virtual tilt reallocation ($\theta_{\text{virtual}} = \hat{d}_x / g$), and proof of DOB superiority over classical integral action lag.
 
+14. **[H-infinity Mixed-Sensitivity Reference Specification (`hinf-reference.md`)](file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/hinf-reference.md)**
+    - The $H_\infty$ norm, the S/KS/T mixed-sensitivity objective $\|[W_S S;\ W_{KS} KS;\ W_T T]\|_\infty$, and first-order weight selection ($W_S$, $W_{KS}$, $W_T$ Skogestad-Postlethwaite forms).
+    - Generalised-plant construction $P = \mathcal{F}(G, W_S, W_{KS}, W_T)$, the two DGKF Hamiltonian Riccati equations with the $\gamma^{-2}$ term, the sub-optimality conditions ($X_\infty \succeq 0$, $Y_\infty \succeq 0$, $\rho(X_\infty Y_\infty) < \gamma^2$), $\gamma$-bisection, and the central-controller formula.
+    - $H_\infty$ vs. LQG on an unmodelled lightly-damped high-frequency mode: why a $W_T$ that rolls off past crossover preserves gain / phase / disk margins that LQG loses (Experiment 35).
+
 
