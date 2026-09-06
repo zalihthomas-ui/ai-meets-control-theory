@@ -5,13 +5,13 @@
     "reps": 60
   },
   "results": {
-    "care_n8": 0.185,
-    "care_n16": 0.4064,
-    "qp_dense_n30": 0.2414,
-    "mpc_update_cartpole_N20": 0.3661,
-    "ilqr_iter_cartpole": 24.6566,
-    "simulate_100_steps_quadrotor": 4.2321,
-    "kf_step_n12": 0.0398,
-    "hinf_mixsyn_small": 14.1964
+    "care_n8": 0.1134,
+    "care_n16": 0.2935,
+    "qp_dense_n30": 0.1433,
+    "mpc_update_cartpole_N20": 0.2012,
+    "ilqr_iter_cartpole": 17.347,
+    "simulate_100_steps_quadrotor": 2.9582,
+    "kf_step_n12": 0.0264,
+    "hinf_mixsyn_small": 8.5147
   }
 }
