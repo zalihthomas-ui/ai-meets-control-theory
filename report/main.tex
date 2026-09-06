@@ -1653,14 +1653,14 @@ All four Phase 2 tracks, physical robotic benchmarks, direct trajectory optimiza
   \item \textbf{Unified Visualization \& Design-Time Tooling:} Shipped \texttt{aimct.viz} (\texttt{SystemArtist} contract, \texttt{animate()} replay generator, and 7 interactive real-time sandboxes under \texttt{python -m aimct live}) and \texttt{aimct.dev} (design-time preview dashboard with pole maps, controllability/observability, and Jacobian residual verification via \texttt{python -m aimct preview}).
 \end{itemize}
 
-\paragraph{Phase 3: Hardware Deployment \& Advanced Control --- Planned.}
+\paragraph{Phase 3: Robustness, Hardware \& Reach --- Completed (v0.3.0 Release).}
+All three Phase 3 tracks spanning robust control theory, physical hardware integration, and publication reach are fully delivered:
 \begin{itemize}[nosep]
-  \item Hardware-in-the-loop (HIL) testing interfaces and physical micro-quadrotor flight deployment.
-  \item Flight log ingestion and telemetry playback (Crazyflie CFclient / ROS2 rosbag).
-  \item Multi-agent collaborative control and distributed consensus filters.
-  \item Partially observable decentralized systems and sim-to-real domain randomization.
+  \item \textbf{Track A (Robust Control \& $\mu$-Synthesis):} Shipped \texttt{aimct.controllers.hinf} with Doyle--Glover 2-Riccati $H_\infty$ mixed-sensitivity ($S/KS/T$) loop shaping, frequency-dependent weighting filters, and structured singular value analysis ($\mu$-synthesis). Demonstrated robust stabilization on resonant flexible-joint mechanisms where classical LQG destabilizes (Exp 35).
+  \item \textbf{Track B \& C (Hardware Bridge, Real-Time HIL \& Embedded Deployment):} Shipped \texttt{aimct.hil} real-time execution harness (\texttt{RealTimeLoop}, \texttt{PlantEmulator}, Serial/UDP transport), 5-parameter manipulator system identification (\texttt{aimct.sysid.identify\_manipulator}), zero-dependency C99 / MicroPython code emission (\texttt{aimct.deploy}), and the physical 2-DOF planar robot arm bridge (Exp 36).
+  \item \textbf{Track D (Hosted Documentation Portal \& JOSS Publication):} Configured the full hosted documentation portal with MkDocs Material, automated docstring generation for all 13 submodules (\texttt{mkdocstrings}), interactive Jupyter notebook tour (\texttt{mkdocs-jupyter}), 36 experiment case study pages, and drafted the formal Journal of Open Source Software submission paper (\texttt{paper.md} + \texttt{paper.bib}).
 \end{itemize}
-CI passes on Python 3.10--3.13 with \textbf{472 passing unit tests}.
+CI passes on Python 3.10--3.13 with \textbf{480 passing unit tests}.
 
 \paragraph{Reproduction Commands.}
 \begin{lstlisting}[language=bash]
