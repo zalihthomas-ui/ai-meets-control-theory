@@ -1,9 +1,9 @@
 # H-infinity Mixed-Sensitivity (S / KS / T) Loop Shaping Reference
 
-Companion to [`aimct.controllers.hinf`](../../src/aimct/controllers/hinf.py)
+Companion to `aimct.controllers.hinf`
 (`StateSpace`, `weight_S` / `weight_KS` / `weight_T`, `augment_plant`,
 `hinf_syn`, `mixsyn`, `HinfController`) and
-[Experiment 35](../../experiments/35_hinf_vs_lqg/).
+Experiment 35 (`experiments/35_hinf_vs_lqg_resonance/`).
 
 ---
 
