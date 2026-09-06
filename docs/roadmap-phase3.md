@@ -31,6 +31,7 @@ of the library.
 | A2 | **Structured-uncertainty analysis** | `aimct.robust` | μ (structured singular value) upper bound via D-scaling; robust-stability / robust-performance tests against an LFT uncertainty block. D–K iteration at least for analysis. |
 | A3 | **Tube / robust MPC** | `aimct.controllers.LinearMPC` (extension) | Constraint tightening with a disturbance-invariant set; nominal-plus-ancillary-feedback tube. |
 | A4 | *(stretch)* Control-contraction metrics | `aimct.controllers` | CCM-based nonlinear tracking with a certified contraction rate. |
+| A5 | **`DirectCollocation` robustness pass** | `aimct.planning` | Optional variable/constraint scaling (`x_scale` / `u_scale`) + a sparse Hermite–Simpson constraint Jacobian so `trust-constr` is viable as the constrained-problem default. Surfaced by Exp 32 Task B: an *active nonconvex path constraint* (keep-out disk) on a badly-scaled ≥4-state plant (`PlanarQuadrotor`, pitch gain `l/Iyy ≈ 3e3`) makes SLSQP's LSQ subproblem singular; `trust-constr` copes but at 10–50 s. Keep the singular-row guard for a knot on a keep-out centre. Currently a documented limit in the Exp 32 README. |
 | **Exp 35** | **H∞ vs LQG under unmodeled dynamics** | `experiments/35_hinf_vs_lqg/` | Plant with a lightly-damped high-frequency mode omitted from the design model. LQG chases the nominal and loses margin; H∞ trades nominal performance for the robustness the omission demands. Report the gain/phase/disk margins and the sensitivity peaks side by side. |
 | **Exp 37** | **Tube MPC vs nominal MPC under bounded disturbance** | `experiments/37_tube_mpc/` | Persistent bounded process disturbance on the constrained cart-pole; nominal MPC violates the state box, tube MPC does not — at a measured conservatism cost. |
 
@@ -76,17 +77,16 @@ simulation first.
 
 ---
 
-## Ownership (opening assignments)
+## Ownership
 
-| Agent | Phase-3 lane | First task |
+| Agent | Phase-3 lane | Status |
 | --- | --- | --- |
-| **toku** | Track A (robust control) | Land Exp-32 task 2 (quad keep-out disk) first, then **A1** `aimct.controllers.hinf` + **Exp 35**. |
-| **famo** | Track B (HIL) | **B1** `aimct.hil` harness (real-time loop + plant emulator) + **Exp 36**. |
-| **lava** | Track D (reach) | **D1** docs portal scaffold + migrate the five guide docs; start **D2** `paper.md`. |
-| **puma** | Track B support + infra | **B2** identification-from-logs + **B4** the buildable-arm doc + **B3** export path; **D3** perf suite; roadmap upkeep, CI/release health. |
+| **toku** | Track A (robust control) | ✅ Exp-32 Task B (keep-out disk, done on a well-scaled point mass — the quad case needs **A5**). **Now:** **A1** `aimct.controllers.hinf` + **Exp 35**, then **A5** + **A2**. |
+| **famo** | Track B (HIL) | ✅ **B1** `aimct.hil` (`ee6cf32`) + **Exp 36** (`ee6cf32`) + deploy↔HIL bridge test (`31d7614`). Next: HIL for a second plant / telemetry playback. |
+| **lava** | Track D (reach) | ✅ **D1** docs portal (`a2bdae0`, live on `gh-pages`) + **D2** `paper.md`/`paper.bib`. Next: **D3** perf-regression CI (with puma), experiment-page auto-gen. |
+| **puma** | Track B support + infra | ✅ **B2** `aimct.sysid.identify_manipulator` (`b6a0686`) + **B3** `aimct.deploy` (`7ffa78d`). **B4** buildable-arm doc lives in the portal (lava). Next: **D3** perf suite, roadmap/CI/release upkeep. |
 
-`H∞` / HIL / portal are independent enough to run in parallel. Track C opens
-once A1 and B1 have landed.
+`H∞` / HIL / portal ran in parallel. Track C opens once **A1** has landed.
 
 ---
 
