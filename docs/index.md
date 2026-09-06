@@ -26,8 +26,8 @@ Every controller—from PID and LQR to active-set condensed MPC, EKF/UKF, real-t
 
 ## Key Highlights
 
-- **34 Benchmark Experiments:** Empirical side-by-side Pareto evaluations across 10 physical systems under standardized metrics.
-- **472 Passing Unit Tests:** 100% custom, zero-black-box implementations of CARE solvers, active-set QPs, Kalman filters, neural MLPs, and RL actors.
+- **36 Benchmark Experiments:** Empirical side-by-side Pareto evaluations across 10 physical systems under standardized metrics.
+- **480 Passing Unit Tests:** 100% custom, zero-black-box implementations of CARE solvers, active-set QPs, Kalman filters, neural MLPs, and RL actors.
 - **Unified Visualisation (`aimct.viz`):** Real-time interactive physics sandboxes (`python -m aimct live`) and animation replay engines with telemetry HUDs.
 - **Design-Time Preview (`aimct.dev`):** Live model inspection dashboard computing pole maps, controllability/observability, and Jacobian residual validations (`python -m aimct preview`).
 - **Hardware Bridge & HIL Harness (`aimct.hil`):** Real-time loop execution, sensor quantization, delay modeling, and log-based manipulator identification.
@@ -44,11 +44,11 @@ Every controller—from PID and LQR to active-set condensed MPC, EKF/UKF, real-t
 
 -   :material-compass: **[Decision Guide](DECISION-GUIDE.md)**
     ---
-    Interactive branching flowchart and 13 invariant engineering laws across 34 empirical experiments.
+    Interactive branching flowchart and 13 invariant engineering laws across 36 empirical experiments.
 
 -   :material-chart-box: **[Master Results](RESULTS.md)**
     ---
-    Complete quantitative metrics and Pareto ranking tables for all 34 benchmark experiments.
+    Complete quantitative metrics and Pareto ranking tables for all 36 benchmark experiments.
 
 -   :material-book-open-page-variant: **[API Recipes & Usage](USAGE.md)**
     ---
@@ -63,3 +63,27 @@ Every controller—from PID and LQR to active-set condensed MPC, EKF/UKF, real-t
     Comprehensive auto-generated documentation for all submodules in `src/aimct/`.
 
 </div>
+
+---
+
+## Phase 3: Robustness, Hardware & Reach (v0.3.0 Release)
+
+imct Phase 3 delivers three coordinated engineering tracks bridging formal robust control, physical embedded deployment, and publication-grade documentation:
+
+1. **Track A — Robust Control & $\mu$-Synthesis (imct.controllers.hinf, imct.robust):**
+   - Doyle--Glover 2-Riccati \infty$ mixed-sensitivity (/KS/T$) loop shaping.
+   - Frequency-dependent weighting filters and structured singular value analysis ($\mu$-synthesis).
+   - Proven robust stabilization on resonant flexible-joint mechanisms where classical LQG diverges ([Exp 35](experiments/35_hinf_vs_lqg.md)).
+
+2. **Track B & C — Hardware Bridge, Real-Time HIL & Deployment (imct.hil, imct.sysid, imct.deploy):**
+   - Real-time execution loop with sub-millisecond jitter monitoring, sensor quantization, and latency modeling.
+   - 5-parameter manipulator system identification via linear-in-parameters regressor ((q, \dot{q}, \ddot{q})\pi = \tau$).
+   - Zero-dependency C99 header and MicroPython code emission for embedded microcontrollers (RP2040 / Teensy).
+   - Physical 2-DOF planar robot arm benchmark balancing across \,\text{ms}$ transport delay ([Exp 36](experiments/36_hil_arm_balance.md)).
+
+3. **Track D — Hosted Documentation Portal & JOSS Publication:**
+   - Hosted MkDocs Material documentation portal with automated API docstrings across 13 submodules (mkdocstrings).
+   - Interactive Jupyter tutorial tour ([
+otebooks/01_tour.ipynb](notebooks/01_tour.ipynb)).
+   - 36 structured experiment case studies with publication figures and Pareto metric tables.
+   - Formal Journal of Open Source Software (JOSS) submission draft ([paper.md](https://github.com/zalihthomas-ui/ai-meets-control-theory/blob/main/paper.md)).

@@ -42,7 +42,7 @@ python -m aimct live3d --web    # 6-DOF WebGL sandbox
 
 ---
 
-## The Experiments (01–34)
+## The Experiments (01–36)
 
 Every experiment is self-contained with its own configuration, runner, Markdown/CSV benchmark table, and publication-ready 4-panel figure. See [`docs/RESULTS.md`](docs/RESULTS.md) for full metrics.
 
@@ -147,21 +147,16 @@ THEORY → DERIVATION → IMPLEMENTATION → SIMULATION → VISUALISATION → VA
 
 ---
 
-## Status: Phase 2 Complete (Phase 3 Planned) 🚀
+## Status: Phase 3 Delivered (v0.3.0 Release) 🚀
 
-The core curriculum (Modules 01–10), 33 empirical benchmark experiments (01–34), living technical report, unified visualization layer (`aimct.viz`), design-time preview dashboard (`aimct.dev`), and 7 interactive sandboxes are complete with **465 passing unit tests** across Python 3.10–3.13.
+The core curriculum (Modules 01–10), **36 empirical benchmark experiments** (01–36), living technical report (i-meets-control-theory.pdf), unified visualization layer (imct.viz), design-time preview dashboard (imct.dev), hosted MkDocs Material documentation portal, and formal JOSS submission draft are complete with **480 passing unit tests** across Python 3.10–3.13.
 
-**Phase 2 Delivered:**
-- **Track A (Real Systems):** Differential-drive mobile robots (Exp 22 path tracking, Exp 25 dynamic obstacle avoidance), 2-link planar manipulator arms (Exp 23 computed torque & Slotine–Li payload adaptation), dynamic bicycle vehicles (Exp 27 ISO-3888 double lane change with linear vs. Pacejka tire models), Furuta rotary inverted pendulums (Exp 28 Quanser QUBE-Servo 2 benchmark), coupled nonlinear process tanks (Exp 30 Quanser Coupled Two-Tank level control), ball and beam balance (Exp 33), and disturbance observer aerodynamic wind rejection (Exp 34).
-- **Track B (Algorithmic Depth, Imitation, Trajectory Optimization & Continuous RL):** Real-time iteration Nonlinear MPC (Exp 24, 26, 25 iLQR / RTI-NMPC vs. Sampling MPC), interactive imitation learning (Exp 29 DAgger vs. Behavior Cloning lane-change recovery), continuous off-policy Soft Actor-Critic (Exp 31 SAC vs. PPO sample efficiency), and direct trajectory optimization via Hermite-Simpson direct collocation (Exp 32 Direct Collocation vs. iLQR vs. CEM).
-- **Track C & D:** Reusable trajectory generation suite (`aimct.trajectories`), tracking benchmark harness (`aimct.benchmarks.tracking`), unified visualization (`aimct.viz`), design-time preview (`aimct.dev`), and PyPI distribution packaging (`aimct`).
+**Phase 3 Highlights Delivered:**
+- **Track A (Robust Control & $\mu$-Synthesis):** \infty$ mixed-sensitivity loop shaping (/KS/T$), Doyle--Glover 2-Riccati solver, structured singular value analysis ($\mu$-synthesis), and resonant flexible-joint benchmark where standard LQG destabilizes (Exp 35).
+- **Track B & C (Hardware Bridge, Real-Time HIL & Deployment):** Real-time execution harness with jitter and deadline monitoring (imct.hil.RealTimeLoop, PlantEmulator, Serial/UDP transport), 5-parameter manipulator system identification via linear-in-parameters regressor (imct.sysid.identify_manipulator), zero-dependency C99 / MicroPython code emission (imct.deploy), and the physical 2-DOF planar robot arm bridge (Exp 36).
+- **Track D (Hosted Documentation Portal & JOSS Publication):** Full Material documentation portal with automated docstring generation for all 13 submodules (mkdocstrings), interactive Jupyter notebook tour (mkdocs-jupyter), 36 structured experiment case studies, and formal Journal of Open Source Software paper submission draft (paper.md + paper.bib).
 
-**Phase 3 (Planned):**
-Hardware-in-the-loop (HIL) physical deployment, flight log telemetry ingestion (CFclient/ROS2), dynamic bicycle vehicle model, and real-time C-code generation for embedded targets.
-
-See [`docs/roadmap.md`](docs/roadmap.md) for detailed deliverables and development history.
-
----
+See [docs/roadmap-phase3.md](docs/roadmap-phase3.md) for Phase 3 engineering specifications.
 
 ## Contributing
 

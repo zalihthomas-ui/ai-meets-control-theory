@@ -54,6 +54,8 @@ Copy-Fig "32_direct_collocation_vs_ilqr" "figure.png" "exp32_collocation_vs_ilqr
 Copy-Fig "33_ball_and_beam_control" "ball_and_beam_benchmark.png" "exp33_ball_and_beam_benchmark.png"
 Copy-Fig "33_ball_and_beam_control" "ball_and_beam_setpoint.png" "exp33_ball_and_beam_setpoint.png"
 Copy-Fig "34_dob_wind_rejection" "dob_wind_rejection.png" "exp34_dob_wind_rejection.png"
+Copy-Fig "35_hinf_vs_lqg" "figure.png" "exp35_hinf.png"
+Copy-Fig "36_hil_arm_balance" "hil_arm_balance.png" "exp36_hil_arm.png"
 
 
 Write-Host "compiling main.tex..."

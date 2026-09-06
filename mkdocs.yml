@@ -94,7 +94,51 @@ nav:
   - Visualization: VISUALIZATION.md
   - Design Preview: DEV_PREVIEW.md
   - Experiments:
-      - All 34 Experiments: experiments/index.md
+      - "All 36 Experiments Overview": experiments/index.md
+      - "Module 1: Foundations & Classical Limits":
+          - "Exp 01 — Integrator Accuracy": experiments/01_rk4_vs_euler.md
+          - "Exp 02 — Linearization Validity": experiments/02_jacobian_linearization.md
+          - "Exp 03 — PID Anti-Windup": experiments/03_pid_stabilizes_unstable.md
+      - "Module 2: State-Space, Observers & Kalman Filtering":
+          - "Exp 04 — LQR vs. Pole Placement": experiments/04_lqr_vs_pole_placement_cartpole.md
+          - "Exp 05 — Cart-Pole Basin of Attraction": experiments/05_cartpole_basin_of_attraction.md
+          - "Exp 06 — LQG vs. High-Gain Observers": experiments/06_lqg_vs_lqr_measurement_noise.md
+          - "Exp 15 — Quadrotor EKF Output Feedback": experiments/15_quadrotor_ekf_output_feedback.md
+          - "Exp 16 — EKF vs. UKF on Nonlinear Dynamics": experiments/16_ekf_vs_ukf.md
+      - "Module 3: Underactuated Systems & Energy Shaping":
+          - "Exp 07 — Spong Energy Swing-Up & Catch": experiments/07_cartpole_swingup_hybrid.md
+          - "Exp 28 — Furuta Rotary Inverted Pendulum": experiments/28_furuta_pendulum_control.md
+          - "Exp 33 — Ball and Beam Rolling Balance": experiments/33_ball_and_beam_control.md
+      - "Module 4: Constrained & Nonlinear MPC":
+          - "Exp 08 — Constrained Linear MPC": experiments/08_mpc_vs_lqr_constrained_cartpole.md
+          - "Exp 14 — Quadrotor 3D Lemniscate": experiments/14_quadrotor_figure8_tracking.md
+          - "Exp 24 — iLQR / RTI-NMPC vs. Sampling MPC": experiments/24_ilqr_vs_sampling_mpc.md
+          - "Exp 26 — iLQR on Hard Reference Paths": experiments/26_harder_reference_paths.md
+          - "Exp 30 — Coupled Two-Tank Process Control": experiments/30_two_tank_level_control.md
+      - "Module 5: Obstacle Avoidance & Non-Convex Trajectories":
+          - "Exp 20 — Obstacle-Aware Quadrotor NMPC": experiments/20_quadrotor_obstacle_nmpc.md
+          - "Exp 25 — Differential-Drive Moving Obstacle": experiments/25_diffdrive_moving_obstacle.md
+      - "Module 6: Trajectory Optimization & Transcription":
+          - "Exp 32 — Direct Collocation vs. Shooting": experiments/32_direct_collocation_vs_ilqr.md
+      - "Module 7: Robust Control, H-infinity & Disturbance Rejection":
+          - "Exp 17 — Model Reference Adaptive Control": experiments/17_adaptive_vs_fixed_changing_plant.md
+          - "Exp 23 — Two-Link Arm Computed Torque & Slotine--Li": experiments/23_twolink_arm_tracking.md
+          - "Exp 34 — Disturbance Observer (DOB) Wind Rejection": experiments/34_dob_wind_rejection.md
+          - "Exp 35 — H-infinity Mixed-Sensitivity Loop Shaping": experiments/35_hinf_vs_lqg.md
+      - "Module 8: Multi-Body, Vehicles & Hardware Bridges":
+          - "Exp 22 — Differential-Drive Path Following": experiments/22_diffdrive_path_following.md
+          - "Exp 27 — Dynamic Bicycle Double Lane Change": experiments/27_bicycle_double_lane_change.md
+          - "Exp 36 — Hardware-in-the-Loop Arm Balancing": experiments/36_hil_arm_balance.md
+      - "Module 9: Reinforcement Learning, Imitation & Safety":
+          - "Exp 09 — Control on Identified Models": experiments/09_control_on_identified_model.md
+          - "Exp 10 — Planning on Learned Dynamics": experiments/10_planning_learned_vs_true_model.md
+          - "Exp 11 — Tabular Q-Learning vs. Classical": experiments/11_qlearning_vs_classical.md
+          - "Exp 12 — Shielded Reinforcement Learning": experiments/12_shielded_qlearning.md
+          - "Exp 18 — The RL Zoo vs. LQR": experiments/18_rl_zoo_vs_lqr.md
+          - "Exp 19 — Intelligent Control Challenge (ICC)": experiments/19_icc_leaderboard.md
+          - "Exp 21 — Grand Capstone Bake-Off": experiments/21_grand_capstone_bakeoff.md
+          - "Exp 29 — DAgger Distribution-Shift Recovery": experiments/29_dagger_vs_bc_lane_change.md
+          - "Exp 31 — Soft Actor-Critic (SAC) vs. PPO": experiments/31_sac_vs_ppo_sample_efficiency.md
   - Hardware:
       - 2-Link Arm Bridge: hardware/two-link-arm.md
   - Interactive Tour: notebooks/01_tour.ipynb
