@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#experiments-catalog-0134" class="md-skip">
+        <a href="#experiments-catalog-0136" class="md-skip">
           Skip to content
         </a>
       
@@ -879,10 +879,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#7-robust-adaptive-disturbance-rejection" class="md-nav__link">
+  <a href="#7-robust-control-infty-disturbance-rejection" class="md-nav__link">
     <span class="md-ellipsis">
       
-        7. Robust &amp; Adaptive Disturbance Rejection
+        7. Robust Control, \infty$ &amp; Disturbance Rejection
       
     </span>
   </a>
@@ -890,10 +890,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#8-real-multi-body-high-speed-vehicles" class="md-nav__link">
+  <a href="#8-real-multi-body-high-speed-vehicles-hardware-bridges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        8. Real Multi-Body &amp; High-Speed Vehicles
+        8. Real Multi-Body, High-Speed Vehicles &amp; Hardware Bridges
       
     </span>
   </a>
@@ -1846,10 +1846,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#7-robust-adaptive-disturbance-rejection" class="md-nav__link">
+  <a href="#7-robust-control-infty-disturbance-rejection" class="md-nav__link">
     <span class="md-ellipsis">
       
-        7. Robust &amp; Adaptive Disturbance Rejection
+        7. Robust Control, \infty$ &amp; Disturbance Rejection
       
     </span>
   </a>
@@ -1857,10 +1857,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#8-real-multi-body-high-speed-vehicles" class="md-nav__link">
+  <a href="#8-real-multi-body-high-speed-vehicles-hardware-bridges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        8. Real Multi-Body &amp; High-Speed Vehicles
+        8. Real Multi-Body, High-Speed Vehicles &amp; Hardware Bridges
       
     </span>
   </a>
@@ -1898,23 +1898,24 @@
   
 
 
-<h1 id="experiments-catalog-0134">Experiments Catalog (01–34)<a class="headerlink" href="#experiments-catalog-0134" title="Permanent link">&para;</a></h1>
-<p>Every experiment in <code>aimct</code> is self-contained with its own configuration (<code>config.yaml</code>), runner (<code>run.py</code>), benchmark table (<code>table.md</code>), and publication-ready 4-panel figure (<code>figure.png</code>).</p>
+<h1 id="experiments-catalog-0136">Experiments Catalog (01–36)<a class="headerlink" href="#experiments-catalog-0136" title="Permanent link">&para;</a></h1>
+<p>Every experiment in imct is self-contained with its own configuration (config.yaml), runner (
+un.py), benchmark table (   able.md), and publication-ready figure (igure.png / igure.svg).</p>
 <p>See the <strong><a href="../RESULTS/">Master Results Table</a></strong> for quantitative metrics across all experiments.</p>
 <hr />
 <h2 id="1-classical-foundations-limits">1. Classical Foundations &amp; Limits<a class="headerlink" href="#1-classical-foundations-limits" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Exp 01 — Integrator Accuracy:</strong> 4th-order Runge-Kutta (RK4) vs. Forward Euler on Mass-Spring-Damper.</li>
-<li><strong>Exp 02 — Linearization Validity:</strong> Linear state-space divergence envelope (<span class="arithmatex">\(|   heta| &gt; 23^\circ\)</span>) on Inverted Pendulum.</li>
+<li><strong>Exp 02 — Linearization Validity:</strong> Linear state-space divergence envelope (<span class="arithmatex">\(|\\theta| &gt; 23^\\circ\)</span>) on Inverted Pendulum.</li>
 <li><strong>Exp 03 — PID Clamping &amp; Anti-Windup:</strong> Anti-windup clamping preventing unstable integrator growth under torque limits.</li>
 </ul>
 <h2 id="2-modern-state-space-observers-kalman-filtering">2. Modern State-Space, Observers &amp; Kalman Filtering<a class="headerlink" href="#2-modern-state-space-observers-kalman-filtering" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Exp 04 — LQR vs. Pole Placement:</strong> Algebraic CARE optimal gain design vs. Ackermann pole guessing on Cart-Pole.</li>
-<li><strong>Exp 05 — Cart-Pole Basin of Attraction:</strong> Quantified <span class="arithmatex">\(57^\circ\)</span> recoverable envelope under saturation.</li>
+<li><strong>Exp 05 — Cart-Pole Basin of Attraction:</strong> Quantified ^\circ$ recoverable envelope under saturation.</li>
 <li><strong>Exp 06 — LQG vs. High-Gain Observers:</strong> Optimal Kalman noise-bandwidth trade-off vs. high-frequency encoder thrashing.</li>
 <li><strong>Exp 15 — Quadrotor EKF Output Feedback:</strong> Full velocity reconstruction on Crazyflie 2.0 under sensor noise.</li>
-<li><strong>Exp 16 — EKF vs. Unscented Kalman Filter (UKF):</strong> Sigma-point nonlinear covariance propagation escaping false <span class="arithmatex">\(2\pi\)</span> basins.</li>
+<li><strong>Exp 16 — EKF vs. Unscented Kalman Filter (UKF):</strong> Sigma-point nonlinear covariance propagation escaping false \pi$ basins.</li>
 </ul>
 <h2 id="3-underactuated-agility-energy-shaping">3. Underactuated Agility &amp; Energy Shaping<a class="headerlink" href="#3-underactuated-agility-energy-shaping" title="Permanent link">&para;</a></h2>
 <ul>
@@ -1924,8 +1925,8 @@
 </ul>
 <h2 id="4-constrained-nonlinear-model-predictive-control-mpc">4. Constrained &amp; Nonlinear Model Predictive Control (MPC)<a class="headerlink" href="#4-constrained-nonlinear-model-predictive-control-mpc" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Exp 08 — Constrained Linear MPC:</strong> Active-set condensed QP enforcing track boundaries (<span class="arithmatex">\(|x| \le 0.5\,   ext{m}\)</span>).</li>
-<li><strong>Exp 24 — iLQR / RTI-NMPC vs. Sampling MPC (CEM):</strong> Real-time iteration quadratic convergence (<span class="arithmatex">\(1.34\,   ext{mm}\)</span> in <span class="arithmatex">\(14.6\, ext{ms}\)</span>) on Quadrotor.</li>
+<li><strong>Exp 08 — Constrained Linear MPC:</strong> Active-set condensed QP enforcing track boundaries (<span class="arithmatex">\(|x| \le 0.5\\,\\text{m}\)</span>).</li>
+<li><strong>Exp 24 — iLQR / RTI-NMPC vs. Sampling MPC (CEM):</strong> Real-time iteration quadratic convergence (.34\,\text{mm}$ in .6\,\text{ms}$) on Quadrotor.</li>
 <li><strong>Exp 26 — iLQR vs. Sampling on Complex Geometries:</strong> Benchmark on Lissajous 3:2 and Archimedean Spiral paths.</li>
 <li><strong>Exp 30 — Coupled Two-Tank Process Control:</strong> Multivariable MPC coordinating nonlinear Torricelli outflow with zero level violations.</li>
 </ul>
@@ -1936,18 +1937,20 @@
 </ul>
 <h2 id="6-trajectory-optimization-transcription">6. Trajectory Optimization &amp; Transcription<a class="headerlink" href="#6-trajectory-optimization-transcription" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Exp 32 — Direct Collocation vs. Shooting vs. Sampling:</strong> Hermite--Simpson direct NLP transcription enforcing exact terminal equality constraints in <span class="arithmatex">\(0.71\, ext{s}\)</span>.</li>
+<li><strong>Exp 32 — Direct Collocation vs. Shooting vs. Sampling:</strong> Hermite--Simpson direct NLP transcription enforcing exact terminal equality constraints in .71\,\text{s}$.</li>
 </ul>
-<h2 id="7-robust-adaptive-disturbance-rejection">7. Robust &amp; Adaptive Disturbance Rejection<a class="headerlink" href="#7-robust-adaptive-disturbance-rejection" title="Permanent link">&para;</a></h2>
+<h2 id="7-robust-control-infty-disturbance-rejection">7. Robust Control, \infty$ &amp; Disturbance Rejection<a class="headerlink" href="#7-robust-control-infty-disturbance-rejection" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Exp 17 — Model Reference Adaptive Control (MRAC):</strong> Dynamic compensation for <span class="arithmatex">\(500\%\)</span> plant parameter drift.</li>
+<li><strong>Exp 17 — Model Reference Adaptive Control (MRAC):</strong> Dynamic compensation for \%$ plant parameter drift.</li>
 <li><strong>Exp 23 — Two-Link Arm Computed Torque &amp; Slotine--Li Adaptation:</strong> On-line wrist payload mass identification restoring millimeter precision.</li>
-<li><strong>Exp 34 — Disturbance Observer (DOB) Wind Rejection:</strong> 2-DOF Q-filter acceleration feedforward providing <span class="arithmatex">\(5  imes\)</span> faster settling under aerodynamic wind.</li>
+<li><strong>Exp 34 — Disturbance Observer (DOB) Wind Rejection:</strong> 2-DOF Q-filter acceleration feedforward providing \times$ faster settling under aerodynamic wind.</li>
+<li><strong>Exp 35 — \infty$ Mixed-Sensitivity vs. LQG on Resonant Plant:</strong> Robust loop shaping with /KS/T$ weighting on flexible joint resonance (.8\,\text{Hz}$).</li>
 </ul>
-<h2 id="8-real-multi-body-high-speed-vehicles">8. Real Multi-Body &amp; High-Speed Vehicles<a class="headerlink" href="#8-real-multi-body-high-speed-vehicles" title="Permanent link">&para;</a></h2>
+<h2 id="8-real-multi-body-high-speed-vehicles-hardware-bridges">8. Real Multi-Body, High-Speed Vehicles &amp; Hardware Bridges<a class="headerlink" href="#8-real-multi-body-high-speed-vehicles-hardware-bridges" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Exp 22 — Differential-Drive Mobile Robot Path Following:</strong> Pure Pursuit vs. Stanley vs. Path LQR with curvature feedforward on TurtleBot3.</li>
-<li><strong>Exp 27 — Dynamic Bicycle Double Lane Change:</strong> Linear vs. Pacejka tire dynamics under friction saturation (<span class="arithmatex">\(\mu=0.6\)</span>).</li>
+<li><strong>Exp 27 — Dynamic Bicycle Double Lane Change:</strong> Linear vs. Pacejka tire dynamics under friction saturation (<span class="arithmatex">\(\\mu=0.6\)</span>).</li>
+<li><strong>Exp 36 — Hardware-in-the-Loop Arm Balancing:</strong> Real-time loop execution, latency compensation, and 12-bit quantization watchdog validation.</li>
 </ul>
 <h2 id="9-reinforcement-learning-imitation-safety-shields">9. Reinforcement Learning, Imitation &amp; Safety Shields<a class="headerlink" href="#9-reinforcement-learning-imitation-safety-shields" title="Permanent link">&para;</a></h2>
 <ul>
@@ -1955,11 +1958,11 @@
 <li><strong>Exp 10 — Planning on Learned Neural Models:</strong> Residual MLP grey-box dynamics planning.</li>
 <li><strong>Exp 11 — Tabular Q-Learning vs. Energy Shaping:</strong> Sample inefficiency and chattering in model-free RL.</li>
 <li><strong>Exp 12 — Shielded Reinforcement Learning:</strong> Formal safety shield guaranteeing zero keep-out violations.</li>
-<li><strong>Exp 18 — RL Zoo vs. LQR Baseline:</strong> Continuous PPO sample cost (<span class="arithmatex">\(240    ext{k}\)</span> steps) vs. analytical LQR (<span class="arithmatex">\(0\)</span> steps).</li>
+<li><strong>Exp 18 — RL Zoo vs. LQR Baseline:</strong> Continuous PPO sample cost (\,\text{k}$ steps) vs. analytical LQR ($ steps).</li>
 <li><strong>Exp 19 — Intelligent Control Challenge (ICC):</strong> Blind black-box multi-plant cross-paradigm leaderboard.</li>
 <li><strong>Exp 21 — Grand Capstone Bake-Off:</strong> Five-way grand course bake-off on 6-state Crazyflie quadrotor.</li>
 <li><strong>Exp 29 — DAgger vs. Behavior Cloning Under High Slip:</strong> Interactive expert relabeling repairing distribution shift.</li>
-<li><strong>Exp 31 — Soft Actor-Critic (SAC) vs. PPO Sample Efficiency:</strong> Off-policy experience replay delivering <span class="arithmatex">\(15   ext{--}20   imes\)</span> sample savings.</li>
+<li><strong>Exp 31 — Soft Actor-Critic (SAC) vs. PPO Sample Efficiency:</strong> Off-policy experience replay delivering \text{--}20\times$ sample savings.</li>
 </ul>
 
 

@@ -23,7 +23,7 @@
     
     
       
-        <title>Disturbance-Observer (DOB) Control & Q-Filter Reference Specification - AIMCT: AI Meets Control Theory</title>
+        <title>H-infinity Mixed-Sensitivity (S / KS / T) Loop Shaping Reference - AIMCT: AI Meets Control Theory</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#disturbance-observer-dob-control-q-filter-reference-specification" class="md-skip">
+        <a href="#h-infinity-mixed-sensitivity-s-ks-t-loop-shaping-reference" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Disturbance-Observer (DOB) Control &amp; Q-Filter Reference Specification
+              H-infinity Mixed-Sensitivity (S / KS / T) Loop Shaping Reference
             
           </span>
         </div>
@@ -1625,22 +1625,66 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-executive-summary-foundational-principles" class="md-nav__link">
+  <a href="#1-what-h-infinity-control-optimises" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Executive Summary &amp; Foundational Principles
+        1. What H-infinity control optimises
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="1. Executive Summary &amp; Foundational Principles">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-the-mixed-sensitivity-objective" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. The mixed-sensitivity objective
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-weight-selection-first-order-shaping-filters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Weight selection (first-order shaping filters)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Weight selection (first-order shaping filters)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#key-architectural-advantages" class="md-nav__link">
+  <a href="#31-performance-weight-w_s-weight_swb-a-m" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Architectural Advantages
+        3.1 Performance weight \(W_S\) — weight_S(wb, A, M)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-robustness-weight-w_t-weight_twb-a-m" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Robustness weight \(W_T\) — weight_T(wb, A, M)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-control-weight-w_ks-weight_kswb-a-m-or-a-scalar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Control weight \(W_{KS}\) — weight_KS(wb, A, M) or a scalar
       
     </span>
   </a>
@@ -1653,219 +1697,46 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-frequency-domain-formulation-q-filter-design" class="md-nav__link">
+  <a href="#4-the-generalised-plant" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Frequency-Domain Formulation &amp; Q-Filter Design
+        4. The generalised plant
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="2. Frequency-Domain Formulation &amp; Q-Filter Design">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#21-closed-loop-sensitivity-analysis" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2.1 Closed-Loop Sensitivity Analysis
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#22-rejection-robustness-duality" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2.2 Rejection &amp; Robustness Duality
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-q-filter-topologies-relative-degree-matching" class="md-nav__link">
+  <a href="#5-dgkf-state-space-solution-gamma-iteration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Q-Filter Topologies &amp; Relative Degree Matching
+        5. DGKF state-space solution (\(\gamma\)-iteration)
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="3. Q-Filter Topologies &amp; Relative Degree Matching">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#31-standard-q-filter-topologies" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.1 Standard Q-Filter Topologies
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#32-discrete-time-realization-via-tustin-bilinear-transform" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.2 Discrete-Time Realization via Tustin (Bilinear) Transform
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-state-space-nonlinear-generalized-momentum-dob" class="md-nav__link">
+  <a href="#6-h-infinity-vs-lqg-on-an-unmodelled-mode-experiment-35" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. State-Space &amp; Nonlinear Generalized Momentum DOB
+        6. H-infinity vs LQG on an unmodelled mode (Experiment 35)
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="4. State-Space &amp; Nonlinear Generalized Momentum DOB">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#41-state-space-disturbance-observer-extended-state-formulation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4.1 State-Space Disturbance Observer (Extended State Formulation)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#42-nonlinear-state-space-dob-with-auxiliary-state-chen-et-al-formulation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4.2 Nonlinear State-Space DOB with Auxiliary State (Chen et al. Formulation)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-matched-vs-unmatched-disturbance-rejection-on-planar-quadrotor" class="md-nav__link">
+  <a href="#7-references" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5. Matched vs. Unmatched Disturbance Rejection on Planar Quadrotor
+        7. References
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="5. Matched vs. Unmatched Disturbance Rejection on Planar Quadrotor">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#51-planar-quadrotor-mechanics-wind-disturbance-model" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5.1 Planar Quadrotor Mechanics &amp; Wind Disturbance Model
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#52-matched-vs-unmatched-channel-classification" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5.2 Matched vs. Unmatched Channel Classification
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#53-why-dob-outperforms-integral-action-on-unmatched-disturbance" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5.3 Why DOB Outperforms Integral Action on Unmatched Disturbance
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6-robust-stability-small-gain-theorem" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6. Robust Stability &amp; Small-Gain Theorem
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="6. Robust Stability &amp; Small-Gain Theorem">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#61-multiplicative-uncertainty-bound" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6.1 Multiplicative Uncertainty Bound
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#62-small-gain-condition" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6.2 Small-Gain Condition
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#63-tuning-guidelines-for-cutoff-frequency-omega_q" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6.3 Tuning Guidelines for Cutoff Frequency \(\omega_Q\)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1889,212 +1760,264 @@
   
 
 
-<h1 id="disturbance-observer-dob-control-q-filter-reference-specification">Disturbance-Observer (DOB) Control &amp; Q-Filter Reference Specification<a class="headerlink" href="#disturbance-observer-dob-control-q-filter-reference-specification" title="Permanent link">&para;</a></h1>
-<h2 id="1-executive-summary-foundational-principles">1. Executive Summary &amp; Foundational Principles<a class="headerlink" href="#1-executive-summary-foundational-principles" title="Permanent link">&para;</a></h2>
-<p>A <strong>Disturbance Observer (DOB)</strong> (pioneered by Ohnishi in 1987 and formalized by Umeno &amp; Hori in 1991) is a two-degree-of-freedom control architecture that reconstructs lumped internal and external disturbances from measurable plant inputs and outputs, feeding an estimated cancellation signal back into the control channel.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>                      d(t) [Disturbance]
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                       |
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                       v
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>   r(t)   +     u_base +       u(t)   +-----------------+  y(t)
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>   -----&gt;( + )--------&gt;( + )---------&gt;|   Plant P(s)    |--------+--------&gt;
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>          ^ -           ^ -           +-----------------+        |
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>          |             |                                        |
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>          |             +----------------[ Q(s) ]&lt;---------------+
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>          |                                 ^                    |
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>          |                                 | -                  |
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>          |                                ( + )&lt;--[ P_n^{-1}(s) ]
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>          |                                 |
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>          |                                u(t)
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>          +------------------------------------------------------+
-</span></code></pre></div>
-<h3 id="key-architectural-advantages">Key Architectural Advantages<a class="headerlink" href="#key-architectural-advantages" title="Permanent link">&para;</a></h3>
-<ol>
-<li><strong>Nominal Loop Recovery</strong>: Inside the filter bandwidth (<span class="arithmatex">\(\omega &lt; \omega_Q\)</span>), the closed-loop system behaves identically to the nominal model <span class="arithmatex">\(P_n(s)\)</span>, rendering outer-loop controllers (LQR, MPC, pole placement) insensitive to parameter variations and external forces.</li>
-<li><strong>Phase-Lead Rejection vs. Integrator Lag</strong>: Unlike classical integral action <span class="arithmatex">\(\int e(t) dt\)</span>, which introduces a <span class="arithmatex">\(-90^\circ\)</span> phase lag and requires substantial tracking error accumulation before developing corrective authority, DOB reconstructs disturbance forces directly from acceleration/momentum mismatch, cancelling disturbances before tracking errors accumulate.</li>
-<li><strong>Bandwidth Separation</strong>: By tuning the low-pass Q-filter cutoff frequency <span class="arithmatex">\(\omega_Q\)</span>, high-frequency sensor noise and unmodeled high-frequency structural resonances are blocked from the feedback path.</li>
-</ol>
+<h1 id="h-infinity-mixed-sensitivity-s-ks-t-loop-shaping-reference">H-infinity Mixed-Sensitivity (S / KS / T) Loop Shaping Reference<a class="headerlink" href="#h-infinity-mixed-sensitivity-s-ks-t-loop-shaping-reference" title="Permanent link">&para;</a></h1>
+<p>Companion to <code>aimct.controllers.hinf</code>
+(<code>StateSpace</code>, <code>weight_S</code> / <code>weight_KS</code> / <code>weight_T</code>, <code>augment_plant</code>,
+<code>hinf_syn</code>, <code>mixsyn</code>, <code>HinfController</code>) and
+Experiment 35 (<code>experiments/35_hinf_vs_lqg_resonance/</code>).</p>
 <hr />
-<h2 id="2-frequency-domain-formulation-q-filter-design">2. Frequency-Domain Formulation &amp; Q-Filter Design<a class="headerlink" href="#2-frequency-domain-formulation-q-filter-design" title="Permanent link">&para;</a></h2>
-<h3 id="21-closed-loop-sensitivity-analysis">2.1 Closed-Loop Sensitivity Analysis<a class="headerlink" href="#21-closed-loop-sensitivity-analysis" title="Permanent link">&para;</a></h3>
-<p>Let the true physical plant be <span class="arithmatex">\(P(s)\)</span>, subject to input disturbance <span class="arithmatex">\(d(s)\)</span> and measurement noise <span class="arithmatex">\(\eta(s)\)</span>:</p>
-<div class="arithmatex">\[Y(s) = P(s)[U(s) + D(s)] + N(s)\]</div>
-<p>With nominal model <span class="arithmatex">\(P_n(s)\)</span> and low-pass filter <span class="arithmatex">\(Q(s)\)</span>, the disturbance estimate is:</p>
-<div class="arithmatex">\[\hat{D}(s) = Q(s) \left[ P_n^{-1}(s) Y(s) - U(s) 
-ight]\]</div>
-<p>Applying the inner-loop cancellation <span class="arithmatex">\(U(s) = U_{    ext{base}}(s) - \hat{D}(s)\)</span>, the actual control applied to the plant is:</p>
-<div class="arithmatex">\[U(s) = rac{1}{1 - Q(s) + Q(s) P_n^{-1}(s) P(s)} U_{    ext{base}}(s) - rac{Q(s) P_n^{-1}(s)}{1 - Q(s) + Q(s) P_n^{-1}(s) P(s)} [P(s) D(s) + N(s)]\]</div>
-<p>When the nominal model matches the plant (<span class="arithmatex">\(P(s) = P_n(s)\)</span>), the transfer functions simplify to:</p>
-<div class="arithmatex">\[egin{aligned}
-Y(s) &amp;= G_{ry}(s) U_{    ext{base}}(s) + G_{dy}(s) D(s) + G_{ny}(s) N(s) \
-G_{ry}(s) &amp;= P_n(s) \
-G_{dy}(s) &amp;= P_n(s) \left[ 1 - Q(s) 
-ight] \
-G_{ny}(s) &amp;= -Q(s)
-\end{aligned}\]</div>
-<h3 id="22-rejection-robustness-duality">2.2 Rejection &amp; Robustness Duality<a class="headerlink" href="#22-rejection-robustness-duality" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Disturbance Sensitivity</strong>: <span class="arithmatex">\(S_{    ext{dob}}(s) = 1 - Q(s)\)</span>.</li>
-<li>For low frequencies <span class="arithmatex">\(\omega \ll \omega_Q\)</span>: <span class="arithmatex">\(Q(j\omega) pprox 1 \implies S_{    ext{dob}}(j\omega) pprox 0\)</span> (<span class="arithmatex">\(\implies\)</span> perfect disturbance rejection).</li>
-<li><strong>Complementary Sensitivity / Noise Transmission</strong>: <span class="arithmatex">\(T_{    ext{dob}}(s) = Q(s)\)</span>.</li>
-<li>For high frequencies <span class="arithmatex">\(\omega \gg \omega_Q\)</span>: <span class="arithmatex">\(Q(j\omega)     o 0 \implies T_{    ext{dob}}(j\omega)     o 0\)</span> (<span class="arithmatex">\(\implies\)</span> complete sensor noise attenuation).</li>
-</ul>
-<hr />
-<h2 id="3-q-filter-topologies-relative-degree-matching">3. Q-Filter Topologies &amp; Relative Degree Matching<a class="headerlink" href="#3-q-filter-topologies-relative-degree-matching" title="Permanent link">&para;</a></h2>
-<p>For the inverse nominal model <span class="arithmatex">\(P_n^{-1}(s)\)</span> to be causal and physically realizable in <span class="arithmatex">\(Q(s) P_n^{-1}(s)\)</span>, the filter <span class="arithmatex">\(Q(s)\)</span> must satisfy the <strong>relative degree condition</strong>:</p>
-<div class="arithmatex">\[    ext{deg}_{    ext{rel}}(Q(s)) \ge     ext{deg}_{    ext{rel}}(P_n(s)) = n - m\]</div>
-<p>where <span class="arithmatex">\(n = \deg(    ext{denominator})\)</span> and <span class="arithmatex">\(m = \deg(    ext{numerator})\)</span>.</p>
-<h3 id="31-standard-q-filter-topologies">3.1 Standard Q-Filter Topologies<a class="headerlink" href="#31-standard-q-filter-topologies" title="Permanent link">&para;</a></h3>
-<ol>
-<li>
-<p><strong>Relative Degree 1 (First-Order Velocity Systems)</strong>:
-   $<span class="arithmatex">\(Q_1(s) = rac{1}{    au_Q s + 1}, \quad \omega_Q = rac{1}{    au_Q}\)</span>$</p>
-</li>
-<li>
-<p><strong>Relative Degree 2 (Double-Integrator Mechanical / Second-Order Systems)</strong>:</p>
-</li>
-<li><em>Binomial (Critically Damped)</em>:
-     $<span class="arithmatex">\(Q_{2,    ext{bin}}(s) = rac{1}{(    au_Q s + 1)^2} = rac{1}{    au_Q^2 s^2 + 2    au_Q s + 1}\)</span>$</li>
-<li>
-<p><em>Butterworth Standard (Maximally Flat Passband, <span class="arithmatex">\(\zeta = 1/\sqrt{2}\)</span>)</em>:
-     $<span class="arithmatex">\(Q_{2,    ext{bw}}(s) = rac{1 + \sqrt{2}    au_Q s}{(    au_Q s + 1)^2} \quad (    ext{deg}_{    ext{rel}} = 1) \quad     ext{or} \quad Q_{2,    ext{bw}}(s) = rac{\omega_Q^2}{s^2 + \sqrt{2}\omega_Q s + \omega_Q^2} \quad (    ext{deg}_{    ext{rel}} = 2)\)</span>$</p>
-</li>
-<li>
-<p><strong>Relative Degree 3 (Third-Order Jitter / Torque-Driven Flexible Systems)</strong>:
-   $<span class="arithmatex">\(Q_3(s) = rac{1 + 3    au_Q s}{(    au_Q s + 1)^3} \quad (    ext{deg}_{    ext{rel}} = 2) \quad     ext{or} \quad Q_3(s) = rac{1}{(    au_Q s + 1)^3} \quad (    ext{deg}_{    ext{rel}} = 3)\)</span>$</p>
-</li>
-</ol>
-<h3 id="32-discrete-time-realization-via-tustin-bilinear-transform">3.2 Discrete-Time Realization via Tustin (Bilinear) Transform<a class="headerlink" href="#32-discrete-time-realization-via-tustin-bilinear-transform" title="Permanent link">&para;</a></h3>
-<p>Using Tustin bilinear substitution <span class="arithmatex">\(s = rac{2}{dt} rac{1 - z^{-1}}{1 + z^{-1}}\)</span> with pre-warping <span class="arithmatex">\(\omega_w = rac{2}{dt}    an\left(rac{\omega_Q dt}{2}
-ight)\)</span>:</p>
-<p>For the second-order filter <span class="arithmatex">\(Q(s) = rac{\omega_Q^2}{s^2 + 2\zeta \omega_Q s + \omega_Q^2}\)</span>:
-$<span class="arithmatex">\(Q(z) = rac{b_0 + b_1 z^{-1} + b_2 z^{-2}}{a_0 + a_1 z^{-1} + a_2 z^{-2}}\)</span>$</p>
-<p>where:
-$<span class="arithmatex">\(egin{aligned}
-a_0 &amp;= 4 + 4\zeta \omega_Q dt + (\omega_Q dt)^2 \
-a_1 &amp;= -8 + 2(\omega_Q dt)^2 \
-a_2 &amp;= 4 - 4\zeta \omega_Q dt + (\omega_Q dt)^2 \
-b_0 &amp;= (\omega_Q dt)^2, \quad b_1 = 2(\omega_Q dt)^2, \quad b_2 = (\omega_Q dt)^2
-\end{aligned}\)</span>$</p>
-<hr />
-<h2 id="4-state-space-nonlinear-generalized-momentum-dob">4. State-Space &amp; Nonlinear Generalized Momentum DOB<a class="headerlink" href="#4-state-space-nonlinear-generalized-momentum-dob" title="Permanent link">&para;</a></h2>
-<h3 id="41-state-space-disturbance-observer-extended-state-formulation">4.1 State-Space Disturbance Observer (Extended State Formulation)<a class="headerlink" href="#41-state-space-disturbance-observer-extended-state-formulation" title="Permanent link">&para;</a></h3>
-<p>Consider the linear multivariable plant with unmatched and matched disturbances:</p>
-<div class="arithmatex">\[egin{aligned}
-\dot{x} &amp;= A x + B u + B_d d \
-y &amp;= C x
-\end{aligned}\]</div>
-<p>Assuming constant/slowly varying disturbance dynamics <span class="arithmatex">\(\dot{d} = 0 + w_d\)</span>, the augmented extended system is:</p>
-<div class="arithmatex">\[egin{bmatrix} \dot{x} \ \dot{d} \end{bmatrix} = egin{bmatrix} A &amp; B_d \ 0 &amp; 0 \end{bmatrix} egin{bmatrix} x \ d \end{bmatrix} + egin{bmatrix} B \ 0 \end{bmatrix} u\]</div>
-<p>With observer gain <span class="arithmatex">\(L = egin{bmatrix} L_x \ L_d \end{bmatrix}\)</span>, the observer equations are:</p>
-<div class="arithmatex">\[egin{aligned}
-\dot{\hat{x}} &amp;= A \hat{x} + B u + B_d \hat{d} + L_x(y - C \hat{x}) \
-\dot{\hat{d}} &amp;= L_d(y - C \hat{x})
-\end{aligned}\]</div>
-<h3 id="42-nonlinear-state-space-dob-with-auxiliary-state-chen-et-al-formulation">4.2 Nonlinear State-Space DOB with Auxiliary State (Chen et al. Formulation)<a class="headerlink" href="#42-nonlinear-state-space-dob-with-auxiliary-state-chen-et-al-formulation" title="Permanent link">&para;</a></h3>
-<p>For nonlinear dynamics <span class="arithmatex">\(\dot{x} = f(x) + g(x)u + B_d d\)</span>, direct numerical differentiation of <span class="arithmatex">\(x\)</span> is avoided by introducing an auxiliary state <span class="arithmatex">\(z = \hat{d} - p(x)\)</span>:</p>
-<div class="arithmatex">\[egin{aligned}
-\dot{z} &amp;= -L(x) B_d z - L(x) \left[ f(x) + g(x) u + B_d p(x) 
-ight] \
-\hat{d} &amp;= z + p(x)
-\end{aligned}\]</div>
-<p>where the observer gain matrix is <span class="arithmatex">\(L(x) = rac{\partial p(x)}{\partial x}\)</span>.
-Defining the disturbance estimation error <span class="arithmatex">\(e_d = d - \hat{d}\)</span>:</p>
-<div class="arithmatex">\[\dot{e}_d = \dot{d} - \dot{\hat{d}} = -\dot{z} - L(x)\dot{x} = L(x)B_d(z + p(x) - d) = -L(x)B_d e_d\]</div>
-<p>Choosing constant gain <span class="arithmatex">\(p(x) = K_{    ext{dob}} x \implies L(x) = K_{    ext{dob}}\)</span>, the estimation error decays exponentially:</p>
-<div class="arithmatex">\[\dot{e}_d = -K_{    ext{dob}} B_d e_d \implies e_d(t) = e^{-K_{    ext{dob}} B_d t} e_d(0)\]</div>
-<hr />
-<h2 id="5-matched-vs-unmatched-disturbance-rejection-on-planar-quadrotor">5. Matched vs. Unmatched Disturbance Rejection on Planar Quadrotor<a class="headerlink" href="#5-matched-vs-unmatched-disturbance-rejection-on-planar-quadrotor" title="Permanent link">&para;</a></h2>
-<h3 id="51-planar-quadrotor-mechanics-wind-disturbance-model">5.1 Planar Quadrotor Mechanics &amp; Wind Disturbance Model<a class="headerlink" href="#51-planar-quadrotor-mechanics-wind-disturbance-model" title="Permanent link">&para;</a></h3>
-<p>The planar quadrotor state is <span class="arithmatex">\(x = [p_x, p_z,     heta, v_x, v_z, \omega]^T \in \mathbb{R}^6\)</span> with control inputs <span class="arithmatex">\(u = [T_1, T_2]^T \in \mathbb{R}^2\)</span>.</p>
-<p>Total thrust: <span class="arithmatex">\(T = T_1 + T_2\)</span>; Differential torque: $    au = (T_1 - T_2)\ell$.</p>
-<p>Under external wind force <span class="arithmatex">\(\mathbf{F}_{    ext{wind}} = [F_{w, x}, F_{w, z}]^T\)</span> and aerodynamic moment $    au_w$:</p>
-<div class="arithmatex">\[egin{aligned}
-\ddot{x} &amp;= -rac{T}{m}\sin    heta - rac{c_d}{m} v_x + rac{F_{w, x}}{m} \
-\ddot{z} &amp;= rac{T}{m}\cos    heta - g - rac{c_d}{m} v_z + rac{F_{w, z}}{m} \
-\ddot{    heta} &amp;= rac{    au}{I_{yy}} + rac{    au_w}{I_{yy}}
-\end{aligned}\]</div>
-<h3 id="52-matched-vs-unmatched-channel-classification">5.2 Matched vs. Unmatched Channel Classification<a class="headerlink" href="#52-matched-vs-unmatched-channel-classification" title="Permanent link">&para;</a></h3>
+<h2 id="1-what-h-infinity-control-optimises">1. What H-infinity control optimises<a class="headerlink" href="#1-what-h-infinity-control-optimises" title="Permanent link">&para;</a></h2>
+<p><code>LQR</code> / <code>LQG</code> minimise a <em>quadratic average</em> of the response to white noise (the
+<code>H2</code> norm). <code>H-infinity</code> control minimises the <strong>worst case</strong> — the largest gain
+the closed loop can present to <em>any</em> bounded-energy disturbance, at <em>any</em>
+frequency:</p>
+<div class="arithmatex">\[
+\|M\|_\infty \;=\; \sup_{\omega} \; \bar\sigma\!\big(M(j\omega)\big),
+\]</div>
+<p>where <span class="arithmatex">\(\bar\sigma\)</span> is the largest singular value. Making a transfer function
+small in the <span class="arithmatex">\(H_\infty\)</span> sense means "no input direction, at no frequency, is
+amplified more than this."</p>
+<p>The quantity that matters for feedback is not one transfer function but the
+<strong>closed-loop gang</strong> built from the loop <span class="arithmatex">\(L = GK\)</span>:</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Channel</th>
-<th style="text-align: center;">Physical Variable</th>
-<th style="text-align: center;">Control Input</th>
-<th style="text-align: center;">Disturbance</th>
-<th style="text-align: center;">Coupling Classification</th>
-<th style="text-align: center;">Rejection Strategy</th>
+<th style="text-align: left;">symbol</th>
+<th style="text-align: left;">definition</th>
+<th style="text-align: left;">shapes …</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong>Altitude (<span class="arithmatex">\(z\)</span>)</strong></td>
-<td style="text-align: center;"><span class="arithmatex">\(\ddot{z}\)</span></td>
-<td style="text-align: center;">Total Thrust <span class="arithmatex">\(T\)</span></td>
-<td style="text-align: center;"><span class="arithmatex">\(F_{w, z} / m\)</span></td>
-<td style="text-align: center;"><strong>MATCHED</strong> ($    ext{span}(B)$)</td>
-<td style="text-align: center;">Direct cancellation: <span class="arithmatex">\(\Delta T = -\hat{F}_{w, z} / \cos    heta\)</span></td>
+<td style="text-align: left;"><strong>S</strong> (sensitivity)</td>
+<td style="text-align: left;"><span class="arithmatex">\((I + GK)^{-1}\)</span></td>
+<td style="text-align: left;">reference tracking, output-disturbance rejection, <strong>peak <span class="arithmatex">\(\overline M_S\)</span> = a robustness margin</strong></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Attitude ($    heta$)</strong></td>
-<td style="text-align: center;"><span class="arithmatex">\(\ddot{    heta}\)</span></td>
-<td style="text-align: center;">Differential Torque $    au$</td>
-<td style="text-align: center;">$    au_w / I_{yy}$</td>
-<td style="text-align: center;"><strong>MATCHED</strong> ($    ext{span}(B)$)</td>
-<td style="text-align: center;">Direct cancellation: <span class="arithmatex">\(\Delta     au = -\hat{    au}_w\)</span></td>
+<td style="text-align: left;"><strong>T</strong> (compl. sensitivity)</td>
+<td style="text-align: left;"><span class="arithmatex">\(GK(I+GK)^{-1}\)</span></td>
+<td style="text-align: left;">sensor-noise rejection, robustness to <em>multiplicative</em> plant error</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Horizontal (<span class="arithmatex">\(x\)</span>)</strong></td>
-<td style="text-align: center;"><span class="arithmatex">\(\ddot{x}\)</span></td>
-<td style="text-align: center;"><em>None</em> (<span class="arithmatex">\(B_x = 0\)</span>)</td>
-<td style="text-align: center;"><span class="arithmatex">\(F_{w, x} / m\)</span></td>
-<td style="text-align: center;"><strong>UNMATCHED</strong> ($</td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: left;">otin     ext{span}(B)$)</td>
-<td style="text-align: center;">Virtual control reallocation via pitch tilt: $    heta_{    ext{cmd}} =     heta_{    ext{base}} + rac{\hat{F}_{w, x}}{m g}$</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td style="text-align: left;"><strong>KS</strong> (control sensitivity)</td>
+<td style="text-align: left;"><span class="arithmatex">\(K(I+GK)^{-1}\)</span></td>
+<td style="text-align: left;">actuator effort, control-signal bandwidth, saturation risk</td>
 </tr>
 </tbody>
 </table>
-<h3 id="53-why-dob-outperforms-integral-action-on-unmatched-disturbance">5.3 Why DOB Outperforms Integral Action on Unmatched Disturbance<a class="headerlink" href="#53-why-dob-outperforms-integral-action-on-unmatched-disturbance" title="Permanent link">&para;</a></h3>
-<ol>
-<li><strong>Integral Action on Position Error (<span class="arithmatex">\(e_x = x - x_{    ext{ref}}\)</span>)</strong>:</li>
-<li>Control law: $    heta_{    ext{cmd}} = -K_{p,x} e_x - K_{d,x} \dot{e}<em i_x="i,x">x - K</em> \int e_x dt$.</li>
-<li><strong>Mechanism</strong>: The drone <em>must drift away downwind</em> by a substantial distance <span class="arithmatex">\(\Delta x\)</span> over multiple seconds for <span class="arithmatex">\(\int e_x dt\)</span> to accumulate sufficient tilt angle $    heta_{    ext{trim}} = rctan(F_{w,x} / (mg))$.</li>
-<li>
-<p><strong>Phase Lag &amp; Overshoot</strong>: The integrator adds a pole at <span class="arithmatex">\(s = 0\)</span> (<span class="arithmatex">\(-90^\circ\)</span> phase lag), eroding phase margin, causing sluggish recovery, and creating substantial transient overshoot when gusts change suddenly.</p>
-</li>
-<li>
-<p><strong>Disturbance Observer (DOB) on Acceleration Mismatch</strong>:</p>
-</li>
-<li>Reconstructed translational acceleration mismatch:
-     $<span class="arithmatex">\(\hat{d}_x = Q(s) \left[ \ddot{x}_{    ext{meas}} + rac{T}{m}\sin    heta + rac{c_d}{m} v_x 
-ight] pprox rac{F_{w, x}}{m}\)</span>$</li>
-<li><strong>Mechanism</strong>: DOB detects the wind force <em>instantaneously</em> through dynamic inertial mismatch without requiring positional displacement.</li>
-<li><strong>Feedforward Tilt Correction</strong>:
-     $$    heta_{    ext{cmd}} =     heta_{    ext{base}} + rcsin\left(rac{m \hat{d}<em ext_base="ext{base">x}{T}
-ight) pprox     heta</em>$$}} + rac{\hat{d}_x}{g</li>
-<li><strong>Result</strong>: The drone immediately pitches its nose into the oncoming wind gust, maintaining positional hold with near-zero drift (<span class="arithmatex">\(e_{ss} pprox 0\)</span>) and zero integrator-induced phase lag.</li>
-</ol>
+<p>Since <span class="arithmatex">\(S + T = I\)</span>, they cannot both be small at the same frequency — the
+design is a frequency-wise <em>trade</em>: <code>S</code> small in the low band (tracking),
+<code>T</code> small in the high band (robustness), with <code>KS</code> bounding what the actuator
+is asked to do in between.</p>
 <hr />
-<h2 id="6-robust-stability-small-gain-theorem">6. Robust Stability &amp; Small-Gain Theorem<a class="headerlink" href="#6-robust-stability-small-gain-theorem" title="Permanent link">&para;</a></h2>
-<h3 id="61-multiplicative-uncertainty-bound">6.1 Multiplicative Uncertainty Bound<a class="headerlink" href="#61-multiplicative-uncertainty-bound" title="Permanent link">&para;</a></h3>
-<p>Let the true plant model have multiplicative unmodeled dynamics:</p>
-<div class="arithmatex">\[P(s) = P_n(s) \left[ 1 + \Delta_m(s) 
-ight], \quad |\Delta_m(j\omega)| \le W_m(\omega)\]</div>
-<h3 id="62-small-gain-condition">6.2 Small-Gain Condition<a class="headerlink" href="#62-small-gain-condition" title="Permanent link">&para;</a></h3>
-<p>By the Small-Gain Theorem, the closed-loop system with DOB is robustly stable if and only if:</p>
-<div class="arithmatex">\[\| W_m(s) Q(s) \|_\infty &lt; 1 \iff |Q(j\omega)| &lt; rac{1}{W_m(\omega)}, \quad orall \omega \in \mathbb{R}\]</div>
-<h3 id="63-tuning-guidelines-for-cutoff-frequency-omega_q">6.3 Tuning Guidelines for Cutoff Frequency <span class="arithmatex">\(\omega_Q\)</span><a class="headerlink" href="#63-tuning-guidelines-for-cutoff-frequency-omega_q" title="Permanent link">&para;</a></h3>
-<ol>
-<li><strong>Low-Frequency Rejection</strong>: <span class="arithmatex">\(\omega_Q \ge 3 \cdot \omega_{    ext{wind}}\)</span> (where <span class="arithmatex">\(\omega_{    ext{wind}}\)</span> is the dominant frequency of atmospheric turbulence gusts, typically <span class="arithmatex">\(0.5 - 2    ext{ rad/s}\)</span>).</li>
-<li><strong>High-Frequency Attenuation</strong>: <span class="arithmatex">\(\omega_Q \le rac{1}{3} \cdot \omega_{    ext{resonance}}\)</span> (where <span class="arithmatex">\(\omega_{    ext{resonance}}\)</span> is the lowest unmodeled structural resonance or motor lag pole, typically <span class="arithmatex">\(20 - 50    ext{ rad/s}\)</span>).</li>
-<li><strong>Canonical Quadrotor Tuning</strong>: <span class="arithmatex">\(\omega_Q = 10.0    ext{ rad/s}\)</span> ($    au_Q = 0.10    ext{ s}$), damping <span class="arithmatex">\(\zeta_Q = 1.0\)</span> (critically damped binomial).</li>
-</ol>
+<h2 id="2-the-mixed-sensitivity-objective">2. The mixed-sensitivity objective<a class="headerlink" href="#2-the-mixed-sensitivity-objective" title="Permanent link">&para;</a></h2>
+<p>Pick frequency-dependent <strong>weights</strong> <span class="arithmatex">\(W_S, W_{KS}, W_T\)</span> that encode the desired
+shape (Section 3), stack the three weighted closed-loop maps, and minimise the
+<span class="arithmatex">\(H_\infty\)</span> norm of the stack over all stabilising controllers:</p>
+<div class="arithmatex">\[
+\min_{K \text{ stab.}}\;
+\left\|
+\begin{bmatrix} W_S\, S \\ W_{KS}\, K S \\ W_T\, T \end{bmatrix}
+\right\|_\infty
+\;=\; \gamma_{\text{opt}} .
+\]</div>
+<p>Reading the result: if the synthesis returns <span class="arithmatex">\(\gamma \le 1\)</span>, then
+<span class="arithmatex">\(\bar\sigma(S(j\omega)) \le \bar\sigma(W_S^{-1}(j\omega))\)</span> at every <span class="arithmatex">\(\omega\)</span>, and
+likewise for <code>KS</code> and <code>T</code> — <strong>every specification encoded in a weight is met</strong>.
+<span class="arithmatex">\(\gamma\)</span> slightly above 1 means the specs are met up to the factor <span class="arithmatex">\(\gamma\)</span>;
+<span class="arithmatex">\(\gamma \gg 1\)</span> means the weights are asking for something impossible for this
+plant and must be relaxed.</p>
+<hr />
+<h2 id="3-weight-selection-first-order-shaping-filters">3. Weight selection (first-order shaping filters)<a class="headerlink" href="#3-weight-selection-first-order-shaping-filters" title="Permanent link">&para;</a></h2>
+<p>The library uses the standard Skogestad &amp; Postlethwaite (2005) first-order
+forms. Each is scalar or an <code>I_k</code> block (<code>blocks=k</code>).</p>
+<h3 id="31-performance-weight-w_s-weight_swb-a-m">3.1 Performance weight <span class="arithmatex">\(W_S\)</span> — <code>weight_S(wb, A, M)</code><a class="headerlink" href="#31-performance-weight-w_s-weight_swb-a-m" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[
+W_S(s) = \frac{s/M + \omega_b}{s + \omega_b A},
+\qquad 0 &lt; A \ll 1 &lt; M .
+\]</div>
+<ul>
+<li>low-frequency gain <span class="arithmatex">\(\approx 1/A\)</span> — a large number, forcing <span class="arithmatex">\(|S| \lesssim A\)</span> in
+  band (tight tracking / disturbance rejection);</li>
+<li>crossover near <span class="arithmatex">\(\omega_b\)</span> (the desired closed-loop bandwidth);</li>
+<li>high-frequency gain <span class="arithmatex">\(1/M\)</span> — so <span class="arithmatex">\(M\)</span> is the allowed <strong>sensitivity peak</strong>
+  <span class="arithmatex">\(\overline M_S\)</span> (a value of 2 corresponds to a <span class="arithmatex">\(\ge 6\text{ dB}\)</span> gain margin
+  and <span class="arithmatex">\(\ge 29^\circ\)</span> phase margin).</li>
+</ul>
+<p><code>weight_S</code> is <em>bi-proper</em> (<span class="arithmatex">\(D = 1/M \neq 0\)</span>). The DGKF synthesis needs
+<span class="arithmatex">\(D_{11}=0\)</span>; <code>mixsyn</code> therefore uses the <strong>strictly-proper part</strong> of <span class="arithmatex">\(W_S\)</span> (it
+drops the <span class="arithmatex">\(1/M\)</span> feed-through). The high-frequency sensitivity bound is then
+carried by <span class="arithmatex">\(W_T\)</span> instead — with <span class="arithmatex">\(S = I - T\)</span>, bounding <span class="arithmatex">\(|T|\)</span> at high frequency
+bounds <span class="arithmatex">\(|S|\)</span> near unity there anyway.</p>
+<h3 id="32-robustness-weight-w_t-weight_twb-a-m">3.2 Robustness weight <span class="arithmatex">\(W_T\)</span> — <code>weight_T(wb, A, M)</code><a class="headerlink" href="#32-robustness-weight-w_t-weight_twb-a-m" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[
+W_T(s) = \frac{s + \omega_{bT}/M}{A\, s + \omega_{bT}},
+\qquad 0 &lt; A \ll 1 &lt; M .
+\]</div>
+<ul>
+<li>low-frequency gain <span class="arithmatex">\(1/M\)</span>;</li>
+<li>rises through <span class="arithmatex">\(\omega_{bT}\)</span> to a high-frequency gain <span class="arithmatex">\(\approx 1/A\)</span>, which
+  <strong>forces <span class="arithmatex">\(|T|\)</span> to roll off</strong> above <span class="arithmatex">\(\omega_{bT}\)</span>.</li>
+</ul>
+<p><span class="arithmatex">\(W_T\)</span> is where robustness is bought. If the true plant is
+<span class="arithmatex">\(G_p = G(I + \Delta W_m)\)</span> with <span class="arithmatex">\(\|\Delta\|_\infty \le 1\)</span> and a known
+multiplicative-error bound <span class="arithmatex">\(|W_m(j\omega)|\)</span>, the small-gain theorem gives robust
+stability iff <span class="arithmatex">\(\|W_m T\|_\infty &lt; 1\)</span>. Choosing <span class="arithmatex">\(W_T \succeq |W_m|\)</span> (in
+particular, <span class="arithmatex">\(1/A \gtrsim\)</span> the high-frequency uncertainty level) certifies robust
+stability against <em>every</em> such <span class="arithmatex">\(\Delta\)</span> — including an unmodelled resonance
+(Experiment 35).</p>
+<h3 id="33-control-weight-w_ks-weight_kswb-a-m-or-a-scalar">3.3 Control weight <span class="arithmatex">\(W_{KS}\)</span> — <code>weight_KS(wb, A, M)</code> or a scalar<a class="headerlink" href="#33-control-weight-w_ks-weight_kswb-a-m-or-a-scalar" title="Permanent link">&para;</a></h3>
+<p>A flat scalar <span class="arithmatex">\(W_{KS} = 1/u_{\max}\)</span> caps the control amplitude. The first-order
+high-pass form (same shape as <span class="arithmatex">\(W_T\)</span>) additionally limits the <em>actuator
+bandwidth</em>, rolling the control off past <span class="arithmatex">\(\omega_b\)</span> so the loop does not command
+fast actuator motion that a real drive cannot follow. <code>mixsyn</code>'s DGKF path
+assumes <span class="arithmatex">\(W_{KS}\)</span> contributes a full-column-rank direct term (assumption A2), so a
+<strong>static</strong> <span class="arithmatex">\(W_{KS}\)</span> (scalar or matrix) is the safe default; a dynamic <span class="arithmatex">\(W_{KS}\)</span>
+also works as long as <span class="arithmatex">\(D_{12}\)</span> stays full rank.</p>
+<hr />
+<h2 id="4-the-generalised-plant">4. The generalised plant<a class="headerlink" href="#4-the-generalised-plant" title="Permanent link">&para;</a></h2>
+<p><code>augment_plant(G, W_S, W_KS, W_T)</code> builds the interconnection with exogenous
+input <span class="arithmatex">\(w\)</span> (reference), control <span class="arithmatex">\(u\)</span>, error <span class="arithmatex">\(v = w - Gu\)</span>:</p>
+<div class="arithmatex">\[
+z_1 = W_S\, v,\qquad z_2 = W_{KS}\, u,\qquad z_3 = W_T\, (G u),\qquad y = v,
+\]</div>
+<p>as one state-space system <span class="arithmatex">\(P\)</span> with inputs <span class="arithmatex">\([w;\,u]\)</span> and outputs <span class="arithmatex">\([z;\,y]\)</span>,
+<span class="arithmatex">\(z = [z_1;z_2;z_3]\)</span>. For a realisation
+<span class="arithmatex">\(G=(A_g,B_g,C_g,D_g)\)</span>, <span class="arithmatex">\(W_i = (A_i,B_i,C_i,D_i)\)</span> and state
+<span class="arithmatex">\(x = [x_g;x_1;x_2;x_3]\)</span>:</p>
+<div class="arithmatex">\[
+A =
+\begin{bmatrix}
+A_g &amp; 0 &amp; 0 &amp; 0\\
+-B_1 C_g &amp; A_1 &amp; 0 &amp; 0\\
+0 &amp; 0 &amp; A_2 &amp; 0\\
+B_3 C_g &amp; 0 &amp; 0 &amp; A_3
+\end{bmatrix},\quad
+B_1^{(w)} = \begin{bmatrix}0\\B_1\\0\\0\end{bmatrix},\quad
+B_2^{(u)} = \begin{bmatrix}B_g\\-B_1 D_g\\B_2\\B_3 D_g\end{bmatrix},
+\]</div>
+<div class="arithmatex">\[
+C_1 =
+\begin{bmatrix}
+-D_1 C_g &amp; C_1 &amp; 0 &amp; 0\\
+0 &amp; 0 &amp; C_2 &amp; 0\\
+D_3 C_g &amp; 0 &amp; 0 &amp; C_3
+\end{bmatrix},\;
+D_{11} = \begin{bmatrix}D_1\\0\\0\end{bmatrix},\;
+D_{12} = \begin{bmatrix}-D_1 D_g\\D_2\\D_3 D_g\end{bmatrix},
+\]</div>
+<div class="arithmatex">\[
+C_2 = \begin{bmatrix}-C_g &amp; 0 &amp; 0 &amp; 0\end{bmatrix},\qquad
+D_{21} = I,\qquad D_{22} = -D_g .
+\]</div>
+<p>The defining identity — verified in <code>tests/test_hinf.py</code> to <span class="arithmatex">\(10^{-6}\)</span> — is that
+the lower LFT of <span class="arithmatex">\(P\)</span> with <strong>any</strong> controller reproduces the stack:</p>
+<div class="arithmatex">\[
+\mathcal{F}_\ell(P, K) \;=\;
+\begin{bmatrix} W_S\,S \\ W_{KS}\,K S \\ W_T\,T \end{bmatrix},
+\qquad u = K y .
+\]</div>
+<hr />
+<h2 id="5-dgkf-state-space-solution-gamma-iteration">5. DGKF state-space solution (<span class="arithmatex">\(\gamma\)</span>-iteration)<a class="headerlink" href="#5-dgkf-state-space-solution-gamma-iteration" title="Permanent link">&para;</a></h2>
+<p><code>hinf_syn</code> follows Doyle-Glover-Khargonekar-Francis (1989) / Zhou-Doyle-Glover
+(1996) ch. 17. After normalising <span class="arithmatex">\(D_{12}^\top D_{12} = I\)</span>,
+<span class="arithmatex">\(D_{21} D_{21}^\top = I\)</span> by SVD scalings, and balancing the plant state, each
+trial <span class="arithmatex">\(\gamma\)</span> solves two Hamiltonian Riccati equations:</p>
+<div class="arithmatex">\[
+H_\infty =
+\begin{bmatrix}
+A - B_2 D_{12}^\top C_1 &amp; \gamma^{-2} B_1 B_1^\top - B_2 B_2^\top\\
+-C_1^\top (I - D_{12}D_{12}^\top) C_1 &amp; -(A - B_2 D_{12}^\top C_1)^\top
+\end{bmatrix},
+\quad X_\infty = \operatorname{Ric}(H_\infty),
+\]</div>
+<div class="arithmatex">\[
+J_\infty =
+\begin{bmatrix}
+(A - B_1 D_{21}^\top C_2)^\top &amp; \gamma^{-2} C_1^\top C_1 - C_2^\top C_2\\
+-B_1 (I - D_{21}^\top D_{21}) B_1^\top &amp; -(A - B_1 D_{21}^\top C_2)
+\end{bmatrix},
+\quad Y_\infty = \operatorname{Ric}(J_\infty),
+\]</div>
+<p>where <span class="arithmatex">\(\operatorname{Ric}(\cdot)\)</span> is the stabilising solution
+<span class="arithmatex">\(P = U_2 U_1^{-1}\)</span> from the stable invariant subspace, extracted by an <strong>ordered
+real Schur</strong> factorisation (numerically stable for the stiff Hamiltonians that
+arise when a weight corner sits far from the plant band).</p>
+<p><strong>A stabilising <span class="arithmatex">\(H_\infty\)</span> controller for this <span class="arithmatex">\(\gamma\)</span> exists</strong> iff</p>
+<div class="arithmatex">\[
+X_\infty \succeq 0, \qquad Y_\infty \succeq 0, \qquad
+\rho(X_\infty Y_\infty) &lt; \gamma^2 .
+\]</div>
+<p>The <span class="arithmatex">\(\gamma^{-2}\)</span> term is the only structural difference from the two LQR/LQG
+Riccati equations: it injects the <em>worst-case disturbance feedforward</em>
+<span class="arithmatex">\(w_{\text{worst}} = \gamma^{-2} B_1^\top X_\infty x\)</span>. As <span class="arithmatex">\(\gamma \to \infty\)</span> that
+term vanishes and the <span class="arithmatex">\(H_\infty\)</span> controller collapses onto the <span class="arithmatex">\(H_2\)</span> (LQG) one —
+<span class="arithmatex">\(H_\infty\)</span> is LQG that has stopped assuming the disturbance is benign.</p>
+<p><code>hinf_syn</code> <strong>bisects</strong> <span class="arithmatex">\(\gamma\)</span> down to the smallest value for which the three
+conditions hold and returns the <strong>central controller</strong></p>
+<div class="arithmatex">\[
+F = -(D_{12}^\top C_1 + B_2^\top X_\infty),\quad
+L = -(B_1 D_{21}^\top + Y_\infty C_2^\top),\quad
+Z = (I - \gamma^{-2} Y_\infty X_\infty)^{-1},
+\]</div>
+<div class="arithmatex">\[
+A_K = A - B_1 D_{21}^\top C_2 + \gamma^{-2}\tilde B_1 \tilde B_1^\top X_\infty
+      + B_2 F - Z\,(Y_\infty C_2^\top)\,C_2,
+\qquad \tilde B_1 = B_1 (I - D_{21}^\top D_{21}),
+\]</div>
+<div class="arithmatex">\[
+K = \big(A_K,\; -Z L,\; F,\; 0\big),
+\]</div>
+<p>un-scaled by the <span class="arithmatex">\(D_{12}/D_{21}\)</span> normalisations. <code>mixsyn</code>'s plant always has
+<span class="arithmatex">\(D_{21} = I\)</span> (perfect reference measurement), so <span class="arithmatex">\(Y_\infty = 0\)</span>, <span class="arithmatex">\(Z = I\)</span>, and
+<span class="arithmatex">\(K\)</span> reduces to <span class="arithmatex">\(\big(A - B_1 C_2 + B_2 F,\; B_1,\; F,\; 0\big)\)</span>.</p>
+<p><strong>Verification.</strong> <code>tests/test_hinf.py</code> checks, without any external solver, that
+the returned <span class="arithmatex">\(K\)</span> (i) makes the closed loop internally stable, (ii) achieves
+<span class="arithmatex">\(\|\mathcal{F}_\ell(P,K)\|_\infty \le \gamma\)</span> (via the independent bounded-real
+Hamiltonian <span class="arithmatex">\(H_\infty\)</span>-norm), (iii) satisfies <span class="arithmatex">\(X\succeq0\)</span>, <span class="arithmatex">\(Y\succeq0\)</span>,
+<span class="arithmatex">\(\rho(XY)&lt;\gamma^2\)</span>, and (iv) that <span class="arithmatex">\(\gamma\)</span> is a tight infimum (feasibility flips
+just below it). A slycot-guarded test additionally matches <span class="arithmatex">\(\gamma\)</span> to
+<code>control.hinfsyn</code> within 3 %.</p>
+<p><strong>Limits.</strong> The dense-Schur Riccati solver copes with weight corner frequencies
+up to <span class="arithmatex">\(\sim 4\)</span>–<span class="arithmatex">\(5\)</span> decades from the plant band; beyond that (e.g. a <span class="arithmatex">\(W_T\)</span> pole
+<span class="arithmatex">\(10^6\)</span> rad/s above the dominant plant pole) it can fail to bracket <span class="arithmatex">\(\gamma\)</span> —
+use gentler weights or a specialised solver. Bi-proper <span class="arithmatex">\(W_S\)</span> needs
+<code>mixsyn</code> (which strips the feed-through); calling <code>hinf_syn</code> directly on a
+<span class="arithmatex">\(D_{11}\neq 0\)</span> plant raises.</p>
+<hr />
+<h2 id="6-h-infinity-vs-lqg-on-an-unmodelled-mode-experiment-35">6. H-infinity vs LQG on an unmodelled mode (Experiment 35)<a class="headerlink" href="#6-h-infinity-vs-lqg-on-an-unmodelled-mode-experiment-35" title="Permanent link">&para;</a></h2>
+<p><strong>Setup.</strong> Design a controller for a nominal plant <span class="arithmatex">\(G(s)\)</span>, then evaluate it on
+the <em>true</em> plant <span class="arithmatex">\(G_p(s) = G(s)\cdot R(s)\)</span> where <span class="arithmatex">\(R(s)\)</span> is a <strong>lightly-damped
+high-frequency mode</strong> (<span class="arithmatex">\(\omega_r\)</span> well above crossover, <span class="arithmatex">\(\zeta_r \approx 0.02\)</span>)
+that was <strong>left out of the design model</strong>.</p>
+<p><strong>LQG</strong> shapes only the nominal loop; it places no explicit constraint on <span class="arithmatex">\(|T|\)</span>
+past crossover, so <span class="arithmatex">\(T\)</span> typically has non-trivial gain out at <span class="arithmatex">\(\omega_r\)</span>. When
+<span class="arithmatex">\(R(s)\)</span> is present, that mode is inside the loop, <span class="arithmatex">\(|W_m T|\)</span> crosses 1, and the
+gain / phase / <strong>disk</strong> margins collapse — often to instability.</p>
+<p><strong>H-infinity</strong> with a <span class="arithmatex">\(W_T\)</span> whose <span class="arithmatex">\(1/A\)</span> level exceeds the multiplicative-error
+size <span class="arithmatex">\(|W_m(j\omega_r)|\)</span> forces <span class="arithmatex">\(|T| &lt; 1/|W_T| \le 1/|W_m|\)</span> there. By the small
+gain theorem the loop is then robustly stable for <em>every</em> <span class="arithmatex">\(\|\Delta\|_\infty\le1\)</span>
+— the resonance included, even though it never appeared in the design model. The
+price is a slightly lower nominal bandwidth and a marginally higher nominal <span class="arithmatex">\(S\)</span>
+peak: robustness traded for nominal performance, explicitly and by the single
+knob <span class="arithmatex">\(A\)</span> in <span class="arithmatex">\(W_T\)</span>.</p>
+<p>Experiment 35 reports, side by side for LQG and <span class="arithmatex">\(H_\infty\)</span>: the nominal and
+perturbed <strong>gain / phase / disk margins</strong>, the <span class="arithmatex">\(\|S\|_\infty\)</span> and <span class="arithmatex">\(\|T\|_\infty\)</span>
+peaks, and a 4-panel figure (loop <span class="arithmatex">\(L\)</span>, <span class="arithmatex">\(S\)</span>, <span class="arithmatex">\(T\)</span> with the <span class="arithmatex">\(W_T^{-1}\)</span> bound, and
+the margin table).</p>
+<hr />
+<h2 id="7-references">7. References<a class="headerlink" href="#7-references" title="Permanent link">&para;</a></h2>
+<ul>
+<li>J. Doyle, K. Glover, P. Khargonekar &amp; B. Francis, "State-space solutions to
+  standard H2 and H-infinity control problems", <em>IEEE TAC</em> 34(8), 831-847, 1989.</li>
+<li>K. Zhou, J. Doyle &amp; K. Glover, <em>Robust and Optimal Control</em>, Prentice Hall,
+  1996 — chapters 13 (H-infinity norm), 16-17 (state-space H-infinity).</li>
+<li>S. Skogestad &amp; I. Postlethwaite, <em>Multivariable Feedback Control: Analysis and
+  Design</em>, 2nd ed., Wiley, 2005 — chapters 2-3 (S/T, weights), 9 (the S/KS/T
+  stack and the general algorithm).</li>
+<li>J. Doyle, "Analysis of feedback systems with structured uncertainties",
+  <em>IEE Proc. D</em> 129(6), 242-250, 1982 (disk margin / structured singular value).</li>
+</ul>
 
 
 
