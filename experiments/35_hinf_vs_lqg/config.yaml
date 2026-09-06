@@ -1,0 +1,52 @@
+# Experiment 35 - H-infinity vs LQG under an unmodelled resonance
+# Companion: aimct.controllers.hinf (mixsyn, weight_S/weight_T, StateSpace),
+# aimct.controllers.solve_care (the two LQG Riccati equations).
+# Phase 3 Track A / Exp 35.
+
+question: >
+  A designer models a servo as a smooth second-order plant G(s) and never puts
+  in a lightly-damped structural mode. LQG tuned for tight nominal performance
+  places no ceiling on |T| out where that mode lives; H-infinity
+  mixed-sensitivity with a W_T that rolls |T| off past the mode does. When the
+  resonance turns out to be real, which loop survives - and what did the
+  survivor give up?
+
+plant:
+  nominal: "G(s) = 12 / ((s + 1)(s + 3))   (DC gain 4, poles -1, -3)"
+  unmodelled_mode: "R(s) = wr^2 / (s^2 + 2 zeta_r wr s + wr^2),  wr = 12 rad/s,  zeta_r = 0.08"
+  true_plant: "G_p(s) = G(s) * R(s)   (peak multiplicative error |R - 1| ~ 1/(2 zeta_r) ~ 6 near wr)"
+
+controllers:
+  LQG:
+    impl: "aimct.controllers.solve_care x2 (LQR gain + Kalman gain), folded to a y->u StateSpace"
+    tuning: "q = 60 (output weight), r = 1 ; process-noise wv = 200, meas-noise vv = 1  -> nominal crossover ~7 rad/s, AGGRESSIVE"
+    T_shaping: "none - |T| is whatever the nominal loop leaves it"
+  H-infinity:
+    impl: "aimct.controllers.hinf.mixsyn (DGKF gamma-iteration)"
+    weights: "W_S: wb = 1.0, A = 1e-3, M = 2 ;  W_KS = 3e-2 (flat) ;  W_T: wb = 1.2, A = 1/60, M = 2"
+    intent: "W_T high-frequency level 1/A = 60 >> the ~6 resonance error, corner ~1.2 rad/s -> |T(wr)| forced well below 1/|R - 1|; nominal bandwidth deliberately dropped to ~1 rad/s"
+    achieved_gamma: 0.981
+
+evaluation:
+  on: "nominal G  and  true plant G_p"
+  metrics:
+    - "closed-loop internal stability (poles of T = L/(1+L))"
+    - "classical gain margin / phase margin (from L(jw) crossings, from scratch)"
+    - "skew-0 disk margin  alpha = 1 / max_w |S(jw) - 0.5|  (Seiler-Packard-Gahinet), and the simultaneous gain/phase variation it guarantees"
+    - "||S||_inf and ||T||_inf peaks"
+  grid: "logspace(-2, 3, 4000 full / 1500 quick) rad/s"
+
+outputs: [table.md, table.csv, figure.png]   # committed = AIMCT_EXP_FULL=1
+run: "python experiments/35_hinf_vs_lqg/run.py"
+run_full: "AIMCT_EXP_FULL=1 python experiments/35_hinf_vs_lqg/run.py"
+
+headline: >
+  Nominal: LQG has ordinary margins (12 dB / 51 deg, disk 20 dB / 78 deg,
+  ||S|| 1.6); H-infinity has a very gentle loop by construction (infinite GM,
+  90 deg PM, disk margin alpha ~ 2, ||S|| 1.01). Add the resonance: LQG goes
+  UNSTABLE (a closed-loop pole crosses into the RHP - the loop still had gain at
+  wr and the mode's 180 deg phase flip finished it). H-infinity stays stable,
+  with margins degraded but alive (4.2 dB / 89 deg, disk 8.8 dB / 50 deg,
+  ||S|| 2.65). The price of that robustness is explicit and large: H-infinity's
+  nominal closed-loop bandwidth is ~1 rad/s versus LQG's ~7 - robustness bought
+  with nominal speed, by the single knob A in W_T.
