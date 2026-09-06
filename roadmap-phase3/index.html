@@ -2027,15 +2027,27 @@ simulation first.</p>
 </tr>
 <tr>
 <td>D3</td>
-<td><strong>Performance-regression suite</strong></td>
+<td>✅ <strong>Performance-regression suite</strong> (<code>c5fb451</code>)</td>
 <td><code>benchmarks/perf/</code>, <code>.github/workflows/perf.yml</code></td>
-<td>Time the hot paths (CARE solve, dense QP, one iLQR iteration, a <code>simulate</code> step) across problem sizes; commit a baseline; CI flags a &gt;20% regression.</td>
+<td><code>bench.py</code> times 8 hot paths (CARE n=8/16, dense QP, <code>LinearMPC.update</code>, one iLQR iteration, 100 RK4 steps, a Kalman step, <code>mixsyn</code>); median of <code>--reps</code>. PR gate at 2.5× vs a committed baseline; on <code>main</code> the baseline is re-measured on the CI image and committed back.</td>
 </tr>
 <tr>
 <td>D4</td>
 <td><strong>Vectorised batch simulation</strong></td>
 <td><code>aimct.simulate</code> (extension)</td>
 <td><code>simulate_batch(system, x0s, controller)</code> for Monte-Carlo robustness sweeps without a Python loop over trials; optional numba path for the integrator.</td>
+</tr>
+<tr>
+<td>D5</td>
+<td><strong>Portal per-experiment pages</strong></td>
+<td><code>docs/experiments/</code></td>
+<td>One rendered page per experiment (README + table + figure), grouped by module. (lava)</td>
+</tr>
+<tr>
+<td>D6</td>
+<td><strong>Report Phase-3 integration</strong></td>
+<td><code>docs/report/main.tex</code>, <code>docs/index.md</code>, <code>README</code></td>
+<td>Fold Exp 35/36 into the living report; add a factual Phase-3 summary. (lava)</td>
 </tr>
 </tbody>
 </table>
@@ -2053,26 +2065,26 @@ simulation first.</p>
 <tr>
 <td><strong>toku</strong></td>
 <td>Track A (robust control)</td>
-<td>✅ Exp-32 Task B (keep-out disk, done on a well-scaled point mass — the quad case needs <strong>A5</strong>). <strong>Now:</strong> <strong>A1</strong> <code>aimct.controllers.hinf</code> + <strong>Exp 35</strong>, then <strong>A5</strong> + <strong>A2</strong>.</td>
+<td>✅ <strong>A1</strong> <code>aimct.controllers.hinf</code> (<code>51d3b6b</code>) + <strong>Exp 35</strong> H∞ vs LQG (<code>06db1b5</code>). <strong>Now:</strong> <strong>A2</strong> μ / structured-uncertainty analysis (<code>aimct.robust</code>) + <strong>Exp 40</strong>, then <strong>A5</strong>.</td>
 </tr>
 <tr>
 <td><strong>famo</strong></td>
-<td>Track B (HIL)</td>
-<td>✅ <strong>B1</strong> <code>aimct.hil</code> (<code>ee6cf32</code>) + <strong>Exp 36</strong> (<code>ee6cf32</code>) + deploy↔HIL bridge test (<code>31d7614</code>). Next: HIL for a second plant / telemetry playback.</td>
+<td>Track C (estimation)</td>
+<td>✅ <strong>B1</strong> <code>aimct.hil</code> (<code>ee6cf32</code>) + <strong>Exp 36</strong> + bridge test (<code>31d7614</code>). <strong>Now:</strong> <strong>C1</strong> <code>aimct.estimation.MHE</code> (moving-horizon estimation) + <strong>Exp 38</strong> (MHE vs EKF/UKF under a state constraint).</td>
 </tr>
 <tr>
 <td><strong>lava</strong></td>
 <td>Track D (reach)</td>
-<td>✅ <strong>D1</strong> docs portal (<code>a2bdae0</code>, live on <code>gh-pages</code>) + <strong>D2</strong> <code>paper.md</code>/<code>paper.bib</code>. Next: <strong>D3</strong> perf-regression CI (with puma), experiment-page auto-gen.</td>
+<td>✅ <strong>D1</strong> docs portal (<code>a2bdae0</code>, live on <code>gh-pages</code>) + <strong>D2</strong> <code>paper.md</code>/<code>paper.bib</code>. <strong>Now:</strong> <strong>D5</strong> per-experiment portal pages + <strong>D6</strong> Exp 35/36 into the living report + a factual Phase-3 summary.</td>
 </tr>
 <tr>
 <td><strong>puma</strong></td>
 <td>Track B support + infra</td>
-<td>✅ <strong>B2</strong> <code>aimct.sysid.identify_manipulator</code> (<code>b6a0686</code>) + <strong>B3</strong> <code>aimct.deploy</code> (<code>7ffa78d</code>). <strong>B4</strong> buildable-arm doc lives in the portal (lava). Next: <strong>D3</strong> perf suite, roadmap/CI/release upkeep.</td>
+<td>✅ <strong>B2</strong> <code>aimct.sysid.identify_manipulator</code> (<code>b6a0686</code>) + <strong>B3</strong> <code>aimct.deploy</code> (<code>7ffa78d</code>) + <strong>D3</strong> perf suite (<code>c5fb451</code>). Fixed CI (PEP-701 f-strings, <code>f809ae2</code>). <strong>Now:</strong> <strong>C2</strong> particle filter + roadmap/CI upkeep.</td>
 </tr>
 </tbody>
 </table>
-<p><code>H∞</code> / HIL / portal ran in parallel. Track C opens once <strong>A1</strong> has landed.</p>
+<p><code>H∞</code> / HIL / portal ran in parallel. Track C is open (<strong>A1</strong> landed).</p>
 <hr />
 <h2 id="not-in-phase-3">Not in Phase 3<a class="headerlink" href="#not-in-phase-3" title="Permanent link">&para;</a></h2>
 <p>Full ROS 2 node generation, a real flight-controller firmware target, a
