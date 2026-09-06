@@ -74,5 +74,10 @@ This directory contains research foundations, canonical parameter sets, framewor
     - Optimization-based state estimation on sliding finite window $N$, handling hard state & disturbance inequality constraints ($x_{\text{lo}} \le x \le x_{\text{hi}}$).
     - Arrival cost approximation via EKF covariance propagation, stability under uniform observability, and analysis of why MHE outperforms Gaussian filters (EKF, UKF) on non-Lipschitz / hard-boundary physical systems (e.g. liquid level floor $h \ge 0$).
 
+16. **[Structured Singular Value ($\mu$) Analysis Reference Specification (`mu-analysis-reference.md`)](file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/mu-analysis-reference.md)**
+    - The $M$-$\Delta$ interconnection, the block structure $\mathbf{\Delta}$ (repeated real / repeated complex / full complex), and $\mu_{\mathbf{\Delta}}(M)$ with the bracketing bounds $\rho(M) \le \mu \le \bar\sigma(M)$.
+    - The D-scaling upper bound $\inf_{D} \bar\sigma(D M D^{-1})$ (Osborne balancing), the power-iteration lower bound (left/right eigenvector alignment), the robust-stability margin $1/\sup_\omega \mu$, and robust performance as $\mu$ of the augmented structure (main-loop theorem).
+    - Constant-$D$ D-K iteration wired to `aimct.controllers.hinf.hinf_syn`; why $\mu$ predicts a coupled-uncertainty stability loss that single-loop gain / phase margins miss (Experiment 40).
+
 
 
