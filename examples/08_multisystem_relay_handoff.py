@@ -401,7 +401,7 @@ def relay_animation(bundle):
         seg.append((tr, tag))
     t_off = np.cumsum([0.0] + [s[0].t[-1] for s in seg[:-1]])
 
-    fig, ax = plt.subplots(figsize=(13, 5), dpi=100)   # -> ~1300x500 GIF
+    fig, ax = plt.subplots(figsize=(13, 5))
     ax.set_xlim(-1.5, TARGET_X + 2)
     ax.set_ylim(-CRANE.L - 0.6, 5.2)
     ax.set_aspect("equal", adjustable="box")
@@ -478,7 +478,7 @@ def relay_animation(bundle):
 
     anim = FuncAnimation(fig, frame, frames=len(frame_t),
                          interval=int(1000 / fps), blit=False)
-    anim.save(OUT / "relay_animation.gif", writer=PillowWriter(fps=fps))
+    anim.save(OUT / "relay_animation.gif", writer=PillowWriter(fps=fps), dpi=100)
     plt.close(fig)
     print(f"saved {OUT / 'relay_animation.gif'} "
           f"({(OUT / 'relay_animation.gif').stat().st_size} bytes)")
