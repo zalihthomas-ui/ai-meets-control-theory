@@ -1,0 +1,71 @@
+name: Perf
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'benchmarks/perf/**'
+      - '.github/workflows/perf.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'benchmarks/perf/**'
+      - '.github/workflows/perf.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: perf-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev,xcheck,ml]"
+
+      - name: Run bench
+        run: python benchmarks/perf/bench.py --reps 60 --json current.json
+
+      - name: Check against baseline
+        # Enforced on PRs; advisory on main pushes (the next step re-seeds the
+        # baseline on the CI image right after, so a cross-environment first
+        # run must not hard-fail).
+        continue-on-error: ${{ github.event_name == 'push' }}
+        run: python benchmarks/perf/bench.py --reps 60 --check --threshold 2.5
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: perf-results
+          path: current.json
+
+      - name: Refresh committed baseline (main only)
+        if: github.event_name == 'push'
+        run: |
+          python benchmarks/perf/bench.py --reps 60 --update
+          if ! git diff --quiet -- benchmarks/perf/baseline.json; then
+            git config user.name  "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add benchmarks/perf/baseline.json
+            git commit -m "chore(perf): refresh baseline.json from CI [skip ci]"
+            git push || echo "baseline push skipped (branch moved)"
+          else
+            echo "baseline unchanged"
+          fi
