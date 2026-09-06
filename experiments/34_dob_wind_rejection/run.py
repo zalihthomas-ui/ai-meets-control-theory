@@ -218,9 +218,9 @@ md_lines = [
 
 for m_dict in metrics:
     md_lines.append(
-        f"| {m_dict["controller"]} | {m_dict["rmse_x"]:.2f} | {m_dict["max_drift_x"]:.2f} | {m_dict["ess_x"]:.2f} | {m_dict["ts_x"]:.2f} | "
-        f"{m_dict["rmse_z"]:.2f} | {m_dict["max_drift_z"]:.2f} | {m_dict["rmse_th"]:.2f} | "
-        f"{m_dict["energy"]:.4f} | {m_dict["peak_thrust"]:.4f} | {m_dict["sat_pct"]:.1f} |"
+        f"| {m_dict['controller']} | {m_dict['rmse_x']:.2f} | {m_dict['max_drift_x']:.2f} | {m_dict['ess_x']:.2f} | {m_dict['ts_x']:.2f} | "
+        f"{m_dict['rmse_z']:.2f} | {m_dict['max_drift_z']:.2f} | {m_dict['rmse_th']:.2f} | "
+        f"{m_dict['energy']:.4f} | {m_dict['peak_thrust']:.4f} | {m_dict['sat_pct']:.1f} |"
     )
 
 table_md = "\n".join(md_lines) + "\n"
@@ -231,9 +231,9 @@ csv_lines = [
 ]
 for m_dict in metrics:
     csv_lines.append(
-        f"{m_dict["controller"]},{m_dict["rmse_x"]:.4f},{m_dict["max_drift_x"]:.4f},{m_dict["ess_x"]:.4f},{m_dict["ts_x"]:.4f},"
-        f"{m_dict["rmse_z"]:.4f},{m_dict["max_drift_z"]:.4f},{m_dict["rmse_th"]:.4f},"
-        f"{m_dict["energy"]:.6f},{m_dict["peak_thrust"]:.6f},{m_dict["sat_pct"]:.2f}"
+        f"{m_dict['controller']},{m_dict['rmse_x']:.4f},{m_dict['max_drift_x']:.4f},{m_dict['ess_x']:.4f},{m_dict['ts_x']:.4f},"
+        f"{m_dict['rmse_z']:.4f},{m_dict['max_drift_z']:.4f},{m_dict['rmse_th']:.4f},"
+        f"{m_dict['energy']:.6f},{m_dict['peak_thrust']:.6f},{m_dict['sat_pct']:.2f}"
     )
 
 table_csv = "\n".join(csv_lines) + "\n"

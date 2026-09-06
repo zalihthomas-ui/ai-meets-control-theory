@@ -246,9 +246,9 @@ md_lines = [
 
 for m in metrics:
     md_lines.append(
-        f"| {m["controller"]} | {m["delay_margin_ms"]:.0f} | {m["settling_s"]:.3f} | {m["max_tip_deg"]:.2f} | "
-        f"{m["ess_wind_deg"]:.2f} | {m["ess_post_deg"]:.3f} | {m["energy"]:.2f} | {m["peak_tau"]:.2f} | "
-        f"{m["slew_sat_pct"]:.1f} | **{m["status"]}** |"
+        f"| {m['controller']} | {m['delay_margin_ms']:.0f} | {m['settling_s']:.3f} | {m['max_tip_deg']:.2f} | "
+        f"{m['ess_wind_deg']:.2f} | {m['ess_post_deg']:.3f} | {m['energy']:.2f} | {m['peak_tau']:.2f} | "
+        f"{m['slew_sat_pct']:.1f} | **{m['status']}** |"
     )
 
 table_md = "\n".join(md_lines) + "\n"
@@ -259,9 +259,9 @@ csv_lines = [
 ]
 for m in metrics:
     csv_lines.append(
-        f"{m["controller"]},{m["delay_margin_ms"]:.1f},{m["settling_s"]:.4f},{m["max_tip_deg"]:.3f},"
-        f"{m["ess_wind_deg"]:.3f},{m["ess_post_deg"]:.4f},{m["energy"]:.4f},{m["peak_tau"]:.3f},"
-        f"{m["slew_sat_pct"]:.2f},{m["status"]}"
+        f"{m['controller']},{m['delay_margin_ms']:.1f},{m['settling_s']:.4f},{m['max_tip_deg']:.3f},"
+        f"{m['ess_wind_deg']:.3f},{m['ess_post_deg']:.4f},{m['energy']:.4f},{m['peak_tau']:.3f},"
+        f"{m['slew_sat_pct']:.2f},{m['status']}"
     )
 table_csv = "\n".join(csv_lines) + "\n"
 (EXP_DIR / "table.csv").write_text(table_csv, encoding="utf-8")
