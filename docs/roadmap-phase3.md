@@ -72,8 +72,10 @@ simulation first.
 | --- | --- | --- | --- |
 | D1 | **Hosted documentation portal** | `mkdocs.yml`, `.github/workflows/docs.yml` | mkdocs-material → GitHub Pages. API reference via `mkdocstrings`; `DECISION-GUIDE`, `RESULTS`, `GETTING-STARTED`, `USAGE`, `VISUALIZATION` become first-class pages; notebooks rendered; CLI reference. Deploys on every push to `main`. |
 | D2 | **JOSS paper** | `paper.md`, `paper.bib` | A Journal of Open Source Software submission draft — the library as a citable research artefact. Statement of need, a summary of the 34-experiment evidence base, comparison to `python-control` / `do-mpc` / `casadi`. |
-| D3 | **Performance-regression suite** | `benchmarks/perf/`, `.github/workflows/perf.yml` | Time the hot paths (CARE solve, dense QP, one iLQR iteration, a `simulate` step) across problem sizes; commit a baseline; CI flags a >20% regression. |
+| D3 | ✅ **Performance-regression suite** (`c5fb451`) | `benchmarks/perf/`, `.github/workflows/perf.yml` | `bench.py` times 8 hot paths (CARE n=8/16, dense QP, `LinearMPC.update`, one iLQR iteration, 100 RK4 steps, a Kalman step, `mixsyn`); median of `--reps`. PR gate at 2.5× vs a committed baseline; on `main` the baseline is re-measured on the CI image and committed back. |
 | D4 | **Vectorised batch simulation** | `aimct.simulate` (extension) | `simulate_batch(system, x0s, controller)` for Monte-Carlo robustness sweeps without a Python loop over trials; optional numba path for the integrator. |
+| D5 | **Portal per-experiment pages** | `docs/experiments/` | One rendered page per experiment (README + table + figure), grouped by module. (lava) |
+| D6 | **Report Phase-3 integration** | `docs/report/main.tex`, `docs/index.md`, `README` | Fold Exp 35/36 into the living report; add a factual Phase-3 summary. (lava) |
 
 ---
 
@@ -81,12 +83,12 @@ simulation first.
 
 | Agent | Phase-3 lane | Status |
 | --- | --- | --- |
-| **toku** | Track A (robust control) | ✅ Exp-32 Task B (keep-out disk, done on a well-scaled point mass — the quad case needs **A5**). **Now:** **A1** `aimct.controllers.hinf` + **Exp 35**, then **A5** + **A2**. |
-| **famo** | Track B (HIL) | ✅ **B1** `aimct.hil` (`ee6cf32`) + **Exp 36** (`ee6cf32`) + deploy↔HIL bridge test (`31d7614`). Next: HIL for a second plant / telemetry playback. |
-| **lava** | Track D (reach) | ✅ **D1** docs portal (`a2bdae0`, live on `gh-pages`) + **D2** `paper.md`/`paper.bib`. Next: **D3** perf-regression CI (with puma), experiment-page auto-gen. |
-| **puma** | Track B support + infra | ✅ **B2** `aimct.sysid.identify_manipulator` (`b6a0686`) + **B3** `aimct.deploy` (`7ffa78d`). **B4** buildable-arm doc lives in the portal (lava). Next: **D3** perf suite, roadmap/CI/release upkeep. |
+| **toku** | Track A (robust control) | ✅ **A1** `aimct.controllers.hinf` (`51d3b6b`) + **Exp 35** H∞ vs LQG (`06db1b5`). **Now:** **A2** μ / structured-uncertainty analysis (`aimct.robust`) + **Exp 40**, then **A5**. |
+| **famo** | Track C (estimation) | ✅ **B1** `aimct.hil` (`ee6cf32`) + **Exp 36** + bridge test (`31d7614`). **Now:** **C1** `aimct.estimation.MHE` (moving-horizon estimation) + **Exp 38** (MHE vs EKF/UKF under a state constraint). |
+| **lava** | Track D (reach) | ✅ **D1** docs portal (`a2bdae0`, live on `gh-pages`) + **D2** `paper.md`/`paper.bib`. **Now:** **D5** per-experiment portal pages + **D6** Exp 35/36 into the living report + a factual Phase-3 summary. |
+| **puma** | Track B support + infra | ✅ **B2** `aimct.sysid.identify_manipulator` (`b6a0686`) + **B3** `aimct.deploy` (`7ffa78d`) + **D3** perf suite (`c5fb451`). Fixed CI (PEP-701 f-strings, `f809ae2`). **Now:** **C2** particle filter + roadmap/CI upkeep. |
 
-`H∞` / HIL / portal ran in parallel. Track C opens once **A1** has landed.
+`H∞` / HIL / portal ran in parallel. Track C is open (**A1** landed).
 
 ---
 
