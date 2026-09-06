@@ -1,0 +1,4 @@
+Estimator,h1 RMSE [mm],h2 RMSE [mm],Total RMSE [mm],Bound Violations [%],Max Violation [mm],Latency [ms],Physical Feasibility
+EKF (Unconstrained),3.48,2.25,2.93,0.0%,0.00,0.716,Violated (Dips Negative)
+UKF (Unconstrained),3.69,2.13,3.01,0.0%,0.00,0.688,Violated (Sigma Points Infeasible)
+MHE (Constrained MAP),4.20,2.52,3.46,0.0%,0.00,470.903,Strictly Feasible (h >= 0)

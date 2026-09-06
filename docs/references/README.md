@@ -70,4 +70,9 @@ This directory contains research foundations, canonical parameter sets, framewor
     - Generalised-plant construction $P = \mathcal{F}(G, W_S, W_{KS}, W_T)$, the two DGKF Hamiltonian Riccati equations with the $\gamma^{-2}$ term, the sub-optimality conditions ($X_\infty \succeq 0$, $Y_\infty \succeq 0$, $\rho(X_\infty Y_\infty) < \gamma^2$), $\gamma$-bisection, and the central-controller formula.
     - $H_\infty$ vs. LQG on an unmodelled lightly-damped high-frequency mode: why a $W_T$ that rolls off past crossover preserves gain / phase / disk margins that LQG loses (Experiment 35).
 
+15. **[Moving-Horizon Estimation (MHE) Reference Specification (`mhe-reference.md`)](file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/mhe-reference.md)**
+    - Optimization-based state estimation on sliding finite window $N$, handling hard state & disturbance inequality constraints ($x_{\text{lo}} \le x \le x_{\text{hi}}$).
+    - Arrival cost approximation via EKF covariance propagation, stability under uniform observability, and analysis of why MHE outperforms Gaussian filters (EKF, UKF) on non-Lipschitz / hard-boundary physical systems (e.g. liquid level floor $h \ge 0$).
+
+
 

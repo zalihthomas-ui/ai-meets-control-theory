@@ -1,0 +1,33 @@
+experiment:
+  id: 38
+  title: "Moving-Horizon Estimation vs EKF/UKF under Hard Physical State Bounds"
+  date: "2026-09-06"
+  author: "AIMCT Team"
+  system: "TwoTank"
+
+plant:
+  A1: 0.001555   # Tank 1 area [m^2] (D = 4.45 cm)
+  A2: 0.001555   # Tank 2 area [m^2] (D = 4.45 cm)
+  a12: 0.0000181 # Inter-tank orifice area [m^2] (d = 4.8 mm)
+  a2: 0.0000181  # Drain orifice area [m^2] (d = 4.8 mm)
+  Kp: 0.0000033  # Volumetric pump flow coefficient [m^3/(s*V)]
+  g: 9.81        # Gravity [m/s^2]
+  h_max: 0.30    # Maximum physical liquid level [m]
+  v_max: 12.0    # Maximum pump voltage [V]
+
+estimation:
+  dt: 0.10
+  t_final: 20.0
+  x0_true: [0.035, 0.020]     # Initial low levels near dry floor [m]
+  x0_prior: [0.050, 0.040]    # Initial filter prior [m]
+  P0_diag: [0.0025, 0.0025]   # Prior covariance
+  Q_diag: [1.0e-6, 1.0e-6]    # Process noise covariance
+  R_diag: [2.25e-4, 2.25e-4]  # Measurement noise covariance (sigma = 1.5 cm)
+  mhe:
+    horizon: 10
+    arrival_cost: "ekf"
+    bounds:
+      x_min: [0.0, 0.0]
+      x_max: [0.30, 0.30]
+      w_min: [-0.02, -0.02]
+      w_max: [0.02, 0.02]
