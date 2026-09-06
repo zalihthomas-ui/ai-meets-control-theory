@@ -47,7 +47,7 @@ dependencies = [
 [project.optional-dependencies]
 # python-control: used to cross-check from-scratch implementations. The core
 # library still must not import it at runtime — keep it test-only.
-xcheck = ["control>=0.10"]
+xcheck = ["control>=0.10", "slycot>=0.6"]
 ml = [
     "torch>=2.2",
     "gymnasium>=1.0",
