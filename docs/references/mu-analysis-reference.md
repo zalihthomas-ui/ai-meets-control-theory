@@ -1,9 +1,9 @@
 # Structured Singular Value (μ) Analysis Reference
 
-Companion to [`aimct.robust`](../../src/aimct/robust/mu.py)
+Companion to `aimct.robust`
 (`BlockStructure`, `mu`, `robust_stability_margin`,
 `robust_performance_margin`, `dk_iterate`) and
-[Experiment 40](../../experiments/40_mu_analysis_rs_rp/). This is the *analysis*
+Experiment 40 (`experiments/40_mu_analysis_rs_rp/`). This is the *analysis*
 counterpart to the H-infinity *synthesis* in
 [`aimct.controllers.hinf`](hinf-reference.md).
 
@@ -163,7 +163,7 @@ and returns `(K, history)` with the `robust_stability_margin` dict of each round
 
 ## 6. What Experiment 40 shows
 
-On [Experiment 35](../../experiments/35_hinf_vs_lqg/)'s plant, with the resonance
+On Experiment 35's plant, with the resonance
 `R(s)` re-expressed as a **multiplicative-uncertainty weight** `W_m(s)` and a
 **second, real, parametric** uncertainty on the DC gain:
 
