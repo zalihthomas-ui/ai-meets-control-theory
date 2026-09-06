@@ -85,6 +85,7 @@ The **`examples/`** gallery is the on-ramp — each script is
 | `05_replay_animation.py` | `aimct.viz.animate` — replay a run as a video/GIF |
 | `06_live_sandbox_headless.py` | driving a `Sandbox` without a GUI |
 | **`07_full_workflow_gantry_crane.py`** | **the whole loop on one hard problem — see below** |
+| **`08_multisystem_relay_handoff.py`** | **a system of systems** — one package relayed 20 m by a crane, a mobile robot, and an 8-state slung-load quad, each with its own controller, hand-offs gated on *aligned ∧ slow ∧ steady* |
 
 [`docs/USAGE.md`](USAGE.md) covers the axes you can vary
 (*system × controller × trajectory × disturbance × parameters*) with

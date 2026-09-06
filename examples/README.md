@@ -19,6 +19,7 @@ pip install -e ".[dev,ml]"
 | [`05_replay_animation.py`](05_replay_animation.py) | **Replay Animation** | Generate a simulated `PlanarQuadrotor` trajectory and build a synchronized visual animation with telemetry HUD via `aimct.viz.animate`. |
 | [`06_live_sandbox_headless.py`](06_live_sandbox_headless.py) | **Live Sandbox (Headless)** | Instantiate an interactive `Sandbox` with `TwoLinkArm`, switchable controllers, and dynamic `Disturbance` models without opening a GUI window. |
 | [`07_full_workflow_gantry_crane.py`](07_full_workflow_gantry_crane.py) | **The whole loop, one hard problem** | Define a brand-new `GantryCrane` system, validate it with `aimct.dev`, design LQR / input-shaper / constrained-MPC / iLQR, benchmark all four across nominal / wind-gust / model-mismatch scenarios, and animate it with a custom `SystemArtist`. Longer (~150 lines, ~2 min) — the capstone walkthrough, see [`docs/GETTING-STARTED.md`](../docs/GETTING-STARTED.md). |
+| [`08_multisystem_relay_handoff.py`](08_multisystem_relay_handoff.py) | **A system of systems** | One package relayed 20 m by three different machines — a `GantryCrane`, a `DifferentialDriveRobot`, and a freshly-derived 8-state `SlungLoadQuad` (planar quadrotor + pendulum load) — each with its own controller (ZV-shaped LQR / cruise + heading LQR / iLQR-RTI). A supervisor sequences the legs and gates each hand-off on *aligned ∧ slow ∧ not-swinging*. Longest (~330 lines, ~5 min); shows how the library's pieces compose into a pipeline. |
 
 ---
 
@@ -34,4 +35,5 @@ python examples/04_run_challenge.py
 python examples/05_replay_animation.py
 python examples/06_live_sandbox_headless.py
 python examples/07_full_workflow_gantry_crane.py   # heavier: ~2 min, writes examples/_out/
+python examples/08_multisystem_relay_handoff.py    # heaviest: ~5 min, writes examples/_out/
 ```
