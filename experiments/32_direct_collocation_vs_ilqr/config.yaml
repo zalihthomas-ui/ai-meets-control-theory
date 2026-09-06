@@ -11,50 +11,48 @@ question: >
   single shooting (iLQR - a Riccati sweep over the true rollout), sampling
   (CEM - cross-entropy over action sequences), and direct transcription
   (collocation - make the state AND input at every knot decision variables and
-  enforce the discretised dynamics as equality constraints). Given the SAME
-  minimum-effort cart-pole swing-up, what does each actually deliver:
-  the achieved objective, whether the boundary condition is met, whether the
-  plan survives being re-integrated through the true dynamics, and how long the
-  solve takes?
+  enforce the discretised dynamics as equality constraints). The thing direct
+  transcription can express that the other two cannot is a HARD CONSTRAINT
+  instead of a penalty weight. Two offline problems test that: a hard TERMINAL
+  constraint (Task A) and a hard PATH constraint (Task B).
 
-ocp:
+common:
+  collocation: >
+    aimct.planning.DirectCollocation - Hermite-Simpson defects over N knots,
+    decision vector (X[0..N-1], U[0..N-1]); x0 / x_goal as explicit linear
+    equalities; boxes as variable bounds; keep-out as path_con(X,U) <= 0.
+    scipy.optimize.minimize("SLSQP"), analytic HS defect Jacobian (FD dynamics
+    Jacobian). The constraint is HARD.
+  shooting_and_sampling: >
+    iLQR (one offline solve) and SamplingMPC run open-loop over the whole
+    horizon. Neither has a hard-constraint mechanism - the condition is a
+    penalty (large terminal Qf, or a quartic keep-out barrier in a custom cost).
+  rolled_metrics: >
+    re-integrate the returned u through the TRUE dynamics with a fine RK4 - FOH
+    for collocation, ZOH for iLQR / CEM - the honest "does the plan fly" check.
+
+task_A_cartpole_terminal:
   plant: aimct.systems.CartPole
-  objective: "min integral_0^T u(t)^2 dt"
-  x0: "[0, 0, pi, 0]   (hanging, at rest, cart at origin)"
-  x_goal: "[0, 0, 0, 0]   (upright, at rest, cart at origin)"
-  t_final_s: 2.0
-  input_box: "|u| <= 20 N"
+  ocp: "min integral(u^2) dt ; x(0)=[0,0,pi,0] ; x(T)=[0,0,0,0] ; |u|<=20 N ; T=2 s"
+  knots: "41 full / 21 quick ; iLQR & CEM at dt=0.02, horizon 100"
+  penalty: "iLQR / CEM terminal Qf = diag([400, 40, 800, 40])"
+  cem: "2000 samples / 120 elite / 6 iters, 40 outer refinements (full)"
 
-planners:
-  - name: Direct collocation (HS)
-    impl: aimct.planning.DirectCollocation
-    transcription: >
-      Hermite-Simpson defects over N knots (41 full / 21 quick), decision vector
-      (X[0..N-1], U[0..N-1]); x0 / x_goal as explicit linear equalities; input
-      box as variable bounds. scipy.optimize.minimize(method="SLSQP") with an
-      analytic constraint Jacobian (FD dynamics Jacobian). Terminal condition:
-      HARD constraint.
-  - name: iLQR / single shooting
-    impl: aimct.controllers.iLQR (one full solve, offline)
-    note: >
-      No hard terminal constraint in shooting - the boundary condition enters as
-      a large terminal penalty Qf = diag([400, 40, 800, 40]); Q ~ 0 keeps the
-      running cost effort-only. dt = 0.02, horizon 100.
-  - name: CEM / sampling
-    impl: aimct.controllers.SamplingMPC, run open-loop over the whole horizon
-    note: >
-      Same terminal penalty Qf as iLQR. 2000 samples / 120 elite / 6 CEM iters,
-      40 outer refinements (full). Terminal condition: penalty, not constraint.
+task_B_pointmass_keepout:
+  plant: "planar double integrator - state [x, y, vx, vy], input [ax, ay]"
+  ocp: >
+    min integral(||a||^2) dt ; x(0)=(-2,0) ; x(T)=(2,0) ; |a|<=3 ; T=4 s ;
+    stay outside the disk centred (0,0) radius 0.70 (on the straight-line path)
+  knots: "41 full / 31 quick ; iLQR & CEM at dt=0.05, horizon 80"
+  penalty: "keep-out barrier W * max(0, r^2 - d^2)^2 with W = 3e3 ; soft terminal Qf = diag([120,120,12,12])"
+  cem: "3000 samples / 150 elite / 6 iters, 40 outer refinements (full)"
+  warm_start: "all three from the same detour arc (a knot on the disk centre zeroes the constraint gradient)"
+  headline_metric: "min disk clearance = closest approach minus radius ; negative = inside the keep-out zone"
 
 scoring:
-  effort: "integral(u^2 dt), trapezoidal"
-  term_err_planned: "||x(T) - goal|| from the planner's own knots (pole angle wrapped)"
-  term_err_rolled: >
-    same, after re-integrating the returned u through the TRUE dynamics with a
-    fine RK4 - FOH for collocation, ZOH for iLQR / CEM (the input model each
-    planner assumes). The honest "does the plan fly" check.
-  max_dyn_drift: "worst knot mismatch between the plan and that re-integration"
-  box_ok: "peak |u| <= 20 N"
+  effort: "integral of the running cost, trapezoidal"
+  terminal_error: "||x(T) - goal|| (planned knots, and re-integrated)"
+  min_clearance: "Task B - distance to the disk minus its radius (planned, and re-integrated)"
   solve_ms: "wall-clock for the single offline solve"
 
 outputs: [table.md, table.csv, figure.png]   # committed = AIMCT_EXP_FULL=1
@@ -62,14 +60,18 @@ run: "python experiments/32_direct_collocation_vs_ilqr/run.py"
 run_full: "AIMCT_EXP_FULL=1 python experiments/32_direct_collocation_vs_ilqr/run.py"
 
 headline: >
-  Direct collocation is the only one of the three that meets the terminal
-  condition exactly (it is a constraint, not a penalty): planned terminal error
-  0, and 8e-4 after re-integration at 41 knots (pure inter-knot quadrature
-  error, shrinks with the mesh). iLQR and CEM leave the pole 0.25 and 0.65 short
-  of upright because Qf only trades against effort - and their lower "effort"
-  numbers are not comparable, they are solving a relaxed problem. Collocation
-  also solved fastest here (~0.7 s vs 1.4 s iLQR vs 8.5 s CEM). The catch:
-  collocation's dynamics only hold to quadrature order BETWEEN knots, so a plan
-  that is defect-perfect still needs a tracking controller or a fine mesh to fly
-  open-loop; iLQR and CEM roll the true dynamics and are internally consistent
-  to ~1e-5 - just to the wrong endpoint.
+  Only direct collocation actually meets the constraint, in both tasks, because
+  for it the constraint is a constraint and not a penalty knob. Task A: planned
+  terminal error 0 vs iLQR 0.25 / CEM 0.65 short of upright. Task B: collocation
+  rides the keep-out boundary to +-0.003 mm and hits the goal to 1e-22, while
+  both penalty methods finish ~0.1-0.3 mm INSIDE the keep-out and 0.14 short of
+  the goal - the penalty weight trades the two off and no setting gives both.
+  iLQR reports the lowest objective in both tasks only because it solved the
+  relaxed problem. Collocation also solved fastest (0.5-0.7 s vs 1-1.4 s iLQR vs
+  4.5-8.3 s CEM). Its own catch: Hermite-Simpson dynamics only hold to quadrature
+  order BETWEEN knots, so a defect-perfect plan still drifts 8e-4 on a fine
+  re-integration (mesh-convergent) and wants a tracking controller to fly
+  open-loop. Note: the SLSQP transcription is not yet hardened for an active
+  nonconvex path constraint on a badly-scaled many-state plant (a keep-out disk
+  on PlanarQuadrotor makes the LSQ subproblem singular) - Task B uses the
+  well-scaled point mass; variable scaling + a sparse Jacobian are the fix.
