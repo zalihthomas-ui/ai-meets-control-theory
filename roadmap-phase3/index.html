@@ -1599,10 +1599,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ownership-opening-assignments" class="md-nav__link">
+  <a href="#ownership" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Ownership (opening assignments)
+        Ownership
       
     </span>
   </a>
@@ -1791,10 +1791,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ownership-opening-assignments" class="md-nav__link">
+  <a href="#ownership" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Ownership (opening assignments)
+        Ownership
       
     </span>
   </a>
@@ -1888,6 +1888,12 @@ of the library.</p>
 <td><em>(stretch)</em> Control-contraction metrics</td>
 <td><code>aimct.controllers</code></td>
 <td>CCM-based nonlinear tracking with a certified contraction rate.</td>
+</tr>
+<tr>
+<td>A5</td>
+<td><strong><code>DirectCollocation</code> robustness pass</strong></td>
+<td><code>aimct.planning</code></td>
+<td>Optional variable/constraint scaling (<code>x_scale</code> / <code>u_scale</code>) + a sparse Hermite–Simpson constraint Jacobian so <code>trust-constr</code> is viable as the constrained-problem default. Surfaced by Exp 32 Task B: an <em>active nonconvex path constraint</em> (keep-out disk) on a badly-scaled ≥4-state plant (<code>PlanarQuadrotor</code>, pitch gain <code>l/Iyy ≈ 3e3</code>) makes SLSQP's LSQ subproblem singular; <code>trust-constr</code> copes but at 10–50 s. Keep the singular-row guard for a knot on a keep-out centre. Currently a documented limit in the Exp 32 README.</td>
 </tr>
 <tr>
 <td><strong>Exp 35</strong></td>
@@ -2034,40 +2040,39 @@ simulation first.</p>
 </tbody>
 </table>
 <hr />
-<h2 id="ownership-opening-assignments">Ownership (opening assignments)<a class="headerlink" href="#ownership-opening-assignments" title="Permanent link">&para;</a></h2>
+<h2 id="ownership">Ownership<a class="headerlink" href="#ownership" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
 <th>Agent</th>
 <th>Phase-3 lane</th>
-<th>First task</th>
+<th>Status</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong>toku</strong></td>
 <td>Track A (robust control)</td>
-<td>Land Exp-32 task 2 (quad keep-out disk) first, then <strong>A1</strong> <code>aimct.controllers.hinf</code> + <strong>Exp 35</strong>.</td>
+<td>✅ Exp-32 Task B (keep-out disk, done on a well-scaled point mass — the quad case needs <strong>A5</strong>). <strong>Now:</strong> <strong>A1</strong> <code>aimct.controllers.hinf</code> + <strong>Exp 35</strong>, then <strong>A5</strong> + <strong>A2</strong>.</td>
 </tr>
 <tr>
 <td><strong>famo</strong></td>
 <td>Track B (HIL)</td>
-<td><strong>B1</strong> <code>aimct.hil</code> harness (real-time loop + plant emulator) + <strong>Exp 36</strong>.</td>
+<td>✅ <strong>B1</strong> <code>aimct.hil</code> (<code>ee6cf32</code>) + <strong>Exp 36</strong> (<code>ee6cf32</code>) + deploy↔HIL bridge test (<code>31d7614</code>). Next: HIL for a second plant / telemetry playback.</td>
 </tr>
 <tr>
 <td><strong>lava</strong></td>
 <td>Track D (reach)</td>
-<td><strong>D1</strong> docs portal scaffold + migrate the five guide docs; start <strong>D2</strong> <code>paper.md</code>.</td>
+<td>✅ <strong>D1</strong> docs portal (<code>a2bdae0</code>, live on <code>gh-pages</code>) + <strong>D2</strong> <code>paper.md</code>/<code>paper.bib</code>. Next: <strong>D3</strong> perf-regression CI (with puma), experiment-page auto-gen.</td>
 </tr>
 <tr>
 <td><strong>puma</strong></td>
 <td>Track B support + infra</td>
-<td><strong>B2</strong> identification-from-logs + <strong>B4</strong> the buildable-arm doc + <strong>B3</strong> export path; <strong>D3</strong> perf suite; roadmap upkeep, CI/release health.</td>
+<td>✅ <strong>B2</strong> <code>aimct.sysid.identify_manipulator</code> (<code>b6a0686</code>) + <strong>B3</strong> <code>aimct.deploy</code> (<code>7ffa78d</code>). <strong>B4</strong> buildable-arm doc lives in the portal (lava). Next: <strong>D3</strong> perf suite, roadmap/CI/release upkeep.</td>
 </tr>
 </tbody>
 </table>
-<p><code>H∞</code> / HIL / portal are independent enough to run in parallel. Track C opens
-once A1 and B1 have landed.</p>
+<p><code>H∞</code> / HIL / portal ran in parallel. Track C opens once <strong>A1</strong> has landed.</p>
 <hr />
 <h2 id="not-in-phase-3">Not in Phase 3<a class="headerlink" href="#not-in-phase-3" title="Permanent link">&para;</a></h2>
 <p>Full ROS 2 node generation, a real flight-controller firmware target, a
