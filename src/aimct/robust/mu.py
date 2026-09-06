@@ -266,7 +266,7 @@ def mu(M, structure, *, lower: bool = True, upper: bool = True,
 # ======================================================================
 # frequency sweeps
 # ======================================================================
-def _sweep(M_of_omega, omega, structure, seed, *, restarts=4, iters=50):
+def _sweep(M_of_omega, omega, structure, seed, *, restarts=3, iters=35):
     S = BlockStructure.parse(structure)
     omega = np.atleast_1d(np.asarray(omega, dtype=float))
     lb = np.empty(omega.size)
