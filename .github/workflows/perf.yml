@@ -59,7 +59,7 @@ jobs:
       - name: Refresh committed baseline (main only)
         if: github.event_name == 'push'
         run: |
-          python benchmarks/perf/bench.py --reps 60 --update
+          python benchmarks/perf/bench.py --reps 60 --update-if-drift 8
           if ! git diff --quiet -- benchmarks/perf/baseline.json; then
             git config user.name  "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"

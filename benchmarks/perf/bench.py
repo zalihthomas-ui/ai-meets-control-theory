@@ -121,6 +121,18 @@ def case_kf_step_n12():
     return step
 
 
+def case_simulate_batch_64_msd():
+    from aimct.controllers import LQR
+    from aimct.simulate import simulate_batch
+    from aimct.systems import MassSpringDamper
+
+    sys = MassSpringDamper()
+    A, B = sys.linearize()
+    k = LQR(A, B, np.eye(2), np.array([[1.0]]))
+    x0s = np.random.default_rng(0).normal(scale=0.5, size=(64, 2))
+    return lambda: simulate_batch(sys, k, x0s, dt=0.02, t_final=2.0)
+
+
 def case_hinf_mixsyn_small():
     from aimct.controllers import StateSpace, mixsyn, weight_S, weight_T
 
@@ -139,6 +151,7 @@ CASES = {
     "ilqr_iter_cartpole": case_ilqr_iter_cartpole,
     "simulate_100_steps_quadrotor": case_simulate_100_steps_quadrotor,
     "kf_step_n12": case_kf_step_n12,
+    "simulate_batch_64_msd": case_simulate_batch_64_msd,
     "hinf_mixsyn_small": case_hinf_mixsyn_small,
 }
 
@@ -204,6 +217,9 @@ def main(argv=None) -> int:
     p.add_argument("--json", type=Path, help="write results JSON here")
     p.add_argument("--check", action="store_true", help="compare to baseline.json, exit 1 on regression")
     p.add_argument("--update", action="store_true", help="(re)write baseline.json from this run")
+    p.add_argument("--update-if-drift", type=float, metavar="PCT", default=None,
+                   help="rewrite baseline.json only if some metric moved > PCT%% "
+                        "(or a case was added/removed); keeps CI noise down")
     p.add_argument("--threshold", type=float, default=2.0, help="max now/baseline ratio before --check fails")
     p.add_argument("--reps", type=int, default=25)
     p.add_argument("--warmup", type=int, default=3)
@@ -226,6 +242,19 @@ def main(argv=None) -> int:
     if args.update:
         BASELINE.write_text(json.dumps(payload, indent=2) + "\n")
         print(f"  wrote {BASELINE}")
+    if args.update_if_drift is not None:
+        now = payload["results"]
+        old = (json.loads(BASELINE.read_text())["results"]
+               if BASELINE.exists() else {})
+        drift = set(now) ^ set(old)
+        drift |= {k for k in set(now) & set(old)
+                  if old[k] and abs(now[k] - old[k]) / old[k] * 100 > args.update_if_drift}
+        if drift:
+            BASELINE.write_text(json.dumps(payload, indent=2) + "\n")
+            print(f"  baseline refreshed ({', '.join(sorted(drift))} moved > "
+                  f"{args.update_if_drift:g}%)")
+        else:
+            print(f"  baseline unchanged (all metrics within {args.update_if_drift:g}%)")
     if args.check:
         return check(payload["results"], args.threshold)
     return 0

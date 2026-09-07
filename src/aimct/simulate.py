@@ -130,3 +130,128 @@ def simulate(
     us[-1] = us[-2] if n_steps > 0 else us[-1]
     ys[-1] = np.atleast_1d(np.asarray(system.output(ts[-1], xs[-1], us[-1]), dtype=float))
     return Trajectory(t=ts, x=xs, u=us, y=ys)
+
+
+@dataclass
+class BatchResult:
+    """Stacked output of :func:`simulate_batch` over ``B`` trials.
+
+    ``x`` / ``u`` / ``y`` are ``(B, T, ·)``; ``t`` is the shared ``(T,)`` grid
+    (trials that diverged early are right-padded with their last finite sample
+    so the stack is rectangular — check ``diverged`` / ``n_valid``).
+    """
+
+    t: np.ndarray
+    x: np.ndarray                     # (B, T, n_states)
+    u: np.ndarray                     # (B, T, n_inputs)
+    y: np.ndarray                     # (B, T, n_outputs)
+    diverged: np.ndarray             # (B,) bool
+    n_valid: np.ndarray              # (B,) int  — finite samples before padding
+
+    def __len__(self) -> int:
+        return self.x.shape[0]
+
+    @property
+    def final_x(self) -> np.ndarray:
+        """State at the last valid sample of each trial — ``(B, n_states)``."""
+        return self.x[np.arange(len(self)), self.n_valid - 1]
+
+    def map_metric(self, fn: Callable[[Trajectory], float]) -> np.ndarray:
+        """Apply ``fn`` to each trial as a :class:`Trajectory`; return ``(B,)``."""
+        out = np.empty(len(self))
+        for i in range(len(self)):
+            k = int(self.n_valid[i])
+            out[i] = fn(Trajectory(self.t[:k], self.x[i, :k], self.u[i, :k],
+                                   self.y[i, :k], bool(self.diverged[i])))
+        return out
+
+
+def simulate_batch(
+    system: DynamicalSystem,
+    controller: "ControllerLike | Callable | Callable[[], object]",
+    x0s: np.ndarray,
+    dt: float,
+    t_final: float,
+    *,
+    u_bounds: tuple[float, float] | None = None,
+    measurement_fn: Callable | None = None,
+    input_disturbances: "Callable | list | None" = None,
+    param_overrides: "list[dict] | None" = None,
+    fresh_controller: bool = False,
+) -> BatchResult:
+    r"""Monte-Carlo rollout: run ``simulate`` for every row of ``x0s``.
+
+    Parameters
+    ----------
+    x0s : ``(B, n_states)`` — one initial state per trial.
+    controller : a :class:`Controller` (reset per trial), a bare
+        ``(measurement, dt) -> u`` callable, or — with ``fresh_controller=True``
+        — a zero-arg factory returning a new controller per trial (use this
+        when the controller keeps history that ``reset()`` doesn't fully
+        clear, or holds a per-trial seed).
+    input_disturbances : one ``t -> d`` callable applied to every trial, or a
+        length-``B`` list of them (``None`` entries allowed).
+    param_overrides : optional length-``B`` list of ``{attr: value}`` dicts
+        temporarily set on ``system`` for that trial (restored after) — for
+        sweeping plant parameters. ``system`` must be safe to mutate in place.
+
+    Returns
+    -------
+    :class:`BatchResult`
+
+    Notes
+    -----
+    Trials are independent and run sequentially; this is a convenience +
+    bookkeeping layer, not a vectorised integrator (the reference systems
+    index state as ``x[0]``, ``x[1]`` and do not broadcast over a batch axis).
+    For a large sweep, parallelise at the call site over slices of ``x0s``.
+    """
+    x0s = np.atleast_2d(np.asarray(x0s, dtype=float))
+    if x0s.ndim != 2 or x0s.shape[1] != system.n_states:
+        raise ValueError(f"x0s must be (B, {system.n_states}), got {x0s.shape}")
+    B = x0s.shape[0]
+    n_steps = int(round(t_final / dt))
+    T = n_steps + 1
+
+    def _dist_for(i):
+        if input_disturbances is None:
+            return None
+        if callable(input_disturbances):
+            return input_disturbances
+        return input_disturbances[i]
+
+    def _controller_for(i):
+        return controller() if fresh_controller else controller
+
+    n_out = system.n_outputs or system.n_states
+    x = np.zeros((B, T, system.n_states))
+    u = np.zeros((B, T, system.n_inputs))
+    y = np.zeros((B, T, n_out))
+    diverged = np.zeros(B, dtype=bool)
+    n_valid = np.full(B, T, dtype=int)
+
+    for i in range(B):
+        ov = (param_overrides or [None] * B)[i]
+        saved = {k: getattr(system, k) for k in ov} if ov else {}
+        if ov:
+            for k, v in ov.items():
+                setattr(system, k, v)
+        try:
+            tr = simulate(system, _controller_for(i), x0=x0s[i], dt=dt,
+                          t_final=t_final, u_bounds=u_bounds,
+                          measurement_fn=measurement_fn,
+                          input_disturbance=_dist_for(i))
+        finally:
+            for k, v in saved.items():
+                setattr(system, k, v)
+
+        k = len(tr)
+        x[i, :k], u[i, :k], y[i, :k] = tr.x, tr.u, tr.y
+        if k < T:                                # pad a diverged/short run
+            x[i, k:], u[i, k:], y[i, k:] = tr.x[-1], tr.u[-1], tr.y[-1]
+        diverged[i] = tr.diverged
+        n_valid[i] = k
+        if i == 0:
+            t_grid = tr.t if k == T else np.arange(T) * dt
+
+    return BatchResult(t=t_grid, x=x, u=u, y=y, diverged=diverged, n_valid=n_valid)
