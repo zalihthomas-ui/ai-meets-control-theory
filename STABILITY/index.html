@@ -23,7 +23,7 @@
     
     
       
-        <title>AIMCT Reference Library & Specifications - AIMCT: AI Meets Control Theory</title>
+        <title>API stability & versioning - AIMCT: AI Meets Control Theory</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#aimct-reference-library-specifications" class="md-skip">
+        <a href="#api-stability-versioning" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              AIMCT Reference Library &amp; Specifications
+              API stability &amp; versioning
             
           </span>
         </div>
@@ -3163,10 +3163,60 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#documents" class="md-nav__link">
+  <a href="#what-is-public" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Documents
+        What is public
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What is public">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-public-surface-at-v10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The public surface at v1.0
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deprecation-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deprecation process
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-python-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Python &amp; dependencies
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-not-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is not covered
       
     </span>
   </a>
@@ -3193,149 +3243,134 @@
   
 
 
-<h1 id="aimct-reference-library-specifications">AIMCT Reference Library &amp; Specifications<a class="headerlink" href="#aimct-reference-library-specifications" title="Permanent link">&para;</a></h1>
-<p>This directory contains research foundations, canonical parameter sets, framework surveys, and challenge specifications for the <strong>AI Meets Control Theory (AIMCT)</strong> project.</p>
-<hr />
-<h2 id="documents">Documents<a class="headerlink" href="#documents" title="Permanent link">&para;</a></h2>
+<h1 id="api-stability-versioning">API stability &amp; versioning<a class="headerlink" href="#api-stability-versioning" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Draft for v1.0. Refined by the docs pass (D10); wired into the portal nav
+and linked from the README.</p>
+</blockquote>
+<p>From <strong>v1.0.0</strong> onward, <code>aimct</code> follows <a href="https://semver.org">Semantic Versioning</a>:</p>
+<ul>
+<li><strong>PATCH</strong> (<code>1.0.x</code>) — bug fixes, docs, performance. No API change.</li>
+<li><strong>MINOR</strong> (<code>1.x.0</code>) — new modules, classes, functions, or keyword arguments,
+  added in a backward-compatible way. Existing code keeps working.</li>
+<li><strong>MAJOR</strong> (<code>2.0.0</code>) — a breaking change to something in the <strong>public API</strong>
+  as defined below.</li>
+</ul>
+<h2 id="what-is-public">What is public<a class="headerlink" href="#what-is-public" title="Permanent link">&para;</a></h2>
+<p>A name is part of the public API if <strong>all</strong> of these hold:</p>
 <ol>
-<li><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/benchmark-systems.md">Canonical Benchmark Systems (<code>benchmark-systems.md</code>)</a></strong></li>
-<li>Analytical differential equations and state-space formulations (<span class="arithmatex">\(A, B, C, D\)</span>).</li>
-<li>Literature standard parameters for Level 1 (Mass-Spring-Damper, Inverted MSD, DC Motor) and Level 2 (Nonlinear Pendulum, Cart-Pole, Duffing &amp; Van der Pol Oscillators).</li>
-<li>Numerical reference controller gains (PID, Pole Placement, LQR), Riccati solutions, closed-loop poles, and step response performance metrics.</li>
-<li>
-<p>Ground-truth verification protocols for tests in <code>tests/</code>.</p>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/robotics-systems-reference.md">Robotics Benchmark Systems Reference (<code>robotics-systems-reference.md</code>)</a></strong></p>
-</li>
-<li>Differential-Drive Mobile Robot (<code>DifferentialDriveRobot</code>): unicycle kinematics, motor velocity lag (<span class="arithmatex">\(\tau_m=0.05\text{ s}\)</span>), wheelbase geometry (<span class="arithmatex">\(r=0.033\text{ m}, W=0.160\text{ m}\)</span>), velocity bounds (<span class="arithmatex">\(v_{\max}=0.22\text{ m/s}, \omega_{\max}=2.84\text{ rad/s}\)</span>), and Brockett nonholonomic analysis.</li>
-<li>
-<p>Two-Link Planar Robotic Manipulator (<code>TwoLinkArm</code>): complete Euler-Lagrange equations <span class="arithmatex">\(M(q)\ddot{q} + C(q, \dot{q})\dot{q} + G(q) + F_v \dot{q} = \tau\)</span>, Coriolis Christoffel symbols, passivity skew-symmetry, forward kinematics, and geometric Jacobian.</p>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/furuta-pendulum-reference.md">Furuta Pendulum Reference Specification (<code>furuta-pendulum-reference.md</code>)</a></strong></p>
-</li>
-<li>Rotary Inverted Pendulum (Quanser QUBE-Servo 2 standard): 2-DOF underactuated rotary mechanics.</li>
-<li>
-<p>Analytical Euler-Lagrange equations <span class="arithmatex">\(M(\alpha)\ddot{q} + C(\alpha, \dot{q})\dot{q} + G(\alpha) + D\dot{q} = \tau\)</span>, analytical <span class="arithmatex">\((A, B)\)</span> linearization about upright equilibrium, and Åström-Furuta energy shaping swing-up law.</p>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/two-tank-reference.md">Coupled Two-Tank Liquid Level Reference (<code>two-tank-reference.md</code>)</a></strong></p>
-</li>
-<li>Process control fluid hydraulics (Quanser Coupled Tanks standard): 2-state coupled nonlinear capacity lag.</li>
-<li>
-<p>Torricelli square-root discharge law, operating equilibrium calculations, fluid flow resistance <span class="arithmatex">\(R_{12}, R_2\)</span>, Jacobian state-space linearization <span class="arithmatex">\((A, B)\)</span>, and interactive capacity analysis.</p>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/cartpole-lqr-reference.md">Cart-Pole LQR Reference Specification (<code>cartpole-lqr-reference.md</code>)</a></strong></p>
-</li>
-<li>Canonical physical parameters matching <code>CartPole</code> (<span class="arithmatex">\(M=1.0, m=0.1, l=0.5\)</span>).</li>
-<li>Analytical and numerical <span class="arithmatex">\((A, B)\)</span> linearized matrices matching <code>CartPole.linearize()</code>.</li>
-<li>
-<p>3 canonical LQR tuning configurations (Standard Balanced, Aggressive Angle, Soft Energy-Saving) with exact continuous Riccati solutions <span class="arithmatex">\(P\)</span>, optimal feedback gains <span class="arithmatex">\(K\)</span>, and closed-loop eigenvalues.</p>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/swingup-and-basin.md">Swing-Up &amp; Basin of Attraction Reference (<code>swingup-and-basin.md</code>)</a></strong></p>
-</li>
-<li>Energy-shaping swing-up formulations (Åström-Furuta for Simple Pendulum, Mark Spong Partial Feedback Linearization for Cart-Pole).</li>
-<li>Hybrid switching state machine and hysteresis boundary conditions.</li>
-<li>
-<p>Quantitative Lyapunov basin-of-attraction envelopes and recovery bounds across LQR tunings.</p>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/observers-kalman-reference.md">State Estimation, Observers &amp; Kalman Filtering (<code>observers-kalman-reference.md</code>)</a></strong></p>
-</li>
-<li>Observability analysis on Cart-Pole across 4 sensor configurations (full-state, cart position only, pole angle only, dual encoders).</li>
-<li>Deterministic Luenberger observer design and Separation Principle proof.</li>
-<li>Continuous Filter Algebraic Riccati Equation (FARE) and Discrete Kalman Filter (DKF) predict-update algorithm.</li>
-<li>
-<p>Golden numerical test fixtures for <code>src/aimct/estimation/</code> (Kalman gain matrix <span class="arithmatex">\(L\)</span>, error poles, covariance <span class="arithmatex">\(\Sigma\)</span>).</p>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/prior-art.md">Prior-Art &amp; Framework Survey (<code>prior-art.md</code>)</a></strong></p>
-</li>
-<li>Analysis of existing open tools: <code>python-control</code>, <code>do-mpc</code>, <code>Gymnasium</code>, <code>Stable-Baselines3</code>, <code>Drake</code>, <code>PySINDy</code>, <code>torchdiffeq</code>.</li>
-<li>Clear delineation of what AIMCT implements from scratch vs. what is wrapped or verified against external libraries.</li>
-<li>
-<p>Core architectural patterns for dynamical systems, controllers, and unified benchmark evaluation.</p>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/challenge-spec.md">Intelligent Control Challenge Spec (<code>challenge-spec.md</code>)</a></strong></p>
-</li>
-<li>Official 4-track challenge specification (Precision Tracking, Nonlinear Underactuated, Parametric Robustness, Safe Black-Box Adaptation).</li>
-<li>Quantitative evaluation formulas: ITAE, RMSE, control energy <span class="arithmatex">\(\int u^2 dt\)</span>, slew rate / jerk <span class="arithmatex">\(\int \dot{u}^2 dt\)</span>, and safety barrier penalties.</li>
-<li>
-<p>Ratio capping (<span class="arithmatex">\(10.0\)</span>) and <span class="arithmatex">\(S_{\text{robust}}\)</span> floor (<span class="arithmatex">\(0.20\)</span>) calibrations.</p>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/capstone-rubric.md">Capstone Evaluation Rubric (<code>capstone-rubric.md</code>)</a></strong></p>
-<ul>
-<li>Capstone 21 Five-Way Quadrotor Trajectory &amp; Obstacle Avoidance Bake-Off specification.</li>
-<li>5-dimensional evaluation: Tracking RMSE (<span class="arithmatex">\(w_1=0.40\)</span>), Control Energy (<span class="arithmatex">\(w_2=0.20\)</span>), Slew Rate (<span class="arithmatex">\(w_3=0.10\)</span>), Obstacle &amp; Safety Violations (<span class="arithmatex">\(w_4=0.15\)</span>), and Crosswind Robustness (<span class="arithmatex">\(w_5=0.15\)</span>).</li>
-</ul>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/research-papers-survey.md">Research Papers &amp; Foundations Survey (<code>research-papers-survey.md</code>)</a></strong></p>
-<ul>
-<li>Comprehensive literature synthesis of 10 foundational open-access papers across RL continuous control foundations, parsimonious data-driven dynamics (SINDy, Neural ODEs, Koopman), and safe control (CBFs, Differentiable MPC, MPPI).</li>
-</ul>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/ball-and-beam-reference.md">Ball and Beam Reference Specification (<code>ball-and-beam-reference.md</code>)</a></strong></p>
-<ul>
-<li>Canonical Quanser Ball and Beam apparatus standard: underactuated, relative degree 4 nonlinear rolling mechanics (<span class="arithmatex">\(m = 0.064\text{ kg}, M = 0.20\text{ kg}, L = 0.425\text{ m}, J = 3.010 \times 10^{-3}\text{ kg}\cdot\text{m}^2, \tau_{\max} = 1.50\text{ N}\cdot\text{m}\)</span>).</li>
-<li>Complete Euler-Lagrange equations of motion, analytical <span class="arithmatex">\((A, B)\)</span> state-space linearization about horizontal origin, open-loop instability (<span class="arithmatex">\(\lambda = +4.123\text{ rad/s}\)</span>), and Cascade PID vs. PFL vs. LQR vs. Constrained MPC benchmark formulations.</li>
-</ul>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/disturbance-observer-reference.md">Disturbance-Observer (DOB) Control Reference Specification (<code>disturbance-observer-reference.md</code>)</a></strong></p>
-<ul>
-<li>Disturbance Observer (DOB) two-degree-of-freedom architecture, causal rational Q-filter design, relative degree matching, and Small-Gain robust stability conditions (<span class="arithmatex">\(\|W_m(s)Q(s)\|_\infty &lt; 1\)</span>).</li>
-<li>Matched vs. unmatched disturbance mechanics on underactuated quadrotors, direct feedforward cancellation vs. virtual tilt reallocation (<span class="arithmatex">\(\theta_{\text{virtual}} = \hat{d}_x / g\)</span>), and proof of DOB superiority over classical integral action lag.</li>
-</ul>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/hinf-reference.md">H-infinity Mixed-Sensitivity Reference Specification (<code>hinf-reference.md</code>)</a></strong></p>
-<ul>
-<li>The <span class="arithmatex">\(H_\infty\)</span> norm, the S/KS/T mixed-sensitivity objective <span class="arithmatex">\(\|[W_S S;\ W_{KS} KS;\ W_T T]\|_\infty\)</span>, and first-order weight selection (<span class="arithmatex">\(W_S\)</span>, <span class="arithmatex">\(W_{KS}\)</span>, <span class="arithmatex">\(W_T\)</span> Skogestad-Postlethwaite forms).</li>
-<li>Generalised-plant construction <span class="arithmatex">\(P = \mathcal{F}(G, W_S, W_{KS}, W_T)\)</span>, the two DGKF Hamiltonian Riccati equations with the <span class="arithmatex">\(\gamma^{-2}\)</span> term, the sub-optimality conditions (<span class="arithmatex">\(X_\infty \succeq 0\)</span>, <span class="arithmatex">\(Y_\infty \succeq 0\)</span>, <span class="arithmatex">\(\rho(X_\infty Y_\infty) &lt; \gamma^2\)</span>), <span class="arithmatex">\(\gamma\)</span>-bisection, and the central-controller formula.</li>
-<li><span class="arithmatex">\(H_\infty\)</span> vs. LQG on an unmodelled lightly-damped high-frequency mode: why a <span class="arithmatex">\(W_T\)</span> that rolls off past crossover preserves gain / phase / disk margins that LQG loses (Experiment 35).</li>
-</ul>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/mhe-reference.md">Moving-Horizon Estimation (MHE) Reference Specification (<code>mhe-reference.md</code>)</a></strong></p>
-<ul>
-<li>Optimization-based state estimation on sliding finite window <span class="arithmatex">\(N\)</span>, handling hard state &amp; disturbance inequality constraints (<span class="arithmatex">\(x_{\text{lo}} \le x \le x_{\text{hi}}\)</span>).</li>
-<li>Arrival cost approximation via EKF covariance propagation, stability under uniform observability, and analysis of why MHE outperforms Gaussian filters (EKF, UKF) on non-Lipschitz / hard-boundary physical systems (e.g. liquid level floor <span class="arithmatex">\(h \ge 0\)</span>).</li>
-</ul>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/mu-analysis-reference.md">Structured Singular Value (<span class="arithmatex">\(\mu\)</span>) Analysis Reference Specification (<code>mu-analysis-reference.md</code>)</a></strong></p>
-<ul>
-<li>The <span class="arithmatex">\(M\)</span>-<span class="arithmatex">\(\Delta\)</span> interconnection, the block structure <span class="arithmatex">\(\mathbf{\Delta}\)</span> (repeated real / repeated complex / full complex), and <span class="arithmatex">\(\mu_{\mathbf{\Delta}}(M)\)</span> with the bracketing bounds <span class="arithmatex">\(\rho(M) \le \mu \le \bar\sigma(M)\)</span>.</li>
-<li>The D-scaling upper bound <span class="arithmatex">\(\inf_{D} \bar\sigma(D M D^{-1})\)</span> (Osborne balancing), the power-iteration lower bound (left/right eigenvector alignment), the robust-stability margin <span class="arithmatex">\(1/\sup_\omega \mu\)</span>, and robust performance as <span class="arithmatex">\(\mu\)</span> of the augmented structure (main-loop theorem).</li>
-<li>Constant-<span class="arithmatex">\(D\)</span> D-K iteration wired to <code>aimct.controllers.hinf.hinf_syn</code>; why <span class="arithmatex">\(\mu\)</span> predicts a coupled-uncertainty stability loss that single-loop gain / phase margins miss (Experiment 40).</li>
-</ul>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/particle-filter-reference.md">Particle Filter (Sequential Monte Carlo) Reference Specification (<code>particle-filter-reference.md</code>)</a></strong></p>
-<ul>
-<li>Non-parametric Bayesian state estimation via empirical particle distributions <span class="arithmatex">\(p(x_k \mid y_{1:k}) \approx \sum_{i=1}^{N_p} w_k^{(i)} \delta(x_k - x_k^{(i)})\)</span>.</li>
-<li>Numerically stable weight update in log domain using Log-Sum-Exp normalization to prevent floating-point underflow.</li>
-<li>Systematic adaptive resampling triggered when Effective Sample Size (<span class="arithmatex">\(ESS = 1/\sum w_i^2\)</span>) falls below threshold <span class="arithmatex">\(\gamma \cdot N_p\)</span>.</li>
-<li>Bearings-only target tracking analysis: how particle filters track multimodal, range-ambiguous curved non-Gaussian distributions where EKF/UKF diverge.</li>
-</ul>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/multi-agent-formation-reference.md">Multi-Agent Formation Control &amp; Graph Topology Reference Specification (<code>multi-agent-formation-reference.md</code>)</a></strong></p>
-<ul>
-<li>Algebraic graph theory foundations: Adjacency matrix <span class="arithmatex">\(A\)</span>, Degree matrix <span class="arithmatex">\(D\)</span>, Graph Laplacian <span class="arithmatex">\(L = D - A\)</span>, and Fiedler algebraic connectivity <span class="arithmatex">\(\lambda_2(L) &gt; 0\)</span>.</li>
-<li>Distributed formation consensus protocols for single- and double-integrator agent dynamics with relative displacement vectors <span class="arithmatex">\(d_{ij} = d_i^* - d_j^*\)</span>.</li>
-<li>Lyapunov asymptotic stability proof and Common Lyapunov Function (CLF) analysis under dynamic switching communication topologies.</li>
-<li>Artificial potential field collision avoidance barriers for inter-agent safety.</li>
-</ul>
-</li>
+<li>It is exported from a subpackage's <code>__init__.py</code> and listed in that
+   module's <code>__all__</code>, <strong>or</strong> documented in the API reference.</li>
+<li>Its import path does not contain a leading-underscore component
+   (<code>aimct.controllers.LQR</code> is public; <code>aimct.controllers._qp</code> is not).</li>
+<li>It is not marked <em>experimental</em> in its docstring.</li>
 </ol>
+<p>Everything else — helper functions, module internals, the exact contents of
+non-dataclass return values, private attributes — may change in any release.</p>
+<h3 id="the-public-surface-at-v10">The public surface at v1.0<a class="headerlink" href="#the-public-surface-at-v10" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Subpackage</th>
+<th>Public API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>aimct.systems</code></td>
+<td><code>DynamicalSystem</code> (the ABC contract: <code>n_states</code>, <code>n_inputs</code>, <code>dynamics</code>, optional <code>linearize</code>/<code>output</code>) and every concrete system class</td>
+</tr>
+<tr>
+<td><code>aimct.controllers</code></td>
+<td><code>PID</code>, <code>StateFeedback</code>, <code>LQR</code>, <code>LinearMPC</code>, <code>SamplingMPC</code>, <code>iLQR</code>/<code>ILQR</code>, <code>MRAC</code>, <code>DisturbanceObserver</code>/<code>QFilter</code>, <code>hinf</code> (<code>StateSpace</code>, <code>weight_*</code>, <code>augment_plant</code>, <code>hinf_syn</code>, <code>mixsyn</code>, <code>HinfController</code>), tube MPC, the swing-up/hybrid controllers, <code>solve_care</code>/<code>solve_qp</code>/<code>place_poles</code></td>
+</tr>
+<tr>
+<td><code>aimct.planning</code></td>
+<td><code>DirectCollocation</code>, <code>CollocationResult</code></td>
+</tr>
+<tr>
+<td><code>aimct.robust</code></td>
+<td><code>BlockStructure</code>, <code>mu</code>, <code>robust_stability_margin</code>, <code>robust_performance_margin</code>, <code>dk_iterate</code></td>
+</tr>
+<tr>
+<td><code>aimct.estimation</code></td>
+<td><code>LuenbergerObserver</code>, <code>KalmanFilter</code>/<code>DiscreteKalmanFilter</code>, <code>ExtendedKalmanFilter</code>, <code>UnscentedKalmanFilter</code>, <code>MovingHorizonEstimator</code>/<code>MHE</code>, <code>ParticleFilter</code></td>
+</tr>
+<tr>
+<td><code>aimct.sysid</code></td>
+<td><code>least_squares_id</code>, <code>dmdc</code>, <code>to_continuous</code>, <code>identify_manipulator</code>, <code>finite_difference_derivatives</code>, <code>ManipulatorID</code></td>
+</tr>
+<tr>
+<td><code>aimct.simulate</code></td>
+<td><code>simulate</code>, <code>simulate_batch</code>, <code>Trajectory</code>, <code>BatchResult</code>, <code>rk4_step</code></td>
+</tr>
+<tr>
+<td><code>aimct.benchmarks</code></td>
+<td><code>compare</code>, <code>ComparisonResult</code>, <code>track_trajectory</code>, <code>TrackingResult</code>, the challenge/capstone scoring entry points</td>
+</tr>
+<tr>
+<td><code>aimct.trajectories</code></td>
+<td><code>Setpoint</code>, <code>Circle</code>, <code>Lemniscate</code>, <code>MinimumJerk</code>, <code>Spline</code>, <code>Dubins</code>, <code>Lissajous</code>, <code>Rose</code>, <code>Spiral</code></td>
+</tr>
+<tr>
+<td><code>aimct.viz</code></td>
+<td><code>animate</code>, <code>Replay</code>, <code>Sandbox</code>, <code>Disturbance</code>, <code>SystemArtist</code>, <code>register_artist</code>/<code>get_artist</code>/<code>has_artist</code></td>
+</tr>
+<tr>
+<td><code>aimct.dev</code></td>
+<td><code>build_report</code>, <code>DesignReport</code>, <code>python -m aimct preview</code></td>
+</tr>
+<tr>
+<td><code>aimct.deploy</code></td>
+<td><code>export_controller</code>, <code>load_controller</code>, <code>PortableController</code>, <code>ControllerSpec</code>, <code>emit_c</code>, <code>emit_micropython</code></td>
+</tr>
+<tr>
+<td><code>aimct.hil</code></td>
+<td><code>RealTimeLoop</code>, <code>PlantEmulator</code>, the transport classes</td>
+</tr>
+<tr>
+<td><code>aimct.ml</code>, <code>aimct.rl</code></td>
+<td>learned-dynamics and agent classes as documented</td>
+</tr>
+<tr>
+<td>CLI</td>
+<td><code>python -m aimct</code> subcommands (<code>compare</code>, <code>preview</code>, <code>live</code>, <code>list</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>Return <strong>dataclasses</strong> (<code>Trajectory</code>, <code>BatchResult</code>, <code>iLQRResult</code>,
+<code>CollocationResult</code>, <code>TrackingResult</code>, <code>ComparisonResult</code>, <code>DesignReport</code>,
+<code>ManipulatorID</code>, <code>HinfSynResult</code>, …) are public: fields are only added, never
+removed or renamed, within a major version.</p>
+<h2 id="deprecation-process">Deprecation process<a class="headerlink" href="#deprecation-process" title="Permanent link">&para;</a></h2>
+<ol>
+<li>In release <code>1.n.0</code>, the old name keeps working but emits a
+   <code>DeprecationWarning</code> naming the replacement, and its docstring and the
+   CHANGELOG record it.</li>
+<li>The old name is removed no earlier than the <strong>next major</strong> release
+   (<code>2.0.0</code>) and never less than <strong>6 months</strong> after the deprecating release,
+   whichever is later.</li>
+<li>Experimental APIs (docstring-marked) are exempt — they may change or be
+   removed in a minor release, with a CHANGELOG note.</li>
+</ol>
+<h2 id="supported-python-dependencies">Supported Python &amp; dependencies<a class="headerlink" href="#supported-python-dependencies" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Python: the versions in the CI matrix (currently 3.10–3.12). Dropping a
+  Python version is a MINOR change once that version is end-of-life.</li>
+<li>NumPy / SciPy: the floors in <code>pyproject.toml</code>. Raising a floor is a MINOR
+  change.</li>
+<li>Optional extras (<code>ml</code>, <code>viz</code>, <code>xcheck</code>, <code>docs</code>): required only for the
+  features that import them; the core (<code>pip install aimct</code>) never depends on
+  them.</li>
+</ul>
+<h2 id="what-is-not-covered">What is <em>not</em> covered<a class="headerlink" href="#what-is-not-covered" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Exact numeric outputs of iterative solvers (they may shift with a NumPy /
+  SciPy / BLAS update); tests assert tolerances, not bit-for-bit values.</li>
+<li>The <code>experiments/</code> scripts and their generated tables/figures — these are
+  the evidence base, versioned with the repo, not part of the package.</li>
+<li>Plot styling and animation frame details.</li>
+</ul>
 
 
 
