@@ -18,19 +18,19 @@
         
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
-        <title>AIMCT Reference Library & Specifications - AIMCT: AI Meets Control Theory</title>
+        <title>Particle Filter (Sequential Monte Carlo) Reference Specification - AIMCT: AI Meets Control Theory</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -49,9 +49,9 @@
       
     
     
-      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#aimct-reference-library-specifications" class="md-skip">
+        <a href="#particle-filter-sequential-monte-carlo-reference-specification" class="md-skip">
           Skip to content
         </a>
       
@@ -90,7 +90,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="AIMCT: AI Meets Control Theory" class="md-header__button md-logo" aria-label="AIMCT: AI Meets Control Theory" data-md-component="logo">
+    <a href="../.." title="AIMCT: AI Meets Control Theory" class="md-header__button md-logo" aria-label="AIMCT: AI Meets Control Theory" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              AIMCT Reference Library &amp; Specifications
+              Particle Filter (Sequential Monte Carlo) Reference Specification
             
           </span>
         </div>
@@ -223,7 +223,7 @@
   
   
     <li class="md-tabs__item">
-      <a href=".." class="md-tabs__link">
+      <a href="../.." class="md-tabs__link">
         
   
   
@@ -242,7 +242,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../GETTING-STARTED/" class="md-tabs__link">
+      <a href="../../GETTING-STARTED/" class="md-tabs__link">
         
   
   
@@ -261,7 +261,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../DECISION-GUIDE/" class="md-tabs__link">
+      <a href="../../DECISION-GUIDE/" class="md-tabs__link">
         
   
   
@@ -280,7 +280,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../RESULTS/" class="md-tabs__link">
+      <a href="../../RESULTS/" class="md-tabs__link">
         
   
   
@@ -299,7 +299,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../USAGE/" class="md-tabs__link">
+      <a href="../../USAGE/" class="md-tabs__link">
         
   
   
@@ -318,7 +318,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../VISUALIZATION/" class="md-tabs__link">
+      <a href="../../VISUALIZATION/" class="md-tabs__link">
         
   
   
@@ -337,7 +337,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../DEV_PREVIEW/" class="md-tabs__link">
+      <a href="../../DEV_PREVIEW/" class="md-tabs__link">
         
   
   
@@ -358,7 +358,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../experiments/" class="md-tabs__link">
+        <a href="../../experiments/" class="md-tabs__link">
           
   
   
@@ -378,7 +378,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../hardware/two-link-arm/" class="md-tabs__link">
+        <a href="../../hardware/two-link-arm/" class="md-tabs__link">
           
   
   
@@ -396,7 +396,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../notebooks/01_tour/" class="md-tabs__link">
+      <a href="../../notebooks/01_tour/" class="md-tabs__link">
         
   
   
@@ -417,7 +417,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../api/" class="md-tabs__link">
+        <a href="../../api/" class="md-tabs__link">
           
   
   
@@ -437,7 +437,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../PORTAL/" class="md-tabs__link">
+        <a href="../../PORTAL/" class="md-tabs__link">
           
   
   
@@ -471,7 +471,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="AIMCT: AI Meets Control Theory" class="md-nav__button md-logo" aria-label="AIMCT: AI Meets Control Theory" data-md-component="logo">
+    <a href="../.." title="AIMCT: AI Meets Control Theory" class="md-nav__button md-logo" aria-label="AIMCT: AI Meets Control Theory" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -501,7 +501,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -528,7 +528,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../GETTING-STARTED/" class="md-nav__link">
+      <a href="../../GETTING-STARTED/" class="md-nav__link">
         
   
   
@@ -555,7 +555,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DECISION-GUIDE/" class="md-nav__link">
+      <a href="../../DECISION-GUIDE/" class="md-nav__link">
         
   
   
@@ -582,7 +582,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../RESULTS/" class="md-nav__link">
+      <a href="../../RESULTS/" class="md-nav__link">
         
   
   
@@ -609,7 +609,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../USAGE/" class="md-nav__link">
+      <a href="../../USAGE/" class="md-nav__link">
         
   
   
@@ -636,7 +636,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../VISUALIZATION/" class="md-nav__link">
+      <a href="../../VISUALIZATION/" class="md-nav__link">
         
   
   
@@ -663,7 +663,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DEV_PREVIEW/" class="md-nav__link">
+      <a href="../../DEV_PREVIEW/" class="md-nav__link">
         
   
   
@@ -744,7 +744,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/" class="md-nav__link">
+      <a href="../../experiments/" class="md-nav__link">
         
   
   
@@ -826,7 +826,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/01_rk4_vs_euler/" class="md-nav__link">
+      <a href="../../experiments/01_rk4_vs_euler/" class="md-nav__link">
         
   
   
@@ -854,7 +854,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/02_jacobian_linearization/" class="md-nav__link">
+      <a href="../../experiments/02_jacobian_linearization/" class="md-nav__link">
         
   
   
@@ -882,7 +882,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/03_pid_stabilizes_unstable/" class="md-nav__link">
+      <a href="../../experiments/03_pid_stabilizes_unstable/" class="md-nav__link">
         
   
   
@@ -972,7 +972,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/04_lqr_vs_pole_placement_cartpole/" class="md-nav__link">
+      <a href="../../experiments/04_lqr_vs_pole_placement_cartpole/" class="md-nav__link">
         
   
   
@@ -1000,7 +1000,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/05_cartpole_basin_of_attraction/" class="md-nav__link">
+      <a href="../../experiments/05_cartpole_basin_of_attraction/" class="md-nav__link">
         
   
   
@@ -1028,7 +1028,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/06_lqg_vs_lqr_measurement_noise/" class="md-nav__link">
+      <a href="../../experiments/06_lqg_vs_lqr_measurement_noise/" class="md-nav__link">
         
   
   
@@ -1056,7 +1056,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/15_quadrotor_ekf_output_feedback/" class="md-nav__link">
+      <a href="../../experiments/15_quadrotor_ekf_output_feedback/" class="md-nav__link">
         
   
   
@@ -1084,7 +1084,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/16_ekf_vs_ukf/" class="md-nav__link">
+      <a href="../../experiments/16_ekf_vs_ukf/" class="md-nav__link">
         
   
   
@@ -1174,7 +1174,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/07_cartpole_swingup_hybrid/" class="md-nav__link">
+      <a href="../../experiments/07_cartpole_swingup_hybrid/" class="md-nav__link">
         
   
   
@@ -1202,7 +1202,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/28_furuta_pendulum_control/" class="md-nav__link">
+      <a href="../../experiments/28_furuta_pendulum_control/" class="md-nav__link">
         
   
   
@@ -1230,7 +1230,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/33_ball_and_beam_control/" class="md-nav__link">
+      <a href="../../experiments/33_ball_and_beam_control/" class="md-nav__link">
         
   
   
@@ -1320,7 +1320,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/08_mpc_vs_lqr_constrained_cartpole/" class="md-nav__link">
+      <a href="../../experiments/08_mpc_vs_lqr_constrained_cartpole/" class="md-nav__link">
         
   
   
@@ -1348,7 +1348,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/14_quadrotor_figure8_tracking/" class="md-nav__link">
+      <a href="../../experiments/14_quadrotor_figure8_tracking/" class="md-nav__link">
         
   
   
@@ -1376,7 +1376,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/24_ilqr_vs_sampling_mpc/" class="md-nav__link">
+      <a href="../../experiments/24_ilqr_vs_sampling_mpc/" class="md-nav__link">
         
   
   
@@ -1404,7 +1404,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/26_harder_reference_paths/" class="md-nav__link">
+      <a href="../../experiments/26_harder_reference_paths/" class="md-nav__link">
         
   
   
@@ -1432,7 +1432,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/30_two_tank_level_control/" class="md-nav__link">
+      <a href="../../experiments/30_two_tank_level_control/" class="md-nav__link">
         
   
   
@@ -1522,7 +1522,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/20_quadrotor_obstacle_nmpc/" class="md-nav__link">
+      <a href="../../experiments/20_quadrotor_obstacle_nmpc/" class="md-nav__link">
         
   
   
@@ -1550,7 +1550,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/25_diffdrive_moving_obstacle/" class="md-nav__link">
+      <a href="../../experiments/25_diffdrive_moving_obstacle/" class="md-nav__link">
         
   
   
@@ -1640,7 +1640,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/32_direct_collocation_vs_ilqr/" class="md-nav__link">
+      <a href="../../experiments/32_direct_collocation_vs_ilqr/" class="md-nav__link">
         
   
   
@@ -1730,7 +1730,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/17_adaptive_vs_fixed_changing_plant/" class="md-nav__link">
+      <a href="../../experiments/17_adaptive_vs_fixed_changing_plant/" class="md-nav__link">
         
   
   
@@ -1758,7 +1758,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/23_twolink_arm_tracking/" class="md-nav__link">
+      <a href="../../experiments/23_twolink_arm_tracking/" class="md-nav__link">
         
   
   
@@ -1786,7 +1786,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/34_dob_wind_rejection/" class="md-nav__link">
+      <a href="../../experiments/34_dob_wind_rejection/" class="md-nav__link">
         
   
   
@@ -1814,7 +1814,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/35_hinf_vs_lqg/" class="md-nav__link">
+      <a href="../../experiments/35_hinf_vs_lqg/" class="md-nav__link">
         
   
   
@@ -1904,7 +1904,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/22_diffdrive_path_following/" class="md-nav__link">
+      <a href="../../experiments/22_diffdrive_path_following/" class="md-nav__link">
         
   
   
@@ -1932,7 +1932,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/27_bicycle_double_lane_change/" class="md-nav__link">
+      <a href="../../experiments/27_bicycle_double_lane_change/" class="md-nav__link">
         
   
   
@@ -1960,7 +1960,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/36_hil_arm_balance/" class="md-nav__link">
+      <a href="../../experiments/36_hil_arm_balance/" class="md-nav__link">
         
   
   
@@ -2050,7 +2050,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/09_control_on_identified_model/" class="md-nav__link">
+      <a href="../../experiments/09_control_on_identified_model/" class="md-nav__link">
         
   
   
@@ -2078,7 +2078,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/10_planning_learned_vs_true_model/" class="md-nav__link">
+      <a href="../../experiments/10_planning_learned_vs_true_model/" class="md-nav__link">
         
   
   
@@ -2106,7 +2106,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/11_qlearning_vs_classical/" class="md-nav__link">
+      <a href="../../experiments/11_qlearning_vs_classical/" class="md-nav__link">
         
   
   
@@ -2134,7 +2134,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/12_shielded_qlearning/" class="md-nav__link">
+      <a href="../../experiments/12_shielded_qlearning/" class="md-nav__link">
         
   
   
@@ -2162,7 +2162,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/18_rl_zoo_vs_lqr/" class="md-nav__link">
+      <a href="../../experiments/18_rl_zoo_vs_lqr/" class="md-nav__link">
         
   
   
@@ -2190,7 +2190,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/19_icc_leaderboard/" class="md-nav__link">
+      <a href="../../experiments/19_icc_leaderboard/" class="md-nav__link">
         
   
   
@@ -2218,7 +2218,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/21_grand_capstone_bakeoff/" class="md-nav__link">
+      <a href="../../experiments/21_grand_capstone_bakeoff/" class="md-nav__link">
         
   
   
@@ -2246,7 +2246,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/29_dagger_vs_bc_lane_change/" class="md-nav__link">
+      <a href="../../experiments/29_dagger_vs_bc_lane_change/" class="md-nav__link">
         
   
   
@@ -2274,7 +2274,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../experiments/31_sac_vs_ppo_sample_efficiency/" class="md-nav__link">
+      <a href="../../experiments/31_sac_vs_ppo_sample_efficiency/" class="md-nav__link">
         
   
   
@@ -2371,7 +2371,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../hardware/two-link-arm/" class="md-nav__link">
+      <a href="../../hardware/two-link-arm/" class="md-nav__link">
         
   
   
@@ -2406,7 +2406,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../notebooks/01_tour/" class="md-nav__link">
+      <a href="../../notebooks/01_tour/" class="md-nav__link">
         
   
   
@@ -2487,7 +2487,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/" class="md-nav__link">
+      <a href="../../api/" class="md-nav__link">
         
   
   
@@ -2515,7 +2515,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/systems/" class="md-nav__link">
+      <a href="../../api/systems/" class="md-nav__link">
         
   
   
@@ -2543,7 +2543,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/controllers/" class="md-nav__link">
+      <a href="../../api/controllers/" class="md-nav__link">
         
   
   
@@ -2571,7 +2571,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/planning/" class="md-nav__link">
+      <a href="../../api/planning/" class="md-nav__link">
         
   
   
@@ -2599,7 +2599,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/estimation/" class="md-nav__link">
+      <a href="../../api/estimation/" class="md-nav__link">
         
   
   
@@ -2627,7 +2627,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/trajectories/" class="md-nav__link">
+      <a href="../../api/trajectories/" class="md-nav__link">
         
   
   
@@ -2655,7 +2655,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/sysid/" class="md-nav__link">
+      <a href="../../api/sysid/" class="md-nav__link">
         
   
   
@@ -2683,7 +2683,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/ml/" class="md-nav__link">
+      <a href="../../api/ml/" class="md-nav__link">
         
   
   
@@ -2711,7 +2711,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/rl/" class="md-nav__link">
+      <a href="../../api/rl/" class="md-nav__link">
         
   
   
@@ -2739,7 +2739,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/hybrid/" class="md-nav__link">
+      <a href="../../api/hybrid/" class="md-nav__link">
         
   
   
@@ -2767,7 +2767,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/hil/" class="md-nav__link">
+      <a href="../../api/hil/" class="md-nav__link">
         
   
   
@@ -2795,7 +2795,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/deploy/" class="md-nav__link">
+      <a href="../../api/deploy/" class="md-nav__link">
         
   
   
@@ -2823,7 +2823,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/viz/" class="md-nav__link">
+      <a href="../../api/viz/" class="md-nav__link">
         
   
   
@@ -2851,7 +2851,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/dev/" class="md-nav__link">
+      <a href="../../api/dev/" class="md-nav__link">
         
   
   
@@ -2879,7 +2879,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/benchmarks/" class="md-nav__link">
+      <a href="../../api/benchmarks/" class="md-nav__link">
         
   
   
@@ -2968,7 +2968,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../PORTAL/" class="md-nav__link">
+      <a href="../../PORTAL/" class="md-nav__link">
         
   
   
@@ -2996,7 +2996,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../roadmap/" class="md-nav__link">
+      <a href="../../roadmap/" class="md-nav__link">
         
   
   
@@ -3024,7 +3024,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../roadmap-phase3/" class="md-nav__link">
+      <a href="../../roadmap-phase3/" class="md-nav__link">
         
   
   
@@ -3052,7 +3052,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../vision/" class="md-nav__link">
+      <a href="../../vision/" class="md-nav__link">
         
   
   
@@ -3080,7 +3080,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../PACKAGING/" class="md-nav__link">
+      <a href="../../PACKAGING/" class="md-nav__link">
         
   
   
@@ -3108,7 +3108,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../changelog/" class="md-nav__link">
+      <a href="../../changelog/" class="md-nav__link">
         
   
   
@@ -3163,10 +3163,138 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#documents" class="md-nav__link">
+  <a href="#1-executive-summary-non-gaussian-state-estimation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Documents
+        1. Executive Summary &amp; Non-Gaussian State Estimation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-mathematical-formulation-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Mathematical Formulation &amp; Algorithm
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Mathematical Formulation &amp; Algorithm">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-sequential-importance-sampling-step-prediction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Sequential Importance Sampling Step (Prediction)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-measurement-likelihood-weight-update-with-log-sum-exp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Measurement Likelihood &amp; Weight Update with Log-Sum-Exp
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-state-covariance-point-estimates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 State &amp; Covariance Point Estimates
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-particle-degeneracy-systematic-adaptive-resampling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Particle Degeneracy &amp; Systematic Adaptive Resampling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Particle Degeneracy &amp; Systematic Adaptive Resampling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-effective-sample-size-ess" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Effective Sample Size (ESS)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-adaptive-systematic-resampling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Adaptive Systematic Resampling
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-benchmark-application-bearings-only-target-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Benchmark Application: Bearings-Only Target Tracking
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Benchmark Application: Bearings-Only Target Tracking">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-why-ekf-and-ukf-fail-on-bearings-only-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Why EKF and UKF Fail on Bearings-Only Tracking
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-summary-of-estimator-trade-offs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Summary of Estimator Trade-Offs
       
     </span>
   </a>
@@ -3193,140 +3321,116 @@
   
 
 
-<h1 id="aimct-reference-library-specifications">AIMCT Reference Library &amp; Specifications<a class="headerlink" href="#aimct-reference-library-specifications" title="Permanent link">&para;</a></h1>
-<p>This directory contains research foundations, canonical parameter sets, framework surveys, and challenge specifications for the <strong>AI Meets Control Theory (AIMCT)</strong> project.</p>
+<h1 id="particle-filter-sequential-monte-carlo-reference-specification">Particle Filter (Sequential Monte Carlo) Reference Specification<a class="headerlink" href="#particle-filter-sequential-monte-carlo-reference-specification" title="Permanent link">&para;</a></h1>
+<h2 id="1-executive-summary-non-gaussian-state-estimation">1. Executive Summary &amp; Non-Gaussian State Estimation<a class="headerlink" href="#1-executive-summary-non-gaussian-state-estimation" title="Permanent link">&para;</a></h2>
+<p>The <strong>Particle Filter (PF)</strong>, also known as the <strong>Sequential Importance Resampling (SIR)</strong> or <strong>Bootstrap Particle Filter</strong>, is a non-parametric Bayesian estimation technique that represents arbitrary, non-Gaussian, multimodal probability density functions using a finite collection of weighted random samples called <strong>particles</strong>:</p>
+<div class="arithmatex">\[p(x_k \mid y_{1:k}) \approx \sum_{i=1}^{N_p} w_k^{(i)} \delta(x_k - x_k^{(i)}), \quad \sum_{i=1}^{N_p} w_k^{(i)} = 1\]</div>
+<p>While Kalman filters (KF, EKF, UKF) are constrained to unimodal Gaussian distributions <span class="arithmatex">\(\mathcal{N}(\hat{x}_k, P_k)\)</span>, the Particle Filter represents arbitrary nonlinearities, non-Gaussian disturbances, and non-convex multimodal posteriors (e.g. range-ambiguous bearings-only tracking, periodic angular wrap-arounds, and obstacle avoidance).</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>   Gaussian Assumption (EKF / UKF)             Non-Gaussian / Multimodal (Particle Filter)
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>           |                                                |
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>          / \                                             /   \       / \
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>         /   \                                           /     \     /   \
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>   -----/-----\-----                               -----/-------\---/-----\-----
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>   Single mean &amp; cov                                Multiple distinct particle clusters
+</span></code></pre></div>
 <hr />
-<h2 id="documents">Documents<a class="headerlink" href="#documents" title="Permanent link">&para;</a></h2>
+<h2 id="2-mathematical-formulation-algorithm">2. Mathematical Formulation &amp; Algorithm<a class="headerlink" href="#2-mathematical-formulation-algorithm" title="Permanent link">&para;</a></h2>
+<p>Consider the discrete-time nonlinear state-space system:</p>
+<div class="arithmatex">\[\begin{aligned}
+x_{k+1} &amp;= f(x_k, u_k) + w_k, \quad w_k \sim p_w(w) \\
+y_k     &amp;= h(x_k) + v_k,       \quad v_k \sim \mathcal{N}(0, R)
+\end{aligned}\]</div>
+<p>where <span class="arithmatex">\(f\)</span> may be continuous (integrated via RK4) or discrete, and <span class="arithmatex">\(v_k\)</span> is zero-mean measurement noise with covariance <span class="arithmatex">\(R\)</span>.</p>
+<h3 id="21-sequential-importance-sampling-step-prediction">2.1 Sequential Importance Sampling Step (Prediction)<a class="headerlink" href="#21-sequential-importance-sampling-step-prediction" title="Permanent link">&para;</a></h3>
+<p>For each particle <span class="arithmatex">\(i = 1, \dots, N_p\)</span>:
+1. Sample process disturbance <span class="arithmatex">\(w_k^{(i)} \sim \mathcal{N}(0, Q)\)</span>.
+2. Propagate state forward:
+   $<span class="arithmatex">\(x_k^{(i)} = f(x_{k-1}^{(i)}, u_{k-1}) + w_k^{(i)}\)</span>$</p>
+<h3 id="22-measurement-likelihood-weight-update-with-log-sum-exp">2.2 Measurement Likelihood &amp; Weight Update with Log-Sum-Exp<a class="headerlink" href="#22-measurement-likelihood-weight-update-with-log-sum-exp" title="Permanent link">&para;</a></h3>
+<p>The likelihood of receiving measurement <span class="arithmatex">\(y_k\)</span> given particle <span class="arithmatex">\(x_k^{(i)}\)</span> is:</p>
+<div class="arithmatex">\[p(y_k \mid x_k^{(i)}) = \frac{1}{(2\pi)^{p/2} |R|^{1/2}} \exp\left( -\frac{1}{2} (y_k - h(x_k^{(i)}))^T R^{-1} (y_k - h(x_k^{(i)})) \right)\]</div>
+<p>To avoid numerical floating-point underflow when residuals are large, weights are evaluated and normalized in the log domain:</p>
+<div class="arithmatex">\[\ell_i = \log w_{k-1}^{(i)} - \frac{1}{2} (y_k - h(x_k^{(i)}))^T R^{-1} (y_k - h(x_k^{(i)}))\]</div>
+<p>Let <span class="arithmatex">\(\ell_{\max} = \max_{j} \ell_j\)</span>. Normalized weights are computed via <strong>Log-Sum-Exp</strong>:</p>
+<div class="arithmatex">\[w_k^{(i)} = \frac{\exp(\ell_i - \ell_{\max})}{\sum_{j=1}^{N_p} \exp(\ell_j - \ell_{\max})}\]</div>
+<h3 id="23-state-covariance-point-estimates">2.3 State &amp; Covariance Point Estimates<a class="headerlink" href="#23-state-covariance-point-estimates" title="Permanent link">&para;</a></h3>
+<p>The minimum mean square error (MMSE) state estimate and posterior empirical covariance are:</p>
+<div class="arithmatex">\[\hat{x}_k = \sum_{i=1}^{N_p} w_k^{(i)} x_k^{(i)}\]</div>
+<div class="arithmatex">\[P_k = \sum_{i=1}^{N_p} w_k^{(i)} (x_k^{(i)} - \hat{x}_k)(x_k^{(i)} - \hat{x}_k)^T\]</div>
+<hr />
+<h2 id="3-particle-degeneracy-systematic-adaptive-resampling">3. Particle Degeneracy &amp; Systematic Adaptive Resampling<a class="headerlink" href="#3-particle-degeneracy-systematic-adaptive-resampling" title="Permanent link">&para;</a></h2>
+<p>Over successive time steps, the variance of the particle weights strictly increases, leading to <strong>degeneracy</strong> where all but one particle have near-zero weight.</p>
+<h3 id="31-effective-sample-size-ess">3.1 Effective Sample Size (ESS)<a class="headerlink" href="#31-effective-sample-size-ess" title="Permanent link">&para;</a></h3>
+<p>Degeneracy is measured by the <strong>Effective Sample Size</strong>:</p>
+<div class="arithmatex">\[N_{\text{eff}} = \frac{1}{\sum_{i=1}^{N_p} (w_k^{(i)})^2}, \quad 1 \le N_{\text{eff}} \le N_p\]</div>
+<h3 id="32-adaptive-systematic-resampling">3.2 Adaptive Systematic Resampling<a class="headerlink" href="#32-adaptive-systematic-resampling" title="Permanent link">&para;</a></h3>
+<p>Resampling is triggered whenever <span class="arithmatex">\(N_{\text{eff}} &lt; N_{\text{thresh}} = \gamma \cdot N_p\)</span> (typically <span class="arithmatex">\(\gamma = 0.5\)</span>):
+1. Construct cumulative sum of weights <span class="arithmatex">\(C_j = \sum_{m=1}^j w_k^{(m)}\)</span> with <span class="arithmatex">\(C_0 = 0\)</span>.
+2. Draw a single uniform offset <span class="arithmatex">\(u_1 \sim \mathcal{U}[0, 1/N_p]\)</span>.
+3. For <span class="arithmatex">\(i = 1, \dots, N_p\)</span>:
+   - Generate sample pointer: <span class="arithmatex">\(u_i = u_1 + \frac{i - 1}{N_p}\)</span>.
+   - Find index <span class="arithmatex">\(j\)</span> such that <span class="arithmatex">\(C_{j-1} \le u_i &lt; C_j\)</span>.
+   - Select resampled particle: <span class="arithmatex">\(x_{\text{new}}^{(i)} = x_k^{(j)}\)</span>.
+4. Reset all weights to uniform: <span class="arithmatex">\(w_k^{(i)} = \frac{1}{N_p}\)</span>.</p>
+<p>Systematic resampling achieves minimum variance among all standard resampling schemes (multinomial, residual, stratified) and runs in <span class="arithmatex">\(\mathcal{O}(N_p)\)</span> linear time.</p>
+<hr />
+<h2 id="4-benchmark-application-bearings-only-target-tracking">4. Benchmark Application: Bearings-Only Target Tracking<a class="headerlink" href="#4-benchmark-application-bearings-only-target-tracking" title="Permanent link">&para;</a></h2>
+<p>In <strong>Bearings-Only Target Tracking (BOTT)</strong>, an observer measures only the azimuth line-of-sight angle to a moving target:</p>
+<div class="arithmatex">\[\theta_k = \text{atan2}(y_{t,k} - y_{o,k}, \; x_{t,k} - x_{o,k}) + v_k, \quad v_k \sim \mathcal{N}(0, \sigma_\theta^2)\]</div>
+<h3 id="41-why-ekf-and-ukf-fail-on-bearings-only-tracking">4.1 Why EKF and UKF Fail on Bearings-Only Tracking<a class="headerlink" href="#41-why-ekf-and-ukf-fail-on-bearings-only-tracking" title="Permanent link">&para;</a></h3>
 <ol>
-<li><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/benchmark-systems.md">Canonical Benchmark Systems (<code>benchmark-systems.md</code>)</a></strong></li>
-<li>Analytical differential equations and state-space formulations (<span class="arithmatex">\(A, B, C, D\)</span>).</li>
-<li>Literature standard parameters for Level 1 (Mass-Spring-Damper, Inverted MSD, DC Motor) and Level 2 (Nonlinear Pendulum, Cart-Pole, Duffing &amp; Van der Pol Oscillators).</li>
-<li>Numerical reference controller gains (PID, Pole Placement, LQR), Riccati solutions, closed-loop poles, and step response performance metrics.</li>
-<li>
-<p>Ground-truth verification protocols for tests in <code>tests/</code>.</p>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/robotics-systems-reference.md">Robotics Benchmark Systems Reference (<code>robotics-systems-reference.md</code>)</a></strong></p>
-</li>
-<li>Differential-Drive Mobile Robot (<code>DifferentialDriveRobot</code>): unicycle kinematics, motor velocity lag (<span class="arithmatex">\(\tau_m=0.05\text{ s}\)</span>), wheelbase geometry (<span class="arithmatex">\(r=0.033\text{ m}, W=0.160\text{ m}\)</span>), velocity bounds (<span class="arithmatex">\(v_{\max}=0.22\text{ m/s}, \omega_{\max}=2.84\text{ rad/s}\)</span>), and Brockett nonholonomic analysis.</li>
-<li>
-<p>Two-Link Planar Robotic Manipulator (<code>TwoLinkArm</code>): complete Euler-Lagrange equations <span class="arithmatex">\(M(q)\ddot{q} + C(q, \dot{q})\dot{q} + G(q) + F_v \dot{q} = \tau\)</span>, Coriolis Christoffel symbols, passivity skew-symmetry, forward kinematics, and geometric Jacobian.</p>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/furuta-pendulum-reference.md">Furuta Pendulum Reference Specification (<code>furuta-pendulum-reference.md</code>)</a></strong></p>
-</li>
-<li>Rotary Inverted Pendulum (Quanser QUBE-Servo 2 standard): 2-DOF underactuated rotary mechanics.</li>
-<li>
-<p>Analytical Euler-Lagrange equations <span class="arithmatex">\(M(\alpha)\ddot{q} + C(\alpha, \dot{q})\dot{q} + G(\alpha) + D\dot{q} = \tau\)</span>, analytical <span class="arithmatex">\((A, B)\)</span> linearization about upright equilibrium, and Åström-Furuta energy shaping swing-up law.</p>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/two-tank-reference.md">Coupled Two-Tank Liquid Level Reference (<code>two-tank-reference.md</code>)</a></strong></p>
-</li>
-<li>Process control fluid hydraulics (Quanser Coupled Tanks standard): 2-state coupled nonlinear capacity lag.</li>
-<li>
-<p>Torricelli square-root discharge law, operating equilibrium calculations, fluid flow resistance <span class="arithmatex">\(R_{12}, R_2\)</span>, Jacobian state-space linearization <span class="arithmatex">\((A, B)\)</span>, and interactive capacity analysis.</p>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/cartpole-lqr-reference.md">Cart-Pole LQR Reference Specification (<code>cartpole-lqr-reference.md</code>)</a></strong></p>
-</li>
-<li>Canonical physical parameters matching <code>CartPole</code> (<span class="arithmatex">\(M=1.0, m=0.1, l=0.5\)</span>).</li>
-<li>Analytical and numerical <span class="arithmatex">\((A, B)\)</span> linearized matrices matching <code>CartPole.linearize()</code>.</li>
-<li>
-<p>3 canonical LQR tuning configurations (Standard Balanced, Aggressive Angle, Soft Energy-Saving) with exact continuous Riccati solutions <span class="arithmatex">\(P\)</span>, optimal feedback gains <span class="arithmatex">\(K\)</span>, and closed-loop eigenvalues.</p>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/swingup-and-basin.md">Swing-Up &amp; Basin of Attraction Reference (<code>swingup-and-basin.md</code>)</a></strong></p>
-</li>
-<li>Energy-shaping swing-up formulations (Åström-Furuta for Simple Pendulum, Mark Spong Partial Feedback Linearization for Cart-Pole).</li>
-<li>Hybrid switching state machine and hysteresis boundary conditions.</li>
-<li>
-<p>Quantitative Lyapunov basin-of-attraction envelopes and recovery bounds across LQR tunings.</p>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/observers-kalman-reference.md">State Estimation, Observers &amp; Kalman Filtering (<code>observers-kalman-reference.md</code>)</a></strong></p>
-</li>
-<li>Observability analysis on Cart-Pole across 4 sensor configurations (full-state, cart position only, pole angle only, dual encoders).</li>
-<li>Deterministic Luenberger observer design and Separation Principle proof.</li>
-<li>Continuous Filter Algebraic Riccati Equation (FARE) and Discrete Kalman Filter (DKF) predict-update algorithm.</li>
-<li>
-<p>Golden numerical test fixtures for <code>src/aimct/estimation/</code> (Kalman gain matrix <span class="arithmatex">\(L\)</span>, error poles, covariance <span class="arithmatex">\(\Sigma\)</span>).</p>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/prior-art.md">Prior-Art &amp; Framework Survey (<code>prior-art.md</code>)</a></strong></p>
-</li>
-<li>Analysis of existing open tools: <code>python-control</code>, <code>do-mpc</code>, <code>Gymnasium</code>, <code>Stable-Baselines3</code>, <code>Drake</code>, <code>PySINDy</code>, <code>torchdiffeq</code>.</li>
-<li>Clear delineation of what AIMCT implements from scratch vs. what is wrapped or verified against external libraries.</li>
-<li>
-<p>Core architectural patterns for dynamical systems, controllers, and unified benchmark evaluation.</p>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/challenge-spec.md">Intelligent Control Challenge Spec (<code>challenge-spec.md</code>)</a></strong></p>
-</li>
-<li>Official 4-track challenge specification (Precision Tracking, Nonlinear Underactuated, Parametric Robustness, Safe Black-Box Adaptation).</li>
-<li>Quantitative evaluation formulas: ITAE, RMSE, control energy <span class="arithmatex">\(\int u^2 dt\)</span>, slew rate / jerk <span class="arithmatex">\(\int \dot{u}^2 dt\)</span>, and safety barrier penalties.</li>
-<li>
-<p>Ratio capping (<span class="arithmatex">\(10.0\)</span>) and <span class="arithmatex">\(S_{\text{robust}}\)</span> floor (<span class="arithmatex">\(0.20\)</span>) calibrations.</p>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/capstone-rubric.md">Capstone Evaluation Rubric (<code>capstone-rubric.md</code>)</a></strong></p>
-<ul>
-<li>Capstone 21 Five-Way Quadrotor Trajectory &amp; Obstacle Avoidance Bake-Off specification.</li>
-<li>5-dimensional evaluation: Tracking RMSE (<span class="arithmatex">\(w_1=0.40\)</span>), Control Energy (<span class="arithmatex">\(w_2=0.20\)</span>), Slew Rate (<span class="arithmatex">\(w_3=0.10\)</span>), Obstacle &amp; Safety Violations (<span class="arithmatex">\(w_4=0.15\)</span>), and Crosswind Robustness (<span class="arithmatex">\(w_5=0.15\)</span>).</li>
-</ul>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/research-papers-survey.md">Research Papers &amp; Foundations Survey (<code>research-papers-survey.md</code>)</a></strong></p>
-<ul>
-<li>Comprehensive literature synthesis of 10 foundational open-access papers across RL continuous control foundations, parsimonious data-driven dynamics (SINDy, Neural ODEs, Koopman), and safe control (CBFs, Differentiable MPC, MPPI).</li>
-</ul>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/ball-and-beam-reference.md">Ball and Beam Reference Specification (<code>ball-and-beam-reference.md</code>)</a></strong></p>
-<ul>
-<li>Canonical Quanser Ball and Beam apparatus standard: underactuated, relative degree 4 nonlinear rolling mechanics (<span class="arithmatex">\(m = 0.064\text{ kg}, M = 0.20\text{ kg}, L = 0.425\text{ m}, J = 3.010 \times 10^{-3}\text{ kg}\cdot\text{m}^2, \tau_{\max} = 1.50\text{ N}\cdot\text{m}\)</span>).</li>
-<li>Complete Euler-Lagrange equations of motion, analytical <span class="arithmatex">\((A, B)\)</span> state-space linearization about horizontal origin, open-loop instability (<span class="arithmatex">\(\lambda = +4.123\text{ rad/s}\)</span>), and Cascade PID vs. PFL vs. LQR vs. Constrained MPC benchmark formulations.</li>
-</ul>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/disturbance-observer-reference.md">Disturbance-Observer (DOB) Control Reference Specification (<code>disturbance-observer-reference.md</code>)</a></strong></p>
-<ul>
-<li>Disturbance Observer (DOB) two-degree-of-freedom architecture, causal rational Q-filter design, relative degree matching, and Small-Gain robust stability conditions (<span class="arithmatex">\(\|W_m(s)Q(s)\|_\infty &lt; 1\)</span>).</li>
-<li>Matched vs. unmatched disturbance mechanics on underactuated quadrotors, direct feedforward cancellation vs. virtual tilt reallocation (<span class="arithmatex">\(\theta_{\text{virtual}} = \hat{d}_x / g\)</span>), and proof of DOB superiority over classical integral action lag.</li>
-</ul>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/hinf-reference.md">H-infinity Mixed-Sensitivity Reference Specification (<code>hinf-reference.md</code>)</a></strong></p>
-<ul>
-<li>The <span class="arithmatex">\(H_\infty\)</span> norm, the S/KS/T mixed-sensitivity objective <span class="arithmatex">\(\|[W_S S;\ W_{KS} KS;\ W_T T]\|_\infty\)</span>, and first-order weight selection (<span class="arithmatex">\(W_S\)</span>, <span class="arithmatex">\(W_{KS}\)</span>, <span class="arithmatex">\(W_T\)</span> Skogestad-Postlethwaite forms).</li>
-<li>Generalised-plant construction <span class="arithmatex">\(P = \mathcal{F}(G, W_S, W_{KS}, W_T)\)</span>, the two DGKF Hamiltonian Riccati equations with the <span class="arithmatex">\(\gamma^{-2}\)</span> term, the sub-optimality conditions (<span class="arithmatex">\(X_\infty \succeq 0\)</span>, <span class="arithmatex">\(Y_\infty \succeq 0\)</span>, <span class="arithmatex">\(\rho(X_\infty Y_\infty) &lt; \gamma^2\)</span>), <span class="arithmatex">\(\gamma\)</span>-bisection, and the central-controller formula.</li>
-<li><span class="arithmatex">\(H_\infty\)</span> vs. LQG on an unmodelled lightly-damped high-frequency mode: why a <span class="arithmatex">\(W_T\)</span> that rolls off past crossover preserves gain / phase / disk margins that LQG loses (Experiment 35).</li>
-</ul>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/mhe-reference.md">Moving-Horizon Estimation (MHE) Reference Specification (<code>mhe-reference.md</code>)</a></strong></p>
-<ul>
-<li>Optimization-based state estimation on sliding finite window <span class="arithmatex">\(N\)</span>, handling hard state &amp; disturbance inequality constraints (<span class="arithmatex">\(x_{\text{lo}} \le x \le x_{\text{hi}}\)</span>).</li>
-<li>Arrival cost approximation via EKF covariance propagation, stability under uniform observability, and analysis of why MHE outperforms Gaussian filters (EKF, UKF) on non-Lipschitz / hard-boundary physical systems (e.g. liquid level floor <span class="arithmatex">\(h \ge 0\)</span>).</li>
-</ul>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/mu-analysis-reference.md">Structured Singular Value (<span class="arithmatex">\(\mu\)</span>) Analysis Reference Specification (<code>mu-analysis-reference.md</code>)</a></strong></p>
-<ul>
-<li>The <span class="arithmatex">\(M\)</span>-<span class="arithmatex">\(\Delta\)</span> interconnection, the block structure <span class="arithmatex">\(\mathbf{\Delta}\)</span> (repeated real / repeated complex / full complex), and <span class="arithmatex">\(\mu_{\mathbf{\Delta}}(M)\)</span> with the bracketing bounds <span class="arithmatex">\(\rho(M) \le \mu \le \bar\sigma(M)\)</span>.</li>
-<li>The D-scaling upper bound <span class="arithmatex">\(\inf_{D} \bar\sigma(D M D^{-1})\)</span> (Osborne balancing), the power-iteration lower bound (left/right eigenvector alignment), the robust-stability margin <span class="arithmatex">\(1/\sup_\omega \mu\)</span>, and robust performance as <span class="arithmatex">\(\mu\)</span> of the augmented structure (main-loop theorem).</li>
-<li>Constant-<span class="arithmatex">\(D\)</span> D-K iteration wired to <code>aimct.controllers.hinf.hinf_syn</code>; why <span class="arithmatex">\(\mu\)</span> predicts a coupled-uncertainty stability loss that single-loop gain / phase margins miss (Experiment 40).</li>
-</ul>
-</li>
-<li>
-<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/particle-filter-reference.md">Particle Filter (Sequential Monte Carlo) Reference Specification (<code>particle-filter-reference.md</code>)</a></strong></p>
-<ul>
-<li>Non-parametric Bayesian state estimation via empirical particle distributions <span class="arithmatex">\(p(x_k \mid y_{1:k}) \approx \sum_{i=1}^{N_p} w_k^{(i)} \delta(x_k - x_k^{(i)})\)</span>.</li>
-<li>Numerically stable weight update in log domain using Log-Sum-Exp normalization to prevent floating-point underflow.</li>
-<li>Systematic adaptive resampling triggered when Effective Sample Size (<span class="arithmatex">\(ESS = 1/\sum w_i^2\)</span>) falls below threshold <span class="arithmatex">\(\gamma \cdot N_p\)</span>.</li>
-<li>Bearings-only target tracking analysis: how particle filters track multimodal, range-ambiguous curved non-Gaussian distributions where EKF/UKF diverge.</li>
-</ul>
-</li>
+<li><strong>Range Unobservability without Maneuver</strong>:
+   Along the line-of-sight vector, range <span class="arithmatex">\(r = \sqrt{\Delta x^2 + \Delta y^2}\)</span> is completely unobservable from a stationary observer until the observer executes an orthogonal acceleration maneuver.</li>
+<li><strong>Banana-Shaped / Curved True Posterior</strong>:
+   The true posterior distribution over Cartesian space <span class="arithmatex">\((x, y)\)</span> is a curved, arc-shaped crescent.</li>
+<li><strong>EKF Taylor Linearization Breakdown</strong>:
+   The Jacobian <span class="arithmatex">\(H = \left[ -\frac{\Delta y}{r^2}, \frac{\Delta x}{r^2} \right]\)</span> assumes a local hyperplane. The Gaussian ellipse extends into negative range or diverges orthogonal to the bearing line, leading to severe filter divergence.</li>
+<li><strong>Particle Filter Advantage</strong>:
+   The particle cloud naturally spans the curved line-of-sight cone and collapses into a tight unimodal cluster as soon as the observer executes an S-turn maneuver.</li>
 </ol>
+<hr />
+<h2 id="5-summary-of-estimator-trade-offs">5. Summary of Estimator Trade-Offs<a class="headerlink" href="#5-summary-of-estimator-trade-offs" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Estimator</th>
+<th style="text-align: center;">Distribution Representation</th>
+<th style="text-align: center;">Computational Complexity</th>
+<th style="text-align: center;">Non-Gaussian / Multimodal</th>
+<th style="text-align: center;">Constraint Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>EKF</strong></td>
+<td style="text-align: center;">Gaussian <span class="arithmatex">\((\hat{x}, P)\)</span></td>
+<td style="text-align: center;"><span class="arithmatex">\(\mathcal{O}(n^3)\)</span></td>
+<td style="text-align: center;">Poor (Linearized)</td>
+<td style="text-align: center;">None</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>UKF</strong></td>
+<td style="text-align: center;">Sigma points Gaussian</td>
+<td style="text-align: center;"><span class="arithmatex">\(\mathcal{O}(n^3)\)</span></td>
+<td style="text-align: center;">Moderate (2nd order)</td>
+<td style="text-align: center;">None</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>MHE</strong></td>
+<td style="text-align: center;">Constrained MAP trajectory</td>
+<td style="text-align: center;"><span class="arithmatex">\(\mathcal{O}(N \cdot n^3)\)</span></td>
+<td style="text-align: center;">Good (Constrained)</td>
+<td style="text-align: center;"><strong>Hard bounds <span class="arithmatex">\(x \in \mathcal{X}\)</span></strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Particle Filter (PF)</strong></td>
+<td style="text-align: center;">Empirical <span class="arithmatex">\(N_p\)</span> point-masses</td>
+<td style="text-align: center;"><span class="arithmatex">\(\mathcal{O}(N_p \cdot n)\)</span></td>
+<td style="text-align: center;"><strong>Exact / Arbitrary</strong></td>
+<td style="text-align: center;">Support truncation</td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -3384,12 +3488,12 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
-        <script src="../javascripts/mathjax.js"></script>
+        <script src="../../javascripts/mathjax.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       
