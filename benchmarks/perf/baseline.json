@@ -5,14 +5,14 @@
     "reps": 60
   },
   "results": {
-    "care_n8": 0.1459,
-    "care_n16": 0.3763,
-    "qp_dense_n30": 0.19,
-    "mpc_update_cartpole_N20": 0.2695,
-    "ilqr_iter_cartpole": 22.568,
-    "simulate_100_steps_quadrotor": 3.8509,
-    "kf_step_n12": 0.0349,
-    "simulate_batch_64_msd": 218.6406,
-    "hinf_mixsyn_small": 11.1638
+    "care_n8": 0.1798,
+    "care_n16": 0.4095,
+    "qp_dense_n30": 0.2398,
+    "mpc_update_cartpole_N20": 0.3665,
+    "ilqr_iter_cartpole": 24.8984,
+    "simulate_100_steps_quadrotor": 4.2426,
+    "kf_step_n12": 0.0402,
+    "simulate_batch_64_msd": 253.6945,
+    "hinf_mixsyn_small": 14.0148
   }
 }
