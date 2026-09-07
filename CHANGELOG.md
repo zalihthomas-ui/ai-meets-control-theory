@@ -7,45 +7,109 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.0.0] - 2026-09-07
+## [Unreleased]
 
-The **v1.0.0 Release Candidate**: comprehensive end-to-end framework unification with 41 empirical experiments, formal API stability contract (`docs/STABILITY.md`), multi-agent consensus, particle filtering, moving-horizon estimation, structured $\mu$-analysis, hardware-in-the-loop bridges, and publication-ready documentation portal.
-
-### Added
-- **Formal API Stability Contract (`docs/STABILITY.md`)**:
-  - Full SemVer 2.0.0 compliance rules for all Tier 1 public surfaces.
-  - Strict 2-minor-cycle deprecation policy with `DeprecationWarning` enforcement.
-  - Public surface declaration across all 12 core subpackages.
-- **Concepts Documentation Portal (`docs/concepts/`)**:
-  - 7 comprehensive mathematical narrative chapters covering the 6 conceptual pillars: State-Space Dynamics, Estimation, Optimal & Constrained Control, Robustness, Data-Driven & Safe RL, and Hardware Bridge.
-- **Advanced State Estimation & Robustness**:
-  - `aimct.estimation.MovingHorizonEstimator` (MHE): Constrained MAP sliding-window state estimation with arrival cost Riccati propagation.
-  - `aimct.estimation.ParticleFilter`: Bootstrap Sequential Monte Carlo filter with systematic adaptive resampling and log-sum-exp numerical stabilization.
-  - `aimct.robust.mu` & `aimct.robust.dk_iterate`: Structured Singular Value ($\mu$-analysis) and D-K iteration for mixed real/complex uncertainty blocks.
-  - `aimct.systems.MultiAgentSystem` & `aimct.controllers.FormationController`: Distributed consensus formation control under dynamic graph switching ($K_5 \to C_5 \to P_5 \to \text{Disconnected} \to S_5$) with collision barrier avoidance.
-- **Experiments 37–41**:
-  - **Exp 37**: Robust $\mu$-synthesis under high-order parameter perturbation.
-  - **Exp 38**: Moving-Horizon Estimation (MHE) vs. EKF on coupled two-tank process with non-negative liquid constraints.
-  - **Exp 39**: Multi-agent formation control under dynamic communication graph switching.
-  - **Exp 40**: $\mu$-analysis showing blind failure modes of classical single-loop margins.
-  - **Exp 41**: Bearings-only target tracking benchmark (Particle Filter vs. EKF vs. UKF).
-- **Community Governance & Contributor Tooling**:
-  - GitHub issue forms (`bug_report.yml`, `feature_request.yml`) and PR checklist (`pull_request_template.md`).
-  - Refreshed `CONTRIBUTING.md` developer guide.
+Toward **v1.0.0** — the API freeze. No new feature areas; the work is the
+stability commitment (`docs/STABILITY.md`), the API-freeze audit, docs/report/
+paper finalisation, the coverage gate raised to 85%, and a run of consecutive
+green CI. See `docs/roadmap-v1.md`.
 
 ---
 
-## [0.3.0] - 2026-09-06
+## [0.3.0] - 2026-09-07
 
-The **Phase 3 Release: Robustness, Hardware & Reach**:
-- **$H_\infty$ Mixed-Sensitivity Loop Shaping (`aimct.controllers.hinf`)**:
-  - Continuous state-space plant augmentation (`mixsyn`), $S/KS/T$ weighting filter design, and 2-Riccati $H_\infty$ optimal controller synthesis.
-- **Hardware-in-the-Loop & Embedded Deployment (`aimct.hil`, `aimct.deploy`)**:
-  - Real-time simulation harness with 12-bit ADC/DAC quantization, transport latency ($\tau_d$), and clock jitter injection.
-  - Zero-allocation standalone C99 code generator (`aimct.deploy.emit_c`) and MicroPython exporter.
-- **Experiments 35–36**:
-  - **Exp 35**: $H_\infty$ mixed-sensitivity vs. LQG under unmodelled structural resonance.
-  - **Exp 36**: Hardware-in-the-loop two-link arm balancing under transport delay and quantization limits.
+**Phase 3 — Robust control, the hardware bridge, estimation depth, and reach.**
+34 → 41 experiments; 560+ unit tests; a hosted docs portal.
+
+### Added
+
+**Robust & certified control.**
+- `aimct.controllers.hinf` — from-scratch H∞ mixed-sensitivity (S/KS/T)
+  synthesis: `StateSpace` LTI toolkit with `hinf_norm`, `weight_S`/`weight_KS`/
+  `weight_T` shaping filters, `augment_plant`, DGKF γ-bisection `hinf_syn`,
+  `mixsyn`, `HinfController`. Cross-checked against `control.hinfsyn`.
+- `aimct.robust` — structured-uncertainty **analysis**: `BlockStructure`,
+  `mu` (D-scaling upper bound + power-iteration lower bound),
+  `robust_stability_margin`, `robust_performance_margin`, `dk_iterate`.
+- `aimct.controllers.TubeMPC` — tube / robust MPC: a box outer-approximation
+  of the minimal robust positively-invariant set, nominal MPC on the
+  tightened constraints, `u = u_nom + K(x - x_nom)`. `MRPISet` dataclass.
+
+**Estimation.**
+- `aimct.estimation.MovingHorizonEstimator` (`MHE`) — constrained sliding-window
+  MAP estimation with an EKF arrival cost; state / disturbance / general
+  inequality constraints.
+- `aimct.estimation.ParticleFilter` (`PF`) — bootstrap SMC with systematic
+  adaptive resampling and log-space weights.
+
+**Multi-agent.**
+- `aimct.systems.MultiAgentSystem` — N stacked agents with a communication
+  graph, Laplacian, and algebraic connectivity (time-varying graph supported).
+- `aimct.controllers.FormationController` — consensus + rigid-formation +
+  leader-follower control, with collision-barrier avoidance.
+
+**Planning.**
+- `aimct.planning.DirectCollocation` gained decision-variable scaling
+  (`x_scale`/`u_scale`, auto by default) and a sparse Hermite–Simpson
+  constraint Jacobian — an *active nonconvex path constraint on a
+  badly-scaled ≥4-state plant* (a keep-out disk on `PlanarQuadrotor`) now
+  solves in ~1.5 s.
+
+**Identification & deployment (the hardware bridge).**
+- `aimct.sysid.identify_manipulator` — fit a two-link arm's base inertial
+  parameters from a `(q, q̇, q̈, τ)` log via the linear-in-parameters
+  regressor, with excitation / validation diagnostics and `to_twolink_arm()`.
+  Plus `finite_difference_derivatives` (central / Savitzky–Golay).
+- `aimct.deploy` — `export_controller` → `controller.json`,
+  `PortableController` (runs unchanged in `simulate` and `RealTimeLoop`),
+  `emit_c` / `emit_micropython` reference executors.
+- `aimct.hil` — `RealTimeLoop` (deadline accounting), In-process / UDP /
+  Serial transports, and `PlantEmulator` (encoder quantisation, torque
+  saturation + slew, transport delay, jitter, sensor noise).
+
+**Simulation & benchmarking.**
+- `aimct.simulate.simulate_batch` + `BatchResult` — Monte-Carlo rollout over
+  an array of initial states, with per-trial disturbances / parameter
+  overrides and `.map_metric`.
+- `benchmarks/perf/` + a `Perf` CI workflow — times the hot paths against a
+  committed, drift-gated baseline.
+
+**Visualization.**
+- `aimct.viz.animate` gained an `aux_fn(t)` hook for per-frame context
+  (an active disturbance, a mode label).
+
+**Experiments 35–41.** H∞ vs LQG under an unmodelled resonance (35); HIL
+two-link-arm balance under transport delay + quantisation (36); tube MPC vs
+nominal MPC under a persistent bounded disturbance (37); MHE vs EKF/UKF with a
+hard physical state bound (38); formation control on a switching communication
+graph (39); μ-analysis catching a coupled instability that single-loop
+gain/phase margins miss (40); bearings-only tracking, particle filter vs
+EKF/UKF (41).
+
+**Docs & packaging.**
+- A hosted **mkdocs-material documentation portal** (GitHub Pages): API
+  reference via `mkdocstrings`, a 7-chapter Concepts narrative, a page per
+  experiment, the living technical report (4 parts + executive summary).
+- `docs/STABILITY.md` — the semver / public-API / deprecation policy.
+- A JOSS `paper.md` + `paper.bib` draft; issue / PR templates; a refreshed
+  `CONTRIBUTING.md`.
+- Top-level `aimct.__all__` + lazy subpackage loading — `import aimct;
+  aimct.controllers.LQR` works, and a bare `import aimct` still doesn't pull
+  `matplotlib` (viz) or `gymnasium` (rl).
+- `examples/07` now shows the wind gust in its animation;
+  `examples/08_multisystem_relay_handoff.py` — a crane → mobile-robot →
+  slung-load-quad payload relay (three systems, three controllers, gated
+  hand-offs).
+
+### Fixed
+- A nondeterministic `test_mhe.py` failure (unseeded `np.random` in an
+  assertion loop) that flaked CI on Python 3.12.
+- Six `SyntaxWarning`s from unescaped LaTeX in `multi_agent.py` docstrings;
+  `src/` is now `SyntaxWarning`-free.
+- PEP-701 f-strings in the Exp 34/36 `run.py` table writers that broke the
+  smoke-run on Python 3.10/3.11.
+- Two `mkdocs --strict`-breaking doc-tree-external links in the μ-analysis
+  reference.
 
 ---
 

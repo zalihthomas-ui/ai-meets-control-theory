@@ -103,9 +103,9 @@ branch = true
 omit = ["*/aimct/__main__.py", "*/aimct/dev/__main__.py"]
 
 [tool.coverage.report]
-# The 80% floor is enforced in CI only (`--cov-fail-under=80` on the full
+# The 85% floor is enforced in CI only (`--cov-fail-under=85` on the full
 # suite) so ad-hoc partial `--cov` runs during development don't "fail".
-# Fast-lane coverage sits ~87%, the full suite higher.
+# The full suite sits ~88.7%.
 show_missing = true
 skip_covered = true
 exclude_also = [
