@@ -85,6 +85,13 @@ This directory contains research foundations, canonical parameter sets, framewor
     - Systematic adaptive resampling triggered when Effective Sample Size ($ESS = 1/\sum w_i^2$) falls below threshold $\gamma \cdot N_p$.
     - Bearings-only target tracking analysis: how particle filters track multimodal, range-ambiguous curved non-Gaussian distributions where EKF/UKF diverge.
 
+18. **[Multi-Agent Formation Control & Graph Topology Reference Specification (`multi-agent-formation-reference.md`)](file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/multi-agent-formation-reference.md)**
+    - Algebraic graph theory foundations: Adjacency matrix $A$, Degree matrix $D$, Graph Laplacian $L = D - A$, and Fiedler algebraic connectivity $\lambda_2(L) > 0$.
+    - Distributed formation consensus protocols for single- and double-integrator agent dynamics with relative displacement vectors $d_{ij} = d_i^* - d_j^*$.
+    - Lyapunov asymptotic stability proof and Common Lyapunov Function (CLF) analysis under dynamic switching communication topologies.
+    - Artificial potential field collision avoidance barriers for inter-agent safety.
+
+
 
 
 

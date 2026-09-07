@@ -9,6 +9,15 @@ from .diffdrive import DifferentialDriveRobot
 from .furuta_pendulum import FurutaPendulum
 from .linear import LinearSystem
 from .mass_spring_damper import MassSpringDamper
+from .multi_agent import (
+    MultiAgent,
+    MultiAgentSystem,
+    complete_graph,
+    cycle_graph,
+    disconnected_graph,
+    line_graph,
+    star_graph,
+)
 from .pendulum import Pendulum
 from .quadrotor import PlanarQuadrotor
 from .quadrotor3d import Quadrotor3D, rotation_matrix
@@ -32,4 +41,12 @@ __all__ = [
     "DifferentialDriveRobot",
     "TwoLinkArm",
     "TwoTank",
+    "MultiAgentSystem",
+    "MultiAgent",
+    "complete_graph",
+    "cycle_graph",
+    "line_graph",
+    "star_graph",
+    "disconnected_graph",
 ]
+

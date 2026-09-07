@@ -17,6 +17,14 @@ Available
 from .adaptive import MRAC, GainScheduledLQR, solve_lyapunov
 from .base import Controller
 from .disturbance_observer import DisturbanceObserver, QFilter
+from .formation import (
+    ConsensusFormationController,
+    FormationController,
+    diamond_formation,
+    line_formation,
+    polygon_formation,
+    wedge_formation,
+)
 from .hinf import (HinfController, HinfSynResult, StateSpace, augment_plant,
                    hinf_syn, lft_lower, mixsyn, weight_KS, weight_S, weight_T)
 from .ilqr import ILQR, iLQR, iLQRResult
@@ -62,10 +70,17 @@ __all__ = [
     "mixsyn",
     "HinfSynResult",
     "HinfController",
+    "ConsensusFormationController",
+    "FormationController",
+    "polygon_formation",
+    "line_formation",
+    "diamond_formation",
+    "wedge_formation",
     "dare",
     "place_poles",
     "solve_care",
     "controllability_matrix",
     "is_controllable",
 ]
+
 
