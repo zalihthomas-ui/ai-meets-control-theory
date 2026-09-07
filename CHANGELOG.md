@@ -7,129 +7,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [0.2.0] - 2026-09-05
+## [1.0.0] - 2026-09-07
 
-The Phase-2 release: real multi-body systems, the remaining planning and RL
-paradigms, a unified visualization layer, and a design-time authoring tool.
-34 experiments, 460+ passing unit tests.
+The **v1.0.0 Release Candidate**: comprehensive end-to-end framework unification with 41 empirical experiments, formal API stability contract (`docs/STABILITY.md`), multi-agent consensus, particle filtering, moving-horizon estimation, structured $\mu$-analysis, hardware-in-the-loop bridges, and publication-ready documentation portal.
 
 ### Added
+- **Formal API Stability Contract (`docs/STABILITY.md`)**:
+  - Full SemVer 2.0.0 compliance rules for all Tier 1 public surfaces.
+  - Strict 2-minor-cycle deprecation policy with `DeprecationWarning` enforcement.
+  - Public surface declaration across all 12 core subpackages.
+- **Concepts Documentation Portal (`docs/concepts/`)**:
+  - 7 comprehensive mathematical narrative chapters covering the 6 conceptual pillars: State-Space Dynamics, Estimation, Optimal & Constrained Control, Robustness, Data-Driven & Safe RL, and Hardware Bridge.
+- **Advanced State Estimation & Robustness**:
+  - `aimct.estimation.MovingHorizonEstimator` (MHE): Constrained MAP sliding-window state estimation with arrival cost Riccati propagation.
+  - `aimct.estimation.ParticleFilter`: Bootstrap Sequential Monte Carlo filter with systematic adaptive resampling and log-sum-exp numerical stabilization.
+  - `aimct.robust.mu` & `aimct.robust.dk_iterate`: Structured Singular Value ($\mu$-analysis) and D-K iteration for mixed real/complex uncertainty blocks.
+  - `aimct.systems.MultiAgentSystem` & `aimct.controllers.FormationController`: Distributed consensus formation control under dynamic graph switching ($K_5 \to C_5 \to P_5 \to \text{Disconnected} \to S_5$) with collision barrier avoidance.
+- **Experiments 37–41**:
+  - **Exp 37**: Robust $\mu$-synthesis under high-order parameter perturbation.
+  - **Exp 38**: Moving-Horizon Estimation (MHE) vs. EKF on coupled two-tank process with non-negative liquid constraints.
+  - **Exp 39**: Multi-agent formation control under dynamic communication graph switching.
+  - **Exp 40**: $\mu$-analysis showing blind failure modes of classical single-loop margins.
+  - **Exp 41**: Bearings-only target tracking benchmark (Particle Filter vs. EKF vs. UKF).
+- **Community Governance & Contributor Tooling**:
+  - GitHub issue forms (`bug_report.yml`, `feature_request.yml`) and PR checklist (`pull_request_template.md`).
+  - Refreshed `CONTRIBUTING.md` developer guide.
 
-**Systems (Track A).** `DifferentialDriveRobot` (unicycle + first-order
-actuator lag), `TwoLinkArm` (planar Euler-Lagrange, settable wrist payload),
-`BicycleVehicle` (dynamic single-track, linear + Pacejka tyre models),
-`FurutaPendulum` (rotary inverted pendulum), `TwoTank` (coupled-tank process
-control, Torricelli outflow), `BallAndBeam` (relative-degree-4 underactuated).
-Every one is parameterised on a real hardware class (TurtleBot3, Quanser
-2-DOF arm / QUBE-Servo 2 / Coupled Tanks / Ball & Beam) with a datasheet-grade
-reference doc under `docs/references/`.
+---
 
-**Control & planning (Track B).**
-- `aimct.controllers.ilqr` — iterative-LQR trajectory optimiser + a
-  real-time-iteration nonlinear-MPC controller.
-- `aimct.planning.DirectCollocation` — Hermite-Simpson direct transcription of
-  a finite-horizon OCP (SLSQP / trust-constr), with input/state boxes and an
-  optional path-inequality hook; the offline mirror of the online solvers.
-- `aimct.controllers.DisturbanceObserver` + `QFilter` — a 2-DOF DOB wrapping
-  any base controller, with matched cancellation and virtual-tilt reallocation
-  for the unmatched (horizontal-wind) channel on the quadrotor.
+## [0.3.0] - 2026-09-06
 
-**Reinforcement learning & imitation.**
-- `aimct.rl.sac` — from-scratch Soft Actor-Critic (squashed-Gaussian actor,
-  twin critics + Polyak targets, auto-tuned temperature).
-- `aimct.rl.imitation` — `BehaviorCloning` + a `dagger` interactive
-  data-aggregation loop.
-- `aimct.ml.MLP.grad_input` — backprop-to-input (used by the SAC reparam actor).
+The **Phase 3 Release: Robustness, Hardware & Reach**:
+- **$H_\infty$ Mixed-Sensitivity Loop Shaping (`aimct.controllers.hinf`)**:
+  - Continuous state-space plant augmentation (`mixsyn`), $S/KS/T$ weighting filter design, and 2-Riccati $H_\infty$ optimal controller synthesis.
+- **Hardware-in-the-Loop & Embedded Deployment (`aimct.hil`, `aimct.deploy`)**:
+  - Real-time simulation harness with 12-bit ADC/DAC quantization, transport latency ($\tau_d$), and clock jitter injection.
+  - Zero-allocation standalone C99 code generator (`aimct.deploy.emit_c`) and MicroPython exporter.
+- **Experiments 35–36**:
+  - **Exp 35**: $H_\infty$ mixed-sensitivity vs. LQG under unmodelled structural resonance.
+  - **Exp 36**: Hardware-in-the-loop two-link arm balancing under transport delay and quantization limits.
 
-**Benchmarks & trajectories.**
-- `aimct.benchmarks.tracking` — `track_trajectory` path-following harness (RMS
-  / cross-track error, completion %, energy) and `TrackingResult.animate()`.
-- `aimct.trajectories` — `Lissajous`, `Rose`, `Spiral` (alongside the existing
-  `Lemniscate` / `MinimumJerk` / `Spline` / `Dubins`).
+---
 
-**Visualization — `aimct.viz`.** A `SystemArtist` "draw one state" contract,
-`animate()` (replay any simulated run as video/GIF with a telemetry HUD),
-`Sandbox` + `Disturbance` (real-time interactive sandboxes with sliders /
-hot-keys / a switchable controller), and `aimct.viz.pv_arm` (a shared 3-D
-PyVista renderer). Every `Sandbox` gets a help overlay (`h`), a "surprise me"
-randomiser (`g`), PNG snapshotting (`c`), and a session-best score for free.
-Shipped sandboxes: `live_arm`, `live_arm_balance`, `live_diffdrive` (+ 3-D
-views for the arm ones) — `python -m aimct live {arm,arm3d,diffdrive,
-armbalance,armbalance3d}`.
+## [0.2.0] - 2026-09-05
 
-**Design-time authoring — `aimct.dev`.** `python -m aimct preview MODULE:Class`
-renders a live design dashboard for a system under development — pole map,
-controllability / observability, analytic-vs-numeric Jacobian residual, and
-free / step / impulse / sinusoid response traces — re-rendering on file save
-with `--watch`.
+The **Phase-2 Release: Modern Multi-Body Systems, Trajectory Optimization & Safe RL**:
+- **Systems**: `DifferentialDriveRobot`, `TwoLinkArm`, `BicycleVehicle`, `FurutaPendulum`, `TwoTank`, `BallAndBeam`.
+- **Control & Planning**: Iterative LQR (`iLQR`), Nonlinear Model Predictive Control (RTI-NMPC), Direct Collocation (`aimct.planning.DirectCollocation`), 2-DOF Disturbance Observer (`DOB`).
+- **Reinforcement Learning**: Soft Actor-Critic (`SAC`), DAgger interactive imitation learning, and Behavioral Cloning (`BC`).
+- **Experiments 22–34**: Comprehensive multi-body path following, obstacle avoidance, and sample-efficiency benchmarks.
 
-**Experiments 22–34.** Differential-drive path following (22); two-link-arm
-joint tracking + adaptive payload rejection (23); iLQR/RTI-NMPC vs. sampling
-MPC (24); moving-obstacle avoidance (25); tracking robustness on harder
-reference paths (26); dynamic-bicycle double lane change with a Pacejka tyre
-swap (27); Furuta pendulum (28); DAgger recovery vs. plain BC (29); two-tank
-level control (30); SAC vs. PPO sample efficiency (31); direct collocation vs.
-iLQR vs. CEM offline planning (32); ball-and-beam (33); disturbance-observer
-wind rejection (34).
-
-**Docs & packaging.** `docs/GETTING-STARTED.md` (ties the decision guide /
-report / library / reproduce lanes together), `docs/DECISION-GUIDE.md`
-rewritten as a structured decision system (flowchart + master matrix + the
-recurring engineering laws), an `examples/` gallery (7 runnable scripts), a
-`py.typed` marker (the package ships inline type info), and CI now runs the
-full suite with coverage (`--cov-fail-under=80`).
-
-### Fixed
-- `live_diffdrive`'s path follower could show its look-ahead point teleport
-  across the figure-8's self-intersection (a global nearest-point search
-  flipping branches); replaced with progress-hysteresis search.
-- CI's install step was missing the `ml` extra, so `pytest` failed to even
-  collect (`aimct.rl` imports `gymnasium` unconditionally) on every push.
-- `live_drone_3d/pv3d.py`'s interactive path called a PyVista method
-  (`add_callback`) absent from the installed PyVista version — switched to
-  `add_timer_event`.
-- Packaging: `aimct.__version__` and the built distribution's version had
-  drifted (`0.0.1` vs. `0.1.0`); `pyproject.toml` now takes its version from
-  `aimct.__version__` (single source of truth).
+---
 
 ## [0.1.0] - 2026-09-04
 
-### Added
-- **Core State-Space & Classical Control (`aimct.controllers`)**:
-  - From-scratch Continuous Algebraic Riccati Equation (CARE) and Discrete Algebraic Riccati Equation (DARE) solvers.
-  - Linear Quadratic Regulator (`LQR`) with Bryson scaling and integral augmentation (`LQI`).
-  - Proportional-Integral-Derivative (`PID`) controller with anti-windup clamping and low-pass derivative filtering.
-  - State Feedback with setpoint tracking (`StateFeedback`).
-  - Full-state and reduced-order Luenberger Observers (`LuenbergerObserver`).
-  - Continuous and Discrete Kalman Filters (`KalmanFilter`), Extended Kalman Filter (`EKF`), and Unscented Kalman Filter (`UKF`).
-- **Constrained & Optimal Control (`aimct.controllers`)**:
-  - Active-set dense Quadratic Program solver (`solve_qp`) with warm-starting.
-  - Receding-horizon Linear Model Predictive Control (`LinearMPC`) with hard input and soft state constraints.
-  - Model Predictive Path Integral / Sampling MPC (`SamplingMPC`).
-- **Nonlinear & Underactuated Hybrid Control (`aimct.controllers`)**:
-  - Mark Spong Partial Feedback Linearization (`EnergyShapingSwingUp`).
-  - Hysteresis mode-switching swing-up to balance handoff (`HybridSwingUpLQR`).
-  - Model Reference Adaptive Control (`MRAC`) with Lyapuov weight adaptation.
-- **Safe Control & Barrier Functions (`aimct.safety`, `aimct.shield`)**:
-  - Real-time Control Barrier Function Quadratic Program safety filters (`CBFShield`).
-  - Forward-invariance certificates around untrusted RL policies and manual inputs.
-- **Data-Driven & Physics-Informed Dynamics (`aimct.sysid`, `aimct.ml`)**:
-  - Sparse Identification of Nonlinear Dynamics (`SINDy`) with STLSQ regression.
-  - Continuous-depth Neural Ordinary Differential Equations (`NeuralODE`) with adjoint backpropagation.
-  - Proximal Policy Optimization (`PPO`) and Deep Deterministic Policy Gradients (`DDPG`).
-- **Dynamical Systems Benchmark Library (`aimct.systems`)**:
-  - Linear Mechanical Oscillator (`MassSpringDamper`, `InvertedMassSpringDamper`).
-  - Armature-Controlled DC Motor (`DCMotor`, `DCMotor2`).
-  - Inverted Pendulum on a Cart (`CartPole`).
-  - Simple Nonlinear Pendulum (`Pendulum`).
-  - Planar Quadrotor UAV (`PlanarQuadrotor`).
-  - Differential-Drive Mobile Robot (`DifferentialDriveRobot`).
-  - Two-Link Planar Manipulator (`TwoLinkArm`).
-- **Benchmarking & Scoring Engine (`aimct.benchmarks`)**:
-  - Automated multi-controller comparison harness (`compare`, `ComparisonResult`).
-  - Intelligent Control Challenge (ICC) 4-track scoring engine (`score_run`, Track 3 & 4 wrappers).
-  - Grand Capstone Five-Way Bake-Off rubric (`score_capstone`, `capstone_leaderboard_table`).
-- **Interactive Tools & Notebooks**:
-  - Guided interactive tour (`notebooks/01_tour.ipynb`).
-  - CLI entry point (`python -m aimct`).
-  - 3D real-time simulation visualization (`python -m aimct live3d`).
+The **Phase 1 Release: Foundations & Benchmarks**:
+- Core state-space models, algebraic Riccati solvers (CARE/DARE), LQR, LQG, Pole Placement, and PID with anti-windup.
+- Linear MPC with active-set QP solver.
+- Nonlinear observers (EKF, UKF) and energy shaping swing-up controllers.
+- Control Barrier Function safety shields (`CBFShield`).
+- Initial benchmark suite (Experiments 01–21).

@@ -56,6 +56,10 @@ Copy-Fig "33_ball_and_beam_control" "ball_and_beam_setpoint.png" "exp33_ball_and
 Copy-Fig "34_dob_wind_rejection" "dob_wind_rejection.png" "exp34_dob_wind_rejection.png"
 Copy-Fig "35_hinf_vs_lqg" "figure.png" "exp35_hinf.png"
 Copy-Fig "36_hil_arm_balance" "hil_arm_balance.png" "exp36_hil_arm.png"
+Copy-Fig "38_mhe_vs_ekf" "mhe_vs_ekf.png" "exp38_mhe_vs_ekf.png"
+Copy-Fig "39_formation_switching_graph" "formation_switching.png" "exp39_formation_switching.png"
+Copy-Fig "40_mu_analysis_rs_rp" "figure.png" "exp40_mu_analysis.png"
+Copy-Fig "41_particle_filter_bearings_only" "pf_vs_ekf.png" "exp41_pf_vs_ekf.png"
 
 
 Write-Host "compiling main.tex..."

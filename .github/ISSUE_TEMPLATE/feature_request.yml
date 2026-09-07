@@ -1,0 +1,44 @@
+name: Feature Request / Algorithm Proposal
+description: Suggest a new system, controller, estimator, benchmark, or enhancement for aimct
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We welcome contributions of new control benchmarks, modern estimation filters, safe RL bridges, and hardware interfaces.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Is your feature request related to a problem or gap?
+      description: A clear description of the control/estimation challenge or limitation.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Solution / Algorithm
+      description: Describe the mathematical formulation, theoretical papers (with DOIs), and algorithmic approach.
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Target Component
+      options:
+        - "aimct.systems (New plant or multi-body dynamics)"
+        - "aimct.controllers (LQR, MPC, NMPC, H-infinity, adaptive)"
+        - "aimct.estimation (Observers, EKF, UKF, PF, MHE)"
+        - "aimct.planning (Trajectory optimization, direct collocation)"
+        - "aimct.robust (mu-analysis, disk margins)"
+        - "aimct.ml / aimct.rl / aimct.hybrid (PINNs, CBF shields, safe RL)"
+        - "aimct.deploy / aimct.hil (C99 export, HIL bridge)"
+        - "Documentation / Examples / Benchmarks"
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Classical Baseline / Alternatives Considered
+      description: What classical baseline will this method be empirically compared against?
+    validations:
+      required: false
