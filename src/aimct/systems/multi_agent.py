@@ -155,12 +155,12 @@ class MultiAgentSystem(DynamicalSystem):
 
     @property
     def adjacency(self) -> np.ndarray:
-        """Adjacency matrix :math:`A \in \mathbb{R}^{N \times N}`."""
+        r"""Adjacency matrix :math:`A \in \mathbb{R}^{N \times N}`."""
         return self._adjacency.copy()
 
     @property
     def degree_matrix(self) -> np.ndarray:
-        """Degree matrix :math:`D = \text{diag}(\sum_j A_{ij})`."""
+        r"""Degree matrix :math:`D = \text{diag}(\sum_j A_{ij})`."""
         deg = np.sum(self._adjacency, axis=1)
         return np.diag(deg)
 
@@ -171,7 +171,7 @@ class MultiAgentSystem(DynamicalSystem):
 
     @property
     def algebraic_connectivity(self) -> float:
-        """Fiedler eigenvalue :math:`\lambda_2(L)` (second smallest eigenvalue of Laplacian)."""
+        r"""Fiedler eigenvalue :math:`\lambda_2(L)` (second smallest eigenvalue of Laplacian)."""
         L = self.laplacian
         # Symmetrize for numerical eigenvalue stability
         L_sym = 0.5 * (L + L.T)
@@ -187,7 +187,7 @@ class MultiAgentSystem(DynamicalSystem):
 
     @property
     def is_connected(self) -> bool:
-        """Return True if the communication graph is connected (:math:`\lambda_2(L) > 10^{-6}`)."""
+        r"""Return True if the communication graph is connected (:math:`\lambda_2(L) > 10^{-6}`)."""
         return bool(self.algebraic_connectivity > 1e-6)
 
     # ------------------------------------------------------------------ State helpers
@@ -212,7 +212,7 @@ class MultiAgentSystem(DynamicalSystem):
         return np.zeros((self.n_agents, 2), dtype=float)
 
     def pairwise_distances(self, x: ArrayLike) -> np.ndarray:
-        """Compute :math:`(N, N)` symmetric matrix of pairwise Euclidean distances :math:`\|p_i - p_j\|`."""
+        r"""Compute :math:`(N, N)` symmetric matrix of pairwise Euclidean distances :math:`\|p_i - p_j\|`."""
         pos = self.get_agent_positions(x)
         diff = pos[:, None, :] - pos[None, :, :]
         return np.linalg.norm(diff, axis=-1)

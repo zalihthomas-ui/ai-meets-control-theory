@@ -213,10 +213,11 @@ def test_mhe_arrival_cost_stability_over_long_horizon():
 
     x = np.array([0.05, 0.03])
     u = np.array([4.0])
+    rng = np.random.default_rng(7)
 
     for k in range(80):
         x = rk4_step(lambda t, xx, uu: tank.dynamics(t, xx, uu), 0.0, x, u, dt)
-        y = x + np.random.normal(0.0, 0.005, size=2)
+        y = x + rng.normal(0.0, 0.005, size=2)
         x_hat = mhe.step(y, u)
 
         # Covariance must remain positive definite and bounded
