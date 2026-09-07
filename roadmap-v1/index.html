@@ -3736,10 +3736,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sequencing-progress" class="md-nav__link">
+  <a href="#how-it-went" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Sequencing &amp; progress
+        How it went
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#post-10-backlog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Post-1.0 backlog
       
     </span>
   </a>
@@ -3768,11 +3779,11 @@
 
 <h1 id="roadmap-the-road-to-v10">Roadmap — the road to v1.0<a class="headerlink" href="#roadmap-the-road-to-v10" title="Permanent link">&para;</a></h1>
 <blockquote>
-<p><strong>Status:</strong> active, opened 2026-09-07. Supersedes the open items in
-<a href="../roadmap-phase3/"><code>roadmap-phase3.md</code></a> as the working plan; Phase 3's
-completed tracks stand. Autonomous execution — the lead (puma) drives
-integration, releases, and the API-freeze pass; toku / famo / lava own the
-lanes below.</p>
+<p><strong>Status: ✅ SHIPPED.</strong> <code>aimct 1.0.0</code> was tagged and published to PyPI on
+2026-09-07 (<code>236e51b</code> → <code>v1.0.0</code>), with a full GitHub release. All six exit
+criteria below were met. This page is kept as the record of how it was done;
+the post-1.0 backlog is at the bottom.</p>
+<p>Interim: <code>v0.3.0</code> (Phase 3 feature checkpoint) shipped the same day.</p>
 </blockquote>
 <p><strong>v1.0 means:</strong> the library is <em>feature-complete against its stated vision</em>
 and its <em>public API is frozen with a stability guarantee</em>. Concretely, all
@@ -3929,21 +3940,35 @@ pipeline with a full GitHub release.</p>
 </tbody>
 </table>
 <hr />
-<h2 id="sequencing-progress">Sequencing &amp; progress<a class="headerlink" href="#sequencing-progress" title="Permanent link">&para;</a></h2>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>toku:  A5 ✅ → A3+Exp37 (in progress) → A6
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>famo:  C2+Exp41 ✅ → C3+Exp39 ✅ → C4 ✅                              [Track C DONE]
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>lava:  D7 ✅ → D8 ✅ → D9 ✅ → D10 ✅ → D11 ✅                          [Track D DONE]
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>nero:  QA sweep ✅ (found + I fixed the py3.12 flake and the SyntaxWarnings)
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>puma:  L1 ✅ → L5 ✅ → L3 ✅ (test_mhe seed) → [A3 lands] → raise cov gate to 85 (L2)
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>       → cut v0.3.0 → collect A6/C4 audits → L4 API consolidation → stabilise → cut v1.0.0
+<h2 id="how-it-went">How it went<a class="headerlink" href="#how-it-went" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>toku:  A5 ✅ → A3 (TubeMPC) + Exp 37 ✅ → A6 audit ✅
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>       (session wedged twice; puma landed the A6 code changes directly)
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>famo:  C2 (ParticleFilter) + Exp 41 ✅ → C3 (MultiAgent + formation) + Exp 39 ✅ → C4 ✅
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>lava:  D7 Concepts ✅ → D8 report ✅ → D9 paper ✅ → D10 governance ✅ → D11 changelog ✅
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>       → STABILITY.md public-surface finalisation ✅
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>nero:  three full QA sweeps ✅ — found the py3.12 flake root cause and the SyntaxWarnings
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>puma:  L1 simulate_batch ✅ · L3 pinned BOTH flaky tests (test_mhe seed, DOB drift bound) ✅
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>       · L4 top-level aimct.__all__ + lazy loading ✅ · L5 perf drift-gate ✅
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>       · EKF/UKF from_system, solve_qp/QPResult public, aimct.robust dataclasses,
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>         api/robust.md + api/simulate.md, hybrid in the package ✅
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>       · cut v0.3.0 ✅ · cut v1.0.0 ✅
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>exit criteria at release:  574 tests green · coverage 90.2 % (gate 85 %) ·
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>mkdocs --strict clean · report + paper final · STABILITY.md frozen · PyPI + GitHub release live
 </span></code></pre></div>
-<p><strong>Remaining before <code>v0.3.0</code>:</strong> A3 (tube MPC) + Exp 37 on <code>main</code>, CI green ×3.
-<strong>Remaining before <code>v1.0.0</code>:</strong> L4 API consolidation (top-level <code>aimct.__all__</code>,
-finalise the STABILITY.md public-surface table from the audits), the exit-criteria
-sweep (10 consecutive green CI runs, docs/report/paper final, CHANGELOG), release.</p>
-<p>Coverage is at <strong>88.7 %</strong> (gate still 80, raise to 85 with A3). No open
-blockers. Post-1.0 backlog: CCM/contraction control (A4), a hosted
-interactive sandbox, ROS 2 node generation.</p>
+<h2 id="post-10-backlog">Post-1.0 backlog<a class="headerlink" href="#post-10-backlog" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Polytopic (H-rep) mRPI for tube MPC</strong> — the box interval-hull mRPI in
+  <code>TubeMPC</code> inflates for strongly-coupled plants (cart-pole <code>rho(|A_K|)</code> ~
+  3.5–7 → empty tightened set); a polytopic set with more normals would carry
+  it. Exp 37 uses a well-scaled mass-spring-damper for now.</li>
+<li><strong>Control-contraction metrics (CCM)</strong> — certified nonlinear tracking with a
+  contraction rate (was Phase-3 A4, deferred).</li>
+<li>A hosted <strong>interactive sandbox</strong> (WebAssembly / server), <strong>ROS 2 node
+  generation</strong>, a real flight-controller firmware target.</li>
+<li>Wider RL: model-based RL, offline RL on the logged experiment data.</li>
+</ul>
+<p>These are <code>1.x</code> minor-release material — none breaks the frozen API.</p>
 
 
 
