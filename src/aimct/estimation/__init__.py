@@ -8,6 +8,7 @@ from .ekf import ExtendedKalmanFilter, finite_diff_jacobian
 from .kalman import DiscreteKalmanFilter, KalmanFilter, solve_fare
 from .luenberger import LuenbergerObserver, place_observer
 from .mhe import MHE, MovingHorizonEstimator
+from .particle_filter import PF, ParticleFilter, systematic_resample
 from .ukf import UnscentedKalmanFilter
 from .observability import (
     is_observable,
@@ -28,6 +29,10 @@ __all__ = [
     "UnscentedKalmanFilter",
     "MovingHorizonEstimator",
     "MHE",
+    "ParticleFilter",
+    "PF",
+    "systematic_resample",
     "finite_diff_jacobian",
 ]
+
 

@@ -1,0 +1,7 @@
+# Experiment 41 Benchmark Results: Bearings-Only Target Tracking
+
+| Estimator | Initial Error [m] | Final Error [m] | Position RMSE [m] | Target Tracking | Latency [ms] | Non-Gaussian Posterior |
+| :--- | :---: | :---: | :---: | :---: | :---: | :--- |
+| EKF (Linearized) | 8.98 | 16.27 | 18.17 | No (Diverged) | 0.132 | False Gaussian collapse |
+| UKF (Sigma Points) | 8.56 | 13.33 | 16.15 | Yes | 0.208 | Radial elongation drift |
+| Particle Filter (Bootstrap) | 5.70 | 3.50 | 6.37 | Yes | 11.766 | Accurate curved crescent |

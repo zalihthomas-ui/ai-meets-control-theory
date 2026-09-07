@@ -1,0 +1,30 @@
+experiment:
+  id: 41
+  title: "Bearings-Only Target Tracking: Particle Filter vs EKF and UKF"
+  date: "2026-09-07"
+  author: "AIMCT Team"
+  system: "BearingsOnly2D"
+
+scenario:
+  target:
+    p0: [100.0, 100.0]     # Initial target position [m]
+    v0: [-2.0, 1.0]        # Initial target velocity [m/s]
+    process_noise_q: 0.01  # Acceleration disturbance PSD [m/s^2]
+  observer:
+    p0: [0.0, 0.0]
+    v_nominal: 3.0         # Observer forward speed [m/s]
+    weave_amp: 30.0        # S-turn weave amplitude [m]
+    weave_freq: 0.15       # Weave angular frequency [rad/s]
+
+estimation:
+  dt: 0.50
+  t_final: 40.0
+  prior:
+    p0_est: [80.0, 120.0]  # Initial guess (28 m position offset)
+    v0_est: [0.0, 0.0]
+    P0_diag: [400.0, 400.0, 4.0, 4.0]
+  measurement:
+    bearing_sigma_deg: 1.5 # Bearing noise standard deviation [deg]
+  particle_filter:
+    n_particles: 1500
+    resample_thresh: 0.5

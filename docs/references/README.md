@@ -79,5 +79,12 @@ This directory contains research foundations, canonical parameter sets, framewor
     - The D-scaling upper bound $\inf_{D} \bar\sigma(D M D^{-1})$ (Osborne balancing), the power-iteration lower bound (left/right eigenvector alignment), the robust-stability margin $1/\sup_\omega \mu$, and robust performance as $\mu$ of the augmented structure (main-loop theorem).
     - Constant-$D$ D-K iteration wired to `aimct.controllers.hinf.hinf_syn`; why $\mu$ predicts a coupled-uncertainty stability loss that single-loop gain / phase margins miss (Experiment 40).
 
+17. **[Particle Filter (Sequential Monte Carlo) Reference Specification (`particle-filter-reference.md`)](file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/particle-filter-reference.md)**
+    - Non-parametric Bayesian state estimation via empirical particle distributions $p(x_k \mid y_{1:k}) \approx \sum_{i=1}^{N_p} w_k^{(i)} \delta(x_k - x_k^{(i)})$.
+    - Numerically stable weight update in log domain using Log-Sum-Exp normalization to prevent floating-point underflow.
+    - Systematic adaptive resampling triggered when Effective Sample Size ($ESS = 1/\sum w_i^2$) falls below threshold $\gamma \cdot N_p$.
+    - Bearings-only target tracking analysis: how particle filters track multimodal, range-ambiguous curved non-Gaussian distributions where EKF/UKF diverge.
+
+
 
 
