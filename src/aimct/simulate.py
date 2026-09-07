@@ -17,6 +17,8 @@ import numpy as np
 
 from .systems.base import DynamicalSystem
 
+__all__ = ["simulate", "simulate_batch", "Trajectory", "BatchResult", "rk4_step"]
+
 
 class ControllerLike(Protocol):
     def update(self, measurement, dt: float): ...
