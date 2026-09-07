@@ -77,16 +77,22 @@ pipeline with a full GitHub release.
 
 ---
 
-## Sequencing
+## Sequencing & progress
 
 ```
-now ─┬─ toku:  A5 → A3+Exp37 → A6
-     ├─ famo:  C2+Exp41 → C3+Exp39 → C4
-     ├─ lava:  D7 → D8 → D9 → D10 → D11
-     └─ puma:  L1 → L5 → L3 → L2 →  [cut v0.3.0]  → L4 → [stabilise] → [cut v1.0.0]
+toku:  A5 ✅ → A3+Exp37 (in progress) → A6
+famo:  C2+Exp41 ✅ → C3+Exp39 ✅ → C4 ✅                              [Track C DONE]
+lava:  D7 ✅ → D8 ✅ → D9 ✅ → D10 ✅ → D11 ✅                          [Track D DONE]
+nero:  QA sweep ✅ (found + I fixed the py3.12 flake and the SyntaxWarnings)
+puma:  L1 ✅ → L5 ✅ → L3 ✅ (test_mhe seed) → [A3 lands] → raise cov gate to 85 (L2)
+       → cut v0.3.0 → collect A6/C4 audits → L4 API consolidation → stabilise → cut v1.0.0
 ```
 
-Track A / C / D run in parallel. `v0.3.0` is the checkpoint once the feature
-work (A3, A5, C2, C3, L1) is on `main` and CI is green; `v1.0.0` follows the
-stabilisation pass. Post-1.0 backlog: CCM/contraction control (A4), a hosted
+**Remaining before `v0.3.0`:** A3 (tube MPC) + Exp 37 on `main`, CI green ×3.
+**Remaining before `v1.0.0`:** L4 API consolidation (top-level `aimct.__all__`,
+finalise the STABILITY.md public-surface table from the audits), the exit-criteria
+sweep (10 consecutive green CI runs, docs/report/paper final, CHANGELOG), release.
+
+Coverage is at **88.7 %** (gate still 80, raise to 85 with A3). No open
+blockers. Post-1.0 backlog: CCM/contraction control (A4), a hosted
 interactive sandbox, ROS 2 node generation.
