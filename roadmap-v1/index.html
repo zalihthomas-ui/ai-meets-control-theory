@@ -3652,10 +3652,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sequencing" class="md-nav__link">
+  <a href="#sequencing-progress" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Sequencing
+        Sequencing &amp; progress
       
     </span>
   </a>
@@ -3845,15 +3845,20 @@ pipeline with a full GitHub release.</p>
 </tbody>
 </table>
 <hr />
-<h2 id="sequencing">Sequencing<a class="headerlink" href="#sequencing" title="Permanent link">&para;</a></h2>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>now ─┬─ toku:  A5 → A3+Exp37 → A6
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>     ├─ famo:  C2+Exp41 → C3+Exp39 → C4
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>     ├─ lava:  D7 → D8 → D9 → D10 → D11
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>     └─ puma:  L1 → L5 → L3 → L2 →  [cut v0.3.0]  → L4 → [stabilise] → [cut v1.0.0]
+<h2 id="sequencing-progress">Sequencing &amp; progress<a class="headerlink" href="#sequencing-progress" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>toku:  A5 ✅ → A3+Exp37 (in progress) → A6
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>famo:  C2+Exp41 ✅ → C3+Exp39 ✅ → C4 ✅                              [Track C DONE]
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>lava:  D7 ✅ → D8 ✅ → D9 ✅ → D10 ✅ → D11 ✅                          [Track D DONE]
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>nero:  QA sweep ✅ (found + I fixed the py3.12 flake and the SyntaxWarnings)
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>puma:  L1 ✅ → L5 ✅ → L3 ✅ (test_mhe seed) → [A3 lands] → raise cov gate to 85 (L2)
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>       → cut v0.3.0 → collect A6/C4 audits → L4 API consolidation → stabilise → cut v1.0.0
 </span></code></pre></div>
-<p>Track A / C / D run in parallel. <code>v0.3.0</code> is the checkpoint once the feature
-work (A3, A5, C2, C3, L1) is on <code>main</code> and CI is green; <code>v1.0.0</code> follows the
-stabilisation pass. Post-1.0 backlog: CCM/contraction control (A4), a hosted
+<p><strong>Remaining before <code>v0.3.0</code>:</strong> A3 (tube MPC) + Exp 37 on <code>main</code>, CI green ×3.
+<strong>Remaining before <code>v1.0.0</code>:</strong> L4 API consolidation (top-level <code>aimct.__all__</code>,
+finalise the STABILITY.md public-surface table from the audits), the exit-criteria
+sweep (10 consecutive green CI runs, docs/report/paper final, CHANGELOG), release.</p>
+<p>Coverage is at <strong>88.7 %</strong> (gate still 80, raise to 85 with A3). No open
+blockers. Post-1.0 backlog: CCM/contraction control (A4), a hosted
 interactive sandbox, ROS 2 node generation.</p>
 
 
