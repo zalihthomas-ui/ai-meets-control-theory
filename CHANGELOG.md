@@ -9,10 +9,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Toward **v1.0.0** — the API freeze. No new feature areas; the work is the
-stability commitment (`docs/STABILITY.md`), the API-freeze audit, docs/report/
-paper finalisation, the coverage gate raised to 85%, and a run of consecutive
-green CI. See `docs/roadmap-v1.md`.
+Nothing yet.
+
+---
+
+## [1.0.0] - 2026-09-07
+
+**The API freeze.** From this release the public API — enumerated in
+[`docs/STABILITY.md`](docs/STABILITY.md) across all 16 subpackages — is stable
+under [Semantic Versioning](https://semver.org): a breaking change to it
+requires a major version, with a `DeprecationWarning` for at least one minor
+cycle first. 1.0.0 adds no new feature areas; it is the stability commitment,
+an API-consistency pass, and finalised documentation.
+
+### Added
+- **`docs/STABILITY.md`** — the versioning / public-API / deprecation policy,
+  with the certified public surface for every subpackage and the 18
+  field-stable return dataclasses.
+- **Top-level `aimct.__all__`** + lazy subpackage loading: `import aimct;
+  aimct.controllers.LQR` works, and a bare `import aimct` still does not pull
+  `matplotlib` (viz) or `gymnasium` (rl).
+- `ExtendedKalmanFilter.from_system` / `UnscentedKalmanFilter.from_system` —
+  all four nonlinear estimators (EKF, UKF, MHE, PF) now share one
+  construction story.
+- `aimct.controllers.solve_qp` + `QPResult` are now public — the from-scratch
+  active-set QP is a reusable primitive alongside `solve_care` / `dare` /
+  `solve_lyapunov`.
+- `aimct.robust` returns `MuBounds` (from `mu`) and `RobustMarginResult`
+  (from `robust_stability_margin` / `robust_performance_margin` /
+  `dk_iterate`) — typed results, matching every other subpackage.
+- API-reference pages for `aimct.robust` and `aimct.simulate`; `aimct.hybrid`
+  added to the top-level package.
+
+### Changed
+- **Breaking (`aimct.robust`):** `mu` and the margin functions return
+  dataclasses instead of plain dicts. Code that indexed the dict keys must
+  switch to attribute access (`r["peak_upper"]` → `r.peak_upper`). The module
+  is one release old.
+- CI coverage gate 80% → 85% (the full suite sits at ~90%).
+- CI / Docs workflows cancel superseded runs (concurrency groups); the perf
+  baseline only auto-refreshes on a >20% move.
+- `TubeMPC.from_system` dropped a dead `dt=` parameter.
+
+### Fixed
+- Two nondeterministic test failures that flaked CI on Python 3.12: an
+  unseeded RNG in `test_mhe.py`, and a too-tight forward-Euler drift bound in
+  the disturbance-observer test.
 
 ---
 

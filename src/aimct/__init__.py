@@ -22,7 +22,7 @@ used. See ``docs/STABILITY.md`` for the public-API and versioning policy.
 
 import importlib as _importlib
 
-__version__ = "0.3.0"
+__version__ = "1.0.0"
 
 _SUBPACKAGES = (
     "systems", "controllers", "planning", "robust", "estimation", "sysid",
