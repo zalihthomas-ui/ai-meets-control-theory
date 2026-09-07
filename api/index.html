@@ -3706,8 +3706,8 @@
 
 
 <h1 id="api-reference-overview">API Reference Overview<a class="headerlink" href="#api-reference-overview" title="Permanent link">&para;</a></h1>
-<p>Welcome to the imct (AI Meets Control Theory) API Reference.</p>
-<p>imct provides a unified, mathematically rigorous Python framework bridging classical control theory, modern state-space control, optimal control, system identification, and machine learning/reinforcement learning.</p>
+<p>Welcome to the aimct (AI Meets Control Theory) API Reference.</p>
+<p>aimct provides a unified, mathematically rigorous Python framework bridging classical control theory, modern state-space control, optimal control, system identification, and machine learning/reinforcement learning.</p>
 <h2 id="module-organization">Module Organization<a class="headerlink" href="#module-organization" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3719,67 +3719,67 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><a href="systems/">imct.systems</a></td>
+<td style="text-align: left;"><a href="systems/">aimct.systems</a></td>
 <td style="text-align: left;">Physical and benchmark dynamical systems</td>
 <td style="text-align: left;">DynamicalSystem, ContinuousSystem, DiscreteSystem</td>
 </tr>
 <tr>
-<td style="text-align: left;"><a href="controllers/">imct.controllers</a></td>
+<td style="text-align: left;"><a href="controllers/">aimct.controllers</a></td>
 <td style="text-align: left;">Classical, robust, adaptive, and optimal controllers</td>
 <td style="text-align: left;">BaseController, PIDController, LQRController, MPCController, SMCController</td>
 </tr>
 <tr>
-<td style="text-align: left;"><a href="planning/">imct.planning</a></td>
+<td style="text-align: left;"><a href="planning/">aimct.planning</a></td>
 <td style="text-align: left;">Trajectory planning &amp; optimization</td>
 <td style="text-align: left;">TrajectoryPlanner, RRTPlanner, MinimumJerkPlanner</td>
 </tr>
 <tr>
-<td style="text-align: left;"><a href="estimation/">imct.estimation</a></td>
+<td style="text-align: left;"><a href="estimation/">aimct.estimation</a></td>
 <td style="text-align: left;">State estimation &amp; filtering</td>
 <td style="text-align: left;">StateEstimator, KalmanFilter, ExtendedKalmanFilter, UnscentedKalmanFilter</td>
 </tr>
 <tr>
-<td style="text-align: left;"><a href="trajectories/">imct.trajectories</a></td>
+<td style="text-align: left;"><a href="trajectories/">aimct.trajectories</a></td>
 <td style="text-align: left;">Standard trajectory generation &amp; references</td>
 <td style="text-align: left;">StepTrajectory, SinusoidTrajectory, ChirpTrajectory</td>
 </tr>
 <tr>
-<td style="text-align: left;"><a href="sysid/">imct.sysid</a></td>
+<td style="text-align: left;"><a href="sysid/">aimct.sysid</a></td>
 <td style="text-align: left;">System identification &amp; model learning</td>
 <td style="text-align: left;">LeastSquaresSysId, SubspaceSysId, ManipulatorSysId</td>
 </tr>
 <tr>
-<td style="text-align: left;"><a href="ml/">imct.ml</a></td>
+<td style="text-align: left;"><a href="ml/">aimct.ml</a></td>
 <td style="text-align: left;">Physics-Informed Neural Networks &amp; Neural ODEs</td>
 <td style="text-align: left;">PINNModel, NeuralODE, DeepKoopman</td>
 </tr>
 <tr>
-<td style="text-align: left;"><a href="rl/">imct.rl</a></td>
+<td style="text-align: left;"><a href="rl/">aimct.rl</a></td>
 <td style="text-align: left;">Reinforcement learning algorithms &amp; wrappers</td>
 <td style="text-align: left;">PPOAgent, SACAgent, GymnasiumEnvWrapper</td>
 </tr>
 <tr>
-<td style="text-align: left;"><a href="hybrid/">imct.hybrid</a></td>
+<td style="text-align: left;"><a href="hybrid/">aimct.hybrid</a></td>
 <td style="text-align: left;">Hybrid, neuro-symbolic, and residual control</td>
 <td style="text-align: left;">ResidualRLController, AdaptiveNeuralController</td>
 </tr>
 <tr>
-<td style="text-align: left;"><a href="hil/">imct.hil</a></td>
+<td style="text-align: left;"><a href="hil/">aimct.hil</a></td>
 <td style="text-align: left;">Hardware-in-the-loop bridges &amp; streaming protocols</td>
 <td style="text-align: left;">SerialHardwareBridge, UDPStreamer, CANBridge</td>
 </tr>
 <tr>
-<td style="text-align: left;"><a href="viz/">imct.viz</a></td>
+<td style="text-align: left;"><a href="viz/">aimct.viz</a></td>
 <td style="text-align: left;">Publication-quality plotting &amp; dashboard widgets</td>
 <td style="text-align: left;">PlotEngine, LiveVisualizer, PhasePortrait</td>
 </tr>
 <tr>
-<td style="text-align: left;"><a href="dev/">imct.dev</a></td>
+<td style="text-align: left;"><a href="dev/">aimct.dev</a></td>
 <td style="text-align: left;">Developer utilities, logging &amp; verification</td>
 <td style="text-align: left;">MetricLogger, ContractChecker, Timer</td>
 </tr>
 <tr>
-<td style="text-align: left;"><a href="benchmarks/">imct.benchmarks</a></td>
+<td style="text-align: left;"><a href="benchmarks/">aimct.benchmarks</a></td>
 <td style="text-align: left;">Standardized multi-system evaluation suite</td>
 <td style="text-align: left;">BenchmarkSuite, ExperimentRunner</td>
 </tr>
