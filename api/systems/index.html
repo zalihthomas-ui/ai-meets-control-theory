@@ -8300,12 +8300,12 @@ damping:
 </span><span id="__span-0-155"><a id="__codelineno-0-155" name="__codelineno-0-155"></a>
 </span><span id="__span-0-156"><a id="__codelineno-0-156" name="__codelineno-0-156"></a>    <span class="nd">@property</span>
 </span><span id="__span-0-157"><a id="__codelineno-0-157" name="__codelineno-0-157"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">adjacency</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="__span-0-158"><a id="__codelineno-0-158" name="__codelineno-0-158"></a><span class="w">        </span><span class="sd">"""Adjacency matrix :math:`A \in \mathbb{R}^{N \times N}`."""</span>
+</span><span id="__span-0-158"><a id="__codelineno-0-158" name="__codelineno-0-158"></a><span class="w">        </span><span class="sa">r</span><span class="sd">"""Adjacency matrix :math:`A \in \mathbb{R}^{N \times N}`."""</span>
 </span><span id="__span-0-159"><a id="__codelineno-0-159" name="__codelineno-0-159"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_adjacency</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 </span><span id="__span-0-160"><a id="__codelineno-0-160" name="__codelineno-0-160"></a>
 </span><span id="__span-0-161"><a id="__codelineno-0-161" name="__codelineno-0-161"></a>    <span class="nd">@property</span>
 </span><span id="__span-0-162"><a id="__codelineno-0-162" name="__codelineno-0-162"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">degree_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="__span-0-163"><a id="__codelineno-0-163" name="__codelineno-0-163"></a><span class="w">        </span><span class="sd">"""Degree matrix :math:`D = \text{diag}(\sum_j A_{ij})`."""</span>
+</span><span id="__span-0-163"><a id="__codelineno-0-163" name="__codelineno-0-163"></a><span class="w">        </span><span class="sa">r</span><span class="sd">"""Degree matrix :math:`D = \text{diag}(\sum_j A_{ij})`."""</span>
 </span><span id="__span-0-164"><a id="__codelineno-0-164" name="__codelineno-0-164"></a>        <span class="n">deg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_adjacency</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </span><span id="__span-0-165"><a id="__codelineno-0-165" name="__codelineno-0-165"></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">deg</span><span class="p">)</span>
 </span><span id="__span-0-166"><a id="__codelineno-0-166" name="__codelineno-0-166"></a>
@@ -8316,7 +8316,7 @@ damping:
 </span><span id="__span-0-171"><a id="__codelineno-0-171" name="__codelineno-0-171"></a>
 </span><span id="__span-0-172"><a id="__codelineno-0-172" name="__codelineno-0-172"></a>    <span class="nd">@property</span>
 </span><span id="__span-0-173"><a id="__codelineno-0-173" name="__codelineno-0-173"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">algebraic_connectivity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="__span-0-174"><a id="__codelineno-0-174" name="__codelineno-0-174"></a><span class="w">        </span><span class="sd">"""Fiedler eigenvalue :math:`\lambda_2(L)` (second smallest eigenvalue of Laplacian)."""</span>
+</span><span id="__span-0-174"><a id="__codelineno-0-174" name="__codelineno-0-174"></a><span class="w">        </span><span class="sa">r</span><span class="sd">"""Fiedler eigenvalue :math:`\lambda_2(L)` (second smallest eigenvalue of Laplacian)."""</span>
 </span><span id="__span-0-175"><a id="__codelineno-0-175" name="__codelineno-0-175"></a>        <span class="n">L</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">laplacian</span>
 </span><span id="__span-0-176"><a id="__codelineno-0-176" name="__codelineno-0-176"></a>        <span class="c1"># Symmetrize for numerical eigenvalue stability</span>
 </span><span id="__span-0-177"><a id="__codelineno-0-177" name="__codelineno-0-177"></a>        <span class="n">L_sym</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">L</span> <span class="o">+</span> <span class="n">L</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
@@ -8332,7 +8332,7 @@ damping:
 </span><span id="__span-0-187"><a id="__codelineno-0-187" name="__codelineno-0-187"></a>
 </span><span id="__span-0-188"><a id="__codelineno-0-188" name="__codelineno-0-188"></a>    <span class="nd">@property</span>
 </span><span id="__span-0-189"><a id="__codelineno-0-189" name="__codelineno-0-189"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="__span-0-190"><a id="__codelineno-0-190" name="__codelineno-0-190"></a><span class="w">        </span><span class="sd">"""Return True if the communication graph is connected (:math:`\lambda_2(L) &gt; 10^{-6}`)."""</span>
+</span><span id="__span-0-190"><a id="__codelineno-0-190" name="__codelineno-0-190"></a><span class="w">        </span><span class="sa">r</span><span class="sd">"""Return True if the communication graph is connected (:math:`\lambda_2(L) &gt; 10^{-6}`)."""</span>
 </span><span id="__span-0-191"><a id="__codelineno-0-191" name="__codelineno-0-191"></a>        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">algebraic_connectivity</span> <span class="o">&gt;</span> <span class="mf">1e-6</span><span class="p">)</span>
 </span><span id="__span-0-192"><a id="__codelineno-0-192" name="__codelineno-0-192"></a>
 </span><span id="__span-0-193"><a id="__codelineno-0-193" name="__codelineno-0-193"></a>    <span class="c1"># ------------------------------------------------------------------ State helpers</span>
@@ -8357,7 +8357,7 @@ damping:
 </span><span id="__span-0-212"><a id="__codelineno-0-212" name="__codelineno-0-212"></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_agents</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 </span><span id="__span-0-213"><a id="__codelineno-0-213" name="__codelineno-0-213"></a>
 </span><span id="__span-0-214"><a id="__codelineno-0-214" name="__codelineno-0-214"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">pairwise_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="__span-0-215"><a id="__codelineno-0-215" name="__codelineno-0-215"></a><span class="w">        </span><span class="sd">"""Compute :math:`(N, N)` symmetric matrix of pairwise Euclidean distances :math:`\|p_i - p_j\|`."""</span>
+</span><span id="__span-0-215"><a id="__codelineno-0-215" name="__codelineno-0-215"></a><span class="w">        </span><span class="sa">r</span><span class="sd">"""Compute :math:`(N, N)` symmetric matrix of pairwise Euclidean distances :math:`\|p_i - p_j\|`."""</span>
 </span><span id="__span-0-216"><a id="__codelineno-0-216" name="__codelineno-0-216"></a>        <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_agent_positions</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </span><span id="__span-0-217"><a id="__codelineno-0-217" name="__codelineno-0-217"></a>        <span class="n">diff</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">pos</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
 </span><span id="__span-0-218"><a id="__codelineno-0-218" name="__codelineno-0-218"></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
@@ -8426,7 +8426,7 @@ damping:
 
     <div class="doc doc-contents ">
 
-        <p>Adjacency matrix :math:<code>A \in \mathbb{R}^{N     imes N}</code>.</p>
+        <p>Adjacency matrix :math:<code>A \in \mathbb{R}^{N \times N}</code>.</p>
 
     </div>
 
@@ -8470,7 +8470,7 @@ damping:
 
     <div class="doc doc-contents ">
 
-        <p>Degree matrix :math:<code>D =        ext{diag}(\sum_j A_{ij})</code>.</p>
+        <p>Degree matrix :math:<code>D = \text{diag}(\sum_j A_{ij})</code>.</p>
 
     </div>
 
@@ -8768,7 +8768,7 @@ eq j</code>.</p>
 <span class="normal"><a href="#__codelineno-0-216">216</a></span>
 <span class="normal"><a href="#__codelineno-0-217">217</a></span>
 <span class="normal"><a href="#__codelineno-0-218">218</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-214"><a id="__codelineno-0-214" name="__codelineno-0-214"></a><span class="k">def</span><span class="w"> </span><span class="nf">pairwise_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="__span-0-215"><a id="__codelineno-0-215" name="__codelineno-0-215"></a><span class="w">    </span><span class="sd">"""Compute :math:`(N, N)` symmetric matrix of pairwise Euclidean distances :math:`\|p_i - p_j\|`."""</span>
+</span><span id="__span-0-215"><a id="__codelineno-0-215" name="__codelineno-0-215"></a><span class="w">    </span><span class="sa">r</span><span class="sd">"""Compute :math:`(N, N)` symmetric matrix of pairwise Euclidean distances :math:`\|p_i - p_j\|`."""</span>
 </span><span id="__span-0-216"><a id="__codelineno-0-216" name="__codelineno-0-216"></a>    <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_agent_positions</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </span><span id="__span-0-217"><a id="__codelineno-0-217" name="__codelineno-0-217"></a>    <span class="n">diff</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">pos</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
 </span><span id="__span-0-218"><a id="__codelineno-0-218" name="__codelineno-0-218"></a>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
