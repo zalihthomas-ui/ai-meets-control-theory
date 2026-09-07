@@ -818,6 +818,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="2. Linear Model Predictive Control (MPC)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tube-mpc-robust-constraint-satisfaction-under-disturbance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tube MPC: Robust Constraint Satisfaction Under Disturbance
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1907,6 +1924,34 @@
     
   
     Exp 30 — Coupled Two-Tank Process Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../experiments/37_tube_mpc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exp 37 — Tube MPC Robust Constrained Control
   
 
     
@@ -3750,6 +3795,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="2. Linear Model Predictive Control (MPC)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tube-mpc-robust-constraint-satisfaction-under-disturbance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tube MPC: Robust Constraint Satisfaction Under Disturbance
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -3843,6 +3905,22 @@
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">u_opt</span> <span class="o">=</span> <span class="n">mpc</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">x_current</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
 </span></code></pre></div>
 <p>In <a href="../../experiments/08_mpc_vs_lqr_constrained_cartpole/">Experiment 08</a>, linear MPC effortlessly handles cart position rails <span class="arithmatex">\(x \in [-1.5, 1.5]\,\text{m}\)</span> and force limits <span class="arithmatex">\(|F| \le 12\,\text{N}\)</span>, while unconstrained LQR commands <span class="arithmatex">\(45\,\text{N}\)</span>, violating rails and crashing the system.</p>
+<h3 id="tube-mpc-robust-constraint-satisfaction-under-disturbance">Tube MPC: Robust Constraint Satisfaction Under Disturbance<a class="headerlink" href="#tube-mpc-robust-constraint-satisfaction-under-disturbance" title="Permanent link">&para;</a></h3>
+<p>When bounded additive disturbances <span class="arithmatex">\(w_k \in \mathbb{W}\)</span> act on linear systems <span class="arithmatex">\(x_{k+1} = A x_k + B u_k + w_k\)</span>, nominal MPC often violates state or actuator limits near constraint boundaries.</p>
+<p><strong>Tube MPC</strong> decouples nominal planning from robust disturbance rejection:
+1. <strong>Nominal Trajectory Planning:</strong> Solves a receding-horizon QP for nominal state <span class="arithmatex">\(z_k\)</span> and input <span class="arithmatex">\(v_k\)</span> subject to <em>tightened constraints</em>:
+   $<span class="arithmatex">\(\mathbb{X}_{tight} = \mathbb{X} \ominus \mathcal{E}, \qquad \mathbb{U}_{tight} = \mathbb{U} \ominus K \mathcal{E}\)</span>$
+   where <span class="arithmatex">\(\mathcal{E}\)</span> is the Robust Positively Invariant (RPI) set (or minimal outer approximation mRPI) satisfying <span class="arithmatex">\((A+BK)\mathcal{E} \oplus \mathbb{W} \subseteq \mathcal{E}\)</span>, and <span class="arithmatex">\(\ominus\)</span> denotes the Pontryagin set difference.
+2. <strong>Ancillary Feedback Law:</strong> Applies actual control input:
+   $<span class="arithmatex">\(u_k = v_k^* + K (x_k - z_k^*)\)</span>$
+   guaranteeing that the true state <span class="arithmatex">\(x_k\)</span> remains strictly inside the invariant tube centered at nominal trajectory <span class="arithmatex">\(z_k^*\)</span>: <span class="arithmatex">\(x_k \in z_k^* \oplus \mathcal{E}\)</span>.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aimct.controllers</span><span class="w"> </span><span class="kn">import</span> <span class="n">TubeMPC</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># Offline Pontryagin tightening &amp; online QP with ancillary feedback</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">tube_mpc</span> <span class="o">=</span> <span class="n">TubeMPC</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="n">Q</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="n">R</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">u_bounds</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">),</span> <span class="n">x_bounds</span><span class="o">=</span><span class="p">((</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="kc">None</span><span class="p">),</span> <span class="n">w_bounds</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">))</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">u_opt</span> <span class="o">=</span> <span class="n">tube_mpc</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">x_current</span><span class="p">)</span>
+</span></code></pre></div>
+<p>In <a href="../../experiments/37_tube_mpc/">Experiment 37</a>, Tube MPC achieves <strong>0.0% constraint violations</strong> under persistent bounded disturbance, whereas nominal MPC exhibits a <strong>41.8% violation rate</strong>.</p>
 <hr />
 <h2 id="3-nonlinear-trajectory-optimization-ilqr-ddp">3. Nonlinear Trajectory Optimization: iLQR &amp; DDP<a class="headerlink" href="#3-nonlinear-trajectory-optimization-ilqr-ddp" title="Permanent link">&para;</a></h2>
 <p>For nonlinear systems <span class="arithmatex">\(\dot{x} = f(x, u)\)</span>, global quadratic programming is not directly applicable. <strong>Iterative Linear Quadratic Regulator (iLQR)</strong> (and Differential Dynamic Programming, DDP) iterates between:</p>

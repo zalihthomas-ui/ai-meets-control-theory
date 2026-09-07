@@ -881,6 +881,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#6-set-theoretic-robust-control-tube-mpc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Set-Theoretic Robust Control &amp; Tube MPC
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1901,6 +1912,34 @@
     
   
     Exp 30 — Coupled Two-Tank Process Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../experiments/37_tube_mpc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exp 37 — Tube MPC Robust Constrained Control
   
 
     
@@ -3779,6 +3818,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#6-set-theoretic-robust-control-tube-mpc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Set-Theoretic Robust Control &amp; Tube MPC
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3856,6 +3906,12 @@
 <div class="arithmatex">\[\hat{d}(s) = Q(s) \left( P_n^{-1}(s) y(s) - u(s) \right)\]</div>
 <p>where <span class="arithmatex">\(Q(s)\)</span> is a low-pass filter making <span class="arithmatex">\(Q(s) P_n^{-1}(s)\)</span> proper. The estimated disturbance is injected back into the control signal (<span class="arithmatex">\(u_{comp} = u_{nom} - \hat{d}\)</span>), rendering the physical plant behaving nominally like <span class="arithmatex">\(P_n(s)\)</span>.</p>
 <p>In <a href="../../experiments/34_dob_wind_rejection/">Experiment 34</a>, DOB augmentation reduces quadrotor trajectory tracking error under persistent <span class="arithmatex">\(8\,\text{m/s}\)</span> cross-wind gusts by <span class="arithmatex">\(&gt; 85\%\)</span> without requiring recalibration of the baseline outer-loop controller.</p>
+<hr />
+<h2 id="6-set-theoretic-robust-control-tube-mpc">6. Set-Theoretic Robust Control &amp; Tube MPC<a class="headerlink" href="#6-set-theoretic-robust-control-tube-mpc" title="Permanent link">&para;</a></h2>
+<p>When persistent disturbances are bounded (<span class="arithmatex">\(w \in \mathbb{W}\)</span>) and hard state/input constraints must be certified, frequency-domain bounds alone cannot prevent time-domain constraint violations.</p>
+<p><strong>Tube MPC</strong> computes robust positively invariant (RPI) sets and tightens constraints via Pontryagin set differences (<span class="arithmatex">\(\mathbb{X} \ominus \mathcal{E}\)</span>), guaranteeing that closed-loop trajectories never breach physical boundaries:
+- See <a href="../optimal-constrained/#tube-mpc-robust-constraint-satisfaction-under-disturbance">Optimal &amp; Constrained Control</a> for formulation and code.
+- Benchmark validation: <a href="../../experiments/37_tube_mpc/">Experiment 37 — Tube MPC Robust Constrained Control</a>.</p>
 
 
 

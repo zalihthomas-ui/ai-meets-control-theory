@@ -13,28 +13,24 @@
       
       
       
-        <link rel="prev" href="../robustness/">
-      
-      
-        <link rel="next" href="../hardware-bridge/">
       
       
         
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
-        <title>5. Learning & Safe Shields - AIMCT: AI Meets Control Theory</title>
+        <title>Track C API Audit & Stability Surface (v1.0.0 Freeze) - AIMCT: AI Meets Control Theory</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -53,9 +49,9 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -80,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#data-driven-modeling-safe-hybrid-reinforcement-learning" class="md-skip">
+        <a href="#track-c-api-audit-stability-surface-v100-freeze" class="md-skip">
           Skip to content
         </a>
       
@@ -94,7 +90,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="AIMCT: AI Meets Control Theory" class="md-header__button md-logo" aria-label="AIMCT: AI Meets Control Theory" data-md-component="logo">
+    <a href=".." title="AIMCT: AI Meets Control Theory" class="md-header__button md-logo" aria-label="AIMCT: AI Meets Control Theory" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -114,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              5. Learning & Safe Shields
+              Track C API Audit &amp; Stability Surface (v1.0.0 Freeze)
             
           </span>
         </div>
@@ -227,7 +223,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+      <a href=".." class="md-tabs__link">
         
   
   
@@ -246,7 +242,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../GETTING-STARTED/" class="md-tabs__link">
+      <a href="../GETTING-STARTED/" class="md-tabs__link">
         
   
   
@@ -263,13 +259,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../concepts/" class="md-tabs__link">
           
   
   
@@ -287,7 +281,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../DECISION-GUIDE/" class="md-tabs__link">
+      <a href="../DECISION-GUIDE/" class="md-tabs__link">
         
   
   
@@ -306,7 +300,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../RESULTS/" class="md-tabs__link">
+      <a href="../RESULTS/" class="md-tabs__link">
         
   
   
@@ -325,7 +319,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../USAGE/" class="md-tabs__link">
+      <a href="../USAGE/" class="md-tabs__link">
         
   
   
@@ -344,7 +338,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../VISUALIZATION/" class="md-tabs__link">
+      <a href="../VISUALIZATION/" class="md-tabs__link">
         
   
   
@@ -363,7 +357,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../DEV_PREVIEW/" class="md-tabs__link">
+      <a href="../DEV_PREVIEW/" class="md-tabs__link">
         
   
   
@@ -384,7 +378,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../experiments/" class="md-tabs__link">
+        <a href="../experiments/" class="md-tabs__link">
           
   
   
@@ -404,7 +398,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../hardware/two-link-arm/" class="md-tabs__link">
+        <a href="../hardware/two-link-arm/" class="md-tabs__link">
           
   
   
@@ -422,7 +416,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../notebooks/01_tour/" class="md-tabs__link">
+      <a href="../notebooks/01_tour/" class="md-tabs__link">
         
   
   
@@ -443,7 +437,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../api/" class="md-tabs__link">
+        <a href="../api/" class="md-tabs__link">
           
   
   
@@ -463,7 +457,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../PORTAL/" class="md-tabs__link">
+        <a href="../PORTAL/" class="md-tabs__link">
           
   
   
@@ -497,7 +491,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="AIMCT: AI Meets Control Theory" class="md-nav__button md-logo" aria-label="AIMCT: AI Meets Control Theory" data-md-component="logo">
+    <a href=".." title="AIMCT: AI Meets Control Theory" class="md-nav__button md-logo" aria-label="AIMCT: AI Meets Control Theory" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -527,7 +521,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -554,7 +548,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../GETTING-STARTED/" class="md-nav__link">
+      <a href="../GETTING-STARTED/" class="md-nav__link">
         
   
   
@@ -578,31 +572,28 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -620,7 +611,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -638,7 +629,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../" class="md-nav__link">
+      <a href="../concepts/" class="md-nav__link">
         
   
   
@@ -666,7 +657,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../state-space/" class="md-nav__link">
+      <a href="../concepts/state-space/" class="md-nav__link">
         
   
   
@@ -694,7 +685,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../estimation/" class="md-nav__link">
+      <a href="../concepts/estimation/" class="md-nav__link">
         
   
   
@@ -722,7 +713,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../optimal-constrained/" class="md-nav__link">
+      <a href="../concepts/optimal-constrained/" class="md-nav__link">
         
   
   
@@ -750,7 +741,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../robustness/" class="md-nav__link">
+      <a href="../concepts/robustness/" class="md-nav__link">
         
   
   
@@ -775,37 +766,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    5. Learning & Safe Shields
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../concepts/learning/" class="md-nav__link">
         
   
   
@@ -821,115 +785,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1-data-driven-system-identification-dmdc-sindy" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Data-Driven System Identification: DMDc &amp; SINDy
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="1. Data-Driven System Identification: DMDc &amp; SINDy">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#dynamic-mode-decomposition-with-control-dmdc" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Dynamic Mode Decomposition with Control (DMDc)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#physics-informed-neural-networks-pinns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Physics-Informed Neural Networks (PINNs)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-deep-reinforcement-learning-continuous-action-benchmarking" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Deep Reinforcement Learning: Continuous Action Benchmarking
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-safe-rl-via-control-barrier-function-cbf-shields" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Safe RL via Control Barrier Function (CBF) Shields
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. Safe RL via Control Barrier Function (CBF) Shields">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-real-time-safety-shield-qp-filtering" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The Real-Time Safety Shield (QP Filtering)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-dataset-aggregation-dagger-for-imitation-learning" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Dataset Aggregation (DAgger) for Imitation Learning
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -942,7 +797,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../hardware-bridge/" class="md-nav__link">
+      <a href="../concepts/hardware-bridge/" class="md-nav__link">
         
   
   
@@ -977,7 +832,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../DECISION-GUIDE/" class="md-nav__link">
+      <a href="../DECISION-GUIDE/" class="md-nav__link">
         
   
   
@@ -1004,7 +859,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../RESULTS/" class="md-nav__link">
+      <a href="../RESULTS/" class="md-nav__link">
         
   
   
@@ -1031,7 +886,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../USAGE/" class="md-nav__link">
+      <a href="../USAGE/" class="md-nav__link">
         
   
   
@@ -1058,7 +913,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../VISUALIZATION/" class="md-nav__link">
+      <a href="../VISUALIZATION/" class="md-nav__link">
         
   
   
@@ -1085,7 +940,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../DEV_PREVIEW/" class="md-nav__link">
+      <a href="../DEV_PREVIEW/" class="md-nav__link">
         
   
   
@@ -1166,7 +1021,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/" class="md-nav__link">
+      <a href="../experiments/" class="md-nav__link">
         
   
   
@@ -1248,7 +1103,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/01_rk4_vs_euler/" class="md-nav__link">
+      <a href="../experiments/01_rk4_vs_euler/" class="md-nav__link">
         
   
   
@@ -1276,7 +1131,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/02_jacobian_linearization/" class="md-nav__link">
+      <a href="../experiments/02_jacobian_linearization/" class="md-nav__link">
         
   
   
@@ -1304,7 +1159,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/03_pid_stabilizes_unstable/" class="md-nav__link">
+      <a href="../experiments/03_pid_stabilizes_unstable/" class="md-nav__link">
         
   
   
@@ -1394,7 +1249,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/04_lqr_vs_pole_placement_cartpole/" class="md-nav__link">
+      <a href="../experiments/04_lqr_vs_pole_placement_cartpole/" class="md-nav__link">
         
   
   
@@ -1422,7 +1277,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/05_cartpole_basin_of_attraction/" class="md-nav__link">
+      <a href="../experiments/05_cartpole_basin_of_attraction/" class="md-nav__link">
         
   
   
@@ -1450,7 +1305,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/06_lqg_vs_lqr_measurement_noise/" class="md-nav__link">
+      <a href="../experiments/06_lqg_vs_lqr_measurement_noise/" class="md-nav__link">
         
   
   
@@ -1478,7 +1333,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/15_quadrotor_ekf_output_feedback/" class="md-nav__link">
+      <a href="../experiments/15_quadrotor_ekf_output_feedback/" class="md-nav__link">
         
   
   
@@ -1506,7 +1361,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/16_ekf_vs_ukf/" class="md-nav__link">
+      <a href="../experiments/16_ekf_vs_ukf/" class="md-nav__link">
         
   
   
@@ -1534,7 +1389,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/38_mhe_vs_ekf/" class="md-nav__link">
+      <a href="../experiments/38_mhe_vs_ekf/" class="md-nav__link">
         
   
   
@@ -1562,7 +1417,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/41_particle_filter_bearings_only/" class="md-nav__link">
+      <a href="../experiments/41_particle_filter_bearings_only/" class="md-nav__link">
         
   
   
@@ -1652,7 +1507,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/07_cartpole_swingup_hybrid/" class="md-nav__link">
+      <a href="../experiments/07_cartpole_swingup_hybrid/" class="md-nav__link">
         
   
   
@@ -1680,7 +1535,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/28_furuta_pendulum_control/" class="md-nav__link">
+      <a href="../experiments/28_furuta_pendulum_control/" class="md-nav__link">
         
   
   
@@ -1708,7 +1563,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/33_ball_and_beam_control/" class="md-nav__link">
+      <a href="../experiments/33_ball_and_beam_control/" class="md-nav__link">
         
   
   
@@ -1798,7 +1653,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/08_mpc_vs_lqr_constrained_cartpole/" class="md-nav__link">
+      <a href="../experiments/08_mpc_vs_lqr_constrained_cartpole/" class="md-nav__link">
         
   
   
@@ -1826,7 +1681,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/14_quadrotor_figure8_tracking/" class="md-nav__link">
+      <a href="../experiments/14_quadrotor_figure8_tracking/" class="md-nav__link">
         
   
   
@@ -1854,7 +1709,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/24_ilqr_vs_sampling_mpc/" class="md-nav__link">
+      <a href="../experiments/24_ilqr_vs_sampling_mpc/" class="md-nav__link">
         
   
   
@@ -1882,7 +1737,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/26_harder_reference_paths/" class="md-nav__link">
+      <a href="../experiments/26_harder_reference_paths/" class="md-nav__link">
         
   
   
@@ -1910,7 +1765,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/30_two_tank_level_control/" class="md-nav__link">
+      <a href="../experiments/30_two_tank_level_control/" class="md-nav__link">
         
   
   
@@ -1938,7 +1793,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/37_tube_mpc/" class="md-nav__link">
+      <a href="../experiments/37_tube_mpc/" class="md-nav__link">
         
   
   
@@ -2028,7 +1883,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/20_quadrotor_obstacle_nmpc/" class="md-nav__link">
+      <a href="../experiments/20_quadrotor_obstacle_nmpc/" class="md-nav__link">
         
   
   
@@ -2056,7 +1911,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/25_diffdrive_moving_obstacle/" class="md-nav__link">
+      <a href="../experiments/25_diffdrive_moving_obstacle/" class="md-nav__link">
         
   
   
@@ -2146,7 +2001,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/32_direct_collocation_vs_ilqr/" class="md-nav__link">
+      <a href="../experiments/32_direct_collocation_vs_ilqr/" class="md-nav__link">
         
   
   
@@ -2236,7 +2091,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/17_adaptive_vs_fixed_changing_plant/" class="md-nav__link">
+      <a href="../experiments/17_adaptive_vs_fixed_changing_plant/" class="md-nav__link">
         
   
   
@@ -2264,7 +2119,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/23_twolink_arm_tracking/" class="md-nav__link">
+      <a href="../experiments/23_twolink_arm_tracking/" class="md-nav__link">
         
   
   
@@ -2292,7 +2147,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/34_dob_wind_rejection/" class="md-nav__link">
+      <a href="../experiments/34_dob_wind_rejection/" class="md-nav__link">
         
   
   
@@ -2320,7 +2175,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/35_hinf_vs_lqg/" class="md-nav__link">
+      <a href="../experiments/35_hinf_vs_lqg/" class="md-nav__link">
         
   
   
@@ -2348,7 +2203,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/40_mu_analysis_rs_rp/" class="md-nav__link">
+      <a href="../experiments/40_mu_analysis_rs_rp/" class="md-nav__link">
         
   
   
@@ -2438,7 +2293,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/22_diffdrive_path_following/" class="md-nav__link">
+      <a href="../experiments/22_diffdrive_path_following/" class="md-nav__link">
         
   
   
@@ -2466,7 +2321,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/27_bicycle_double_lane_change/" class="md-nav__link">
+      <a href="../experiments/27_bicycle_double_lane_change/" class="md-nav__link">
         
   
   
@@ -2494,7 +2349,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/36_hil_arm_balance/" class="md-nav__link">
+      <a href="../experiments/36_hil_arm_balance/" class="md-nav__link">
         
   
   
@@ -2522,7 +2377,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/39_formation_switching_graph/" class="md-nav__link">
+      <a href="../experiments/39_formation_switching_graph/" class="md-nav__link">
         
   
   
@@ -2612,7 +2467,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/09_control_on_identified_model/" class="md-nav__link">
+      <a href="../experiments/09_control_on_identified_model/" class="md-nav__link">
         
   
   
@@ -2640,7 +2495,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/10_planning_learned_vs_true_model/" class="md-nav__link">
+      <a href="../experiments/10_planning_learned_vs_true_model/" class="md-nav__link">
         
   
   
@@ -2668,7 +2523,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/11_qlearning_vs_classical/" class="md-nav__link">
+      <a href="../experiments/11_qlearning_vs_classical/" class="md-nav__link">
         
   
   
@@ -2696,7 +2551,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/12_shielded_qlearning/" class="md-nav__link">
+      <a href="../experiments/12_shielded_qlearning/" class="md-nav__link">
         
   
   
@@ -2724,7 +2579,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/18_rl_zoo_vs_lqr/" class="md-nav__link">
+      <a href="../experiments/18_rl_zoo_vs_lqr/" class="md-nav__link">
         
   
   
@@ -2752,7 +2607,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/19_icc_leaderboard/" class="md-nav__link">
+      <a href="../experiments/19_icc_leaderboard/" class="md-nav__link">
         
   
   
@@ -2780,7 +2635,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/21_grand_capstone_bakeoff/" class="md-nav__link">
+      <a href="../experiments/21_grand_capstone_bakeoff/" class="md-nav__link">
         
   
   
@@ -2808,7 +2663,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/29_dagger_vs_bc_lane_change/" class="md-nav__link">
+      <a href="../experiments/29_dagger_vs_bc_lane_change/" class="md-nav__link">
         
   
   
@@ -2836,7 +2691,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiments/31_sac_vs_ppo_sample_efficiency/" class="md-nav__link">
+      <a href="../experiments/31_sac_vs_ppo_sample_efficiency/" class="md-nav__link">
         
   
   
@@ -2933,7 +2788,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../hardware/two-link-arm/" class="md-nav__link">
+      <a href="../hardware/two-link-arm/" class="md-nav__link">
         
   
   
@@ -2968,7 +2823,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../notebooks/01_tour/" class="md-nav__link">
+      <a href="../notebooks/01_tour/" class="md-nav__link">
         
   
   
@@ -3049,7 +2904,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
+      <a href="../api/" class="md-nav__link">
         
   
   
@@ -3077,7 +2932,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/systems/" class="md-nav__link">
+      <a href="../api/systems/" class="md-nav__link">
         
   
   
@@ -3105,7 +2960,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/controllers/" class="md-nav__link">
+      <a href="../api/controllers/" class="md-nav__link">
         
   
   
@@ -3133,7 +2988,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/planning/" class="md-nav__link">
+      <a href="../api/planning/" class="md-nav__link">
         
   
   
@@ -3161,7 +3016,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/estimation/" class="md-nav__link">
+      <a href="../api/estimation/" class="md-nav__link">
         
   
   
@@ -3189,7 +3044,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/trajectories/" class="md-nav__link">
+      <a href="../api/trajectories/" class="md-nav__link">
         
   
   
@@ -3217,7 +3072,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/sysid/" class="md-nav__link">
+      <a href="../api/sysid/" class="md-nav__link">
         
   
   
@@ -3245,7 +3100,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/ml/" class="md-nav__link">
+      <a href="../api/ml/" class="md-nav__link">
         
   
   
@@ -3273,7 +3128,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/rl/" class="md-nav__link">
+      <a href="../api/rl/" class="md-nav__link">
         
   
   
@@ -3301,7 +3156,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/hybrid/" class="md-nav__link">
+      <a href="../api/hybrid/" class="md-nav__link">
         
   
   
@@ -3329,7 +3184,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/hil/" class="md-nav__link">
+      <a href="../api/hil/" class="md-nav__link">
         
   
   
@@ -3357,7 +3212,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/deploy/" class="md-nav__link">
+      <a href="../api/deploy/" class="md-nav__link">
         
   
   
@@ -3385,7 +3240,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/viz/" class="md-nav__link">
+      <a href="../api/viz/" class="md-nav__link">
         
   
   
@@ -3413,7 +3268,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/dev/" class="md-nav__link">
+      <a href="../api/dev/" class="md-nav__link">
         
   
   
@@ -3441,7 +3296,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/benchmarks/" class="md-nav__link">
+      <a href="../api/benchmarks/" class="md-nav__link">
         
   
   
@@ -3530,7 +3385,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../PORTAL/" class="md-nav__link">
+      <a href="../PORTAL/" class="md-nav__link">
         
   
   
@@ -3558,7 +3413,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../STABILITY/" class="md-nav__link">
+      <a href="../STABILITY/" class="md-nav__link">
         
   
   
@@ -3586,7 +3441,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../roadmap/" class="md-nav__link">
+      <a href="../roadmap/" class="md-nav__link">
         
   
   
@@ -3614,7 +3469,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../roadmap-phase3/" class="md-nav__link">
+      <a href="../roadmap-phase3/" class="md-nav__link">
         
   
   
@@ -3642,7 +3497,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../vision/" class="md-nav__link">
+      <a href="../vision/" class="md-nav__link">
         
   
   
@@ -3670,7 +3525,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../PACKAGING/" class="md-nav__link">
+      <a href="../PACKAGING/" class="md-nav__link">
         
   
   
@@ -3698,7 +3553,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../changelog/" class="md-nav__link">
+      <a href="../changelog/" class="md-nav__link">
         
   
   
@@ -3753,33 +3608,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-data-driven-system-identification-dmdc-sindy" class="md-nav__link">
+  <a href="#1-aimctestimation-surface-audit" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Data-Driven System Identification: DMDc &amp; SINDy
+        1. aimct.estimation Surface Audit
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="1. Data-Driven System Identification: DMDc &amp; SINDy">
+    <nav class="md-nav" aria-label="1. aimct.estimation Surface Audit">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#dynamic-mode-decomposition-with-control-dmdc" class="md-nav__link">
+  <a href="#public-classes-exports" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dynamic Mode Decomposition with Control (DMDc)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#physics-informed-neural-networks-pinns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Physics-Informed Neural Networks (PINNs)
+        Public Classes &amp; Exports
       
     </span>
   </a>
@@ -3792,10 +3636,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-deep-reinforcement-learning-continuous-action-benchmarking" class="md-nav__link">
+  <a href="#2-aimctsystems-multi-agent-surface-audit" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Deep Reinforcement Learning: Continuous Action Benchmarking
+        2. aimct.systems Multi-Agent Surface Audit
       
     </span>
   </a>
@@ -3803,38 +3647,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-safe-rl-via-control-barrier-function-cbf-shields" class="md-nav__link">
+  <a href="#3-aimctcontrollers-formation-control-surface-audit" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Safe RL via Control Barrier Function (CBF) Shields
+        3. aimct.controllers Formation Control Surface Audit
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="3. Safe RL via Control Barrier Function (CBF) Shields">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-real-time-safety-shield-qp-filtering" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The Real-Time Safety Shield (QP Filtering)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-dataset-aggregation-dagger-for-imitation-learning" class="md-nav__link">
+  <a href="#4-verification-testing-summary" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Dataset Aggregation (DAgger) for Imitation Learning
+        4. Verification &amp; Testing Summary
       
     </span>
   </a>
@@ -3861,60 +3688,180 @@
   
 
 
-<h1 id="data-driven-modeling-safe-hybrid-reinforcement-learning">Data-Driven Modeling &amp; Safe Hybrid Reinforcement Learning<a class="headerlink" href="#data-driven-modeling-safe-hybrid-reinforcement-learning" title="Permanent link">&para;</a></h1>
-<p>Modern control systems increasingly integrate machine learning to model complex aerodynamics, nonlinear friction, and fluid interactions, or to synthesize end-to-end neural policies. However, unconstrained deep neural networks lack stability and safety guarantees. <code>aimct</code> focuses on <strong>principled data-driven modeling and safe hybrid control</strong>.</p>
+<h1 id="track-c-api-audit-stability-surface-v100-freeze">Track C API Audit &amp; Stability Surface (v1.0.0 Freeze)<a class="headerlink" href="#track-c-api-audit-stability-surface-v100-freeze" title="Permanent link">&para;</a></h1>
+<h2 id="1-aimctestimation-surface-audit">1. <code>aimct.estimation</code> Surface Audit<a class="headerlink" href="#1-aimctestimation-surface-audit" title="Permanent link">&para;</a></h2>
+<p>All classes adhere to the common estimation protocol:
+- Initialization with system dynamics (continuous <code>f(x, u)</code> or <code>discrete=True</code>), measurement <code>h(x)</code>, covariances <span class="arithmatex">\(Q, R\)</span>, and sampling time <span class="arithmatex">\(dt\)</span>.
+- Standard interface: <code>.predict(u) -&gt; x_hat</code>, <code>.update(y) -&gt; x_hat</code>, <code>.step(y, u) -&gt; x_hat</code>, <code>.reset(x0, P0)</code>.
+- State attributes: <code>.x_hat</code> (current state estimate), <code>.P</code> (current error covariance or empirical particle covariance).
+- Factory classmethod: <code>.from_system(system, Q, R, dt=..., **kwargs)</code>.</p>
+<h3 id="public-classes-exports">Public Classes &amp; Exports<a class="headerlink" href="#public-classes-exports" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Public Symbol</th>
+<th style="text-align: left;">Module</th>
+<th style="text-align: left;">Interface &amp; Guarantees</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>LuenbergerObserver</code></td>
+<td style="text-align: left;"><code>aimct.estimation.luenberger</code></td>
+<td style="text-align: left;">Continuous/discrete Luenberger state observer with pole placement (<code>place_observer</code>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>place_observer</code></td>
+<td style="text-align: left;"><code>aimct.estimation.luenberger</code></td>
+<td style="text-align: left;">Ackermann duality-based observer gain placement <span class="arithmatex">\(L\)</span>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>solve_fare</code></td>
+<td style="text-align: left;"><code>aimct.estimation.kalman</code></td>
+<td style="text-align: left;">Continuous Filter Algebraic Riccati Equation solver.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>KalmanFilter</code></td>
+<td style="text-align: left;"><code>aimct.estimation.kalman</code></td>
+<td style="text-align: left;">Continuous-time Kalman-Bucy filter with steady-state Riccati gain.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>DiscreteKalmanFilter</code></td>
+<td style="text-align: left;"><code>aimct.estimation.kalman</code></td>
+<td style="text-align: left;">Discrete-time linear Kalman filter with exact van Loan matrix exponential discretization.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ExtendedKalmanFilter</code></td>
+<td style="text-align: left;"><code>aimct.estimation.ekf</code></td>
+<td style="text-align: left;">Nonlinear EKF with Joseph stabilized covariance updates and analytic/FD Jacobians.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>UnscentedKalmanFilter</code></td>
+<td style="text-align: left;"><code>aimct.estimation.ukf</code></td>
+<td style="text-align: left;">Additive-noise scaled unscented transform <span class="arithmatex">\((\alpha, \beta, \kappa)\)</span> with <span class="arithmatex">\(2n+1\)</span> sigma points.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>MovingHorizonEstimator</code> (alias <code>MHE</code>)</td>
+<td style="text-align: left;"><code>aimct.estimation.mhe</code></td>
+<td style="text-align: left;">Constrained nonlinear MAP estimation over sliding horizon <span class="arithmatex">\(N\)</span> with hard state bounds <span class="arithmatex">\(x \in \mathcal{X}\)</span>, disturbance bounds <span class="arithmatex">\(w \in \mathcal{W}\)</span>, general constraints <span class="arithmatex">\(g(x) \le 0\)</span>, and EKF Riccati arrival cost.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ParticleFilter</code> (alias <code>PF</code>)</td>
+<td style="text-align: left;"><code>aimct.estimation.particle_filter</code></td>
+<td style="text-align: left;">Sequential Importance Resampling (SIR) Bootstrap filter with Log-Sum-Exp weight updates and adaptive systematic resampling (<span class="arithmatex">\(ESS &lt; \gamma N_p\)</span>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>systematic_resample</code></td>
+<td style="text-align: left;"><code>aimct.estimation.particle_filter</code></td>
+<td style="text-align: left;"><span class="arithmatex">\(\mathcal{O}(N)\)</span> systematic low-variance resampling algorithm.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>finite_diff_jacobian</code></td>
+<td style="text-align: left;"><code>aimct.estimation.ekf</code></td>
+<td style="text-align: left;">High-precision central difference Jacobian matrix calculation.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>observability_matrix</code>, <code>observability_rank</code>, <code>is_observable</code></td>
+<td style="text-align: left;"><code>aimct.estimation.observability</code></td>
+<td style="text-align: left;">Kalman observability rank condition <span class="arithmatex">\(\text{rank}(\mathcal{O}) = n\)</span>.</td>
+</tr>
+</tbody>
+</table>
 <hr />
-<h2 id="1-data-driven-system-identification-dmdc-sindy">1. Data-Driven System Identification: DMDc &amp; SINDy<a class="headerlink" href="#1-data-driven-system-identification-dmdc-sindy" title="Permanent link">&para;</a></h2>
-<p>When first-principles physics are partially unknown or difficult to parameterize:</p>
-<h3 id="dynamic-mode-decomposition-with-control-dmdc">Dynamic Mode Decomposition with Control (DMDc)<a class="headerlink" href="#dynamic-mode-decomposition-with-control-dmdc" title="Permanent link">&para;</a></h3>
-<p>DMDc extracts linear state transition operators from snapshot matrices <span class="arithmatex">\(X = [x_1, \dots, x_{N-1}]\)</span>, <span class="arithmatex">\(X' = [x_2, \dots, x_N]\)</span>, and inputs <span class="arithmatex">\(\Upsilon = [u_1, \dots, u_{N-1}]\)</span>:</p>
-<div class="arithmatex">\[\begin{bmatrix} A &amp; B \end{bmatrix} \approx X' \begin{bmatrix} X \\ \Upsilon \end{bmatrix}^\dagger\]</div>
-<p>Using Singular Value Decomposition (SVD), DMDc projects high-dimensional fluid or multi-body dynamics onto dominant coherent spatial-temporal modes (<a href="../../experiments/09_control_on_identified_model/">Exp 09</a>).</p>
-<h3 id="physics-informed-neural-networks-pinns">Physics-Informed Neural Networks (PINNs)<a class="headerlink" href="#physics-informed-neural-networks-pinns" title="Permanent link">&para;</a></h3>
-<p>PINNs embed Hamiltonian or Lagrangian energy conservation residuals directly into neural network loss functions:</p>
-<div class="arithmatex">\[\mathcal{L}_{total} = \mathcal{L}_{data}(\hat{y}, y) + \lambda_{phys} \left\| \frac{d}{dt}\left(\frac{\partial L}{\partial \dot{q}}\right) - \frac{\partial L}{\partial q} - \tau \right\|^2\]</div>
+<h2 id="2-aimctsystems-multi-agent-surface-audit">2. <code>aimct.systems</code> Multi-Agent Surface Audit<a class="headerlink" href="#2-aimctsystems-multi-agent-surface-audit" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Public Symbol</th>
+<th style="text-align: left;">Module</th>
+<th style="text-align: left;">Interface &amp; Guarantees</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>MultiAgentSystem</code> (alias <code>MultiAgent</code>)</td>
+<td style="text-align: left;"><code>aimct.systems.multi_agent</code></td>
+<td style="text-align: left;">Multi-agent dynamical system composition subclassing <code>DynamicalSystem</code>. State <span class="arithmatex">\(x \in \mathbb{R}^{N \cdot n_a}\)</span>, input <span class="arithmatex">\(u \in \mathbb{R}^{N \cdot m_a}\)</span>. Supports single/double integrators and custom agents. Exposes <code>.adjacency</code>, <code>.degree_matrix</code>, <code>.laplacian</code>, <code>.algebraic_connectivity</code> (<span class="arithmatex">\(\lambda_2(L)\)</span>), <code>.is_connected</code>, <code>.get_agent_positions()</code>, <code>.get_agent_velocities()</code>, <code>.pairwise_distances()</code>, <code>.min_pairwise_distance()</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>complete_graph</code></td>
+<td style="text-align: left;"><code>aimct.systems.multi_agent</code></td>
+<td style="text-align: left;">Generates <span class="arithmatex">\(K_N\)</span> all-to-all connected adjacency matrix (<span class="arithmatex">\(\lambda_2 = N\)</span>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>cycle_graph</code></td>
+<td style="text-align: left;"><code>aimct.systems.multi_agent</code></td>
+<td style="text-align: left;">Generates <span class="arithmatex">\(C_N\)</span> ring / cycle adjacency matrix (<span class="arithmatex">\(\lambda_2 = 2 - 2\cos(2\pi/N)\)</span>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>line_graph</code></td>
+<td style="text-align: left;"><code>aimct.systems.multi_agent</code></td>
+<td style="text-align: left;">Generates <span class="arithmatex">\(P_N\)</span> linear path adjacency matrix (<span class="arithmatex">\(\lambda_2 = 2 - 2\cos(\pi/N)\)</span>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>star_graph</code></td>
+<td style="text-align: left;"><code>aimct.systems.multi_agent</code></td>
+<td style="text-align: left;">Generates <span class="arithmatex">\(S_N\)</span> star hub adjacency matrix (<span class="arithmatex">\(\lambda_2 = 1\)</span>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>disconnected_graph</code></td>
+<td style="text-align: left;"><code>aimct.systems.multi_agent</code></td>
+<td style="text-align: left;">Generates adjacency matrix with isolated nodes (<span class="arithmatex">\(\lambda_2 = 0\)</span>).</td>
+</tr>
+</tbody>
+</table>
 <hr />
-<h2 id="2-deep-reinforcement-learning-continuous-action-benchmarking">2. Deep Reinforcement Learning: Continuous Action Benchmarking<a class="headerlink" href="#2-deep-reinforcement-learning-continuous-action-benchmarking" title="Permanent link">&para;</a></h2>
-<p>In continuous robotic control, off-policy algorithms like <strong>Soft Actor-Critic (SAC)</strong> and on-policy algorithms like <strong>Proximal Policy Optimization (PPO)</strong> optimize parameterized policy distributions <span class="arithmatex">\(\pi_\theta(a|s)\)</span>:</p>
-<pre class="mermaid"><code>flowchart TD
-    subgraph SAC ["Soft Actor-Critic (Off-Policy)"]
-        A["Entropy-Augmented Objective:&lt;br/&gt;J(&amp;theta;) = E[R + &amp;alpha; H(&amp;pi;(&amp;middot;|s))]"]
-        B["Replay Buffer &amp; Twin Q-Networks"]
-        C["High Sample Efficiency (50k steps)"]
-    end
-    subgraph PPO ["Proximal Policy Optimization (On-Policy)"]
-        D["Clipped Surrogate Objective"]
-        E["Generalized Advantage Estimation (GAE)"]
-        F["Lower Sample Efficiency (~500k steps)"]
-    end</code></pre>
-<p>As demonstrated in <a href="../../experiments/31_sac_vs_ppo_sample_efficiency/">Experiment 31</a>, SAC achieves near-optimal CartPole and Inverted Pendulum stabilization in <span class="arithmatex">\(50{,}000\)</span> environment interactions (<span class="arithmatex">\(10\times\)</span> fewer samples than PPO) due to maximum entropy exploration and off-policy sample reuse.</p>
+<h2 id="3-aimctcontrollers-formation-control-surface-audit">3. <code>aimct.controllers</code> Formation Control Surface Audit<a class="headerlink" href="#3-aimctcontrollers-formation-control-surface-audit" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Public Symbol</th>
+<th style="text-align: left;">Module</th>
+<th style="text-align: left;">Interface &amp; Guarantees</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>ConsensusFormationController</code> (alias <code>FormationController</code>)</td>
+<td style="text-align: left;"><code>aimct.controllers.formation</code></td>
+<td style="text-align: left;">Distributed consensus-based formation controller with relative offset consensus (<span class="arithmatex">\(k_p\)</span>), velocity damping (<span class="arithmatex">\(k_v\)</span>), leader pinning (<span class="arithmatex">\(k_{\text{ref}}, k_{\text{vref}}\)</span>), artificial potential field collision barriers (<span class="arithmatex">\(k_{\text{coll}}, d_{\text{safe}}\)</span>), and input saturation box <span class="arithmatex">\([u_{\min}, u_{\max}]\)</span>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>polygon_formation</code></td>
+<td style="text-align: left;"><code>aimct.controllers.formation</code></td>
+<td style="text-align: left;">Generates regular <span class="arithmatex">\(N\)</span>-gon relative offset vectors centered at origin.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>line_formation</code></td>
+<td style="text-align: left;"><code>aimct.controllers.formation</code></td>
+<td style="text-align: left;">Generates 1D equidistant relative offset vectors along specified axis.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>diamond_formation</code></td>
+<td style="text-align: left;"><code>aimct.controllers.formation</code></td>
+<td style="text-align: left;">Generates 4-agent diamond formation offsets.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>wedge_formation</code></td>
+<td style="text-align: left;"><code>aimct.controllers.formation</code></td>
+<td style="text-align: left;">Generates inverted V-shape / wedge formation offsets.</td>
+</tr>
+</tbody>
+</table>
 <hr />
-<h2 id="3-safe-rl-via-control-barrier-function-cbf-shields">3. Safe RL via Control Barrier Function (CBF) Shields<a class="headerlink" href="#3-safe-rl-via-control-barrier-function-cbf-shields" title="Permanent link">&para;</a></h2>
-<p>Pure reinforcement learning explores by random trial and error, inevitably violating safety boundaries during training and execution.</p>
-<p>A <strong>Control Barrier Function (CBF)</strong> <span class="arithmatex">\(h(x) \ge 0\)</span> defines a forward-invariant safe set <span class="arithmatex">\(\mathcal{C} = \{x \in \mathbb{R}^n : h(x) \ge 0\}\)</span>. Safety is guaranteed if the Lie derivatives satisfy:</p>
-<div class="arithmatex">\[\dot{h}(x, u) = \nabla h(x)^T f(x) + \nabla h(x)^T g(x)u \ge -\gamma(h(x)), \qquad \gamma &gt; 0\]</div>
-<h3 id="the-real-time-safety-shield-qp-filtering">The Real-Time Safety Shield (QP Filtering)<a class="headerlink" href="#the-real-time-safety-shield-qp-filtering" title="Permanent link">&para;</a></h3>
-<p>Given a nominal neural network action <span class="arithmatex">\(u_{RL} \sim \pi_\theta(s)\)</span>, the safety filter solves a convex Quadratic Program in microseconds before the signal reaches actuators:</p>
-<div class="arithmatex">\[\min_{u} \frac{1}{2} \|u - u_{RL}\|^2\]</div>
-<div class="arithmatex">\[\text{subject to: } \nabla h(x)^T f(x) + \nabla h(x)^T g(x)u \ge -\alpha h(x), \qquad u_{min} \le u \le u_{max}\]</div>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aimct.hybrid</span><span class="w"> </span><span class="kn">import</span> <span class="n">ShieldedController</span><span class="p">,</span> <span class="n">box_predicate</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Wrap untrusted RL policy with certified classical fallback</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">shield</span> <span class="o">=</span> <span class="n">ShieldedController</span><span class="p">(</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">base</span><span class="o">=</span><span class="n">rl_agent</span><span class="o">.</span><span class="n">predict</span><span class="p">,</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">fallback</span><span class="o">=</span><span class="n">classical_lqr</span><span class="p">,</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">safe</span><span class="o">=</span><span class="n">box_predicate</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">],</span> <span class="n">high</span><span class="o">=</span><span class="p">[</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">]),</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">blend</span><span class="o">=</span><span class="s2">"filter"</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">)</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">u_safe</span> <span class="o">=</span> <span class="n">shield</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">x_current</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
-</span></code></pre></div>
-<p>In <a href="../../experiments/12_shielded_qlearning/">Experiment 12</a>, CBF-shielded RL trains without a single catastrophic boundary violation (<span class="arithmatex">\(0\)</span> crashes during exploration), whereas unshielded agents crash over <span class="arithmatex">\(240\)</span> times before learning.</p>
-<hr />
-<h2 id="4-dataset-aggregation-dagger-for-imitation-learning">4. Dataset Aggregation (DAgger) for Imitation Learning<a class="headerlink" href="#4-dataset-aggregation-dagger-for-imitation-learning" title="Permanent link">&para;</a></h2>
-<p>Behavioral Cloning (BC) trains neural networks to mimic expert controllers (such as MPC or iLQR). However, compounding prediction errors lead to <strong>distributional shift</strong>: when the robot drifts outside the training distribution, it fails catastrophically.</p>
-<p><strong>DAgger (Dataset Aggregation)</strong> iteratively queries the expert along the learner's visited trajectory distribution:
-$<span class="arithmatex">\(\mathcal{D}_{i+1} = \mathcal{D}_i \cup \{(s_t, \pi^*(s_t))\}_{s_t \sim \pi_{\theta_i}}\)</span>$</p>
-<p>In <a href="../../experiments/29_dagger_vs_bc_lane_change/">Experiment 29</a>, DAgger achieves <span class="arithmatex">\(100\%\)</span> lane-change success on high-speed dynamic vehicles, whereas naive BC fails in <span class="arithmatex">\(&gt; 40\%\)</span> of severe cornering cases.</p>
+<h2 id="4-verification-testing-summary">4. Verification &amp; Testing Summary<a class="headerlink" href="#4-verification-testing-summary" title="Permanent link">&para;</a></h2>
+<ul>
+<li>100% test pass across Track C test suites:</li>
+<li><code>tests/test_mhe.py</code> (7 tests)</li>
+<li><code>tests/test_particle_filter.py</code> (6 tests)</li>
+<li><code>tests/test_formation.py</code> (5 tests)</li>
+<li><code>tests/test_ekf.py</code> (8 tests)</li>
+<li><code>tests/test_ukf.py</code> (8 tests)</li>
+<li>Benchmark evidence artifacts versioned in <code>experiments/</code>:</li>
+<li><code>experiments/38_mhe_vs_ekf/</code> (TwoTank state bounds)</li>
+<li><code>experiments/39_formation_switching_graph/</code> (Switching graph formation tracking)</li>
+<li><code>experiments/41_particle_filter_bearings_only/</code> (Bearings-only target tracking)</li>
+</ul>
 
 
 
@@ -3972,12 +3919,12 @@ $<span class="arithmatex">\(\mathcal{D}_{i+1} = \mathcal{D}_i \cup \{(s_t, \pi^*
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
-        <script src="../../javascripts/mathjax.js"></script>
+        <script src="../javascripts/mathjax.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       
