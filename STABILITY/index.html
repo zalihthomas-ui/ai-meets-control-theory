@@ -3560,13 +3560,41 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#important-disambiguation-class-name-disambiguation" class="md-nav__link">
+  <a href="#important-conventions-disambiguations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Important Disambiguation: Class Name Disambiguation
+        Important Conventions &amp; Disambiguations
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Important Conventions &amp; Disambiguations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#class-name-disambiguation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Class Name Disambiguation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prediction-horizon-keyword-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prediction Horizon Keyword Convention
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3819,13 +3847,41 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#important-disambiguation-class-name-disambiguation" class="md-nav__link">
+  <a href="#important-conventions-disambiguations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Important Disambiguation: Class Name Disambiguation
+        Important Conventions &amp; Disambiguations
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Important Conventions &amp; Disambiguations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#class-name-disambiguation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Class Name Disambiguation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prediction-horizon-keyword-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prediction Horizon Keyword Convention
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3904,14 +3960,14 @@
 <h2 id="what-constitutes-the-public-api">What Constitutes the Public API<a class="headerlink" href="#what-constitutes-the-public-api" title="Permanent link">&para;</a></h2>
 <p>A symbol is considered part of the <code>aimct</code> public API if and only if <strong>all</strong> of the following conditions hold:</p>
 <ol>
-<li>It is exported from one of the <strong>15 core subpackages'</strong> <code>__init__.py</code> and listed in that module's <code>__all__</code> (or top-level <code>aimct.__all__</code>), <strong>or</strong> explicitly documented in the API reference portal.</li>
+<li>It is exported from one of the <strong>16 core subpackages'</strong> <code>__init__.py</code> and listed in that module's <code>__all__</code> (or top-level <code>aimct.__all__</code>), <strong>or</strong> explicitly documented in the API reference portal.</li>
 <li>Its import path does not contain a leading-underscore component (<code>aimct.controllers.LQR</code> is public; <code>aimct.controllers._qp</code> or <code>aimct._internal</code> is private).</li>
 <li>It is not marked as <em>experimental</em> in its docstring or class documentation.</li>
 </ol>
 <p>Everything else — helper functions, internal optimizers, private methods, and non-dataclass internal container states — may change in any release without triggering a major version bump.</p>
 <hr />
 <h2 id="the-public-surface-at-v10">The Public Surface at v1.0<a class="headerlink" href="#the-public-surface-at-v10" title="Permanent link">&para;</a></h2>
-<p>The following table enumerates the certified public API across all 15 core subpackages:</p>
+<p>The following table enumerates the certified public API across all 16 core subpackages:</p>
 <table>
 <thead>
 <tr>
@@ -3928,8 +3984,8 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>aimct.controllers</code></td>
-<td style="text-align: left;"><code>Controller</code> (ABC), <code>PID</code>, <code>StateFeedback</code>, <code>LQR</code>, <code>ObserverFeedback</code>, <code>LinearMPC</code>, <code>TubeMPC</code>, <code>MRPISet</code>, <code>mrpi_box</code>, <code>SamplingMPC</code>, <code>ILQR</code> / <code>iLQR</code>, <code>MRAC</code>, <code>DisturbanceObserver</code>, <code>QFilter</code>, <code>GainScheduledLQR</code>, <code>EnergyShapingSwingUp</code>, <code>HybridSwingUpLQR</code>, <code>ConsensusFormationController</code> (alias <code>FormationController</code>), formation geometry generators (<code>polygon_formation</code>, <code>line_formation</code>, <code>diamond_formation</code>, <code>wedge_formation</code>), <span class="arithmatex">\(H_\infty\)</span> robust loop shaping subpackage (<code>StateSpace</code>, <code>weight_S</code>, <code>weight_KS</code>, <code>weight_T</code>, <code>augment_plant</code>, <code>lft_lower</code>, <code>hinf_syn</code>, <code>mixsyn</code>, <code>HinfSynResult</code>, <code>HinfController</code>), matrix utilities (<code>dare</code>, <code>solve_care</code>, <code>solve_lyapunov</code>, <code>place_poles</code>, <code>controllability_matrix</code>, <code>is_controllable</code>, <code>wrap_angle</code>).</td>
-<td style="text-align: left;">Solvers support standard NumPy arrays. <code>TubeMPC</code> computes minimal robust positively invariant (mRPI) outer bounding sets and Pontryagin difference tightening.</td>
+<td style="text-align: left;"><code>Controller</code> (ABC), <code>PID</code>, <code>StateFeedback</code>, <code>LQR</code>, <code>ObserverFeedback</code>, <code>LinearMPC</code>, <code>TubeMPC</code>, <code>MRPISet</code>, <code>mrpi_box</code>, <code>SamplingMPC</code>, <code>ILQR</code> / <code>iLQR</code>, <code>iLQRResult</code>, <code>MRAC</code>, <code>DisturbanceObserver</code>, <code>QFilter</code>, <code>GainScheduledLQR</code>, <code>EnergyShapingSwingUp</code>, <code>HybridSwingUpLQR</code>, <code>ConsensusFormationController</code> (alias <code>FormationController</code>), formation geometry generators (<code>polygon_formation</code>, <code>line_formation</code>, <code>diamond_formation</code>, <code>wedge_formation</code>), <span class="arithmatex">\(H_\infty\)</span> robust loop shaping subpackage (<code>StateSpace</code>, <code>weight_S</code>, <code>weight_KS</code>, <code>weight_T</code>, <code>augment_plant</code>, <code>lft_lower</code>, <code>hinf_syn</code>, <code>mixsyn</code>, <code>HinfSynResult</code>, <code>HinfController</code>), active-set optimization (<code>solve_qp</code>, <code>QPResult</code>), matrix utilities (<code>dare</code>, <code>solve_care</code>, <code>solve_lyapunov</code>, <code>place_poles</code>, <code>controllability_matrix</code>, <code>is_controllable</code>, <code>wrap_angle</code>).</td>
+<td style="text-align: left;"><code>solve_qp</code> and <code>QPResult</code> provide a reusable from-scratch active-set quadratic programming primitive, like <code>solve_care</code>/<code>dare</code>. <code>TubeMPC</code> computes minimal robust positively invariant (mRPI) outer bounding sets and Pontryagin difference tightening.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>aimct.planning</code></td>
@@ -3938,8 +3994,8 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>aimct.robust</code></td>
-<td style="text-align: left;"><code>BlockStructure</code>, <code>mu</code>, <code>robust_stability_margin</code>, <code>robust_performance_margin</code>, <code>dk_iterate</code>.</td>
-<td style="text-align: left;">Structured singular value analysis (<span class="arithmatex">\(\mu\)</span>) for mixed real/complex parametric perturbations.</td>
+<td style="text-align: left;"><code>BlockStructure</code>, <code>MuBounds</code>, <code>RobustMarginResult</code>, <code>mu</code>, <code>robust_stability_margin</code>, <code>robust_performance_margin</code>, <code>dk_iterate</code>.</td>
+<td style="text-align: left;">Structured singular value analysis (<span class="arithmatex">\(\mu\)</span>) for mixed real/complex parametric perturbations. <code>mu()</code> returns typed <code>MuBounds(lower, upper, rho, sigma_max, worst_delta)</code> with <code>.value</code>; <code>robust_stability_margin</code>, <code>robust_performance_margin</code>, and <code>dk_iterate</code> return typed <code>RobustMarginResult(omega, mu_lower, mu_upper, peak_upper, peak_lower, omega_peak, margin, robust)</code>.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>aimct.estimation</code></td>
@@ -3947,14 +4003,14 @@
 <td style="text-align: left;"><strong>Consistency Guarantee:</strong> All four nonlinear estimators (<code>ExtendedKalmanFilter</code>, <code>UnscentedKalmanFilter</code>, <code>MovingHorizonEstimator</code>/<code>MHE</code>, <code>ParticleFilter</code>/<code>PF</code>) share a unified construction interface: <code>(f, h, Q, R, *, dt, ...)</code> and a <code>.from_system(system, Q, R, *, dt, h=None, **kwargs)</code> classmethod.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>aimct.sysid</code></td>
-<td style="text-align: left;"><code>least_squares_id</code>, <code>dmdc</code>, <code>to_continuous</code>, <code>prediction_error</code>, <code>model_mismatch</code>, <code>identify_manipulator</code>, <code>manipulator_regressor</code>, <code>finite_difference_derivatives</code>, <code>ManipulatorID</code>.</td>
-<td style="text-align: left;">System identification and Euler–Lagrange manipulator parameter regression.</td>
-</tr>
-<tr>
 <td style="text-align: left;"><code>aimct.simulate</code></td>
 <td style="text-align: left;"><code>simulate</code>, <code>simulate_batch</code>, <code>Trajectory</code>, <code>BatchResult</code>, <code>rk4_step</code>.</td>
 <td style="text-align: left;">Deterministic numerical integration and trajectory logging.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>aimct.sysid</code></td>
+<td style="text-align: left;"><code>least_squares_id</code>, <code>dmdc</code>, <code>to_continuous</code>, <code>prediction_error</code>, <code>model_mismatch</code>, <code>identify_manipulator</code>, <code>manipulator_regressor</code>, <code>finite_difference_derivatives</code>, <code>ManipulatorID</code>.</td>
+<td style="text-align: left;">System identification and Euler–Lagrange manipulator parameter regression.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>aimct.benchmarks</code></td>
@@ -3987,6 +4043,11 @@
 <td style="text-align: left;">Real-time hardware-in-the-loop emulation and serial/UDP transport.</td>
 </tr>
 <tr>
+<td style="text-align: left;"><code>aimct.hybrid</code></td>
+<td style="text-align: left;"><code>ShieldedController</code>, <code>box_predicate</code>, <code>barrier_predicate</code>.</td>
+<td style="text-align: left;">Formal safety filtering and predicate-based control intervention.</td>
+</tr>
+<tr>
 <td style="text-align: left;"><code>aimct.ml</code></td>
 <td style="text-align: left;"><code>MLP</code>, <code>LearnedDynamics</code>, <code>system_step</code>, <code>batched_rk4</code>.</td>
 <td style="text-align: left;">Pure NumPy neural network forward/backward propagation and learned residual dynamics.</td>
@@ -4004,11 +4065,14 @@
 </tbody>
 </table>
 <hr />
-<h2 id="important-disambiguation-class-name-disambiguation">Important Disambiguation: Class Name Disambiguation<a class="headerlink" href="#important-disambiguation-class-name-disambiguation" title="Permanent link">&para;</a></h2>
+<h2 id="important-conventions-disambiguations">Important Conventions &amp; Disambiguations<a class="headerlink" href="#important-conventions-disambiguations" title="Permanent link">&para;</a></h2>
+<h3 id="class-name-disambiguation">Class Name Disambiguation<a class="headerlink" href="#class-name-disambiguation" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong><code>Trajectory</code></strong>: Exists in <strong>both</strong> <code>aimct.simulate</code> (rollout result dataclass containing time vectors, state trajectories, input trajectories, and metadata) and <code>aimct.trajectories</code> (abstract base class defining reference trajectory generators). These are distinct classes designed for separate roles.</li>
 <li><strong><code>TrackingResult</code></strong>: Exported from <code>aimct.benchmarks</code> for trajectory-tracking accuracy metrics (cross-track error, along-track error, completion percentage) and is distinct from simulation rollouts.</li>
 </ul>
+<h3 id="prediction-horizon-keyword-convention">Prediction Horizon Keyword Convention<a class="headerlink" href="#prediction-horizon-keyword-convention" title="Permanent link">&para;</a></h3>
+<p>Horizon length is spelled <code>N</code> on <code>LinearMPC</code> and <code>DirectCollocation</code> (knot/step count) and <code>horizon</code> on <code>ILQR</code> / <code>SamplingMPC</code> (receding-horizon length). This split is intentional and frozen for 1.0.</p>
 <hr />
 <h2 id="field-stable-return-dataclasses">Field-Stable Return Dataclasses<a class="headerlink" href="#field-stable-return-dataclasses" title="Permanent link">&para;</a></h2>
 <p>The following return <strong>dataclasses</strong> are guaranteed to be field-stable: fields may be added in minor releases, but will never be removed or renamed within major version <code>1.x</code>:</p>
@@ -4025,6 +4089,9 @@
 <li><code>ManipulatorID</code> (<code>aimct.sysid</code>)</li>
 <li><code>HinfSynResult</code> (<code>aimct.controllers</code>)</li>
 <li><code>MRPISet</code> (<code>aimct.controllers</code>)</li>
+<li><code>QPResult</code> (<code>aimct.controllers</code>)</li>
+<li><code>MuBounds</code> (<code>aimct.robust</code>)</li>
+<li><code>RobustMarginResult</code> (<code>aimct.robust</code>)</li>
 <li><code>SACResult</code> (<code>aimct.rl</code>)</li>
 <li><code>ControllerSpec</code> (<code>aimct.deploy</code>)</li>
 <li><code>HILResult</code> (<code>aimct.hil</code>)</li>

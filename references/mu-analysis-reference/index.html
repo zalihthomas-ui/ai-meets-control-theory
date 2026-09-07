@@ -3907,8 +3907,10 @@ the controller already absorbed).</p>
 \text{margin} = \frac{1}{\sup_\omega \mu_{\mathbf{\Delta}}(M(j\omega))}.
 \]</div>
 <p><code>robust_stability_margin(M_of_omega, structure, omega)</code> sweeps the grid and
-returns <code>mu_lower(ω)</code>, <code>mu_upper(ω)</code>, the peak, the worst-case <code>ω</code>, the margin,
-and a <code>robust</code> flag. A margin of 2 means every uncertainty bound can be doubled
+returns a <code>RobustMarginResult</code> (<code>mu_lower</code>, <code>mu_upper</code>, <code>peak_upper</code>,
+<code>peak_lower</code>, <code>omega_peak</code>, <code>margin</code>, <code>robust</code>). <code>mu(M, structure)</code> on a single
+matrix returns a <code>MuBounds</code> (<code>lower</code>, <code>upper</code>, <code>rho</code>, <code>sigma_max</code>,
+<code>worst_delta</code>). A margin of 2 means every uncertainty bound can be doubled
 and stability still holds; <code>1/peak_lower</code> is the size of a <code>Δ</code> that is <em>known</em> to
 destabilise.</p>
 <p><strong>Robust performance.</strong> By the <em>main-loop theorem</em>, a performance requirement
@@ -3932,7 +3934,7 @@ augmented structure.</p>
 the worst-frequency <code>D</code> of the <code>μ</code> sweep. That still tightens a peak that lives
 in one band — the common case — and shows the mechanism without the curve-fitting
 machinery. It takes <code>resynthesise(d) -&gt; K</code> and <code>mu_matrix(K, ω) -&gt; M</code> callbacks
-and returns <code>(K, history)</code> with the <code>robust_stability_margin</code> dict of each round.</p>
+and returns <code>(K, history)</code> with the <code>RobustMarginResult</code> of each round.</p>
 <hr />
 <h2 id="6-what-experiment-40-shows">6. What Experiment 40 shows<a class="headerlink" href="#6-what-experiment-40-shows" title="Permanent link">&para;</a></h2>
 <p>On Experiment 35's plant, with the resonance

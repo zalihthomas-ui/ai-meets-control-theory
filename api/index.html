@@ -3790,9 +3790,19 @@
 <td style="text-align: left;">TrajectoryPlanner, RRTPlanner, MinimumJerkPlanner</td>
 </tr>
 <tr>
+<td style="text-align: left;"><a href="robust/">aimct.robust</a></td>
+<td style="text-align: left;">Structured singular value (<span class="arithmatex">\(\mu\)</span>) &amp; robust margins</td>
+<td style="text-align: left;">BlockStructure, mu, dk_iterate</td>
+</tr>
+<tr>
 <td style="text-align: left;"><a href="estimation/">aimct.estimation</a></td>
 <td style="text-align: left;">State estimation &amp; filtering</td>
 <td style="text-align: left;">StateEstimator, KalmanFilter, ExtendedKalmanFilter, UnscentedKalmanFilter</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="simulate/">aimct.simulate</a></td>
+<td style="text-align: left;">Numerical simulation &amp; rollout trajectory storage</td>
+<td style="text-align: left;">simulate, simulate_batch, Trajectory, BatchResult</td>
 </tr>
 <tr>
 <td style="text-align: left;"><a href="trajectories/">aimct.trajectories</a></td>
@@ -3823,6 +3833,11 @@
 <td style="text-align: left;"><a href="hil/">aimct.hil</a></td>
 <td style="text-align: left;">Hardware-in-the-loop bridges &amp; streaming protocols</td>
 <td style="text-align: left;">SerialHardwareBridge, UDPStreamer, CANBridge</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="deploy/">aimct.deploy</a></td>
+<td style="text-align: left;">Embedded C99 &amp; MicroPython controller export</td>
+<td style="text-align: left;">export_controller, load_controller, emit_c</td>
 </tr>
 <tr>
 <td style="text-align: left;"><a href="viz/">aimct.viz</a></td>
