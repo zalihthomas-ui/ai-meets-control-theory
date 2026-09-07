@@ -11,13 +11,16 @@ aimct provides a unified, mathematically rigorous Python framework bridging clas
 | [aimct.systems](systems.md) | Physical and benchmark dynamical systems | DynamicalSystem, ContinuousSystem, DiscreteSystem |
 | [aimct.controllers](controllers.md) | Classical, robust, adaptive, and optimal controllers | BaseController, PIDController, LQRController, MPCController, SMCController |
 | [aimct.planning](planning.md) | Trajectory planning & optimization | TrajectoryPlanner, RRTPlanner, MinimumJerkPlanner |
+| [aimct.robust](robust.md) | Structured singular value ($\mu$) & robust margins | BlockStructure, mu, dk_iterate |
 | [aimct.estimation](estimation.md) | State estimation & filtering | StateEstimator, KalmanFilter, ExtendedKalmanFilter, UnscentedKalmanFilter |
+| [aimct.simulate](simulate.md) | Numerical simulation & rollout trajectory storage | simulate, simulate_batch, Trajectory, BatchResult |
 | [aimct.trajectories](trajectories.md) | Standard trajectory generation & references | StepTrajectory, SinusoidTrajectory, ChirpTrajectory |
 | [aimct.sysid](sysid.md) | System identification & model learning | LeastSquaresSysId, SubspaceSysId, ManipulatorSysId |
 | [aimct.ml](ml.md) | Physics-Informed Neural Networks & Neural ODEs | PINNModel, NeuralODE, DeepKoopman |
 | [aimct.rl](rl.md) | Reinforcement learning algorithms & wrappers | PPOAgent, SACAgent, GymnasiumEnvWrapper |
 | [aimct.hybrid](hybrid.md) | Hybrid, neuro-symbolic, and residual control | ResidualRLController, AdaptiveNeuralController |
 | [aimct.hil](hil.md) | Hardware-in-the-loop bridges & streaming protocols | SerialHardwareBridge, UDPStreamer, CANBridge |
+| [aimct.deploy](deploy.md) | Embedded C99 & MicroPython controller export | export_controller, load_controller, emit_c |
 | [aimct.viz](viz.md) | Publication-quality plotting & dashboard widgets | PlotEngine, LiveVisualizer, PhasePortrait |
 | [aimct.dev](dev.md) | Developer utilities, logging & verification | MetricLogger, ContractChecker, Timer |
 | [aimct.benchmarks](benchmarks.md) | Standardized multi-system evaluation suite | BenchmarkSuite, ExperimentRunner |
