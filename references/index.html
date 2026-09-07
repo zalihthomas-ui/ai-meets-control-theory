@@ -3752,6 +3752,14 @@
 <li>Artificial potential field collision avoidance barriers for inter-agent safety.</li>
 </ul>
 </li>
+<li>
+<p><strong><a href="file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/tube-mpc-reference.md">Tube MPC Reference Specification (<code>tube-mpc-reference.md</code>)</a></strong></p>
+<ul>
+<li>Robust constrained control against a bounded additive disturbance <span class="arithmatex">\(x^+ = A_d x + B_d u + w\)</span>, <span class="arithmatex">\(w \in W\)</span>: the ancillary tube law <span class="arithmatex">\(u = u_{\text{nom}} + K(x - x_{\text{nom}})\)</span> and nominal MPC on constraints tightened by the RPI set <span class="arithmatex">\(Z\)</span> and <span class="arithmatex">\(KZ\)</span>.</li>
+<li>Interval-hull (box) outer approximation of the minimal RPI set <span class="arithmatex">\(F_\infty = \bigoplus_{i\ge 0} A_K^i W\)</span> with half-widths <span class="arithmatex">\(\big(\sum_i |A_K^i|\big)\hat w\)</span> — from-scratch, works for a disturbance on any subset of the channels, conservatism linear in <span class="arithmatex">\(\hat w\)</span>.</li>
+<li>Recursive feasibility / robust constraint satisfaction argument and the conservatism-vs-disturbance trade (Experiment 37: nominal MPC violates the state box, tube MPC does not, at a measured backoff and settling-time cost).</li>
+</ul>
+</li>
 </ol>
 
 
