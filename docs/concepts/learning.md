@@ -60,10 +60,16 @@ $$\min_{u} \frac{1}{2} \|u - u_{RL}\|^2$$
 $$\text{subject to: } \nabla h(x)^T f(x) + \nabla h(x)^T g(x)u \ge -\alpha h(x), \qquad u_{min} \le u \le u_{max}$$
 
 ```python
-from aimct.hybrid import CBFShield
+from aimct.hybrid import ShieldedController, box_predicate
 
-shield = CBFShield(barrier_fn=safety_barrier, alpha=10.0, u_bounds=(-15.0, 15.0))
-u_safe = shield.filter_action(state=x_current, u_nominal=u_rl)
+# Wrap untrusted RL policy with certified classical fallback
+shield = ShieldedController(
+    base=rl_agent.predict,
+    fallback=classical_lqr,
+    safe=box_predicate(low=[-1.5, -np.inf, -0.2, -np.inf], high=[1.5, np.inf, 0.2, np.inf]),
+    blend="filter"
+)
+u_safe = shield.update(x_current, dt=0.02)
 ```
 
 In [Experiment 12](../experiments/12_shielded_qlearning.md), CBF-shielded RL trains without a single catastrophic boundary violation ($0$ crashes during exploration), whereas unshielded agents crash over $240$ times before learning.

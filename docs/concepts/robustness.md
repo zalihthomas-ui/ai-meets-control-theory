@@ -53,10 +53,13 @@ where:
 - $W_3(s)$ is a high-pass weighting filter bounding multiplicative plant uncertainty $\Delta(s)$ ($|T(j\omega)| < 1/|W_3(j\omega)|$), ensuring robust stability against unmodelled structural flexibility.
 
 ```python
-from aimct.controllers.hinf import HInfinityController
+from aimct.controllers.hinf import mixsyn, weight_S, weight_T
 
-K_hinf, gamma, report = HInfinityController.synthesize(
-    plant, W1=W1_filter, W2=W2_filter, W3=W3_filter
+# Synthesize H-infinity controller via S / KS / T loop shaping
+K_ss, gamma = mixsyn(
+    G=plant_ss,
+    W_S=weight_S(wb=1.0, A=1e-3, M=2.0),
+    W_T=weight_T(wb=10.0, A=1e-2, M=2.0)
 )
 ```
 

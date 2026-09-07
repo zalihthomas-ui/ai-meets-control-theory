@@ -76,10 +76,13 @@ Where the **arrival cost** $\|x_{k-N} - \bar{x}_{k-N}\|_{P_{k-N}^{-1}}^2$ summar
 from aimct.estimation import MovingHorizonEstimator
 
 mhe = MovingHorizonEstimator(
-    dynamics=sys.step,
-    measurement_fn=sys.measure,
+    f=sys.dynamics,
+    h=sys.output,
+    Q=np.diag([1e-4, 1e-4]),
+    R=np.diag([2.25e-4, 2.25e-4]),
     horizon=10,
-    state_bounds=(x_min, x_max)
+    dt=0.05,
+    x_bounds=(np.array([0.0, 0.0]), np.array([0.30, 0.30]))
 )
 x_hat = mhe.update(y_k, u_k)
 ```

@@ -45,8 +45,8 @@ $$\begin{aligned}
 ```python
 from aimct.controllers import LinearMPC
 
-mpc = LinearMPC(A, B, Q=Q, R=R, horizon=20, u_min=[-10.0], u_max=[10.0])
-u_opt = mpc.compute_action(x_current)
+mpc = LinearMPC(A, B, Q=Q, R=R, N=20, u_bounds=(-10.0, 10.0))
+u_opt = mpc.update(x_current, dt=0.02)
 ```
 
 In [Experiment 08](../experiments/08_mpc_vs_lqr_constrained_cartpole.md), linear MPC effortlessly handles cart position rails $x \in [-1.5, 1.5]\,\text{m}$ and force limits $|F| \le 12\,\text{N}$, while unconstrained LQR commands $45\,\text{N}$, violating rails and crashing the system.

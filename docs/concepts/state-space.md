@@ -40,10 +40,10 @@ with continuous Jacobian matrices:
 $$A = \left.\frac{\partial f}{\partial x}\right|_{(\bar{x}, \bar{u})}, \quad B = \left.\frac{\partial f}{\partial u}\right|_{(\bar{x}, \bar{u})}, \quad C = \left.\frac{\partial g}{\partial x}\right|_{(\bar{x}, \bar{u})}, \quad D = \left.\frac{\partial g}{\partial u}\right|_{(\bar{x}, \bar{u})}$$
 
 ```python
-from aimct.systems import InvertedPendulum
+from aimct.systems import Pendulum
 
-sys = InvertedPendulum(mass=0.2, length=0.3, damping=0.01)
-A, B, C, D = sys.linearize()  # Continuous-time Jacobian matrices
+sys = Pendulum(m=0.2, L=0.3, b=0.01)
+A, B, C, D = sys.linearize()  # Continuous-time Jacobian matrices about upright
 ```
 
 ### The $23^\circ$ Divergence Law
