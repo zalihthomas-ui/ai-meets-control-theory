@@ -1,10 +1,11 @@
 # Roadmap — the road to v1.0
 
-> **Status:** active, opened 2026-09-07. Supersedes the open items in
-> [`roadmap-phase3.md`](roadmap-phase3.md) as the working plan; Phase 3's
-> completed tracks stand. Autonomous execution — the lead (puma) drives
-> integration, releases, and the API-freeze pass; toku / famo / lava own the
-> lanes below.
+> **Status: ✅ SHIPPED.** `aimct 1.0.0` was tagged and published to PyPI on
+> 2026-09-07 (`236e51b` → `v1.0.0`), with a full GitHub release. All six exit
+> criteria below were met. This page is kept as the record of how it was done;
+> the post-1.0 backlog is at the bottom.
+>
+> Interim: `v0.3.0` (Phase 3 feature checkpoint) shipped the same day.
 
 **v1.0 means:** the library is *feature-complete against its stated vision*
 and its *public API is frozen with a stability guarantee*. Concretely, all
@@ -77,22 +78,35 @@ pipeline with a full GitHub release.
 
 ---
 
-## Sequencing & progress
+## How it went
 
 ```
-toku:  A5 ✅ → A3+Exp37 (in progress) → A6
-famo:  C2+Exp41 ✅ → C3+Exp39 ✅ → C4 ✅                              [Track C DONE]
-lava:  D7 ✅ → D8 ✅ → D9 ✅ → D10 ✅ → D11 ✅                          [Track D DONE]
-nero:  QA sweep ✅ (found + I fixed the py3.12 flake and the SyntaxWarnings)
-puma:  L1 ✅ → L5 ✅ → L3 ✅ (test_mhe seed) → [A3 lands] → raise cov gate to 85 (L2)
-       → cut v0.3.0 → collect A6/C4 audits → L4 API consolidation → stabilise → cut v1.0.0
+toku:  A5 ✅ → A3 (TubeMPC) + Exp 37 ✅ → A6 audit ✅
+       (session wedged twice; puma landed the A6 code changes directly)
+famo:  C2 (ParticleFilter) + Exp 41 ✅ → C3 (MultiAgent + formation) + Exp 39 ✅ → C4 ✅
+lava:  D7 Concepts ✅ → D8 report ✅ → D9 paper ✅ → D10 governance ✅ → D11 changelog ✅
+       → STABILITY.md public-surface finalisation ✅
+nero:  three full QA sweeps ✅ — found the py3.12 flake root cause and the SyntaxWarnings
+puma:  L1 simulate_batch ✅ · L3 pinned BOTH flaky tests (test_mhe seed, DOB drift bound) ✅
+       · L4 top-level aimct.__all__ + lazy loading ✅ · L5 perf drift-gate ✅
+       · EKF/UKF from_system, solve_qp/QPResult public, aimct.robust dataclasses,
+         api/robust.md + api/simulate.md, hybrid in the package ✅
+       · cut v0.3.0 ✅ · cut v1.0.0 ✅
+
+exit criteria at release:  574 tests green · coverage 90.2 % (gate 85 %) ·
+mkdocs --strict clean · report + paper final · STABILITY.md frozen · PyPI + GitHub release live
 ```
 
-**Remaining before `v0.3.0`:** A3 (tube MPC) + Exp 37 on `main`, CI green ×3.
-**Remaining before `v1.0.0`:** L4 API consolidation (top-level `aimct.__all__`,
-finalise the STABILITY.md public-surface table from the audits), the exit-criteria
-sweep (10 consecutive green CI runs, docs/report/paper final, CHANGELOG), release.
+## Post-1.0 backlog
 
-Coverage is at **88.7 %** (gate still 80, raise to 85 with A3). No open
-blockers. Post-1.0 backlog: CCM/contraction control (A4), a hosted
-interactive sandbox, ROS 2 node generation.
+- **Polytopic (H-rep) mRPI for tube MPC** — the box interval-hull mRPI in
+  `TubeMPC` inflates for strongly-coupled plants (cart-pole `rho(|A_K|)` ~
+  3.5–7 → empty tightened set); a polytopic set with more normals would carry
+  it. Exp 37 uses a well-scaled mass-spring-damper for now.
+- **Control-contraction metrics (CCM)** — certified nonlinear tracking with a
+  contraction rate (was Phase-3 A4, deferred).
+- A hosted **interactive sandbox** (WebAssembly / server), **ROS 2 node
+  generation**, a real flight-controller firmware target.
+- Wider RL: model-based RL, offline RL on the logged experiment data.
+
+These are `1.x` minor-release material — none breaks the frozen API.
