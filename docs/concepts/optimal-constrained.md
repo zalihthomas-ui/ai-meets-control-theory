@@ -51,6 +51,27 @@ u_opt = mpc.update(x_current, dt=0.02)
 
 In [Experiment 08](../experiments/08_mpc_vs_lqr_constrained_cartpole.md), linear MPC effortlessly handles cart position rails $x \in [-1.5, 1.5]\,\text{m}$ and force limits $|F| \le 12\,\text{N}$, while unconstrained LQR commands $45\,\text{N}$, violating rails and crashing the system.
 
+### Tube MPC: Robust Constraint Satisfaction Under Disturbance
+When bounded additive disturbances $w_k \in \mathbb{W}$ act on linear systems $x_{k+1} = A x_k + B u_k + w_k$, nominal MPC often violates state or actuator limits near constraint boundaries.
+
+**Tube MPC** decouples nominal planning from robust disturbance rejection:
+1. **Nominal Trajectory Planning:** Solves a receding-horizon QP for nominal state $z_k$ and input $v_k$ subject to *tightened constraints*:
+   $$\mathbb{X}_{tight} = \mathbb{X} \ominus \mathcal{E}, \qquad \mathbb{U}_{tight} = \mathbb{U} \ominus K \mathcal{E}$$
+   where $\mathcal{E}$ is the Robust Positively Invariant (RPI) set (or minimal outer approximation mRPI) satisfying $(A+BK)\mathcal{E} \oplus \mathbb{W} \subseteq \mathcal{E}$, and $\ominus$ denotes the Pontryagin set difference.
+2. **Ancillary Feedback Law:** Applies actual control input:
+   $$u_k = v_k^* + K (x_k - z_k^*)$$
+   guaranteeing that the true state $x_k$ remains strictly inside the invariant tube centered at nominal trajectory $z_k^*$: $x_k \in z_k^* \oplus \mathcal{E}$.
+
+```python
+from aimct.controllers import TubeMPC
+
+# Offline Pontryagin tightening & online QP with ancillary feedback
+tube_mpc = TubeMPC(A, B, Q=Q, R=R, N=15, u_bounds=(-5.0, 5.0), x_bounds=((-1.0, 1.0), None), w_bounds=(-0.15, 0.15))
+u_opt = tube_mpc.update(x_current)
+```
+
+In [Experiment 37](../experiments/37_tube_mpc.md), Tube MPC achieves **0.0% constraint violations** under persistent bounded disturbance, whereas nominal MPC exhibits a **41.8% violation rate**.
+
 ---
 
 ## 3. Nonlinear Trajectory Optimization: iLQR & DDP

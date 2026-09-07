@@ -103,6 +103,7 @@ The \textbf{AI Meets Control Theory (AIMCT)} initiative establishes a unified ma
 \midrule
 \textbf{Linear / Local Stabilization} & Full-State LQR / LQI & Analytical CARE optimal gains, infinite gain margin, $0$ training samples & Exp 04, Exp 05, Exp 06 \\
 \textbf{Actuator \& State Saturation} & Constrained Linear / NMPC & Zero state/rail violations, handles hard limits seamlessly & Exp 08, Exp 14, Exp 30 \\
+\textbf{Persistent Disturbance under Bounds} & Tube MPC (Robust Invariant) & $0\%$ constraint violations via mRPI set tightening & Exp 37 \\
 \textbf{Nonlinear Underactuated Swing-Up} & Energy Shaping + LQR Catch & Global homoclinic orbit pumping with single-switch balance & Exp 07, Exp 28, Exp 33 \\
 \textbf{Smooth Nonlinear Trajectories} & iLQR / Real-Time Iteration & Quadratic convergence ($< 1\,\text{ms}$ solve), $100\times$ faster than sampling & Exp 24, Exp 26 \\
 \textbf{Non-Convex Obstacle Corridors} & Direct Collocation / Sampling MPC & Hermite--Simpson NLP enforces exact terminal state equality & Exp 20, Exp 25, Exp 32 \\
@@ -1780,6 +1781,53 @@ In Bearings-Only Target Tracking (BOTT), an observer measures only the line-of-s
 \label{fig:exp41}
 \end{figure}
 
+% ---------------------------------------------------------------------------
+\subsection{Case Study XVIII: Tube MPC Robust Constrained Control under Persistent Disturbance (Experiment 37)}
+\label{sec:exp37_tube_mpc}
+% ---------------------------------------------------------------------------
+
+When physical systems operate subject to persistent, bounded additive disturbances $x_{k+1} = A x_k + B u_k + w_k$ ($w_k \in \mathbb{W}$) and hard state/input constraints ($x_k \in \mathbb{X}, u_k \in \mathbb{U}$), nominal Linear MPC plans optimistically assuming $w=0$. While soft constraint penalties penalize boundary crossings after they occur, they cannot prevent persistent external forces from driving the physical state across hard safety walls.
+
+In Experiment 37 (\texttt{experiments/37\_tube\_mpc}), \textbf{Tube MPC} (\texttt{aimct.controllers.TubeMPC}) decouples nominal receding-horizon planning from robust disturbance rejection on a mass-spring-damper plant ($m=1\,\text{kg}, k=1\,\text{N/m}, c=4\,\text{N}\cdot\text{s/m}$, $\Delta t = 0.05\,\text{s}$) held near a hard slot wall ($x_{\text{ref}} = 0.38\,\text{m}$, wall $|x| \le 0.40\,\text{m}$) under a persistent unmodeled disturbance force $\hat{w} = [0, 0.07]^\top$:
+\begin{enumerate}[nosep]
+  \item \textbf{Minimal Robust Positively Invariant (mRPI) Outer Approximation:} Computes the invariant error set bounding $e_k = x_k - z_k$ under ancillary discrete-LQR state feedback $K$:
+  \begin{equation}
+  \mathcal{E} = \sum_{i=0}^\infty (A + B K)^i \mathbb{W} \quad \implies \quad z = [0.070\,\text{m}, \; 0.283\,\text{m/s}]^\top
+  \end{equation}
+  \item \textbf{Offline Pontryagin Constraint Tightening:} Computes tightened state and input constraint polytopes:
+  \begin{equation}
+  \mathbb{X}_{\text{tight}} = \mathbb{X} \ominus \mathcal{E} \implies |z_1| \le 0.330\,\text{m}, \qquad \mathbb{U}_{\text{tight}} = \mathbb{U} \ominus K \mathcal{E} \implies |v| \le 3.73\,\text{N}
+  \end{equation}
+  \item \textbf{Online Nominal QP with Ancillary Feedback:} Solves the nominal receding-horizon QP for $(z_k^*, v_k^*)$ and injects ancillary feedback:
+  \begin{equation}
+  u_k = v_k^* + K (x_k - z_k^*)
+  \end{equation}
+\end{enumerate}
+
+\begin{table}[H]
+\centering
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lcccccccc@{}}
+\toprule
+\textbf{Controller} & \textbf{Max $|x|$ [m]} & \textbf{Box Viol. [mm]} & \textbf{Violates?} & \textbf{Steps Outside} & \textbf{$x_{ss}$ [m]} & \textbf{Peak $|F|$ [N]} & \textbf{RMS $F$ [N]} & \textbf{Robust Guarantee} \\
+\midrule
+\textbf{Nominal LinearMPC} & 0.407 & 7 mm & \textbf{YES} & 124 / 140 & 0.405 & 6.00 & 1.30 & Soft Penalty (Breaches) \\
+\textbf{TubeMPC (Robust)} & \textbf{0.400} & \textbf{0 mm} & \textbf{NO} & \textbf{0 / 140} & 0.400 & \textbf{3.73} & \textbf{1.18} & \textbf{Strict Invariance ($0\%$ Violations)} \\
+\bottomrule
+\end{tabular}%
+}
+\caption{Benchmark results for Experiment 37: Tube MPC vs. Nominal Linear MPC under persistent disturbance (from \texttt{experiments/37\_tube\_mpc/table.md}).}
+\label{tab:exp37}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.90\textwidth]{figures/exp37_figure.png}
+\caption{Experiment 37 Tube MPC vs. Nominal Linear MPC: (Top-Left) Mass position $x(t)$ with tightened tube bounds; (Top-Right) Invariant error tube $x - z$; (Bottom-Left) Actuator force $F(t)$ within tightened bounds; (Bottom-Right) Phase space trajectory.}
+\label{fig:exp37}
+\end{figure}
+
 \section{Engineering Synthesis \& Decision Guide}
 % ===========================================================================
 
@@ -1795,6 +1843,13 @@ The central mission of this project was never to demonstrate that a neural netwo
 \midrule
 Equations of motion known / linearisable & \textbf{LQR / Pole Placement}, then \textbf{Linear MPC} under constraints & Exp 04, Exp 08, Exp 28, Exp 33 \\
 Hard state/actuator inequality bounds & \textbf{Linear MPC} (active-set condensed QP) & Exp 08, Exp 20, Exp 28, Exp 30, Exp 33 \\
+Hard state/input bounds + persistent disturbance & \textbf{Tube MPC} (offline Pontryagin tightening + mRPI set) & Exp 37 \\
+State estimation under hard physical bounds ($h \ge 0$) & \textbf{Moving-Horizon Estimation (MHE)} (sliding MAP QP) & Exp 38 \\
+Multi-agent formation under dynamic topology & \textbf{Distributed Consensus} ($\lambda_2(L)$ Laplacian + barrier shield) & Exp 39 \\
+Simultaneous gain \& resonant unmodelled mode & \textbf{Structured $\mu$-Analysis} (detects failure where single-loop passes) & Exp 40 \\
+Nonlinear non-Gaussian bearings-only tracking & \textbf{Bootstrap Particle Filter} (tracks curved range cone) & Exp 41 \\
+Unmodelled structural joint resonance & \textbf{$H_\infty$ Mixed-Sensitivity Loop Shaping} ($S/KS/T$ weighting) & Exp 35 \\
+Real-time embedded execution \& watchdog & \textbf{HIL Emulation \& C99/MicroPython Export} (zero-alloc C99 loop) & Exp 36 \\
 Underactuated ball and beam balance & \textbf{Multivariable LQR / Linear MPC} ($1.49\,\text{s}$ settling, $0.0184$ energy) & Exp 33 \\
 Coupled non-linear process hydraulics & \textbf{PI with Anti-Windup} (zero droop) or \textbf{Multivariable MPC} & Exp 30 \\
 Unmeasured wind gusts / force disturbances & \textbf{Disturbance Observer (DOB)} (instant acceleration mismatch feedforward) & Exp 34 \\
@@ -1905,6 +1960,13 @@ python experiments/31_sac_vs_ppo_sample_efficiency/run.py
 python experiments/32_direct_collocation_vs_ilqr/run.py
 python experiments/33_ball_and_beam_control/run.py
 python experiments/34_dob_wind_rejection/run.py
+python experiments/35_hinf_vs_lqg/run.py
+python experiments/36_hil_arm_balance/run.py
+python experiments/37_tube_mpc/run.py
+python experiments/38_mhe_vs_ekf/run.py
+python experiments/39_formation_switching_graph/run.py
+python experiments/40_mu_analysis_rs_rp/run.py
+python experiments/41_particle_filter_bearings_only/run.py
 \end{lstlisting}
 
 \end{document}

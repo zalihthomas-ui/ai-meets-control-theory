@@ -125,6 +125,7 @@ nav:
           - "Exp 24 — iLQR / RTI-NMPC vs. Sampling MPC": experiments/24_ilqr_vs_sampling_mpc.md
           - "Exp 26 — iLQR on Hard Reference Paths": experiments/26_harder_reference_paths.md
           - "Exp 30 — Coupled Two-Tank Process Control": experiments/30_two_tank_level_control.md
+          - "Exp 37 — Tube MPC Robust Constrained Control": experiments/37_tube_mpc.md
       - "Module 5: Obstacle Avoidance & Non-Convex Trajectories":
           - "Exp 20 — Obstacle-Aware Quadrotor NMPC": experiments/20_quadrotor_obstacle_nmpc.md
           - "Exp 25 — Differential-Drive Moving Obstacle": experiments/25_diffdrive_moving_obstacle.md

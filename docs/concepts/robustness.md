@@ -91,3 +91,13 @@ $$\hat{d}(s) = Q(s) \left( P_n^{-1}(s) y(s) - u(s) \right)$$
 where $Q(s)$ is a low-pass filter making $Q(s) P_n^{-1}(s)$ proper. The estimated disturbance is injected back into the control signal ($u_{comp} = u_{nom} - \hat{d}$), rendering the physical plant behaving nominally like $P_n(s)$.
 
 In [Experiment 34](../experiments/34_dob_wind_rejection.md), DOB augmentation reduces quadrotor trajectory tracking error under persistent $8\,\text{m/s}$ cross-wind gusts by $> 85\%$ without requiring recalibration of the baseline outer-loop controller.
+
+---
+
+## 6. Set-Theoretic Robust Control & Tube MPC
+
+When persistent disturbances are bounded ($w \in \mathbb{W}$) and hard state/input constraints must be certified, frequency-domain bounds alone cannot prevent time-domain constraint violations.
+
+**Tube MPC** computes robust positively invariant (RPI) sets and tightens constraints via Pontryagin set differences ($\mathbb{X} \ominus \mathcal{E}$), guaranteeing that closed-loop trajectories never breach physical boundaries:
+- See [Optimal & Constrained Control](optimal-constrained.md#tube-mpc-robust-constraint-satisfaction-under-disturbance) for formulation and code.
+- Benchmark validation: [Experiment 37 — Tube MPC Robust Constrained Control](../experiments/37_tube_mpc.md).

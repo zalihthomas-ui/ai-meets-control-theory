@@ -31,6 +31,7 @@ See the **[Master Results Table](../RESULTS.md)** for quantitative metrics acros
 - **[Exp 24 — iLQR / RTI-NMPC vs. Sampling MPC (CEM)](24_ilqr_vs_sampling_mpc.md):** Real-time iteration quadratic convergence ($0.34\,\text{mm}$ in $0.6\,\text{ms}$) on Quadrotor.
 - **[Exp 26 — iLQR vs. Sampling on Complex Geometries](26_harder_reference_paths.md):** Benchmark on Lissajous 3:2 and Archimedean Spiral paths.
 - **[Exp 30 — Coupled Two-Tank Process Control](30_two_tank_level_control.md):** Multivariable MPC coordinating nonlinear Torricelli outflow with zero level violations.
+- **[Exp 37 — Tube MPC vs. Nominal MPC](37_tube_mpc.md):** Robust constraint satisfaction via offline Pontryagin difference tightening and ancillary feedback under persistent bounded disturbance.
 
 ## 5. Obstacle Avoidance & Non-Convex Trajectories
 - **[Exp 20 — Quadrotor Obstacle Avoidance NMPC](20_quadrotor_obstacle_nmpc.md):** Derivative-free CEM navigating geometric keep-out barriers.
@@ -50,6 +51,7 @@ See the **[Master Results Table](../RESULTS.md)** for quantitative metrics acros
 - **[Exp 22 — Differential-Drive Mobile Robot Path Following](22_diffdrive_path_following.md):** Pure Pursuit vs. Stanley vs. Path LQR with curvature feedforward on TurtleBot3.
 - **[Exp 27 — Dynamic Bicycle Double Lane Change](27_bicycle_double_lane_change.md):** Linear vs. Pacejka tire dynamics under friction saturation ($\mu=0.6$).
 - **[Exp 36 — Hardware-in-the-Loop Arm Balancing](36_hil_arm_balance.md):** Real-time loop execution, latency compensation, and 12-bit quantization watchdog validation.
+- **[Exp 39 — Multi-Agent Formation Switching](39_formation_switching_graph.md):** Distributed consensus topology switching with collision avoidance barrier potentials.
 
 ## 9. Reinforcement Learning, Imitation & Safety Shields
 - **[Exp 09 — Control on Identified Models (SysID)](09_control_on_identified_model.md):** Least-squares / DMDc identification under closed-loop data.
