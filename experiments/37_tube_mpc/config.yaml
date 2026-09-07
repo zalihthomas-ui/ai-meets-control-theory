@@ -1,0 +1,48 @@
+# Experiment 37 - tube MPC vs nominal MPC under a persistent bounded disturbance
+# Companion: aimct.controllers.TubeMPC / mrpi_box / MRPISet, aimct.controllers.LinearMPC.
+# Phase 3 / v1.0 Track A / A3.
+
+question: >
+  A mass on a spring must stay inside a slot |x| <= x_max while an unmodelled
+  force pushes on it every step (a bounded process disturbance w). Nominal
+  LinearMPC plans as if w = 0. Does the constraint hold? What does making it
+  hold robustly cost?
+
+plant:
+  system: "MassSpringDamper(m=1, k=1, c=4)  - a well-damped mass-spring, linear"
+  discretisation: "ZOH at dt = 0.05 s"
+  constraint: "slot  |x| <= 0.40 m ;  input  |F| <= 6 N"
+
+disturbance:
+  W: "additive process disturbance, box half-widths [0, 0.07] (a persistent force / acceleration on the velocity channel)"
+  realisation: "worst case - a constant push toward the wall"
+
+setpoint: "x_ref = 0.38 m  (hold near the wall)"
+
+controllers:
+  nominal:
+    impl: aimct.controllers.LinearMPC
+    note: "N = 30, Q = diag(60, 2), R = 0.15 ; state box enforced softly, no disturbance model"
+  tube:
+    impl: aimct.controllers.TubeMPC
+    note: >
+      same N, Q, R. Ancillary K = discrete-LQR gain; mРPI box Z from mrpi_box
+      (interval hull of sum_i |A_K^i| w_hw); nominal MPC solved on the state box
+      tightened by Z and the input box tightened by |K| Z; applied law
+      u = u_nom + K (x - x_nom).
+
+metrics: [max |x|, box violation, steps outside the slot, steady-state x, peak |F|, rms F]
+
+outputs: [table.md, table.csv, figure.png]   # committed = AIMCT_EXP_FULL=1
+run: "python experiments/37_tube_mpc/run.py"
+run_full: "AIMCT_EXP_FULL=1 python experiments/37_tube_mpc/run.py"
+
+headline: >
+  Nominal LinearMPC parks its plan at x = 0.38 and the persistent push carries
+  the true mass to a 0.407 m steady state - ~7 mm outside the 0.40 m slot, for
+  essentially the whole run. TubeMPC (mРPI box z ~ [0.070, 0.283]) backs the
+  nominal setpoint off to 0.330 m and the true mass sits exactly at the 0.40 m
+  wall, never crossing it, for every disturbance realisation in the box. The
+  cost is explicit: a nominal target 50 mm short of the wall and a control that
+  respects the tightened 3.7 N input box; the backoff scales linearly with the
+  disturbance bound and vanishes as it shrinks.

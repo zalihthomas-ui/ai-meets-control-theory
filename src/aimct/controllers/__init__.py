@@ -30,6 +30,7 @@ from .hinf import (HinfController, HinfSynResult, StateSpace, augment_plant,
 from .ilqr import ILQR, iLQR, iLQRResult
 from .lqr import LQR, solve_care
 from .mpc import LinearMPC, dare
+from .tube_mpc import MRPISet, TubeMPC, mrpi_box
 from .observer_feedback import ObserverFeedback
 from .pid import PID
 from .sampling_mpc import SamplingMPC
@@ -53,6 +54,9 @@ __all__ = [
     "HybridSwingUpLQR",
     "wrap_angle",
     "LinearMPC",
+    "TubeMPC",
+    "MRPISet",
+    "mrpi_box",
     "SamplingMPC",
     "ILQR",
     "iLQR",

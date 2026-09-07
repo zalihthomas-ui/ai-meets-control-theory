@@ -91,6 +91,11 @@ This directory contains research foundations, canonical parameter sets, framewor
     - Lyapunov asymptotic stability proof and Common Lyapunov Function (CLF) analysis under dynamic switching communication topologies.
     - Artificial potential field collision avoidance barriers for inter-agent safety.
 
+19. **[Tube MPC Reference Specification (`tube-mpc-reference.md`)](file:///C:/Users/salih/Desktop/ai-meets-control-theory/docs/references/tube-mpc-reference.md)**
+    - Robust constrained control against a bounded additive disturbance $x^+ = A_d x + B_d u + w$, $w \in W$: the ancillary tube law $u = u_{\text{nom}} + K(x - x_{\text{nom}})$ and nominal MPC on constraints tightened by the RPI set $Z$ and $KZ$.
+    - Interval-hull (box) outer approximation of the minimal RPI set $F_\infty = \bigoplus_{i\ge 0} A_K^i W$ with half-widths $\big(\sum_i |A_K^i|\big)\hat w$ — from-scratch, works for a disturbance on any subset of the channels, conservatism linear in $\hat w$.
+    - Recursive feasibility / robust constraint satisfaction argument and the conservatism-vs-disturbance trade (Experiment 37: nominal MPC violates the state box, tube MPC does not, at a measured backoff and settling-time cost).
+
 
 
 
