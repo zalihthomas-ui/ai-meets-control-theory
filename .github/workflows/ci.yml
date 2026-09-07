@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [main]
 
+# Only the newest commit / PR head needs a result; cancel superseded runs so
+# a burst of commits doesn't back the runner pool up for hours.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
