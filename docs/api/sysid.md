@@ -1,4 +1,4 @@
-# System Identification (imct.sysid)
+# System Identification (aimct.sysid)
 
 ::: aimct.sysid
     options:

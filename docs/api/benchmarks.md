@@ -1,4 +1,4 @@
-# Benchmarking Suite (imct.benchmarks)
+# Benchmarking Suite (aimct.benchmarks)
 
 ::: aimct.benchmarks
     options:

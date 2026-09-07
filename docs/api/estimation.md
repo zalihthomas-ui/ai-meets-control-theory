@@ -1,4 +1,4 @@
-# State Estimation (imct.estimation)
+# State Estimation (aimct.estimation)
 
 ::: aimct.estimation
     options:

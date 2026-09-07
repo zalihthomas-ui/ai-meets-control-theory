@@ -1,4 +1,4 @@
-# Controllers (imct.controllers)
+# Controllers (aimct.controllers)
 
 ::: aimct.controllers
     options:

@@ -1,4 +1,4 @@
-# Trajectories (imct.trajectories)
+# Trajectories (aimct.trajectories)
 
 ::: aimct.trajectories
     options:

@@ -1,4 +1,4 @@
-# Embedded Deployment (imct.deploy)
+# Embedded Deployment (aimct.deploy)
 
 ::: aimct.deploy
     options:

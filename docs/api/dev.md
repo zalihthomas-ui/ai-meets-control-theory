@@ -1,4 +1,4 @@
-# Developer Utilities (imct.dev)
+# Developer Utilities (aimct.dev)
 
 ::: aimct.dev
     options:

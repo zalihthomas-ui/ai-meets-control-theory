@@ -50,7 +50,7 @@ The core of `aimct` is its comprehensive suite of 41 benchmark experiments, cate
 | **1. Classical Foundations** | Exp 01–03 | Mass-Spring-Damper, Inverted Pendulum (RK4 vs Euler, Jacobian validity, PID anti-windup) |
 | **2. State-Space & Estimation** | Exp 04–06, 15, 16, 38, 41 | Cart-Pole, Quadrotor, Two-Tank (LQR vs Pole Placement, EKF, UKF, MHE, Particle Filter) |
 | **3. Underactuated Systems** | Exp 07, 28, 33 | Cart-Pole, Furuta Rotary Pendulum, Ball and Beam (Spong energy swing-up, Åström-Furuta) |
-| **4. Constrained & Nonlinear MPC** | Exp 08, 14, 24, 26, 30 | Cart-Pole, Quadrotor, Two-Tank (Active-set QP, iLQR/RTI-NMPC, sampling MPPI) |
+| **4. Constrained & Nonlinear MPC** | Exp 08, 14, 24, 26, 30, 37 | Cart-Pole, Quadrotor, Two-Tank (Active-set QP, iLQR/RTI-NMPC, sampling MPPI, Tube MPC) |
 | **5. Obstacle Avoidance** | Exp 20, 25 | Quadrotor, Differential-Drive (Non-convex geometric keep-out corridors) |
 | **6. Trajectory Optimization** | Exp 32 | Double Pendulum (Direct Collocation Hermite-Simpson NLP vs Shooting) |
 | **7. Robust & Frequency Domain** | Exp 17, 23, 34, 35, 40 | Two-Mass Resonator, Quadrotor (MRAC, DOB wind rejection, $H_\infty$ loop shaping, $\mu$-analysis) |

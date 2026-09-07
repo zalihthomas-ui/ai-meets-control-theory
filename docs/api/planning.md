@@ -1,4 +1,4 @@
-# Trajectory Planning (imct.planning)
+# Trajectory Planning (aimct.planning)
 
 ::: aimct.planning
     options:

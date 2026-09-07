@@ -1,4 +1,4 @@
-# Machine Learning & PINNs (imct.ml)
+# Machine Learning & PINNs (aimct.ml)
 
 ::: aimct.ml
     options:

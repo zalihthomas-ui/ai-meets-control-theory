@@ -1,4 +1,4 @@
-# Hybrid Control (imct.hybrid)
+# Hybrid Control (aimct.hybrid)
 
 ::: aimct.hybrid
     options:

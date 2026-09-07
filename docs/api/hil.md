@@ -1,4 +1,4 @@
-# Hardware-in-the-Loop (imct.hil)
+# Hardware-in-the-Loop (aimct.hil)
 
 ::: aimct.hil
     options:

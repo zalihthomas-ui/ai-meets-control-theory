@@ -1,4 +1,4 @@
-# Reinforcement Learning (imct.rl)
+# Reinforcement Learning (aimct.rl)
 
 ::: aimct.rl
     options:

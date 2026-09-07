@@ -1,4 +1,4 @@
-# Dynamical Systems (imct.systems)
+# Dynamical Systems (aimct.systems)
 
 ::: aimct.systems
     options:
