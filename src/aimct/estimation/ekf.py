@@ -124,6 +124,19 @@ class ExtendedKalmanFilter:
         self._P0 = np.eye(self.n) if P0 is None else np.atleast_2d(np.asarray(P0, float))
         self.reset()
 
+    @classmethod
+    def from_system(cls, system, Q, R, *, dt: float, h: Callable | None = None,
+                    **kwargs) -> "ExtendedKalmanFilter":
+        """Build from an :class:`aimct.systems.DynamicalSystem` — ``f`` is the
+        system's continuous dynamics, ``h`` defaults to the first ``n_outputs``
+        states."""
+        f = lambda x, u: system.dynamics(0.0, x, u)
+        n = getattr(system, "n_states", Q.shape[0])
+        if h is None:
+            p = getattr(system, "n_outputs", None) or n
+            h = lambda x: np.asarray(x, float)[:p]
+        return cls(f=f, h=h, Q=Q, R=R, dt=dt, n=n, **kwargs)
+
     # ------------------------------------------------------------------ model
 
     def _transition(self, x: np.ndarray, u: np.ndarray) -> np.ndarray:

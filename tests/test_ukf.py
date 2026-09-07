@@ -179,3 +179,15 @@ def test_ukf_drops_into_observer_feedback():
     traj = simulate(p, ofb, x0=np.array([np.pi + 0.25, 0.0]), dt=0.01, t_final=6.0,
                     measurement_fn=measure)
     assert abs(wrap_angle(traj.x[-1, 0] - np.pi)) < 0.05
+
+
+def test_ukf_from_system_builds_and_runs():
+    import numpy as np
+    from aimct.systems import Pendulum
+
+    p = Pendulum()
+    ukf = UnscentedKalmanFilter.from_system(
+        p, np.diag([1e-5, 1e-4]), np.diag([1e-3, 1e-3]), dt=0.02)
+    ukf.predict(np.zeros(1))
+    xh = ukf.update(np.array([0.1, 0.0]))
+    assert xh.shape == (2,) and np.all(np.isfinite(ukf.P))
