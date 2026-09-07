@@ -3592,15 +3592,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#100-2026-09-07" class="md-nav__link">
+  <a href="#unreleased" class="md-nav__link">
     <span class="md-ellipsis">
       
-        [1.0.0] - 2026-09-07
+        [Unreleased]
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="[1.0.0] - 2026-09-07">
+    <nav class="md-nav" aria-label="[Unreleased]">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3614,19 +3614,19 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#030-2026-09-06" class="md-nav__link">
+          <li class="md-nav__item">
+  <a href="#fixed" class="md-nav__link">
     <span class="md-ellipsis">
       
-        [0.3.0] - 2026-09-06
+        Fixed
       
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3695,15 +3695,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#100-2026-09-07" class="md-nav__link">
+  <a href="#unreleased" class="md-nav__link">
     <span class="md-ellipsis">
       
-        [1.0.0] - 2026-09-07
+        [Unreleased]
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="[1.0.0] - 2026-09-07">
+    <nav class="md-nav" aria-label="[Unreleased]">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3717,19 +3717,19 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#030-2026-09-06" class="md-nav__link">
+          <li class="md-nav__item">
+  <a href="#fixed" class="md-nav__link">
     <span class="md-ellipsis">
       
-        [0.3.0] - 2026-09-06
+        Fixed
       
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3780,14 +3780,14 @@
 <p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <hr />
-<h2 id="100-2026-09-07">[1.0.0] - 2026-09-07<a class="headerlink" href="#100-2026-09-07" title="Permanent link">&para;</a></h2>
-<p>The <strong>v1.0.0 Release Candidate</strong>: comprehensive end-to-end framework unification with 41 empirical experiments, formal API stability contract (<code>docs/STABILITY.md</code>), multi-agent consensus, particle filtering, moving-horizon estimation, structured <span class="arithmatex">\(\mu\)</span>-analysis, hardware-in-the-loop bridges, and publication-ready documentation portal.</p>
+<h2 id="unreleased">[Unreleased]<a class="headerlink" href="#unreleased" title="Permanent link">&para;</a></h2>
+<p>The <strong>Phase 3 &amp; Road to v1.0</strong> developments:</p>
 <h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Formal API Stability Contract (<code>docs/STABILITY.md</code>)</strong>:</li>
 <li>Full SemVer 2.0.0 compliance rules for all Tier 1 public surfaces.</li>
 <li>Strict 2-minor-cycle deprecation policy with <code>DeprecationWarning</code> enforcement.</li>
-<li>Public surface declaration across all 12 core subpackages.</li>
+<li>Public surface declaration across all 15 core subpackages.</li>
 <li><strong>Concepts Documentation Portal (<code>docs/concepts/</code>)</strong>:</li>
 <li>7 comprehensive mathematical narrative chapters covering the 6 conceptual pillars: State-Space Dynamics, Estimation, Optimal &amp; Constrained Control, Robustness, Data-Driven &amp; Safe RL, and Hardware Bridge.</li>
 <li><strong>Advanced State Estimation &amp; Robustness</strong>:</li>
@@ -3795,27 +3795,31 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 <li><code>aimct.estimation.ParticleFilter</code>: Bootstrap Sequential Monte Carlo filter with systematic adaptive resampling and log-sum-exp numerical stabilization.</li>
 <li><code>aimct.robust.mu</code> &amp; <code>aimct.robust.dk_iterate</code>: Structured Singular Value (<span class="arithmatex">\(\mu\)</span>-analysis) and D-K iteration for mixed real/complex uncertainty blocks.</li>
 <li><code>aimct.systems.MultiAgentSystem</code> &amp; <code>aimct.controllers.FormationController</code>: Distributed consensus formation control under dynamic graph switching (<span class="arithmatex">\(K_5 \to C_5 \to P_5 \to \text{Disconnected} \to S_5\)</span>) with collision barrier avoidance.</li>
-<li><strong>Experiments 37–41</strong>:</li>
-<li><strong>Exp 37</strong>: Robust <span class="arithmatex">\(\mu\)</span>-synthesis under high-order parameter perturbation.</li>
+<li><code>aimct.simulate.simulate_batch</code>: High-throughput vectorized Monte-Carlo rollout engine.</li>
+<li><strong><span class="arithmatex">\(H_\infty\)</span> Mixed-Sensitivity Loop Shaping (<code>aimct.controllers.hinf</code>)</strong>:</li>
+<li>Continuous state-space plant augmentation (<code>mixsyn</code>), <span class="arithmatex">\(S/KS/T\)</span> weighting filter design, and 2-Riccati <span class="arithmatex">\(H_\infty\)</span> optimal controller synthesis.</li>
+<li><strong>Hardware-in-the-Loop &amp; Embedded Deployment (<code>aimct.hil</code>, <code>aimct.deploy</code>)</strong>:</li>
+<li>Real-time simulation harness with 12-bit ADC/DAC quantization, transport latency (<span class="arithmatex">\(\tau_d\)</span>), and clock jitter injection.</li>
+<li>Zero-allocation standalone C99 code generator (<code>aimct.deploy.emit_c</code>) and MicroPython exporter.</li>
+<li><strong>Experiments 35–41</strong>:</li>
+<li><strong>Exp 35</strong>: <span class="arithmatex">\(H_\infty\)</span> mixed-sensitivity vs. LQG under unmodelled structural resonance.</li>
+<li><strong>Exp 36</strong>: Hardware-in-the-loop two-link arm balancing under transport delay and quantization limits.</li>
+<li><strong>Exp 37</strong>: Tube MPC vs. nominal MPC under persistent bounded disturbances (in progress).</li>
 <li><strong>Exp 38</strong>: Moving-Horizon Estimation (MHE) vs. EKF on coupled two-tank process with non-negative liquid constraints.</li>
 <li><strong>Exp 39</strong>: Multi-agent formation control under dynamic communication graph switching.</li>
 <li><strong>Exp 40</strong>: <span class="arithmatex">\(\mu\)</span>-analysis showing blind failure modes of classical single-loop margins.</li>
 <li><strong>Exp 41</strong>: Bearings-only target tracking benchmark (Particle Filter vs. EKF vs. UKF).</li>
-<li><strong>Community Governance &amp; Contributor Tooling</strong>:</li>
+<li><strong>Tooling &amp; Infrastructure</strong>:</li>
+<li>Top-level <code>aimct.__all__</code> export audit with lazy submodule loading.</li>
+<li>Performance benchmarking regression suite (<code>benchmarks/perf/</code>) with drift gating in CI.</li>
 <li>GitHub issue forms (<code>bug_report.yml</code>, <code>feature_request.yml</code>) and PR checklist (<code>pull_request_template.md</code>).</li>
 <li>Refreshed <code>CONTRIBUTING.md</code> developer guide.</li>
 </ul>
-<hr />
-<h2 id="030-2026-09-06">[0.3.0] - 2026-09-06<a class="headerlink" href="#030-2026-09-06" title="Permanent link">&para;</a></h2>
-<p>The <strong>Phase 3 Release: Robustness, Hardware &amp; Reach</strong>:
-- <strong><span class="arithmatex">\(H_\infty\)</span> Mixed-Sensitivity Loop Shaping (<code>aimct.controllers.hinf</code>)</strong>:
-  - Continuous state-space plant augmentation (<code>mixsyn</code>), <span class="arithmatex">\(S/KS/T\)</span> weighting filter design, and 2-Riccati <span class="arithmatex">\(H_\infty\)</span> optimal controller synthesis.
-- <strong>Hardware-in-the-Loop &amp; Embedded Deployment (<code>aimct.hil</code>, <code>aimct.deploy</code>)</strong>:
-  - Real-time simulation harness with 12-bit ADC/DAC quantization, transport latency (<span class="arithmatex">\(\tau_d\)</span>), and clock jitter injection.
-  - Zero-allocation standalone C99 code generator (<code>aimct.deploy.emit_c</code>) and MicroPython exporter.
-- <strong>Experiments 35–36</strong>:
-  - <strong>Exp 35</strong>: <span class="arithmatex">\(H_\infty\)</span> mixed-sensitivity vs. LQG under unmodelled structural resonance.
-  - <strong>Exp 36</strong>: Hardware-in-the-loop two-link arm balancing under transport delay and quantization limits.</p>
+<h3 id="fixed">Fixed<a class="headerlink" href="#fixed" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Direct collocation trajectory optimization coordinate scaling (<code>x_scale</code>, <code>u_scale</code>) and banded Hermite-Simpson sparse Jacobian for <code>trust-constr</code>.</li>
+<li>Resolved Python 3.12 test suite flakiness.</li>
+</ul>
 <hr />
 <h2 id="020-2026-09-05">[0.2.0] - 2026-09-05<a class="headerlink" href="#020-2026-09-05" title="Permanent link">&para;</a></h2>
 <p>The <strong>Phase-2 Release: Modern Multi-Body Systems, Trajectory Optimization &amp; Safe RL</strong>:
