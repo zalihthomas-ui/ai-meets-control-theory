@@ -26,8 +26,8 @@ __version__ = "0.3.0"
 
 _SUBPACKAGES = (
     "systems", "controllers", "planning", "robust", "estimation", "sysid",
-    "trajectories", "simulate", "benchmarks", "ml", "rl", "viz", "dev",
-    "deploy", "hil",
+    "trajectories", "simulate", "benchmarks", "hybrid", "ml", "rl", "viz",
+    "dev", "deploy", "hil",
 )
 
 __all__ = [*_SUBPACKAGES, "__version__"]

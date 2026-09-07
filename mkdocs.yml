@@ -160,7 +160,9 @@ nav:
       - Systems: api/systems.md
       - Controllers: api/controllers.md
       - Planning: api/planning.md
+      - Robust Analysis: api/robust.md
       - Estimation: api/estimation.md
+      - Simulation: api/simulate.md
       - Trajectories: api/trajectories.md
       - System Identification: api/sysid.md
       - Machine Learning: api/ml.md
