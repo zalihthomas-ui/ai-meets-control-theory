@@ -1,79 +1,98 @@
-# API stability & versioning
+# API Stability & Versioning
 
-> Draft for v1.0. Refined by the docs pass (D10); wired into the portal nav
-> and linked from the README.
+From **v1.0.0** onward, `aimct` strictly follows [Semantic Versioning 2.0.0](https://semver.org):
 
-From **v1.0.0** onward, `aimct` follows [Semantic Versioning](https://semver.org):
+- **PATCH** (`1.0.x`) — Bug fixes, documentation improvements, numerical tolerances, and performance optimizations. Zero API changes.
+- **MINOR** (`1.x.0`) — New modules, classes, functions, or optional keyword arguments added in a backward-compatible manner. Existing code continues to work without modification.
+- **MAJOR** (`2.0.0`) — Breaking changes to the public API as defined below.
 
-- **PATCH** (`1.0.x`) — bug fixes, docs, performance. No API change.
-- **MINOR** (`1.x.0`) — new modules, classes, functions, or keyword arguments,
-  added in a backward-compatible way. Existing code keeps working.
-- **MAJOR** (`2.0.0`) — a breaking change to something in the **public API**
-  as defined below.
+---
 
-## What is public
+## What Constitutes the Public API
 
-A name is part of the public API if **all** of these hold:
+A symbol is considered part of the `aimct` public API if and only if **all** of the following conditions hold:
 
-1. It is exported from a subpackage's `__init__.py` and listed in that
-   module's `__all__`, **or** documented in the API reference.
-2. Its import path does not contain a leading-underscore component
-   (`aimct.controllers.LQR` is public; `aimct.controllers._qp` is not).
-3. It is not marked *experimental* in its docstring.
+1. It is exported from one of the **15 core subpackages'** `__init__.py` and listed in that module's `__all__` (or top-level `aimct.__all__`), **or** explicitly documented in the API reference portal.
+2. Its import path does not contain a leading-underscore component (`aimct.controllers.LQR` is public; `aimct.controllers._qp` or `aimct._internal` is private).
+3. It is not marked as *experimental* in its docstring or class documentation.
 
-Everything else — helper functions, module internals, the exact contents of
-non-dataclass return values, private attributes — may change in any release.
+Everything else — helper functions, internal optimizers, private methods, and non-dataclass internal container states — may change in any release without triggering a major version bump.
 
-### The public surface at v1.0
+---
 
-| Subpackage | Public API |
-| --- | --- |
-| `aimct.systems` | `DynamicalSystem` (the ABC contract: `n_states`, `n_inputs`, `dynamics`, optional `linearize`/`output`) and every concrete system class |
-| `aimct.controllers` | `PID`, `StateFeedback`, `LQR`, `LinearMPC`, `SamplingMPC`, `iLQR`/`ILQR`, `MRAC`, `DisturbanceObserver`/`QFilter`, `hinf` (`StateSpace`, `weight_*`, `augment_plant`, `hinf_syn`, `mixsyn`, `HinfController`), tube MPC, the swing-up/hybrid controllers, `solve_care`/`solve_qp`/`place_poles` |
-| `aimct.planning` | `DirectCollocation`, `CollocationResult` |
-| `aimct.robust` | `BlockStructure`, `mu`, `robust_stability_margin`, `robust_performance_margin`, `dk_iterate` |
-| `aimct.estimation` | `LuenbergerObserver`, `KalmanFilter`/`DiscreteKalmanFilter`, `ExtendedKalmanFilter`, `UnscentedKalmanFilter`, `MovingHorizonEstimator`/`MHE`, `ParticleFilter` |
-| `aimct.sysid` | `least_squares_id`, `dmdc`, `to_continuous`, `identify_manipulator`, `finite_difference_derivatives`, `ManipulatorID` |
-| `aimct.simulate` | `simulate`, `simulate_batch`, `Trajectory`, `BatchResult`, `rk4_step` |
-| `aimct.benchmarks` | `compare`, `ComparisonResult`, `track_trajectory`, `TrackingResult`, the challenge/capstone scoring entry points |
-| `aimct.trajectories` | `Setpoint`, `Circle`, `Lemniscate`, `MinimumJerk`, `Spline`, `Dubins`, `Lissajous`, `Rose`, `Spiral` |
-| `aimct.viz` | `animate`, `Replay`, `Sandbox`, `Disturbance`, `SystemArtist`, `register_artist`/`get_artist`/`has_artist` |
-| `aimct.dev` | `build_report`, `DesignReport`, `python -m aimct preview` |
-| `aimct.deploy` | `export_controller`, `load_controller`, `PortableController`, `ControllerSpec`, `emit_c`, `emit_micropython` |
-| `aimct.hil` | `RealTimeLoop`, `PlantEmulator`, the transport classes |
-| `aimct.ml`, `aimct.rl` | learned-dynamics and agent classes as documented |
-| CLI | `python -m aimct` subcommands (`compare`, `preview`, `live`, `list`) |
+## The Public Surface at v1.0
 
-Return **dataclasses** (`Trajectory`, `BatchResult`, `iLQRResult`,
-`CollocationResult`, `TrackingResult`, `ComparisonResult`, `DesignReport`,
-`ManipulatorID`, `HinfSynResult`, …) are public: fields are only added, never
-removed or renamed, within a major version.
+The following table enumerates the certified public API across all 15 core subpackages:
 
-## Deprecation process
+| Subpackage | Public API Symbols & Core Contracts | Guarantees & Consistency Notes |
+| :--- | :--- | :--- |
+| `aimct.systems` | `DynamicalSystem` (the ABC base class contract: `n_states`, `n_inputs`, `dynamics(x, u)`, `step(x, u, dt)`, optional `linearize(x0, u0)`, `output(x, u)`), `rotation_matrix`, and all concrete dynamical systems: `MassSpringDamper`, `Pendulum`, `CartPole`, `FurutaPendulum`, `BallAndBeam`, `TwoTank`, `TwoLinkArm`, `DCMotor`, `DCMotor2`, `LinearSystem`, `PlanarQuadrotor`, `Quadrotor3D`, `BicycleVehicle`, `DifferentialDriveRobot`, `MultiAgentSystem` (alias `MultiAgent`), graph topology generators (`complete_graph`, `cycle_graph`, `line_graph`, `star_graph`, `disconnected_graph`). | Concrete systems strictly follow continuous-time ODE and discrete `step()` conventions. |
+| `aimct.controllers` | `Controller` (ABC), `PID`, `StateFeedback`, `LQR`, `ObserverFeedback`, `LinearMPC`, `TubeMPC`, `MRPISet`, `mrpi_box`, `SamplingMPC`, `ILQR` / `iLQR`, `MRAC`, `DisturbanceObserver`, `QFilter`, `GainScheduledLQR`, `EnergyShapingSwingUp`, `HybridSwingUpLQR`, `ConsensusFormationController` (alias `FormationController`), formation geometry generators (`polygon_formation`, `line_formation`, `diamond_formation`, `wedge_formation`), $H_\infty$ robust loop shaping subpackage (`StateSpace`, `weight_S`, `weight_KS`, `weight_T`, `augment_plant`, `lft_lower`, `hinf_syn`, `mixsyn`, `HinfSynResult`, `HinfController`), matrix utilities (`dare`, `solve_care`, `solve_lyapunov`, `place_poles`, `controllability_matrix`, `is_controllable`, `wrap_angle`). | Solvers support standard NumPy arrays. `TubeMPC` computes minimal robust positively invariant (mRPI) outer bounding sets and Pontryagin difference tightening. |
+| `aimct.planning` | `DirectCollocation`, `CollocationResult`. | Hermite–Simpson direct transcription NLP enforcing hard midpoint defects and terminal equality constraints. |
+| `aimct.robust` | `BlockStructure`, `mu`, `robust_stability_margin`, `robust_performance_margin`, `dk_iterate`. | Structured singular value analysis ($\mu$) for mixed real/complex parametric perturbations. |
+| `aimct.estimation` | `LuenbergerObserver`, `place_observer`, `solve_fare`, `KalmanFilter`, `DiscreteKalmanFilter`, `ExtendedKalmanFilter`, `UnscentedKalmanFilter`, `MovingHorizonEstimator` (alias `MHE`), `ParticleFilter` (alias `PF`), `systematic_resample`, `finite_diff_jacobian`, `observability_matrix`, `observability_rank`, `is_observable`. | **Consistency Guarantee:** All four nonlinear estimators (`ExtendedKalmanFilter`, `UnscentedKalmanFilter`, `MovingHorizonEstimator`/`MHE`, `ParticleFilter`/`PF`) share a unified construction interface: `(f, h, Q, R, *, dt, ...)` and a `.from_system(system, Q, R, *, dt, h=None, **kwargs)` classmethod. |
+| `aimct.sysid` | `least_squares_id`, `dmdc`, `to_continuous`, `prediction_error`, `model_mismatch`, `identify_manipulator`, `manipulator_regressor`, `finite_difference_derivatives`, `ManipulatorID`. | System identification and Euler–Lagrange manipulator parameter regression. |
+| `aimct.simulate` | `simulate`, `simulate_batch`, `Trajectory`, `BatchResult`, `rk4_step`. | Deterministic numerical integration and trajectory logging. |
+| `aimct.benchmarks` | Standardized metrics (`rise_time`, `settling_time`, `peak_overshoot`, `peak_time`, `steady_state_error`, `rmse`, `iae`, `itae`, `ise`, `control_energy`, `peak_control`, `slew_rate`, `saturation_duty_cycle`, `compute_all_metrics`), comparative harness (`compare`, `ComparisonResult`, `sweep`, `SweepResult`, `track_trajectory`, `TrackingResult`), challenge/capstone evaluation suites (`score_capstone_entry`, `score_capstone`, `capstone_leaderboard_table`, `BlackBoxPlant`, `BlackBoxEnvironment`, `SafetyEnvelope`, `ChallengeScoreResult`, `ParamPerturbed`, `perturbed_system`, `ActuatorLag`, `ImpulseDisturbance`, `ImpulseInjector`, `robust_degradation`, `evaluate_safety`, `score_run`, `WEIGHTS`, `NORMALISERS`, `ScoreWeights`, `BaselineCosts`, `CAPSTONE_WEIGHTS`, `CAPSTONE_BASELINES`). | Standardized comparative benchmarking across classical and AI paradigms. |
+| `aimct.trajectories` | `Trajectory` (ABC reference trajectory), `Setpoint`, `Circle`, `Lemniscate`, `MinimumJerk`, `Spline`, `Dubins`, `Lissajous`, `Rose`, `Spiral`. | Parametric time- and arc-length-indexed reference trajectories. |
+| `aimct.viz` | `animate`, `Replay`, `Sandbox`, `Disturbance`, `SystemArtist`, `register_artist`, `get_artist`, `has_artist`. | Publication-grade rendering and real-time interactive sandboxes. |
+| `aimct.dev` | `DesignReport`, `build_report`, `render`, `load_system`, `preview_once`, `watch`. | Design-time system introspection and verification CLI (`python -m aimct preview MODULE:Class [--watch]`). |
+| `aimct.deploy` | `export_controller`, `load_controller`, `PortableController`, `ControllerSpec`, `UnsupportedControllerError`, `emit_c`, `emit_micropython`. | Zero-dependency standalone C99 and MicroPython code generation. |
+| `aimct.hil` | `RealTimeLoop`, `HILResult`, `DeadlineMissInfo`, `PlantEmulator`, `Transport`, `InProcessTransport`, `UDPTransport`, `SerialTransport`. | Real-time hardware-in-the-loop emulation and serial/UDP transport. |
+| `aimct.ml` | `MLP`, `LearnedDynamics`, `system_step`, `batched_rk4`. | Pure NumPy neural network forward/backward propagation and learned residual dynamics. |
+| `aimct.rl` | `ControlEnv`, `TASKS`, `make`, `wrap_to_pi`, `figure8_reference`, `figure8_obs`, `FIGURE8_PERIOD`, `Discretizer`, `QLearning`, `GreedyPolicy`, `train`, `evaluate`, `GaussianPolicy`, `reinforce`, `evaluate_policy`, `BehaviorCloning`, `aggregate`, `dagger`, `DQN`, `QNetwork`, `ReplayBuffer`, `dqn`, `PPO`, `ppo`, `SAC`, `sac`, `SACResult`. | The RL surface exposes both agent classes and thin functional wrappers; both are first-class supported. |
+| **CLI** | Subcommands for `python -m aimct` (`compare`, `preview`, `live`, `list`). | Command-line developer interface. |
 
-1. In release `1.n.0`, the old name keeps working but emits a
-   `DeprecationWarning` naming the replacement, and its docstring and the
-   CHANGELOG record it.
-2. The old name is removed no earlier than the **next major** release
-   (`2.0.0`) and never less than **6 months** after the deprecating release,
-   whichever is later.
-3. Experimental APIs (docstring-marked) are exempt — they may change or be
-   removed in a minor release, with a CHANGELOG note.
+---
 
-## Supported Python & dependencies
+## Important Disambiguation: Class Name Disambiguation
 
-- Python: the versions in the CI matrix (currently 3.10–3.12). Dropping a
-  Python version is a MINOR change once that version is end-of-life.
-- NumPy / SciPy: the floors in `pyproject.toml`. Raising a floor is a MINOR
-  change.
-- Optional extras (`ml`, `viz`, `xcheck`, `docs`): required only for the
-  features that import them; the core (`pip install aimct`) never depends on
-  them.
+- **`Trajectory`**: Exists in **both** `aimct.simulate` (rollout result dataclass containing time vectors, state trajectories, input trajectories, and metadata) and `aimct.trajectories` (abstract base class defining reference trajectory generators). These are distinct classes designed for separate roles.
+- **`TrackingResult`**: Exported from `aimct.benchmarks` for trajectory-tracking accuracy metrics (cross-track error, along-track error, completion percentage) and is distinct from simulation rollouts.
 
-## What is *not* covered
+---
 
-- Exact numeric outputs of iterative solvers (they may shift with a NumPy /
-  SciPy / BLAS update); tests assert tolerances, not bit-for-bit values.
-- The `experiments/` scripts and their generated tables/figures — these are
-  the evidence base, versioned with the repo, not part of the package.
-- Plot styling and animation frame details.
+## Field-Stable Return Dataclasses
+
+The following return **dataclasses** are guaranteed to be field-stable: fields may be added in minor releases, but will never be removed or renamed within major version `1.x`:
+
+- `Trajectory` (`aimct.simulate`)
+- `BatchResult` (`aimct.simulate`)
+- `iLQRResult` (`aimct.controllers`)
+- `CollocationResult` (`aimct.planning`)
+- `TrackingResult` (`aimct.benchmarks`)
+- `ComparisonResult` (`aimct.benchmarks`)
+- `SweepResult` (`aimct.benchmarks`)
+- `ChallengeScoreResult` (`aimct.benchmarks`)
+- `DesignReport` (`aimct.dev`)
+- `ManipulatorID` (`aimct.sysid`)
+- `HinfSynResult` (`aimct.controllers`)
+- `MRPISet` (`aimct.controllers`)
+- `SACResult` (`aimct.rl`)
+- `ControllerSpec` (`aimct.deploy`)
+- `HILResult` (`aimct.hil`)
+- `DeadlineMissInfo` (`aimct.hil`)
+
+---
+
+## Deprecation Policy
+
+1. When an API symbol is slated for removal, it will be marked with a `DeprecationWarning` in minor release `1.n.0`, explicitly identifying its replacement. The deprecation will be documented in `CHANGELOG.md` and the symbol's docstring.
+2. The deprecated symbol will remain functional throughout all subsequent `1.x` releases. It will be removed no earlier than **major version 2.0.0** and no sooner than **6 months** following the initial deprecation notice.
+3. Experimental APIs (explicitly flagged in docstrings) are exempt and may evolve across minor releases.
+
+---
+
+## Supported Environments & Dependencies
+
+- **Python Runtime:** Python 3.10, 3.11, 3.12, and 3.13 (verified across continuous integration runners). Dropping a Python version occurs only after official CPython end-of-life and constitutes a MINOR version change.
+- **Core Dependencies:** Strict floors for NumPy and SciPy as specified in `pyproject.toml`.
+- **Optional Extras:** Extras (`[ml]`, `[viz]`, `[xcheck]`, `[dev]`, `[docs]`) are required only for their specific optional submodules; the base library (`pip install aimct`) carries zero heavy dependencies.
+
+---
+
+## What Is Not Covered
+
+- Exact numerical outputs of iterative algorithms (NLP solvers, gradient descent, Monte Carlo particles) across different BLAS/LAPACK implementations; unit test suites enforce tolerances rather than bit-for-bit equality.
+- Generated figures and markdown tables in `experiments/` — these serve as the empirical evidentiary foundation rather than programmatic library exports.
+- Minor visual layout parameters in matplotlib animation figures.
