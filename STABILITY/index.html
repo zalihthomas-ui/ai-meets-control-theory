@@ -3482,38 +3482,21 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-is-public" class="md-nav__link">
+  <a href="#what-constitutes-the-public-api" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What is public
+        What Constitutes the Public API
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="What is public">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-public-surface-at-v10" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The public surface at v1.0
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deprecation-process" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Deprecation process
+        The Public Surface at v1.0
       
     </span>
   </a>
@@ -3521,10 +3504,43 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#supported-python-dependencies" class="md-nav__link">
+  <a href="#important-disambiguation-class-name-disambiguation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Supported Python &amp; dependencies
+        Important Disambiguation: Class Name Disambiguation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#field-stable-return-dataclasses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Field-Stable Return Dataclasses
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deprecation-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deprecation Policy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-environments-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Environments &amp; Dependencies
       
     </span>
   </a>
@@ -3535,7 +3551,7 @@
   <a href="#what-is-not-covered" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What is not covered
+        What Is Not Covered
       
     </span>
   </a>
@@ -3725,38 +3741,21 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-is-public" class="md-nav__link">
+  <a href="#what-constitutes-the-public-api" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What is public
+        What Constitutes the Public API
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="What is public">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-public-surface-at-v10" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The public surface at v1.0
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deprecation-process" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Deprecation process
+        The Public Surface at v1.0
       
     </span>
   </a>
@@ -3764,10 +3763,43 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#supported-python-dependencies" class="md-nav__link">
+  <a href="#important-disambiguation-class-name-disambiguation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Supported Python &amp; dependencies
+        Important Disambiguation: Class Name Disambiguation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#field-stable-return-dataclasses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Field-Stable Return Dataclasses
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deprecation-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deprecation Policy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-environments-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Environments &amp; Dependencies
       
     </span>
   </a>
@@ -3778,7 +3810,7 @@
   <a href="#what-is-not-covered" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What is not covered
+        What Is Not Covered
       
     </span>
   </a>
@@ -3805,133 +3837,163 @@
   
 
 
-<h1 id="api-stability-versioning">API stability &amp; versioning<a class="headerlink" href="#api-stability-versioning" title="Permanent link">&para;</a></h1>
-<blockquote>
-<p>Draft for v1.0. Refined by the docs pass (D10); wired into the portal nav
-and linked from the README.</p>
-</blockquote>
-<p>From <strong>v1.0.0</strong> onward, <code>aimct</code> follows <a href="https://semver.org">Semantic Versioning</a>:</p>
+<h1 id="api-stability-versioning">API Stability &amp; Versioning<a class="headerlink" href="#api-stability-versioning" title="Permanent link">&para;</a></h1>
+<p>From <strong>v1.0.0</strong> onward, <code>aimct</code> strictly follows <a href="https://semver.org">Semantic Versioning 2.0.0</a>:</p>
 <ul>
-<li><strong>PATCH</strong> (<code>1.0.x</code>) — bug fixes, docs, performance. No API change.</li>
-<li><strong>MINOR</strong> (<code>1.x.0</code>) — new modules, classes, functions, or keyword arguments,
-  added in a backward-compatible way. Existing code keeps working.</li>
-<li><strong>MAJOR</strong> (<code>2.0.0</code>) — a breaking change to something in the <strong>public API</strong>
-  as defined below.</li>
+<li><strong>PATCH</strong> (<code>1.0.x</code>) — Bug fixes, documentation improvements, numerical tolerances, and performance optimizations. Zero API changes.</li>
+<li><strong>MINOR</strong> (<code>1.x.0</code>) — New modules, classes, functions, or optional keyword arguments added in a backward-compatible manner. Existing code continues to work without modification.</li>
+<li><strong>MAJOR</strong> (<code>2.0.0</code>) — Breaking changes to the public API as defined below.</li>
 </ul>
-<h2 id="what-is-public">What is public<a class="headerlink" href="#what-is-public" title="Permanent link">&para;</a></h2>
-<p>A name is part of the public API if <strong>all</strong> of these hold:</p>
+<hr />
+<h2 id="what-constitutes-the-public-api">What Constitutes the Public API<a class="headerlink" href="#what-constitutes-the-public-api" title="Permanent link">&para;</a></h2>
+<p>A symbol is considered part of the <code>aimct</code> public API if and only if <strong>all</strong> of the following conditions hold:</p>
 <ol>
-<li>It is exported from a subpackage's <code>__init__.py</code> and listed in that
-   module's <code>__all__</code>, <strong>or</strong> documented in the API reference.</li>
-<li>Its import path does not contain a leading-underscore component
-   (<code>aimct.controllers.LQR</code> is public; <code>aimct.controllers._qp</code> is not).</li>
-<li>It is not marked <em>experimental</em> in its docstring.</li>
+<li>It is exported from one of the <strong>15 core subpackages'</strong> <code>__init__.py</code> and listed in that module's <code>__all__</code> (or top-level <code>aimct.__all__</code>), <strong>or</strong> explicitly documented in the API reference portal.</li>
+<li>Its import path does not contain a leading-underscore component (<code>aimct.controllers.LQR</code> is public; <code>aimct.controllers._qp</code> or <code>aimct._internal</code> is private).</li>
+<li>It is not marked as <em>experimental</em> in its docstring or class documentation.</li>
 </ol>
-<p>Everything else — helper functions, module internals, the exact contents of
-non-dataclass return values, private attributes — may change in any release.</p>
-<h3 id="the-public-surface-at-v10">The public surface at v1.0<a class="headerlink" href="#the-public-surface-at-v10" title="Permanent link">&para;</a></h3>
+<p>Everything else — helper functions, internal optimizers, private methods, and non-dataclass internal container states — may change in any release without triggering a major version bump.</p>
+<hr />
+<h2 id="the-public-surface-at-v10">The Public Surface at v1.0<a class="headerlink" href="#the-public-surface-at-v10" title="Permanent link">&para;</a></h2>
+<p>The following table enumerates the certified public API across all 15 core subpackages:</p>
 <table>
 <thead>
 <tr>
-<th>Subpackage</th>
-<th>Public API</th>
+<th style="text-align: left;">Subpackage</th>
+<th style="text-align: left;">Public API Symbols &amp; Core Contracts</th>
+<th style="text-align: left;">Guarantees &amp; Consistency Notes</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>aimct.systems</code></td>
-<td><code>DynamicalSystem</code> (the ABC contract: <code>n_states</code>, <code>n_inputs</code>, <code>dynamics</code>, optional <code>linearize</code>/<code>output</code>) and every concrete system class</td>
+<td style="text-align: left;"><code>aimct.systems</code></td>
+<td style="text-align: left;"><code>DynamicalSystem</code> (the ABC base class contract: <code>n_states</code>, <code>n_inputs</code>, <code>dynamics(x, u)</code>, <code>step(x, u, dt)</code>, optional <code>linearize(x0, u0)</code>, <code>output(x, u)</code>), <code>rotation_matrix</code>, and all concrete dynamical systems: <code>MassSpringDamper</code>, <code>Pendulum</code>, <code>CartPole</code>, <code>FurutaPendulum</code>, <code>BallAndBeam</code>, <code>TwoTank</code>, <code>TwoLinkArm</code>, <code>DCMotor</code>, <code>DCMotor2</code>, <code>LinearSystem</code>, <code>PlanarQuadrotor</code>, <code>Quadrotor3D</code>, <code>BicycleVehicle</code>, <code>DifferentialDriveRobot</code>, <code>MultiAgentSystem</code> (alias <code>MultiAgent</code>), graph topology generators (<code>complete_graph</code>, <code>cycle_graph</code>, <code>line_graph</code>, <code>star_graph</code>, <code>disconnected_graph</code>).</td>
+<td style="text-align: left;">Concrete systems strictly follow continuous-time ODE and discrete <code>step()</code> conventions.</td>
 </tr>
 <tr>
-<td><code>aimct.controllers</code></td>
-<td><code>PID</code>, <code>StateFeedback</code>, <code>LQR</code>, <code>LinearMPC</code>, <code>SamplingMPC</code>, <code>iLQR</code>/<code>ILQR</code>, <code>MRAC</code>, <code>DisturbanceObserver</code>/<code>QFilter</code>, <code>hinf</code> (<code>StateSpace</code>, <code>weight_*</code>, <code>augment_plant</code>, <code>hinf_syn</code>, <code>mixsyn</code>, <code>HinfController</code>), tube MPC, the swing-up/hybrid controllers, <code>solve_care</code>/<code>solve_qp</code>/<code>place_poles</code></td>
+<td style="text-align: left;"><code>aimct.controllers</code></td>
+<td style="text-align: left;"><code>Controller</code> (ABC), <code>PID</code>, <code>StateFeedback</code>, <code>LQR</code>, <code>ObserverFeedback</code>, <code>LinearMPC</code>, <code>TubeMPC</code>, <code>MRPISet</code>, <code>mrpi_box</code>, <code>SamplingMPC</code>, <code>ILQR</code> / <code>iLQR</code>, <code>MRAC</code>, <code>DisturbanceObserver</code>, <code>QFilter</code>, <code>GainScheduledLQR</code>, <code>EnergyShapingSwingUp</code>, <code>HybridSwingUpLQR</code>, <code>ConsensusFormationController</code> (alias <code>FormationController</code>), formation geometry generators (<code>polygon_formation</code>, <code>line_formation</code>, <code>diamond_formation</code>, <code>wedge_formation</code>), <span class="arithmatex">\(H_\infty\)</span> robust loop shaping subpackage (<code>StateSpace</code>, <code>weight_S</code>, <code>weight_KS</code>, <code>weight_T</code>, <code>augment_plant</code>, <code>lft_lower</code>, <code>hinf_syn</code>, <code>mixsyn</code>, <code>HinfSynResult</code>, <code>HinfController</code>), matrix utilities (<code>dare</code>, <code>solve_care</code>, <code>solve_lyapunov</code>, <code>place_poles</code>, <code>controllability_matrix</code>, <code>is_controllable</code>, <code>wrap_angle</code>).</td>
+<td style="text-align: left;">Solvers support standard NumPy arrays. <code>TubeMPC</code> computes minimal robust positively invariant (mRPI) outer bounding sets and Pontryagin difference tightening.</td>
 </tr>
 <tr>
-<td><code>aimct.planning</code></td>
-<td><code>DirectCollocation</code>, <code>CollocationResult</code></td>
+<td style="text-align: left;"><code>aimct.planning</code></td>
+<td style="text-align: left;"><code>DirectCollocation</code>, <code>CollocationResult</code>.</td>
+<td style="text-align: left;">Hermite–Simpson direct transcription NLP enforcing hard midpoint defects and terminal equality constraints.</td>
 </tr>
 <tr>
-<td><code>aimct.robust</code></td>
-<td><code>BlockStructure</code>, <code>mu</code>, <code>robust_stability_margin</code>, <code>robust_performance_margin</code>, <code>dk_iterate</code></td>
+<td style="text-align: left;"><code>aimct.robust</code></td>
+<td style="text-align: left;"><code>BlockStructure</code>, <code>mu</code>, <code>robust_stability_margin</code>, <code>robust_performance_margin</code>, <code>dk_iterate</code>.</td>
+<td style="text-align: left;">Structured singular value analysis (<span class="arithmatex">\(\mu\)</span>) for mixed real/complex parametric perturbations.</td>
 </tr>
 <tr>
-<td><code>aimct.estimation</code></td>
-<td><code>LuenbergerObserver</code>, <code>KalmanFilter</code>/<code>DiscreteKalmanFilter</code>, <code>ExtendedKalmanFilter</code>, <code>UnscentedKalmanFilter</code>, <code>MovingHorizonEstimator</code>/<code>MHE</code>, <code>ParticleFilter</code></td>
+<td style="text-align: left;"><code>aimct.estimation</code></td>
+<td style="text-align: left;"><code>LuenbergerObserver</code>, <code>place_observer</code>, <code>solve_fare</code>, <code>KalmanFilter</code>, <code>DiscreteKalmanFilter</code>, <code>ExtendedKalmanFilter</code>, <code>UnscentedKalmanFilter</code>, <code>MovingHorizonEstimator</code> (alias <code>MHE</code>), <code>ParticleFilter</code> (alias <code>PF</code>), <code>systematic_resample</code>, <code>finite_diff_jacobian</code>, <code>observability_matrix</code>, <code>observability_rank</code>, <code>is_observable</code>.</td>
+<td style="text-align: left;"><strong>Consistency Guarantee:</strong> All four nonlinear estimators (<code>ExtendedKalmanFilter</code>, <code>UnscentedKalmanFilter</code>, <code>MovingHorizonEstimator</code>/<code>MHE</code>, <code>ParticleFilter</code>/<code>PF</code>) share a unified construction interface: <code>(f, h, Q, R, *, dt, ...)</code> and a <code>.from_system(system, Q, R, *, dt, h=None, **kwargs)</code> classmethod.</td>
 </tr>
 <tr>
-<td><code>aimct.sysid</code></td>
-<td><code>least_squares_id</code>, <code>dmdc</code>, <code>to_continuous</code>, <code>identify_manipulator</code>, <code>finite_difference_derivatives</code>, <code>ManipulatorID</code></td>
+<td style="text-align: left;"><code>aimct.sysid</code></td>
+<td style="text-align: left;"><code>least_squares_id</code>, <code>dmdc</code>, <code>to_continuous</code>, <code>prediction_error</code>, <code>model_mismatch</code>, <code>identify_manipulator</code>, <code>manipulator_regressor</code>, <code>finite_difference_derivatives</code>, <code>ManipulatorID</code>.</td>
+<td style="text-align: left;">System identification and Euler–Lagrange manipulator parameter regression.</td>
 </tr>
 <tr>
-<td><code>aimct.simulate</code></td>
-<td><code>simulate</code>, <code>simulate_batch</code>, <code>Trajectory</code>, <code>BatchResult</code>, <code>rk4_step</code></td>
+<td style="text-align: left;"><code>aimct.simulate</code></td>
+<td style="text-align: left;"><code>simulate</code>, <code>simulate_batch</code>, <code>Trajectory</code>, <code>BatchResult</code>, <code>rk4_step</code>.</td>
+<td style="text-align: left;">Deterministic numerical integration and trajectory logging.</td>
 </tr>
 <tr>
-<td><code>aimct.benchmarks</code></td>
-<td><code>compare</code>, <code>ComparisonResult</code>, <code>track_trajectory</code>, <code>TrackingResult</code>, the challenge/capstone scoring entry points</td>
+<td style="text-align: left;"><code>aimct.benchmarks</code></td>
+<td style="text-align: left;">Standardized metrics (<code>rise_time</code>, <code>settling_time</code>, <code>peak_overshoot</code>, <code>peak_time</code>, <code>steady_state_error</code>, <code>rmse</code>, <code>iae</code>, <code>itae</code>, <code>ise</code>, <code>control_energy</code>, <code>peak_control</code>, <code>slew_rate</code>, <code>saturation_duty_cycle</code>, <code>compute_all_metrics</code>), comparative harness (<code>compare</code>, <code>ComparisonResult</code>, <code>sweep</code>, <code>SweepResult</code>, <code>track_trajectory</code>, <code>TrackingResult</code>), challenge/capstone evaluation suites (<code>score_capstone_entry</code>, <code>score_capstone</code>, <code>capstone_leaderboard_table</code>, <code>BlackBoxPlant</code>, <code>BlackBoxEnvironment</code>, <code>SafetyEnvelope</code>, <code>ChallengeScoreResult</code>, <code>ParamPerturbed</code>, <code>perturbed_system</code>, <code>ActuatorLag</code>, <code>ImpulseDisturbance</code>, <code>ImpulseInjector</code>, <code>robust_degradation</code>, <code>evaluate_safety</code>, <code>score_run</code>, <code>WEIGHTS</code>, <code>NORMALISERS</code>, <code>ScoreWeights</code>, <code>BaselineCosts</code>, <code>CAPSTONE_WEIGHTS</code>, <code>CAPSTONE_BASELINES</code>).</td>
+<td style="text-align: left;">Standardized comparative benchmarking across classical and AI paradigms.</td>
 </tr>
 <tr>
-<td><code>aimct.trajectories</code></td>
-<td><code>Setpoint</code>, <code>Circle</code>, <code>Lemniscate</code>, <code>MinimumJerk</code>, <code>Spline</code>, <code>Dubins</code>, <code>Lissajous</code>, <code>Rose</code>, <code>Spiral</code></td>
+<td style="text-align: left;"><code>aimct.trajectories</code></td>
+<td style="text-align: left;"><code>Trajectory</code> (ABC reference trajectory), <code>Setpoint</code>, <code>Circle</code>, <code>Lemniscate</code>, <code>MinimumJerk</code>, <code>Spline</code>, <code>Dubins</code>, <code>Lissajous</code>, <code>Rose</code>, <code>Spiral</code>.</td>
+<td style="text-align: left;">Parametric time- and arc-length-indexed reference trajectories.</td>
 </tr>
 <tr>
-<td><code>aimct.viz</code></td>
-<td><code>animate</code>, <code>Replay</code>, <code>Sandbox</code>, <code>Disturbance</code>, <code>SystemArtist</code>, <code>register_artist</code>/<code>get_artist</code>/<code>has_artist</code></td>
+<td style="text-align: left;"><code>aimct.viz</code></td>
+<td style="text-align: left;"><code>animate</code>, <code>Replay</code>, <code>Sandbox</code>, <code>Disturbance</code>, <code>SystemArtist</code>, <code>register_artist</code>, <code>get_artist</code>, <code>has_artist</code>.</td>
+<td style="text-align: left;">Publication-grade rendering and real-time interactive sandboxes.</td>
 </tr>
 <tr>
-<td><code>aimct.dev</code></td>
-<td><code>build_report</code>, <code>DesignReport</code>, <code>python -m aimct preview</code></td>
+<td style="text-align: left;"><code>aimct.dev</code></td>
+<td style="text-align: left;"><code>DesignReport</code>, <code>build_report</code>, <code>render</code>, <code>load_system</code>, <code>preview_once</code>, <code>watch</code>.</td>
+<td style="text-align: left;">Design-time system introspection and verification CLI (<code>python -m aimct preview MODULE:Class [--watch]</code>).</td>
 </tr>
 <tr>
-<td><code>aimct.deploy</code></td>
-<td><code>export_controller</code>, <code>load_controller</code>, <code>PortableController</code>, <code>ControllerSpec</code>, <code>emit_c</code>, <code>emit_micropython</code></td>
+<td style="text-align: left;"><code>aimct.deploy</code></td>
+<td style="text-align: left;"><code>export_controller</code>, <code>load_controller</code>, <code>PortableController</code>, <code>ControllerSpec</code>, <code>UnsupportedControllerError</code>, <code>emit_c</code>, <code>emit_micropython</code>.</td>
+<td style="text-align: left;">Zero-dependency standalone C99 and MicroPython code generation.</td>
 </tr>
 <tr>
-<td><code>aimct.hil</code></td>
-<td><code>RealTimeLoop</code>, <code>PlantEmulator</code>, the transport classes</td>
+<td style="text-align: left;"><code>aimct.hil</code></td>
+<td style="text-align: left;"><code>RealTimeLoop</code>, <code>HILResult</code>, <code>DeadlineMissInfo</code>, <code>PlantEmulator</code>, <code>Transport</code>, <code>InProcessTransport</code>, <code>UDPTransport</code>, <code>SerialTransport</code>.</td>
+<td style="text-align: left;">Real-time hardware-in-the-loop emulation and serial/UDP transport.</td>
 </tr>
 <tr>
-<td><code>aimct.ml</code>, <code>aimct.rl</code></td>
-<td>learned-dynamics and agent classes as documented</td>
+<td style="text-align: left;"><code>aimct.ml</code></td>
+<td style="text-align: left;"><code>MLP</code>, <code>LearnedDynamics</code>, <code>system_step</code>, <code>batched_rk4</code>.</td>
+<td style="text-align: left;">Pure NumPy neural network forward/backward propagation and learned residual dynamics.</td>
 </tr>
 <tr>
-<td>CLI</td>
-<td><code>python -m aimct</code> subcommands (<code>compare</code>, <code>preview</code>, <code>live</code>, <code>list</code>)</td>
+<td style="text-align: left;"><code>aimct.rl</code></td>
+<td style="text-align: left;"><code>ControlEnv</code>, <code>TASKS</code>, <code>make</code>, <code>wrap_to_pi</code>, <code>figure8_reference</code>, <code>figure8_obs</code>, <code>FIGURE8_PERIOD</code>, <code>Discretizer</code>, <code>QLearning</code>, <code>GreedyPolicy</code>, <code>train</code>, <code>evaluate</code>, <code>GaussianPolicy</code>, <code>reinforce</code>, <code>evaluate_policy</code>, <code>BehaviorCloning</code>, <code>aggregate</code>, <code>dagger</code>, <code>DQN</code>, <code>QNetwork</code>, <code>ReplayBuffer</code>, <code>dqn</code>, <code>PPO</code>, <code>ppo</code>, <code>SAC</code>, <code>sac</code>, <code>SACResult</code>.</td>
+<td style="text-align: left;">The RL surface exposes both agent classes and thin functional wrappers; both are first-class supported.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>CLI</strong></td>
+<td style="text-align: left;">Subcommands for <code>python -m aimct</code> (<code>compare</code>, <code>preview</code>, <code>live</code>, <code>list</code>).</td>
+<td style="text-align: left;">Command-line developer interface.</td>
 </tr>
 </tbody>
 </table>
-<p>Return <strong>dataclasses</strong> (<code>Trajectory</code>, <code>BatchResult</code>, <code>iLQRResult</code>,
-<code>CollocationResult</code>, <code>TrackingResult</code>, <code>ComparisonResult</code>, <code>DesignReport</code>,
-<code>ManipulatorID</code>, <code>HinfSynResult</code>, …) are public: fields are only added, never
-removed or renamed, within a major version.</p>
-<h2 id="deprecation-process">Deprecation process<a class="headerlink" href="#deprecation-process" title="Permanent link">&para;</a></h2>
-<ol>
-<li>In release <code>1.n.0</code>, the old name keeps working but emits a
-   <code>DeprecationWarning</code> naming the replacement, and its docstring and the
-   CHANGELOG record it.</li>
-<li>The old name is removed no earlier than the <strong>next major</strong> release
-   (<code>2.0.0</code>) and never less than <strong>6 months</strong> after the deprecating release,
-   whichever is later.</li>
-<li>Experimental APIs (docstring-marked) are exempt — they may change or be
-   removed in a minor release, with a CHANGELOG note.</li>
-</ol>
-<h2 id="supported-python-dependencies">Supported Python &amp; dependencies<a class="headerlink" href="#supported-python-dependencies" title="Permanent link">&para;</a></h2>
+<hr />
+<h2 id="important-disambiguation-class-name-disambiguation">Important Disambiguation: Class Name Disambiguation<a class="headerlink" href="#important-disambiguation-class-name-disambiguation" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Python: the versions in the CI matrix (currently 3.10–3.12). Dropping a
-  Python version is a MINOR change once that version is end-of-life.</li>
-<li>NumPy / SciPy: the floors in <code>pyproject.toml</code>. Raising a floor is a MINOR
-  change.</li>
-<li>Optional extras (<code>ml</code>, <code>viz</code>, <code>xcheck</code>, <code>docs</code>): required only for the
-  features that import them; the core (<code>pip install aimct</code>) never depends on
-  them.</li>
+<li><strong><code>Trajectory</code></strong>: Exists in <strong>both</strong> <code>aimct.simulate</code> (rollout result dataclass containing time vectors, state trajectories, input trajectories, and metadata) and <code>aimct.trajectories</code> (abstract base class defining reference trajectory generators). These are distinct classes designed for separate roles.</li>
+<li><strong><code>TrackingResult</code></strong>: Exported from <code>aimct.benchmarks</code> for trajectory-tracking accuracy metrics (cross-track error, along-track error, completion percentage) and is distinct from simulation rollouts.</li>
 </ul>
-<h2 id="what-is-not-covered">What is <em>not</em> covered<a class="headerlink" href="#what-is-not-covered" title="Permanent link">&para;</a></h2>
+<hr />
+<h2 id="field-stable-return-dataclasses">Field-Stable Return Dataclasses<a class="headerlink" href="#field-stable-return-dataclasses" title="Permanent link">&para;</a></h2>
+<p>The following return <strong>dataclasses</strong> are guaranteed to be field-stable: fields may be added in minor releases, but will never be removed or renamed within major version <code>1.x</code>:</p>
 <ul>
-<li>Exact numeric outputs of iterative solvers (they may shift with a NumPy /
-  SciPy / BLAS update); tests assert tolerances, not bit-for-bit values.</li>
-<li>The <code>experiments/</code> scripts and their generated tables/figures — these are
-  the evidence base, versioned with the repo, not part of the package.</li>
-<li>Plot styling and animation frame details.</li>
+<li><code>Trajectory</code> (<code>aimct.simulate</code>)</li>
+<li><code>BatchResult</code> (<code>aimct.simulate</code>)</li>
+<li><code>iLQRResult</code> (<code>aimct.controllers</code>)</li>
+<li><code>CollocationResult</code> (<code>aimct.planning</code>)</li>
+<li><code>TrackingResult</code> (<code>aimct.benchmarks</code>)</li>
+<li><code>ComparisonResult</code> (<code>aimct.benchmarks</code>)</li>
+<li><code>SweepResult</code> (<code>aimct.benchmarks</code>)</li>
+<li><code>ChallengeScoreResult</code> (<code>aimct.benchmarks</code>)</li>
+<li><code>DesignReport</code> (<code>aimct.dev</code>)</li>
+<li><code>ManipulatorID</code> (<code>aimct.sysid</code>)</li>
+<li><code>HinfSynResult</code> (<code>aimct.controllers</code>)</li>
+<li><code>MRPISet</code> (<code>aimct.controllers</code>)</li>
+<li><code>SACResult</code> (<code>aimct.rl</code>)</li>
+<li><code>ControllerSpec</code> (<code>aimct.deploy</code>)</li>
+<li><code>HILResult</code> (<code>aimct.hil</code>)</li>
+<li><code>DeadlineMissInfo</code> (<code>aimct.hil</code>)</li>
+</ul>
+<hr />
+<h2 id="deprecation-policy">Deprecation Policy<a class="headerlink" href="#deprecation-policy" title="Permanent link">&para;</a></h2>
+<ol>
+<li>When an API symbol is slated for removal, it will be marked with a <code>DeprecationWarning</code> in minor release <code>1.n.0</code>, explicitly identifying its replacement. The deprecation will be documented in <code>CHANGELOG.md</code> and the symbol's docstring.</li>
+<li>The deprecated symbol will remain functional throughout all subsequent <code>1.x</code> releases. It will be removed no earlier than <strong>major version 2.0.0</strong> and no sooner than <strong>6 months</strong> following the initial deprecation notice.</li>
+<li>Experimental APIs (explicitly flagged in docstrings) are exempt and may evolve across minor releases.</li>
+</ol>
+<hr />
+<h2 id="supported-environments-dependencies">Supported Environments &amp; Dependencies<a class="headerlink" href="#supported-environments-dependencies" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Python Runtime:</strong> Python 3.10, 3.11, 3.12, and 3.13 (verified across continuous integration runners). Dropping a Python version occurs only after official CPython end-of-life and constitutes a MINOR version change.</li>
+<li><strong>Core Dependencies:</strong> Strict floors for NumPy and SciPy as specified in <code>pyproject.toml</code>.</li>
+<li><strong>Optional Extras:</strong> Extras (<code>[ml]</code>, <code>[viz]</code>, <code>[xcheck]</code>, <code>[dev]</code>, <code>[docs]</code>) are required only for their specific optional submodules; the base library (<code>pip install aimct</code>) carries zero heavy dependencies.</li>
+</ul>
+<hr />
+<h2 id="what-is-not-covered">What Is Not Covered<a class="headerlink" href="#what-is-not-covered" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Exact numerical outputs of iterative algorithms (NLP solvers, gradient descent, Monte Carlo particles) across different BLAS/LAPACK implementations; unit test suites enforce tolerances rather than bit-for-bit equality.</li>
+<li>Generated figures and markdown tables in <code>experiments/</code> — these serve as the empirical evidentiary foundation rather than programmatic library exports.</li>
+<li>Minor visual layout parameters in matplotlib animation figures.</li>
 </ul>
 
 
