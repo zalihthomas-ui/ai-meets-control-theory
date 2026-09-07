@@ -43,9 +43,11 @@ Initial / terminal state equalities and the input / state boxes become simple
 bounds on ``z``; an optional ``path_con(X, U) <= 0`` adds inequality
 constraints (keep-out regions, etc.).  The NLP is handed to
 :func:`scipy.optimize.minimize` (``"SLSQP"`` by default, ``"trust-constr"``
-optional) with an **analytic constraint Jacobian** built from the system
-linearisation when one is available, and a finite-difference fallback
-otherwise.
+optional) with an **analytic Hermite-Simpson constraint Jacobian** built from
+the system linearisation when one is available (dense for SLSQP, banded
+:mod:`scipy.sparse` for ``trust-constr``), and a finite-difference fallback
+otherwise.  The decision vector is **scaled** (``x_scale`` / ``u_scale``, auto
+by default) so a badly-scaled plant still presents an O(1) problem.
 
 Unlike :class:`aimct.controllers.iLQR` this returns only an *open-loop*
 trajectory ``(X, U)`` -- there is no time-varying feedback gain and no
@@ -157,12 +159,24 @@ class DirectCollocation:
     linearize : ``g(x, u) -> (A, B)`` or None
         Analytic Jacobians of ``dynamics``; enables an analytic constraint
         Jacobian.  ``None`` -> central finite differences.
-    method : {"SLSQP", "trust-constr"}
-        Backend for :func:`scipy.optimize.minimize`.
+    method : {"auto", "SLSQP", "trust-constr"}
+        Backend for :func:`scipy.optimize.minimize`.  ``"auto"`` (default) picks
+        ``SLSQP``, which -- with the decision-variable scaling below -- handles
+        the constrained / badly-scaled problems that used to make its LSQ
+        subproblem singular, and is much faster here than ``trust-constr`` (which
+        is offered for the interior-point path and gets the banded *sparse*
+        Hermite-Simpson Jacobian).
     max_iter, tol : int, float
         Passed through to the solver.
     fd_eps : float
         Finite-difference step for the fallback Jacobian / custom-cost gradient.
+    x_scale, u_scale : array (n_x,) / (n_u,) or None
+        Positive per-channel scales; the NLP is solved in ``z / dz`` with
+        ``dz`` tiled from these, so a badly-scaled plant (a quadrotor's pitch
+        rate, whose ``B`` entry is ~1e3) still presents an O(1) problem.
+        ``None`` -> an automatic estimate from the state / input magnitudes and
+        one Hermite-Simpson step of the dynamics Jacobian; pass explicit arrays
+        for a stiff plant where the estimate is not aggressive enough.
     """
 
     def __init__(
@@ -186,10 +200,12 @@ class DirectCollocation:
         running_cost: Callable | None = None,
         terminal_cost: Callable | None = None,
         linearize: Callable | None = None,
-        method: str = "SLSQP",
-        max_iter: int = 300,
+        method: str = "auto",
+        max_iter: int = 500,
         tol: float = 1e-8,
         fd_eps: float = 1e-6,
+        x_scale=None,
+        u_scale=None,
     ) -> None:
         self.f = dynamics
         self.n_x, self.n_u, self.N = int(n_x), int(n_u), int(N)
@@ -212,13 +228,87 @@ class DirectCollocation:
         self._running_cost = running_cost
         self._terminal_cost = terminal_cost
         self._lin = linearize
-        self.method = str(method)
+        # method: "auto" -> SLSQP.  With the decision-variable scaling below,
+        # SLSQP handles the constrained / badly-scaled cases (a keep-out disk on
+        # a stiff many-state plant) that used to make its LSQ subproblem
+        # singular, and it is markedly faster than trust-constr here; pass
+        # method="trust-constr" explicitly for the interior-point path.
+        m = str(method).lower()
+        if m == "auto":
+            m = "slsqp"
+        self.method = {"slsqp": "SLSQP", "trust-constr": "trust-constr"}[m]
         self.max_iter = int(max_iter)
         self.tol = float(tol)
         self.fd_eps = float(fd_eps)
 
+        # decision-variable scaling: solve in z_hat = z / dz so the NLP sees an
+        # O(1) problem even for a badly-scaled plant.  Explicit x_scale /
+        # u_scale override; otherwise "auto" combines the state / input
+        # magnitudes with a dynamics-Jacobian row balance (so a stiff channel
+        # like a quadrotor's pitch rate, whose B entry is ~1e3, gets a large
+        # x_scale and its defect row comes out O(1)).
         self.t = np.linspace(0.0, self.t_final, self.N)
         self._nz = self.N * (self.n_x + self.n_u)
+        self._sx, self._su = self._auto_scale(x_scale, u_scale)
+        self._dz = np.concatenate([np.tile(self._sx, self.N),
+                                   np.tile(self._su, self.N)])
+
+    def _auto_scale(self, x_scale, u_scale):
+        def _explicit(spec, n, tag):
+            s = np.broadcast_to(np.abs(np.asarray(spec, float)), (n,)).astype(float)
+            if np.any(s <= 0):
+                raise ValueError(f"{tag}_scale entries must be positive")
+            return s.copy()
+
+        sx = _explicit(x_scale, self.n_x, "x") if x_scale is not None else None
+        su = _explicit(u_scale, self.n_u, "u") if u_scale is not None else None
+        if sx is not None and su is not None:
+            return sx, su
+
+        def _mag(*arrs, n):
+            out = np.zeros(n)
+            for a in arrs:
+                if a is None or not np.size(a):
+                    continue
+                a = np.abs(np.asarray(a, float))
+                a = np.where(np.isfinite(a), a, 0.0)
+                a = a.max(axis=0) if a.ndim == 2 else a
+                out = np.maximum(out, a.reshape(-1)[:n])
+            return out
+
+        u_mag = _mag(self._ubox[0], self._ubox[1],
+                     self.Ur if self.Ur.size else None, n=self.n_u)
+        x_mag = _mag(self.x0, self.x_goal, self._xbox[0], self._xbox[1], n=self.n_x)
+
+        # a gentle dynamics-Jacobian row hint at a representative point: the
+        # magnitude one Hermite-Simpson step imparts to each state.  Blended in
+        # by geometric mean (sqrt) and capped so a stiff channel is lifted, not
+        # blown up - explicit x_scale / u_scale remain the tool for extremes.
+        xr = self.x0 if self.x_goal is None else 0.5 * (self.x0 + self.x_goal)
+        ur = self.Ur[0] if self.Ur.size else np.zeros(self.n_u)
+        try:
+            A, B = self._AB(xr, ur)
+            step_mag = self.h * (np.abs(A) @ np.maximum(x_mag, 1.0)
+                                 + np.abs(B) @ np.maximum(u_mag, 1e-3))
+        except Exception:
+            step_mag = np.ones(self.n_x)
+        base_x = np.where(x_mag > 1e-12, x_mag, 1.0)
+        hint_x = np.clip(np.sqrt(base_x * np.maximum(step_mag, 1.0)),
+                         base_x, 100.0 * base_x)
+
+        if su is None:
+            su = np.where(u_mag > 1e-12, u_mag, 1.0)
+        if sx is None:
+            sx = np.maximum(hint_x, 1.0)
+        return sx, su
+
+    @property
+    def x_scale(self) -> np.ndarray:
+        return self._sx.copy()
+
+    @property
+    def u_scale(self) -> np.ndarray:
+        return self._su.copy()
 
     # ------------------------------------------------------------------ helpers
 
@@ -312,15 +402,14 @@ class DirectCollocation:
         d = xk - xk1 + (h / 6.0) * (fk + 4.0 * fc + fk1)
         return d.ravel()
 
-    def _defects_jac(self, z: np.ndarray) -> np.ndarray:
-        """Dense ``((N-1) n_x, n_z)`` Jacobian of :meth:`_defects`."""
+    def _defect_blocks(self, z: np.ndarray):
+        """Yield ``(k, ddef_dxk, ddef_dxk1, ddef_duk, ddef_duk1)`` -- the four
+        non-zero blocks of Hermite-Simpson defect row-block ``k``."""
         X, U = self._split(z)
-        nx, nu, N, h = self.n_x, self.n_u, self.N, self.h
+        nx, h = self.n_x, self.h
         eye = np.eye(nx)
-        J = np.zeros(((N - 1) * nx, self._nz))
-        uoff = N * nx
-        AB = [self._AB(X[k], U[k]) for k in range(N)]
-        for k in range(N - 1):
+        AB = [self._AB(X[k], U[k]) for k in range(self.N)]
+        for k in range(self.N - 1):
             Ak, Bk = AB[k]
             Ak1, Bk1 = AB[k + 1]
             fk = self.f(X[k], U[k])
@@ -334,17 +423,51 @@ class DirectCollocation:
             dxc_duk = (h / 8.0) * Bk
             dxc_duk1 = -(h / 8.0) * Bk1
 
-            ddef_dxk = eye + (h / 6.0) * (Ak + 4.0 * Ac @ dxc_dxk)
-            ddef_dxk1 = -eye + (h / 6.0) * (Ak1 + 4.0 * Ac @ dxc_dxk1)
-            ddef_duk = (h / 6.0) * (Bk + 4.0 * (Ac @ dxc_duk + 0.5 * Bc))
-            ddef_duk1 = (h / 6.0) * (Bk1 + 4.0 * (Ac @ dxc_duk1 + 0.5 * Bc))
+            yield (k,
+                   eye + (h / 6.0) * (Ak + 4.0 * Ac @ dxc_dxk),
+                   -eye + (h / 6.0) * (Ak1 + 4.0 * Ac @ dxc_dxk1),
+                   (h / 6.0) * (Bk + 4.0 * (Ac @ dxc_duk + 0.5 * Bc)),
+                   (h / 6.0) * (Bk1 + 4.0 * (Ac @ dxc_duk1 + 0.5 * Bc)))
 
+    def _defects_jac(self, z: np.ndarray) -> np.ndarray:
+        """Dense ``((N-1) n_x, n_z)`` Jacobian of :meth:`_defects`."""
+        nx, nu, N = self.n_x, self.n_u, self.N
+        J = np.zeros(((N - 1) * nx, self._nz))
+        uoff = N * nx
+        for k, dxk, dxk1, duk, duk1 in self._defect_blocks(z):
             r = slice(k * nx, (k + 1) * nx)
-            J[r, k * nx:(k + 1) * nx] = ddef_dxk
-            J[r, (k + 1) * nx:(k + 2) * nx] = ddef_dxk1
-            J[r, uoff + k * nu:uoff + (k + 1) * nu] = ddef_duk
-            J[r, uoff + (k + 1) * nu:uoff + (k + 2) * nu] = ddef_duk1
+            J[r, k * nx:(k + 1) * nx] = dxk
+            J[r, (k + 1) * nx:(k + 2) * nx] = dxk1
+            J[r, uoff + k * nu:uoff + (k + 1) * nu] = duk
+            J[r, uoff + (k + 1) * nu:uoff + (k + 2) * nu] = duk1
         return J
+
+    def _defects_jac_sparse(self, z: np.ndarray):
+        """Banded ``((N-1) n_x, n_z)`` Jacobian as a ``scipy.sparse`` CSR
+        matrix -- only the ``4 n_x (n_x + n_u)`` non-zeros per row-block, so
+        ``trust-constr`` scales linearly in ``N`` instead of quadratically."""
+        from scipy.sparse import coo_matrix
+
+        nx, nu, N = self.n_x, self.n_u, self.N
+        uoff = N * nx
+        rows, cols, vals = [], [], []
+
+        def _add(r0, c0, blk):
+            rr, cc = np.meshgrid(np.arange(blk.shape[0]), np.arange(blk.shape[1]),
+                                 indexing="ij")
+            rows.append((r0 + rr).ravel())
+            cols.append((c0 + cc).ravel())
+            vals.append(blk.ravel())
+
+        for k, dxk, dxk1, duk, duk1 in self._defect_blocks(z):
+            r0 = k * nx
+            _add(r0, k * nx, dxk)
+            _add(r0, (k + 1) * nx, dxk1)
+            _add(r0, uoff + k * nu, duk)
+            _add(r0, uoff + (k + 1) * nu, duk1)
+        return coo_matrix((np.concatenate(vals),
+                           (np.concatenate(rows), np.concatenate(cols))),
+                          shape=((N - 1) * nx, self._nz)).tocsr()
 
     # ---------------------------------------------------------- boundary equality
 
@@ -387,61 +510,140 @@ class DirectCollocation:
             X = np.asarray(X_init, float).reshape(self.N, self.n_x)
         U = np.zeros((self.N, self.n_u)) if U_init is None \
             else np.asarray(U_init, float).reshape(self.N, self.n_u)
-        return self._merge(X, U)
+        z0 = self._merge(X, U)
+        return self._guard_singular_path_rows(z0)
+
+    def _guard_singular_path_rows(self, z0: np.ndarray) -> np.ndarray:
+        """If a knot sits where ``path_con``'s gradient vanishes (classically, a
+        knot exactly on a keep-out disk centre), the constraint row is all-zero
+        and the QP/LSQ subproblem is singular.  Nudge the offending knot."""
+        if self.path_con is None:
+            return z0
+        X, U = self._split(z0)
+        e = 1e-4
+        moved = False
+        for k in range(self.N):
+            gk = 0.0
+            for i in range(self.n_x):
+                Xp, Xm = X.copy(), X.copy()
+                Xp[k, i] += e
+                Xm[k, i] -= e
+                d = (self._path(self._merge(Xp, U))
+                     - self._path(self._merge(Xm, U))) / (2 * e)
+                gk = max(gk, float(np.max(np.abs(d))))
+            if gk < 1e-6 and self.N > 2:
+                nb = X[k + 1] if k == 0 else X[k - 1]
+                X[k] = X[k] + 1e-2 * (nb - X[k]) + 1e-2 * self._sx
+                moved = True
+        return self._merge(X, U) if moved else z0
 
     # ------------------------------------------------------------------- solve
 
     def solve(self, *, X_init=None, U_init=None, verbose: bool = False) -> CollocationResult:
-        """Transcribe and solve the NLP; return the open-loop trajectory."""
-        nx, nu, N = self.n_x, self.n_u, self.N
-        z0 = self._initial_guess(X_init, U_init)
+        """Transcribe and solve the NLP; return the open-loop trajectory.
 
-        # variable bounds: the state / input boxes only.  The endpoints enter as
-        # explicit equality constraints (see _boundary), not zero-width bounds.
+        The NLP is solved in scaled coordinates ``z_hat = z / dz`` (``dz`` from
+        ``x_scale`` / ``u_scale``); ``trust-constr`` gets the banded sparse
+        Hermite-Simpson Jacobian.
+        """
+        import scipy.sparse as sp
+
+        nx, nu, N = self.n_x, self.n_u, self.N
+        dz = self._dz
+        z0 = self._initial_guess(X_init, U_init)
+        z0h = z0 / dz
+
+        # defect rows carried in state units -> scale row r (state i) by 1/sx[i]
+        rs = np.tile(self._sx, N - 1)
+        Dzs = sp.diags(dz)
+        Rsi = sp.diags(1.0 / rs)
+
+        def obj(zh):
+            return self._objective(dz * zh)
+
+        def grad(zh):
+            return dz * self._objective_grad(dz * zh)
+
+        def defects(zh):
+            return self._defects(dz * zh) / rs
+
+        def defects_jac(zh):
+            return (Rsi @ self._defects_jac_sparse(dz * zh) @ Dzs)
+
+        def defects_jac_dense(zh):
+            return (self._defects_jac(dz * zh) / rs[:, None]) * dz[None, :]
+
+        brs = np.concatenate([self._sx] + ([self._sx] if self.x_goal is not None else []))
+
+        def boundary(zh):
+            return self._boundary(dz * zh) / brs
+
+        Bjac_dense = (self._boundary_jac(np.zeros(self._nz)) / brs[:, None]) * dz[None, :]
+        Bjac_sp = sp.csr_matrix(Bjac_dense)
+
+        def path(zh):
+            return self._path(dz * zh)
+
+        def path_jac_sp(zh):
+            """FD Jacobian of the path inequality over the state columns only,
+            returned sparse so trust-constr keeps a single Jacobian kind."""
+            z = dz * zh
+            g0 = self._path(z)
+            e = self.fd_eps
+            J = np.zeros((g0.size, self._nz))
+            for j in range(N * nx):
+                zp = z.copy()
+                zp[j] += e
+                J[:, j] = (self._path(zp) - g0) / e
+            return sp.csr_matrix(J * dz[None, :])
+
         lo = np.empty(self._nz)
         hi = np.empty(self._nz)
         lo[:N * nx] = np.tile(self._xbox[0], N)
         hi[:N * nx] = np.tile(self._xbox[1], N)
         lo[N * nx:] = np.tile(self._ubox[0], N)
         hi[N * nx:] = np.tile(self._ubox[1], N)
-        bounds = [(None if not np.isfinite(a) else float(a),
-                   None if not np.isfinite(b) else float(b))
-                  for a, b in zip(lo, hi)]
+        lo_h, hi_h = lo / dz, hi / dz
 
         if self.method == "trust-constr":
+            from scipy.optimize import Bounds
             tc = [
-                NonlinearConstraint(self._defects, 0.0, 0.0, jac=self._defects_jac),
-                NonlinearConstraint(self._boundary, 0.0, 0.0, jac=self._boundary_jac),
+                NonlinearConstraint(defects, 0.0, 0.0, jac=defects_jac),
+                NonlinearConstraint(boundary, 0.0, 0.0, jac=lambda zh: Bjac_sp),
             ]
             if self.path_con is not None:
-                tc.append(NonlinearConstraint(lambda z: self._path(z), -np.inf, 0.0))
+                tc.append(NonlinearConstraint(path, -np.inf, 0.0, jac=path_jac_sp))
             res = minimize(
-                self._objective, z0, jac=self._objective_grad, method="trust-constr",
-                bounds=bounds, constraints=tc,
-                options={"maxiter": self.max_iter, "gtol": self.tol,
-                         "xtol": self.tol, "verbose": 2 if verbose else 0},
+                obj, z0h, jac=grad, method="trust-constr",
+                bounds=Bounds(lo_h, hi_h), constraints=tc,
+                options={"maxiter": max(self.max_iter, 2000),
+                         "gtol": max(self.tol, 1e-8), "xtol": 1e-10,
+                         "verbose": 2 if verbose else 0},
             )
         else:
+            bounds = [(None if not np.isfinite(a) else float(a),
+                       None if not np.isfinite(b) else float(b))
+                      for a, b in zip(lo_h, hi_h)]
             cons = [
-                {"type": "eq", "fun": self._defects, "jac": self._defects_jac},
-                {"type": "eq", "fun": self._boundary, "jac": self._boundary_jac},
+                {"type": "eq", "fun": defects, "jac": defects_jac_dense},
+                {"type": "eq", "fun": boundary, "jac": lambda zh: Bjac_dense},
             ]
             if self.path_con is not None:
-                # scipy inequality convention is g(z) >= 0; our contract is g <= 0
-                cons.append({"type": "ineq", "fun": lambda z: -self._path(z)})
+                cons.append({"type": "ineq", "fun": lambda zh: -path(zh)})
             res = minimize(
-                self._objective, z0, jac=self._objective_grad, method="SLSQP",
-                bounds=bounds, constraints=cons,
+                obj, z0h, jac=grad, method="SLSQP", bounds=bounds,
+                constraints=cons,
                 options={"maxiter": self.max_iter, "ftol": self.tol, "disp": verbose},
             )
 
-        X, U = self._split(res.x)
+        z = dz * res.x
+        X, U = self._split(z)
         return CollocationResult(
             X=X.copy(),
             U=U.copy(),
             t=self.t.copy(),
-            cost=float(res.fun),
-            defect_norm=float(np.max(np.abs(self._defects(res.x)))) if N > 1 else 0.0,
+            cost=float(self._objective(z)),
+            defect_norm=float(np.max(np.abs(self._defects(z)))) if N > 1 else 0.0,
             success=bool(res.success),
             nit=int(getattr(res, "nit", 0)),
             nfev=int(getattr(res, "nfev", 0)),

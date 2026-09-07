@@ -123,15 +123,14 @@ the keep-out zone**. iLQR / CEM keep-out barrier `W · max(0, r² − d²)²`,
 
 ## Implementation notes / limits
 
-- The `DirectCollocation` transcription here uses a dense analytic
-  Hermite-Simpson defect Jacobian and hands the NLP to SLSQP. That is robust and
-  fast on the problems above (few states, smooth, one active box or a
-  low-dimensional path constraint). It is **not** yet hardened for a badly-scaled
-  plant with an *active nonconvex path constraint on many states at once* — a
-  keep-out disk on the `PlanarQuadrotor` (pitch gain `ℓ/I_yy ≈ 3·10³`) makes
-  SLSQP's LSQ subproblem singular; `trust-constr` copes but takes 10–50 s. A
-  variable/constraint-scaling pass and a sparse Jacobian are the fix, tracked for
-  a later iteration. Task B uses the well-scaled point-mass model to keep the
-  focus on the *hard-constraint-vs-penalty* question.
-- A knot landing exactly on the disk centre zeroes the path-constraint gradient
-  there (singular LSQ), so all three planners warm-start from a detour arc.
+- The `DirectCollocation` transcription hands the NLP to SLSQP with an analytic
+  Hermite-Simpson defect Jacobian. When this experiment first ran, a badly-scaled
+  plant with an *active nonconvex path constraint on many states* — a keep-out
+  disk on the `PlanarQuadrotor` (pitch gain `ℓ/I_yy ≈ 3·10³`) — made SLSQP's LSQ
+  subproblem singular. That is **fixed** (roadmap item A5): the decision vector is
+  now scaled (`x_scale` / `u_scale`, auto by default; explicit for a stiff plant),
+  `trust-constr` gets a banded sparse Jacobian, and a knot sitting on a keep-out
+  centre is nudged off it. The quad keep-out now solves in ~1.5 s and is a
+  regression test (`tests/test_direct_trajopt.py`). Task B still uses the
+  well-scaled point mass to keep the focus on the
+  *hard-constraint-vs-penalty* question.

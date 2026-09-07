@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 from aimct.planning import CollocationResult, DirectCollocation
-from aimct.systems import CartPole
+from aimct.systems import CartPole, PlanarQuadrotor
 
 
 # A double integrator:  x = [pos, vel],  xdot = [vel, u].
@@ -221,3 +221,99 @@ def test_cartpole_swingup_plan_reintegrates_close_on_a_fine_mesh():
     sim = _rollout_foh(f, res.X[0], res.U, res.t)
     # inter-knot quadrature error only; shrinks with the mesh
     assert np.linalg.norm(sim[-1] - res.X[-1]) < 0.05
+
+
+# ======================================================================
+# A5 - decision-variable scaling + sparse Jacobian + singular-row guard
+# ======================================================================
+def test_sparse_defect_jacobian_matches_the_dense_one():
+    dc = DirectCollocation(
+        _double_integrator, n_x=2, n_u=1, N=9, t_final=1.0,
+        x0=[0.0, 0.0], x_goal=[1.0, 0.0], Q=0.0, R=1.0,
+    )
+    rng = np.random.default_rng(1)
+    z = rng.standard_normal(dc._nz)
+    dense = dc._defects_jac(z)
+    sparse = dc._defects_jac_sparse(z).toarray()
+    assert np.allclose(dense, sparse, atol=1e-12)
+
+
+def test_explicit_scales_do_not_change_a_well_scaled_answer():
+    kw = dict(n_x=2, n_u=1, N=25, t_final=2.0, x0=[0.0, 0.0],
+              x_goal=[1.0, 0.0], Q=0.0, R=1.0, u_bounds=(-5.0, 5.0))
+    plain = DirectCollocation(_double_integrator, **kw).solve()
+    scaled = DirectCollocation(_double_integrator, x_scale=[2.0, 3.0],
+                               u_scale=[4.0], **kw).solve()
+    assert plain.success and scaled.success
+    assert np.allclose(plain.X, scaled.X, atol=1e-4)
+    assert np.allclose(plain.U, scaled.U, atol=1e-4)
+
+
+def test_auto_scale_lifts_a_stiff_channel():
+    # PlanarQuadrotor pitch-rate row of B is ~ l/Iyy ~ 3e3 -> auto x_scale for
+    # that state must come out well above 1 (and far above the position scale).
+    q = PlanarQuadrotor()
+    dc = DirectCollocation.from_system(
+        q, t_final=2.0, N=15, x0=[-1.0, 1.0, 0, 0, 0, 0],
+        x_goal=[1.0, 1.0, 0, 0, 0, 0], Q=0.0, R=np.eye(2), Qf=0.0,
+        u_ref=q.u_hover, u_bounds=(0.0, q.thrust_max),
+    )
+    sx, su = dc.x_scale, dc.u_scale
+    assert sx.shape == (6,) and su.shape == (2,)
+    assert np.all(sx > 0) and np.all(su > 0)
+    assert sx[5] > 5.0 * sx[0]                     # pitch-rate lifted vs position
+    assert su[0] < 1.0                              # thrust scale ~ its magnitude
+
+
+def test_singular_path_row_guard_nudges_a_knot_off_a_keep_out_centre():
+    # straight-line guess from (-2,0) to (2,0) puts a knot exactly on the disk
+    # centre (0,0); the guard must move it so the path-con gradient is non-zero.
+    def path_con(X, U):
+        return 0.5 ** 2 - (X[:, 0] ** 2 + X[:, 1] ** 2)
+
+    dc = DirectCollocation(
+        _double_integrator if False else (lambda x, u: np.array([x[1], x[3], u[0], u[1]])),
+        n_x=4, n_u=2, N=21, t_final=4.0, x0=[-2.0, 0.0, 0.0, 0.0],
+        x_goal=[2.0, 0.0, 0.0, 0.0], Q=0.0, R=np.eye(2), path_con=path_con,
+    )
+    z0 = dc._initial_guess(None, None)
+    X0, _ = dc._split(z0)
+    mid = dc.N // 2
+    assert np.hypot(X0[mid, 0], X0[mid, 1]) > 1e-3   # knot no longer at the centre
+
+
+@pytest.mark.slow
+def test_planar_quadrotor_keep_out_disk_solves_with_explicit_scales():
+    # the Exp-32 Task-2 finding: a keep-out disk on the stiff PlanarQuadrotor
+    # made SLSQP's LSQ subproblem singular.  With explicit scales it now solves.
+    q = PlanarQuadrotor()
+    uh, tmax = q.u_hover, q.thrust_max
+    A0 = np.array([-1.2, 1.0, 0, 0, 0, 0])
+    B0 = np.array([1.2, 1.0, 0, 0, 0, 0])
+    cx, cz, rk, T, N = 0.0, 1.0, 0.45, 2.5, 31
+
+    def path_con(X, U):
+        return rk ** 2 - ((X[:, 0] - cx) ** 2 + (X[:, 1] - cz) ** 2)
+
+    tt = np.linspace(0, T, N)
+    w = np.pi / T
+    amp = rk + 0.4
+    Xg = np.zeros((N, 6))
+    Xg[:, 0] = (1 - tt / T) * A0[0] + (tt / T) * B0[0]
+    Xg[:, 1] = 1.0 + amp * np.sin(w * tt)
+    Xg[:, 3] = (B0[0] - A0[0]) / T
+    Xg[:, 4] = amp * w * np.cos(w * tt)
+    Ug = np.tile(uh, (N, 1))
+
+    dc = DirectCollocation.from_system(
+        q, t_final=T, N=N, x0=A0, x_goal=B0, Q=0.0, R=np.eye(2), Qf=0.0,
+        u_ref=uh, u_bounds=(0.0, tmax), path_con=path_con, tol=1e-7,
+        x_scale=[1.5, 0.6, 0.3, 2.0, 2.0, 8.0], u_scale=[tmax, tmax],
+    )
+    res = dc.solve(X_init=Xg, U_init=Ug)
+    assert res.success
+    assert res.defect_norm < 1e-6
+    assert np.linalg.norm(res.X[-1] - B0) < 1e-5
+    d = np.sqrt((res.X[:, 0] - cx) ** 2 + (res.X[:, 1] - cz) ** 2)
+    assert d.min() >= rk - 1e-4                     # stays outside the keep-out
+    assert np.all(res.U >= -1e-6) and np.all(res.U <= tmax + 1e-6)
