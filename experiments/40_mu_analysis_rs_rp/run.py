@@ -152,7 +152,7 @@ def part_a():
         wmT, wgT, mu_an = _peaks(K, zr)
         rows.append(dict(
             zeta_r=float(zr),
-            mu_solver=rs["peak_upper"], mu_lb=rs["peak_lower"],
+            mu_solver=rs.peak_upper, mu_lb=rs.peak_lower,
             mu_analytic=mu_an, wmT=wmT, wgT=wgT,
             rs_margin=1.0 / mu_an if mu_an > 0 else np.inf,
             nom_pole=_nominal_pole_on_true_plant(K, zr),
@@ -179,7 +179,7 @@ def part_b():
 
     def peak_mu(K):
         rs = robust_stability_margin(_M_builder(K, zr_eval), BLOCKS, W_GRID)
-        return rs["peak_upper"], rs["margin"]
+        return rs.peak_upper, rs.margin
 
     def s_peak(K):
         L = (G * K).freqresp(W_GRID)[:, 0, 0]

@@ -40,11 +40,13 @@ References
 * Zhou, Doyle & Glover, *Robust and Optimal Control*, 1996, ch. 10-11.
 """
 
-from .mu import (BlockStructure, dk_iterate, mu, robust_performance_margin,
-                 robust_stability_margin)
+from .mu import (BlockStructure, MuBounds, RobustMarginResult, dk_iterate, mu,
+                 robust_performance_margin, robust_stability_margin)
 
 __all__ = [
     "BlockStructure",
+    "MuBounds",
+    "RobustMarginResult",
     "mu",
     "robust_stability_margin",
     "robust_performance_margin",

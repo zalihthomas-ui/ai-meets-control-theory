@@ -30,6 +30,7 @@ from .hinf import (HinfController, HinfSynResult, StateSpace, augment_plant,
 from .ilqr import ILQR, iLQR, iLQRResult
 from .lqr import LQR, solve_care
 from .mpc import LinearMPC, dare
+from ._qp import QPResult, solve_qp
 from .tube_mpc import MRPISet, TubeMPC, mrpi_box
 from .observer_feedback import ObserverFeedback
 from .pid import PID
@@ -83,6 +84,8 @@ __all__ = [
     "dare",
     "place_poles",
     "solve_care",
+    "solve_qp",
+    "QPResult",
     "controllability_matrix",
     "is_controllable",
 ]

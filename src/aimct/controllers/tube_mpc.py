@@ -239,7 +239,7 @@ class TubeMPC(LinearMPC):
 
     # -- construct -------------------------------------------------------
     @classmethod
-    def from_system(cls, system, *, W, dt=None, **kw) -> "TubeMPC":
+    def from_system(cls, system, *, W, **kw) -> "TubeMPC":
         """Build from an :mod:`aimct.systems` model, linearising about the
         origin (or ``kw['x_ref']`` / ``kw['u_ref']`` if given)."""
         xe = np.zeros(system.n_states)

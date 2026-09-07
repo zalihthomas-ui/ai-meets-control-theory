@@ -34,10 +34,53 @@ from typing import Iterable, Sequence
 
 import numpy as np
 
-__all__ = ["BlockStructure", "mu", "robust_stability_margin",
-           "robust_performance_margin", "dk_iterate"]
+__all__ = ["BlockStructure", "MuBounds", "RobustMarginResult", "mu",
+           "robust_stability_margin", "robust_performance_margin", "dk_iterate"]
 
 _KINDS = {"R", "C", "F"}   # repeated-real scalar, repeated-complex scalar, full complex
+
+
+@dataclass
+class MuBounds:
+    r"""Result of :func:`mu` — bounds on the structured singular value of one
+    matrix.
+
+    ``lower`` / ``upper`` are the power-iteration and D-scaling bounds
+    (``None`` if the corresponding flag was disabled); ``rho`` (spectral
+    radius) and ``sigma_max`` are unconditional lower / upper bounds;
+    ``worst_delta`` is a structured perturbation achieving ``lower``.
+    """
+
+    lower: float | None
+    upper: float | None
+    rho: float
+    sigma_max: float
+    worst_delta: np.ndarray | None = None
+
+    @property
+    def value(self) -> float:
+        """Best single estimate: ``upper`` if available, else ``lower``, else ``rho``."""
+        return self.upper if self.upper is not None else (
+            self.lower if self.lower is not None else self.rho)
+
+
+@dataclass
+class RobustMarginResult:
+    r"""Result of :func:`robust_stability_margin` /
+    :func:`robust_performance_margin` — a :math:`\mu` frequency sweep.
+
+    ``margin = 1 / peak_upper`` is the factor every uncertainty bound can be
+    inflated before the guarantee is lost; ``robust`` is ``peak_upper < 1``.
+    """
+
+    omega: np.ndarray
+    mu_lower: np.ndarray
+    mu_upper: np.ndarray
+    peak_upper: float
+    peak_lower: float
+    omega_peak: float
+    margin: float
+    robust: bool
 
 
 @dataclass(frozen=True)
@@ -220,16 +263,14 @@ def _mu_upper(M: np.ndarray, S: BlockStructure, *, iters: int = 120) -> tuple[fl
 # public: mu of a single matrix
 # ======================================================================
 def mu(M, structure, *, lower: bool = True, upper: bool = True,
-       seed: int = 0) -> dict:
+       seed: int = 0) -> MuBounds:
     r"""Structured singular value of ``M`` for the given block ``structure``.
 
     ``structure`` is a :class:`BlockStructure`, a list of ``(size, kind)`` pairs,
     or an int ``n`` (one ``n x n`` full block, for which ``mu = sigma_max(M)``).
 
-    Returns a dict with ``lower_bound``, ``upper_bound`` (either may be omitted
-    if the corresponding flag is ``False``), ``rho`` (the spectral radius, an
-    unconditional lower bound), ``sigma_max`` (an unconditional upper bound), and
-    ``worst_delta`` (a structured perturbation achieving the lower bound).
+    Returns a :class:`MuBounds` (``lower``, ``upper``, ``rho``, ``sigma_max``,
+    ``worst_delta``).
     """
     M = np.asarray(M, dtype=complex)
     if M.ndim != 2 or M.shape[0] != M.shape[1]:
@@ -238,29 +279,25 @@ def mu(M, structure, *, lower: bool = True, upper: bool = True,
     if S.n != M.shape[0]:
         raise ValueError(f"structure sums to {S.n}, M is {M.shape[0]}x{M.shape[0]}")
 
-    out = {
-        "rho": float(np.max(np.abs(np.linalg.eigvals(M)))),
-        "sigma_max": float(np.linalg.svd(M, compute_uv=False)[0]),
-    }
+    rho = float(np.max(np.abs(np.linalg.eigvals(M))))
+    sigma_max = float(np.linalg.svd(M, compute_uv=False)[0])
+
     # single full block: mu == sigma_max, exactly
     if len(S.blocks) == 1 and S.blocks[0][1] == "F":
-        v = out["sigma_max"]
-        if lower:
-            out["lower_bound"] = v
-        if upper:
-            out["upper_bound"] = v
         U, s, Vh = np.linalg.svd(M)
-        out["worst_delta"] = (s[0]) ** -1 * np.outer(Vh[0].conj(), U[:, 0].conj()) \
-            if s[0] > 0 else np.zeros_like(M)
-        return out
+        wd = ((s[0]) ** -1 * np.outer(Vh[0].conj(), U[:, 0].conj())
+              if s[0] > 0 else np.zeros_like(M))
+        return MuBounds(lower=sigma_max if lower else None,
+                        upper=sigma_max if upper else None,
+                        rho=rho, sigma_max=sigma_max, worst_delta=wd)
+
+    lb = wd = ub = None
     if lower:
-        lb, dl = _mu_lower(M, S, seed=seed)
-        out["lower_bound"] = lb
-        out["worst_delta"] = dl
+        lb, wd = _mu_lower(M, S, seed=seed)
     if upper:
         ub, _dv = _mu_upper(M, S)
-        out["upper_bound"] = ub
-    return out
+    return MuBounds(lower=lb, upper=ub, rho=rho, sigma_max=sigma_max,
+                    worst_delta=wd)
 
 
 # ======================================================================
@@ -283,7 +320,8 @@ def _sweep(M_of_omega, omega, structure, seed, *, restarts=3, iters=35):
     return omega, lb, ub, S
 
 
-def robust_stability_margin(M_of_omega, structure, omega, *, seed: int = 0) -> dict:
+def robust_stability_margin(M_of_omega, structure, omega, *,
+                            seed: int = 0) -> RobustMarginResult:
     r"""Sweep :math:`\mu(M(j\omega))` and report the robust-stability margin.
 
     ``M_of_omega(w) -> (n, n)`` is the ``M``-:math:`\Delta` interconnection at
@@ -291,11 +329,13 @@ def robust_stability_margin(M_of_omega, structure, omega, *, seed: int = 0) -> d
     The margin ``1 / max_w mu_upper`` is the factor by which every block's
     bound can be scaled up while stability is still guaranteed; ``mu_lower``
     gives a destabilising perturbation of size ``1 / max_w mu_lower``.
+
+    Returns a :class:`RobustMarginResult`.
     """
     w, lb, ub, _S = _sweep(M_of_omega, omega, structure, seed)
     i_ub = int(np.argmax(ub))
     i_lb = int(np.argmax(lb))
-    return dict(
+    return RobustMarginResult(
         omega=w, mu_lower=lb, mu_upper=ub,
         peak_upper=float(ub[i_ub]), peak_lower=float(lb[i_lb]),
         omega_peak=float(w[i_ub]),
@@ -305,7 +345,7 @@ def robust_stability_margin(M_of_omega, structure, omega, *, seed: int = 0) -> d
 
 
 def robust_performance_margin(M_of_omega, structure, perf_shape, omega, *,
-                              seed: int = 0) -> dict:
+                              seed: int = 0) -> RobustMarginResult:
     r"""Robust *performance* via the main-loop theorem: append a fictitious
     full-complex performance block of size ``perf_shape = (n_z, n_w)`` and run
     :func:`robust_stability_margin` on the augmented structure.
@@ -343,7 +383,7 @@ def dk_iterate(resynthesise, mu_matrix, structure, omega, *, iterations: int = 4
       worst frequency becomes the next ``d``.
 
     Returns ``(K, history)`` with ``history[i]`` the
-    :func:`robust_stability_margin` dict of round ``i`` (round 0 = the plain
+    :class:`RobustMarginResult` of round ``i`` (round 0 = the plain
     design).  The full method fits a *rational* ``D(s)`` each round; a constant
     ``d`` still tightens a peak that lives in one frequency band -- the common
     case -- and shows the mechanism.
@@ -359,7 +399,7 @@ def dk_iterate(resynthesise, mu_matrix, structure, omega, *, iterations: int = 4
                                                                dtype=complex),
                                      S, omega, seed=seed)
         history.append(rs)
-        Mw = np.asarray(mu_matrix(K, rs["omega_peak"]), dtype=complex)
+        Mw = np.asarray(mu_matrix(K, rs.omega_peak), dtype=complex)
         _ub, dv = _mu_upper(Mw, S)
         # collapse the per-entry scaling dv to one factor per block, normalise
         newd = np.empty(b)

@@ -128,8 +128,10 @@ $$
 $$
 
 `robust_stability_margin(M_of_omega, structure, omega)` sweeps the grid and
-returns `mu_lower(ω)`, `mu_upper(ω)`, the peak, the worst-case `ω`, the margin,
-and a `robust` flag. A margin of 2 means every uncertainty bound can be doubled
+returns a `RobustMarginResult` (`mu_lower`, `mu_upper`, `peak_upper`,
+`peak_lower`, `omega_peak`, `margin`, `robust`). `mu(M, structure)` on a single
+matrix returns a `MuBounds` (`lower`, `upper`, `rho`, `sigma_max`,
+`worst_delta`). A margin of 2 means every uncertainty bound can be doubled
 and stability still holds; `1/peak_lower` is the size of a `Δ` that is *known* to
 destabilise.
 
@@ -157,7 +159,7 @@ Full D-K fits a *rational* `D(s)` each round. `aimct.robust.dk_iterate` does the
 the worst-frequency `D` of the `μ` sweep. That still tightens a peak that lives
 in one band — the common case — and shows the mechanism without the curve-fitting
 machinery. It takes `resynthesise(d) -> K` and `mu_matrix(K, ω) -> M` callbacks
-and returns `(K, history)` with the `robust_stability_margin` dict of each round.
+and returns `(K, history)` with the `RobustMarginResult` of each round.
 
 ---
 

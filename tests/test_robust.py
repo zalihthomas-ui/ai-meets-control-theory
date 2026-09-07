@@ -33,8 +33,8 @@ def test_single_full_block_mu_equals_sigma_max():
         M = rng.standard_normal((n, n)) + 1j * rng.standard_normal((n, n))
         r = mu(M, n)
         sm = float(np.linalg.svd(M, compute_uv=False)[0])
-        assert r["lower_bound"] == pytest.approx(sm, rel=1e-9)
-        assert r["upper_bound"] == pytest.approx(sm, rel=1e-9)
+        assert r.lower == pytest.approx(sm, rel=1e-9)
+        assert r.upper == pytest.approx(sm, rel=1e-9)
 
 
 def test_bounds_bracket_rho_and_sigma_for_every_structure():
@@ -50,9 +50,9 @@ def test_bounds_bracket_rho_and_sigma_for_every_structure():
         M = (rng.standard_normal((S.n, S.n))
              + 1j * rng.standard_normal((S.n, S.n))) * 0.4
         r = mu(M, S)
-        assert r["rho"] - 1e-6 <= r["lower_bound"]
-        assert r["lower_bound"] <= r["upper_bound"] + 1e-6
-        assert r["upper_bound"] <= r["sigma_max"] + 1e-6
+        assert r.rho - 1e-6 <= r.lower
+        assert r.lower <= r.upper + 1e-6
+        assert r.upper <= r.sigma_max + 1e-6
 
 
 def test_rank_one_scalar_block_upper_bound_is_exact():
@@ -63,9 +63,9 @@ def test_rank_one_scalar_block_upper_bound_is_exact():
     M = np.outer(u, v)
     r = mu(M, BlockStructure([(1, "C")] * 4))
     exact = float(np.sum(np.abs(u * v)))
-    assert r["upper_bound"] == pytest.approx(exact, rel=1e-4)
-    assert r["lower_bound"] <= exact + 1e-6
-    assert r["lower_bound"] >= 0.9 * exact          # power iteration gets close
+    assert r.upper == pytest.approx(exact, rel=1e-4)
+    assert r.lower <= exact + 1e-6
+    assert r.lower >= 0.9 * exact          # power iteration gets close
 
 
 @pytest.mark.slow
@@ -79,8 +79,8 @@ def test_two_real_blocks_match_a_brute_force_search():
             if abs(np.linalg.det(np.eye(2) - M @ np.diag([d1, d2]))) < 2e-3:
                 best = min(best, max(abs(d1), abs(d2)))
     mu_bf = 1.0 / best
-    assert r["lower_bound"] == pytest.approx(mu_bf, abs=2e-2)
-    assert r["upper_bound"] == pytest.approx(mu_bf, abs=5e-2)
+    assert r.lower == pytest.approx(mu_bf, abs=2e-2)
+    assert r.upper == pytest.approx(mu_bf, abs=5e-2)
 
 
 def test_mu_rejects_shape_mismatch():
@@ -111,9 +111,9 @@ def test_siso_rs_margin_equals_the_peak_of_the_scalar_transfer():
 
     rs = robust_stability_margin(M, 1, grid)
     peak = max(abs(_Wm(w) * _T(w)) for w in grid)
-    assert rs["peak_upper"] == pytest.approx(peak, rel=1e-6)
-    assert rs["margin"] == pytest.approx(1.0 / peak, rel=1e-6)
-    assert rs["robust"] is True
+    assert rs.peak_upper == pytest.approx(peak, rel=1e-6)
+    assert rs.margin == pytest.approx(1.0 / peak, rel=1e-6)
+    assert rs.robust is True
 
 
 @pytest.mark.slow
@@ -140,11 +140,11 @@ def test_structured_rs_margin_matches_a_brute_force_delta_search():
                         best = min(best, max(abs(dr), mag))
         return 1.0 / best if np.isfinite(best) else 0.0
 
-    i = int(np.argmax(rs["mu_upper"]))
+    i = int(np.argmax(rs.mu_upper))
     ref = mu_bf(M(grid[i]))
-    assert rs["mu_lower"][i] <= rs["peak_upper"] + 1e-6
-    assert ref <= rs["peak_upper"] + 5e-2                 # bf can't beat the upper bound
-    assert rs["peak_lower"] >= 0.8 * ref                  # lower bound tracks bf
+    assert rs.mu_lower[i] <= rs.peak_upper + 1e-6
+    assert ref <= rs.peak_upper + 5e-2                 # bf can't beat the upper bound
+    assert rs.peak_lower >= 0.8 * ref                  # lower bound tracks bf
 
 
 def test_robust_performance_is_rs_of_the_augmented_structure():
@@ -158,7 +158,7 @@ def test_robust_performance_is_rs_of_the_augmented_structure():
     rp = robust_performance_margin(N, [(1, "C")], (1, 1), grid)
     # same numbers as calling robust_stability_margin with the augmented structure
     rs = robust_stability_margin(N, BlockStructure([(1, "C"), (1, "F")]), grid)
-    assert rp["peak_upper"] == pytest.approx(rs["peak_upper"], rel=1e-9)
+    assert rp.peak_upper == pytest.approx(rs.peak_upper, rel=1e-9)
 
 
 def test_robust_performance_requires_square_perf_block():
@@ -185,4 +185,4 @@ def test_dk_iteration_does_not_worsen_the_rs_margin():
 
     K, hist = dk_iterate(resynthesise, mu_matrix, [(1, "C")], grid, iterations=4)
     assert len(hist) >= 1
-    assert hist[-1]["peak_upper"] <= hist[0]["peak_upper"] + 1e-6
+    assert hist[-1].peak_upper <= hist[0].peak_upper + 1e-6
